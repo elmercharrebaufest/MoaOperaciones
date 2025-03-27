@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SustitucionMOAFotmatter;
-using SustitucionMOAModel.CustomExceptions;
+﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.ReporteOCWebServiceMOA;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -98,28 +97,28 @@ namespace SustitucionMOAWS.WSConsumers
             //}
             //else 
             //{
-                foreach (var item in PO_HEADERS.Where(x=> string.IsNullOrEmpty(x.SUBJ_TO_R)))
+            foreach (var item in PO_HEADERS.Where(x => string.IsNullOrEmpty(x.SUBJ_TO_R)))
+            {
+                result.Add(new OrdenDeCompraSAPDto
                 {
-                    result.Add(new OrdenDeCompraSAPDto
+                    Cabecera = new OrdenDeCompraSAPCabecera
                     {
-                        Cabecera = new OrdenDeCompraSAPCabecera
-                        {
-                            OrdenDeCompra = item.PO_NUMBER,
-                            CodigoProveedor = item.VENDOR,
-                            RazonSocialProveedor = item.VEND_NAME,
-                            //CUITProveedor = item.STCD1,
-                            Moneda = item.CURRENCY,
-                            MontoTotal = PO_ITEMS.Where(x => x.PO_NUMBER == item.PO_NUMBER).Sum(a => a.NET_PRICE),
-                            CreadoPor = item.CREATED_BY,
-                            ClaseDocumento = item.DOC_TYPE,
-                            FechaCreacion = SAPFormatter.GetDateTime(item.CREATED_ON),
-                            Tipo = PO_ITEMS.Select(x => x.ITEM_CAT).FirstOrDefault() == "0" ? "Materiales" : "Servicios",
-                            //TipoDocCompras = item.DOC_TYPE,
+                        OrdenDeCompra = item.PO_NUMBER,
+                        CodigoProveedor = item.VENDOR,
+                        RazonSocialProveedor = item.VEND_NAME,
+                        //CUITProveedor = item.STCD1,
+                        Moneda = item.CURRENCY,
+                        MontoTotal = PO_ITEMS.Where(x => x.PO_NUMBER == item.PO_NUMBER).Sum(a => a.NET_PRICE),
+                        CreadoPor = item.CREATED_BY,
+                        ClaseDocumento = item.DOC_TYPE,
+                        FechaCreacion = SAPFormatter.GetDateTime(item.CREATED_ON),
+                        Tipo = PO_ITEMS.Select(x => x.ITEM_CAT).FirstOrDefault() == "0" ? "Materiales" : "Servicio",
+                        //TipoDocCompras = item.DOC_TYPE,
 
-                        },
-                        Mensaje = resultado
-                    });
-                }
+                    },
+                    Mensaje = resultado
+                });
+            }
 
 
             //}

@@ -341,7 +341,7 @@ namespace SustitucionMOAWS.WSConsumers
                         IndiceSolp = pos.PREQ_ITEM,
                         RegistroInfo = pos.INFO_REC,
                         NroSolp = pos.PREQ_NO,
-                        TipoPosicion = pos.ITEM_CAT == "9" ? "SERVICIOS" : "MATERIALES",
+                        TipoPosicion = pos.ITEM_CAT == "9" ? "SERVICIO" : "MATERIALES",
                         DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
                         {
                             RegionSap = region?.REGION
@@ -429,7 +429,7 @@ namespace SustitucionMOAWS.WSConsumers
             adjudicacion.Solp_Id = solp;
 
             adjudicacion.Id = 0;
-            adjudicacion.TipoPosicionCodigo = POITEM.First().ITEM_CAT == "9" ? "SERVICIOS" : "MATERIALES";
+            adjudicacion.TipoPosicionCodigo = POITEM.First().ITEM_CAT == "9" ? "SERVICIO" : "MATERIALES";
             adjudicacion.NumeroOrdenDeCompra = POHEADER.PO_NUMBER;
             adjudicacion.Proveedor = POHEADER.VENDOR;
             adjudicacion.Centro = POADDRDELIVERY.FirstOrDefault()?.NAME;
@@ -692,22 +692,26 @@ namespace SustitucionMOAWS.WSConsumers
                 if (centro == null)
                 {
                     pos.Centro = posicion.PLANT + "- ";
-                };
+                }
+                ;
 
                 if (centro != null)
                 {
                     pos.Centro = posicion.PLANT + "-" + centro.Descripcion;
-                };
+                }
+                ;
 
                 if (Almacen == null)
                 {
                     pos.Almacen = posicion.STGE_LOC + "- ";
-                };
+                }
+                ;
 
                 if (Almacen != null)
                 {
                     pos.Almacen = posicion.STGE_LOC + "-" + Almacen.Descripcion;
-                };
+                }
+                ;
 
 
                 //pos.Centro = posicion.PLANT;

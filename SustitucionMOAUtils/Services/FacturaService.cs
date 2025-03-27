@@ -1,5 +1,4 @@
 ﻿using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -68,7 +67,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     Log.Info("Procesando el documento " + file.FileName);
                     List<string> elementosLeidos = resultadoOcrs.Where(a => a.FileName == file.FileName).Select(a => a.Input).ToList();
-                    List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName); 
+                    List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName);
                     List<ValidationResult> resultado = AnalizarResultados(resultadoAnalisis, codigo);
                     // Flujo nuevo
                     if (resultado[0].IsValid == true && resultado[0].Certificaciones.Count > 0)
@@ -90,9 +89,11 @@ namespace SustitucionMOAUtils.Services
                          
                          */
                         // Buscamos los archivos relacionados a ese nro de certificacion
-                        resultado[0].Certificaciones.ForEach((certificacion) => {
+                        resultado[0].Certificaciones.ForEach((certificacion) =>
+                        {
                             CertificacionRegistrada certificacionRegistrada = repositorio.Obtener<CertificacionRegistrada>(c => c.NRO_Certificacion == certificacion.NroCertificacion);
-                            if (certificacionRegistrada != null) {
+                            if (certificacionRegistrada != null)
+                            {
                                 certificacion.Archivo = certificacionRegistrada.Archivo;
                             }
                         });
@@ -311,7 +312,7 @@ namespace SustitucionMOAUtils.Services
                     return result;
                 }
 
-                if (ordenDeCompraSAP.Cabecera.SaldoDisponible <= 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIOS")
+                if (ordenDeCompraSAP.Cabecera.SaldoDisponible <= 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIO")
                 {
                     result.Add(new ValidationResult(false, $"La orden de compra {OrdenDeCompraEncontrada.Value} no tiene saldo disponible.", typeof(OrdenCompraValidationCommand).Name, "", OrdenDeCompraEncontrada.Value));
                     return result;
@@ -324,7 +325,7 @@ namespace SustitucionMOAUtils.Services
                     return result;
                 }
 
-                if (ordenDeCompraSAP.Cabecera.SaldoDisponible > 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIOS")
+                if (ordenDeCompraSAP.Cabecera.SaldoDisponible > 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIO")
                 {
                     result.Add(new ValidationResult(true, $"La orden de compra {OrdenDeCompraEncontrada.Value} si tiene saldo disponible.", typeof(OrdenCompraValidationCommand).Name, "", OrdenDeCompraEncontrada.Value, ordenDeCompraSAP.Certificaciones));
                     return result;

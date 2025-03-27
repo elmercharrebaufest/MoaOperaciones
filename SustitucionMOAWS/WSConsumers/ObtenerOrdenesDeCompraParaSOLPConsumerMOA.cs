@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using SustitucionMOAFotmatter;
+﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.OrdenesDeCompraParaSolpWebServiceMOA;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 
 namespace SustitucionMOAWS.WSConsumers
@@ -40,7 +39,7 @@ namespace SustitucionMOAWS.WSConsumers
                 if (resultado == "No hay Órdenes de Compra para la Solicitud de Pedido")
                 {
                     return result;
-                } 
+                }
                 else throw new ValidationCustomException(resultado);
             }
 
@@ -65,7 +64,7 @@ namespace SustitucionMOAWS.WSConsumers
                         CreadoPor = item.First().ERNAM,
                         ClaseDocumento = item.First().BSART,
                         FechaCreacion = SAPFormatter.GetDateTime(item.First().AEDAT),
-                        Tipo = item.First().PSTYP == "0" ? "Materiales" : "Servicios",
+                        Tipo = item.First().PSTYP == "0" ? "Materiales" : "Servicio",
                         TipoDocCompras = item.First().BSTYP,
                         MontoBruto = CorregirImporte(item.Sum(a => a.BRTWR), item.First().WAERS, monedasConversion),
                         EstadoLiberacionCodigo = item.First().FRGKE,
