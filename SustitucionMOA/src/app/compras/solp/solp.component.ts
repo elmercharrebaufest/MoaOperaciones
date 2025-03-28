@@ -121,6 +121,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displayPliegoMultipleOk: boolean;
 
     pliegoMultipleIdSolpsSeleccionadas: number[] = [];
+    existingCheckedSolps: SolpDto[] = [];
 
 
     set pasoActual(value: Paso) {
@@ -905,6 +906,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     public onSolpSeleccionadaListChanged(data: number[]): void {
         this.pliegoMultipleIdSolpsSeleccionadas = data;
+    }
+
+    public onSolpDtoSeleccionadaListChanged(data: SolpDto[]): void {
+        this.existingCheckedSolps = data;
     }
 
     base64ToBlob(base64Data, contentType) {

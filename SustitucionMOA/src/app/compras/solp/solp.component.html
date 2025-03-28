@@ -53,7 +53,9 @@
                     </div>
                     <div *ngSwitchCase="enumSolp.PliegoMultipleVincularSolp" [@fadeInOut]>
                         <vincular-solp-pliego-multiple [(locale)]="es"
+                                                       [existingCheckedSolps]="existingCheckedSolps"
                                                        (solpSeleccionadaListChanged)="onSolpSeleccionadaListChanged($event)"
+                                                       (solpDtoSeleccionadaListChanged)="onSolpDtoSeleccionadaListChanged($event)"
                                                        [pliegoId]="pliegoIdWhenEditing"></vincular-solp-pliego-multiple>
                     </div>
                     <div *ngSwitchDefault [@fadeInOut]>

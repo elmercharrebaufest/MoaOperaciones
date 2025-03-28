@@ -19,8 +19,15 @@ export class VincularSolpPliegoMultipleComponent
     @Output()
     public solpSeleccionadaListChanged = new EventEmitter<number[]>();
 
+    @Output()
+    public solpDtoSeleccionadaListChanged = new EventEmitter<SolpDto[]>();
+
+
     @Input()
     public pliegoId: number | null;
+
+    @Input()
+    public existingCheckedSolps: SolpDto[] = [];
 
     public numeroSolp: string;
     public nombrePliego: string;
@@ -88,6 +95,7 @@ export class VincularSolpPliegoMultipleComponent
         if (this.debouncer) { this.debouncer.complete(); }
         if (this.debouncerSubscription) { this.debouncerSubscription.unsubscribe(); }
         this.solpSeleccionadaListChanged.complete();
+        this.solpDtoSeleccionadaListChanged.complete();
     }
 
     public searchParametersChanged() {
@@ -96,13 +104,15 @@ export class VincularSolpPliegoMultipleComponent
 
     public notifyChange() {
         this.solpSeleccionadaListChanged.emit(this.solps.filter(x => x.Selected).map(x => x.Id));
+        this.solpDtoSeleccionadaListChanged.emit(this.solps.filter(x => x.Selected));
+        this.existingCheckedSolps = (this.solps || []).filter(x => x.Selected);
     }
 
     public getSolps() {
         try {
             this.blockUI.start("Cargando");
 
-            this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp,this.nombrePliego, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco, this.pliegoId, this.incluirGuardadas)
+            this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.nombrePliego, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco, this.pliegoId, this.incluirGuardadas)
                 .subscribe(
                     (result: any) => {
                         if (result.logout == true) {
@@ -116,9 +126,8 @@ export class VincularSolpPliegoMultipleComponent
                         } else {
                             let solps = result as SolpDto[] | null;
                             if (solps) {
-                                const existingCheckedSolps = (this.solps || []).filter(x => x.Selected);
-                                const newSolps = solps.filter(newSolp => !(existingCheckedSolps || []).some(existingSolp => existingSolp.Id === newSolp.Id));
-                                this.solps = [...existingCheckedSolps, ...newSolps];
+                                const newSolps = solps.filter(newSolp => !(this.existingCheckedSolps || []).some(existingSolp => existingSolp.Id === newSolp.Id));
+                                this.solps = [...this.existingCheckedSolps, ...newSolps];
 
                             } else {
                                 this.solps = this.solps || [];
