@@ -73,17 +73,17 @@
                                 <td>{{certificacion.NRO_Certificacion}}</td>
                                 <td>{{formatPrice(certificacion.Importe)}}</td>
                                 <td>{{certificacion.Moneda}}</td>
-                                <td *ngIf="certificacion.Archivo !== null">
-                                    <div class="col-xs-12 col-sm-6 col-md-3">
-                                        <a (click)="descargarDocumentoAdjunto(certificacion.Archivo.Id)">{{obtenerNombreDeArchivo(certificacion.Archivo.Ruta)}}</a>
+                                <td *ngIf="certificacion.Archivo.length !== 0">
+                                    <div class="filesColumn">
+                                        <a *ngFor="let archivo of certificacion.Archivo" (click)="descargarDocumentoAdjunto(archivo.Id)">{{obtenerNombreDeArchivo(archivo.Ruta)}}</a>
                                     </div>
                                 </td>
-                                <td *ngIf="certificacion.Archivo == null"></td>
+                                <td *ngIf="certificacion.Archivo.length == 0"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="row myRow cargaDeDatosBtn">
+                <div *ngIf="archivos?.length > 0" class="row myRow cargaDeDatosBtn">
                     <spinner-small></spinner-small>
                     <div class="col-xs-12 col-sm-6 col-md-3">
                         <button pButton
@@ -91,7 +91,7 @@
                                 type="button"
                                 label="Enviar"
                                 (click)="obtenerCertificaciones()"
-                                [disabled]="archivos?.length == 0">
+                                [disabled]="certificaciones.length > 0">
                         </button>
                     </div>
                     <div *ngIf="certificaciones.length > 0" class="col-xs-12 col-sm-6 col-md-3">

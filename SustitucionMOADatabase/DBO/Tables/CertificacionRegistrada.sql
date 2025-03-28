@@ -6,7 +6,7 @@
     [NRO_Certificacion] NCHAR(10) NOT NULL, 
     [Importe] FLOAT NOT NULL, 
     [Moneda] NCHAR(10) NOT NULL, 
-    [FechaDeRegistro] DATE NOT NULL, 
+    [FechaDeRegistro] DATETIME2 NOT NULL, 
     [UsuarioId] INT NOT NULL,
     [ProveedorId] INT NOT NULL,
     [ArchivoId] INT NOT NULL,
