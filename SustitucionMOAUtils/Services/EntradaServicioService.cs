@@ -1799,7 +1799,8 @@ namespace SustitucionMOAUtils.Services
                     OrdenCompraPosicionNumero = posicionOC.NumeroPosicion.ToString(),
                     DocumentoReferenciaNumero = "", // Corresponde al campo 'Referencia Remito' en la creación de la Certificación
                     FechaDocumento = DateTime.Today.ToString("yyyy-MM-dd"),
-                    FechaContabilizacion = DateTime.Today.ToString("yyyy-MM-dd")
+                    FechaContabilizacion = DateTime.Today.ToString("yyyy-MM-dd"),
+                    MontoTotalACertificar = (posicionOC.PrecioTotal ?? 0).ToString(CultureInfo.InvariantCulture)
                 },
                 EntrySheetServices = new EntrySheetServiceSection { Items = new List<EntrySheetServiceItemSection>() }
             };
@@ -1816,6 +1817,7 @@ namespace SustitucionMOAUtils.Services
                     ItemQuantity = (itemPosicion.Cantidad ?? 0).ToString(CultureInfo.InvariantCulture),
                     GrossPrice = itemPosicion.PrecioBruto ?? 0,
                     ItemGrossPrice = itemPosicion.ImporteString,
+                    CertificationAmount = itemPosicion.Monto.ToString(CultureInfo.InvariantCulture),
                     PlannedPackage = itemPosicion.Id,
                     PlannedLine = itemPosicion.LINE_NO,
                     Descripcion = itemPosicion.Descripcion,
