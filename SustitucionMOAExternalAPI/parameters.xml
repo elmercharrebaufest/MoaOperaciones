@@ -87,6 +87,12 @@
                            /@address" />
   </parameter>
 
+	<parameter name="SpaUrl Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='SpaUrl']
+                           /@value" />
+	</parameter>
+
 	<parameter name="ComputerVisionApiKey Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='ComputerVisionApiKey']
@@ -113,6 +119,12 @@
 								match="/configuration/system.serviceModel/client
                     /endpoint[@name='SI_MMRFC_BAPI_ENTRYSHEET_CREATE']
                     /@address" />
+	</parameter>
+
+	<parameter name="EmailRegexFormato Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='EmailRegexFormato']
+                           /@value" />
 	</parameter>
   
 </parameters>

@@ -32,7 +32,8 @@
   <setParameter name="BAPI_INFORECORD_GETLISTPortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_INFORECORD_GETLIST&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions"  />
 
   <setParameter name="Z_MMRFC_OC_PARA_SOLPPortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=Z_MMRFC_OC_PARA_SOLPPortType&amp;interfaceNamespace=urn%3AOPERACIONES" />
-  <setParameter name="Url Config" value="http://gslopidevqa00.molinosagro.ad:50000/" />
+	<setParameter name="SpaUrl Config" value="https://qahuenei.moaoperaciones.com.ar/web" />
+	<setParameter name="Url Config" value="http://gslopidevqa00.molinosagro.ad:50000/" />
 
 	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
@@ -41,4 +42,6 @@
 	<setParameter name="ServicioSAPEntradasServicioCabecera Config" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="ServicioSAPEntradasServicioCrear Config" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_CREATE&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="SI_MMRFC_BAPI_ENTRYSHEET_CREATE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_CREATE&amp;interfaceNamespace=urn:OPERACIONES" />
+
+	<setParameter name="EmailRegexFormato Config" value="^[a-zA-Z0-9._%+-]+@(baufest\.com|huenei\.com|molinosagro\.com\.ar)$" />
 </parameters>
