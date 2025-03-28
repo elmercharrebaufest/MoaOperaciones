@@ -60,7 +60,7 @@ export class FacturaComponent extends ListBaseComponent {
         NRO_Certificacion: string,
         Importe:number,
         Moneda: string,
-        Archivo:any,
+        Archivo:any[],
     }[] = [];
     certificacionesAgregadas:{
         NombreDeArchivo: string,

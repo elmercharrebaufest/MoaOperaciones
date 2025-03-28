@@ -76,10 +76,13 @@ namespace SustitucionMOAUtils.Services
                         // Buscamos los archivos relacionados a ese nro de certificacion
                         resultado[0].Certificaciones.ForEach((certificacion) =>
                         {
-                            CertificacionRegistrada certificacionRegistrada = repositorio.Obtener<CertificacionRegistrada>(c => c.NRO_Certificacion == certificacion.NroCertificacion);
-                            if (certificacionRegistrada != null)
+                            List<CertificacionRegistrada> certificacionesRegistradas = repositorio.Listar<CertificacionRegistrada>(c => c.NRO_Certificacion == certificacion.NroCertificacion).ToList();
+                            if (certificacionesRegistradas != null && certificacionesRegistradas.Any())
                             {
-                                certificacion.Archivo = certificacionRegistrada.Archivo;
+                                certificacionesRegistradas.ForEach(certificacionRegistrada =>
+                                {
+                                    certificacion.Archivo.Add(certificacionRegistrada.Archivo);
+                                });
                             }
                         });
                     }
