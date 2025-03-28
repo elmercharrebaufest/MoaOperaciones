@@ -162,7 +162,10 @@ namespace SustitucionMOAUtils.Services
                 repositorio.Agregar(archivo);
                 repositorio.GuardarCambios();
                 // Add the ArchivoId to the CertificacionRegistrada element
-                certificacionRegistradas.Find(c => c.NombreDeArchivo == file.FileName).ArchivoId = archivo.Id;
+                certificacionRegistradas
+                    .Where(c => c.NombreDeArchivo == file.FileName)
+                    .ToList()
+                    .ForEach(c => c.ArchivoId = archivo.Id);
                 resultadoAnalisis.ForEach(r => r.Archivo_Id = archivo.Id);
                 if (resultado.Exists(r => r.IsValid))
                 {
