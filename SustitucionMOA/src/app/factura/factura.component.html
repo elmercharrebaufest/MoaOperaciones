@@ -36,7 +36,7 @@
                         <p-fileUpload #fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}"  maxFileSize="10000000" 
                                       name="fileUploadPeticionDeOferta" auto="true" multiple="multiple"
                                       chooseLabel="Elegir archivos" [showUploadButton]=false [showCancelButton]=false
-                                      [customUpload]="true" (uploadHandler)="uploadHandler($event)" >
+                                      [customUpload]="true" (uploadHandler)="uploadHandler($event)" (onRemove)="removeFile($event)">
                         </p-fileUpload>
                     </div>
                     <br />
@@ -89,12 +89,12 @@
                         <button pButton
                                 class="btn-nuevoPliego"
                                 type="button"
-                                label="Buscar Certificaciones"
+                                label="Enviar"
                                 (click)="obtenerCertificaciones()"
                                 [disabled]="archivos?.length == 0">
                         </button>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-3">
+                    <div *ngIf="certificaciones.length > 0" class="col-xs-12 col-sm-6 col-md-3">
                         <button pButton
                                 class="btn-nuevoPliego"
                                 type="button"
