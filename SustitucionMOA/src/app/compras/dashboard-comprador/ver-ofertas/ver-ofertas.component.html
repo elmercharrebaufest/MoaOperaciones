@@ -616,8 +616,11 @@
                                         <td *ngFor="let adjudicacion of proveedor.Cotizacion.Adjudicaciones">
                                             OC {{ adjudicacion.NumeroOrdenDeCompra }}
                                             <br />
-                                            <p-checkbox [(ngModel)]="adjudicacion.AdmiteCertificacionesParciales"
-                                                        binary="true"></p-checkbox>
+                                            <p-checkbox
+                                                [(ngModel)]="adjudicacion.AdmiteCertificacionesParciales"
+                                                [disabled]="tablaOfertas.TrabajoHecho"
+                                                binary="true">
+                                            </p-checkbox>
                                             Certificaciones parciales
                                         </td>
                         </ng-container>
@@ -632,7 +635,11 @@
                             <button [disabled]="!proveedor.VerAdjudicar || esAuditor" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                 Adjudicar
                             </button>
-                            <button [disabled]="proveedor.Cotizacion == null || proveedor.Cotizacion.Adjudicaciones == null || proveedor.Cotizacion.Adjudicaciones.length == 0" class="publicar btn btn-success" style="font-size: 12px; margin-left: 5px;" (click)="guardarCertificacionesParciales()">
+                            <button
+                                class="publicar btn btn-success"
+                                style="font-size: 12px; margin-left: 5px;"
+                                (click)="guardarCertificacionesParciales()"
+                                [disabled]="tablaOfertas.TrabajoHecho || proveedor.Cotizacion == null || proveedor.Cotizacion.Adjudicaciones == null || proveedor.Cotizacion.Adjudicaciones.length == 0">
                                 Guardar certificaciones parciales
                             </button>
                             <br />
