@@ -1,7 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <parameters>
-	<parameter name="PasswordSapEnc Config">
+  <parameter name="Script_legajo_impositivo Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='Script_legajo_impositivo']
+                           /@value" />
+  </parameter>
+  
+  <parameter name="PasswordSapEnc Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='PasswordSapEnc']
                            /@value" />

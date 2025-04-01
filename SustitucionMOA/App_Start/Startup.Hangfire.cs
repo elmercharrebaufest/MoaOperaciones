@@ -138,6 +138,11 @@ namespace SustitucionMOA
                 "EliminarFacturasAntiguasJob",
                 j => j.Execute(),
                 "0 2 * * *", tz);
+
+            RecurringJob.AddOrUpdate<Jobs.IActualizarLegajoImpositivoJob>(
+                "ActualizarLegajoImpositivoJob",
+                j => j.Execute(),
+                "0 6,13,18 * * *", tz);
         }
     }
 

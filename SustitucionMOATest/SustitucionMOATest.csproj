@@ -149,6 +149,7 @@
     <Compile Include="Controllers\UsuarioControllerTest.cs" />
     <Compile Include="DeployParameters\EndpointTests.cs" />
     <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJobTests.cs" />
+    <Compile Include="Jobs\ActualizarLegajoImpositivoJobTests.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesPartidosJobTest.cs" />
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJobTests.cs" />
     <Compile Include="Jobs\NotificacionErroresJobTests.cs" />

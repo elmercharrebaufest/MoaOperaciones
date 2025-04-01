@@ -112,6 +112,7 @@ namespace SustitucionMOA.App_Start
 
             kernel.Bind<INotificacionErroresJob>().To(typeof(NotificacionErroresJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEliminarFacturasAntiguasJob>().To(typeof(EliminarFacturasAntiguasJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IActualizarLegajoImpositivoJob>().To(typeof(ActualizarLegajoImpositivoJob)).InScope(ctx => OperationContext.Current);
 
 
             #region Registro

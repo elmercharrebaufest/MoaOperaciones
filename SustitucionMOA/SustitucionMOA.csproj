@@ -1403,6 +1403,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJob.cs" />
+    <Compile Include="Jobs\ActualizarLegajoImpositivoJob.cs" />
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesPartidosJob.cs" />
     <Compile Include="Jobs\ActualizarSISAJob.cs" />

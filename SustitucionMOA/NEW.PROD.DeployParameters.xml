@@ -7,8 +7,9 @@
   <setParameter name="HfContexto-Web.config Connection String" value="data source=MOAOPAGLSPRD;User Id=MOAOPPRDUSR;Password=17E9438901;Initial Catalog=MOAOperacionesHangfire;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
 
   <setParameter name="PasswordSapEnc Config" value="/ZeEum06O947GGBswhXnAw==" />
+  <setParameter name="Script_legajo_impositivo Config" value="C:\Script\Copy_legajo_impositivo.bat" />
 
-	<setParameter name="DataAgroURL Config" value="https://www.dataagro.com.ar/" />
+  <setParameter name="DataAgroURL Config" value="https://www.dataagro.com.ar/" />
   <setParameter name="DataAgroURL Config" value="https://www.dataagro.com.ar/" />
 
   <setParameter name="EsLocal Config" value="false" />
