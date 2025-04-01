@@ -384,6 +384,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
                 solpEntity.CertificacionAutomatica = solp.CertificacionAutomatica;
                 solpEntity.CondEspProveedorAsignado = solp.CondEspProveedorAsignado;
+                solpEntity.ConPresupuesto = solp.ConPresupuesto;
                 solpEntity.Adicional = solp.Adicional;
                 solpEntity.Urgencia = solp.Urgencia;
                 solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
