@@ -172,7 +172,11 @@ export class FacturaComponent extends ListBaseComponent {
         if (certificacion != undefined) {
             let certificacionAgregada = this.certificacionesAgregadas.find(certificacionAgregada => certificacionAgregada.NRO_Certificacion == NRO_Certificacion);
             if (certificacionAgregada == undefined) {
-                // Insertar certificacion pero sin el campo de "isDIsabled"
+                // Verificar si la certificación ya fue registrada con uno o más archivos
+                if (certificacion.Archivo!= null && certificacion.Archivo.length > 0) {
+                    // Notificar en UI que la certificación ya fue registrada con uno o más archivos
+                    this.floatMsgService.setInfoMsg("Advertencia: La certificación seleccionada ya está vinculada a otra factura");
+                }
                 let certificacionDto = {
                     NombreDeArchivo: certificacion.NombreDeArchivo,
                     NRO_OC: certificacion.NRO_OC,
