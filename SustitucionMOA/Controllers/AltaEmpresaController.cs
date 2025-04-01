@@ -48,15 +48,7 @@ namespace SustitucionMOA.Controllers
             }
 
             var empresas = altaEmpresaService.GetEmpresas(idTiposProveedor, fechaInicio, fechaFin);
-            //MP: Comento esta parte, ya que esto ahora lo formateamos en el service. Ademas, esto generaba que se rompan algunos filtros
-            //foreach (var item in empresas)
-            //{
-            //    item.EstadoAprobacionDescripcion = AddSpacesToSentence(item.EstadoAprobacionDescripcion);
-            //    foreach (var item2 in item.HistorialAprobaciones)
-            //    {
-            //        item2.EstadoAprobacionDescripcion = AddSpacesToSentence(item2.EstadoAprobacionDescripcion);
-            //    }
-            //}
+
             return JsonCustom(new { data = empresas });
 
         }
