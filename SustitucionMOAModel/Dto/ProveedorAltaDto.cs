@@ -55,5 +55,6 @@ namespace SustitucionMOAModel.Dto
         public bool? SiperObligatorio { get; set; }
 
         public bool? ContieneDocumentacionFisica { get; set; }
+        public string TipoProveedorNombre { get; set; }
     }
 }

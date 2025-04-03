@@ -77,6 +77,7 @@ namespace SustitucionMOAUtils.Services
                             EstadoAprobacion = proveedor.EstadoAprobacion,
                             Id = proveedor.Id,
                             IdComercialDataAgro = proveedor.IdComercialDataAgro,
+                            TipoProveedorNombre = proveedor.TipoProveedor.Nombre,
                             IdDataAgro = proveedor.IdDataAgro,
                             Mail = proveedor.Mail ?? "",
                             Observaciones = proveedor.Observaciones,
