@@ -249,16 +249,11 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 pliegoEntity.Multiple = true;
-                pliegoEntity.NombreObra = solp.NombreDeObra;
             }
 
             pliegoEntity = GuardarEspecificacionesTecnicasPliego(solp, rutaArchivos, pliegoEntity);
             if (!esPliegoMultiple)
             {
-                if (solp.NombreDeObra != null && !pliegoEntity.NombreObra.Contains('+'))
-                {
-                    pliegoEntity.NombreObra = solp.NombreDeObra;
-                }
                 solp = GuardarAdjuntosSolp(solp, adjuntos, pliegoEntity);
             }
 
@@ -392,6 +387,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.THAjustePolinomica = solp.THAjustePolinomica;
                 solpEntity.THProveedorDirecto = solp.THProveedorDirecto;
                 solpEntity.THServicioPermanente = solp.THServicioPermanente;
+                solpEntity.Pliego.NombreObra = solp.NombreDeObra;
 
                 solpEntity.EnvioCircularA = EnviarCircularEnum.NoEnviar; /* el se marca con el valor definitivo en GuardarEnvioCircularProveedor
                                                                                * (llamar desde el front)
