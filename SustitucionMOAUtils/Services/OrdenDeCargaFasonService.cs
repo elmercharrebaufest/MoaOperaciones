@@ -28,7 +28,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IEnumerable<string> codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
         private readonly IEmailFasonService emailFasonService;
         private readonly IRepositorioOrdenDeCargaFason repositorioFason;
-        private readonly IUbicacionGeograficaService ubicacionGeograficaService;
 
         protected readonly List<EstadoOrdenDeCargaFason> estadosParaNoNotificarChasisRepetido = new List<EstadoOrdenDeCargaFason>
         {
@@ -46,11 +45,10 @@ namespace SustitucionMOAUtils.Services
             IEmailFasonService emailFasonService,
             IFeriadoService feriadoService,
             IUbicacionGeograficaService ubicacionGeograficaService
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorioFason, cNRTClient, feriadoService)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorioFason, cNRTClient, feriadoService, ubicacionGeograficaService)
         {
             this.emailFasonService = emailFasonService;
             this.repositorioFason = repositorioFason;
-            this.ubicacionGeograficaService = ubicacionGeograficaService;
         }
 
         public ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request)
@@ -771,16 +769,6 @@ namespace SustitucionMOAUtils.Services
                 KmARecorrer = orden.KmARecorrer
             };
             return orden.Compare(ordenEditada);
-        }
-
-        private int? ObtenerDistanciaARecorrer(string domicilioDescripcion)
-        {
-            if (string.IsNullOrEmpty(domicilioDescripcion))
-            {
-                return null;
-            }
-            var distanciaDomicilio = ubicacionGeograficaService.ObtenerDistanciaDePlantaMoaADestino(domicilioDescripcion);
-            return distanciaDomicilio?.DistanciaKm;
         }
 
         private ScatoWS.KmPorProveedorDto ObtenerLocalidadDeLaOrden(CrearOrdenDeCargaFasonRequest request, Material producto)

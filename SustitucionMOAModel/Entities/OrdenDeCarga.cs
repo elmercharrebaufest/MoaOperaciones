@@ -30,8 +30,6 @@ namespace SustitucionMOAModel.Entities
 
         public string RazonSocialTransporte { get; set; }
 
-        //public string Producto { get; set; }
-
         public int Producto_Id { get; set; }
 
         [ForeignKey("Producto_Id")]
@@ -111,6 +109,8 @@ namespace SustitucionMOAModel.Entities
         public bool? DestinoExisteScato { get; set; }
         public string DestinoMercaderia { get; set; }
         public bool? FleteMOA { get; set; }
+
+        public int? KmsARecorrer { get; set; }
 
         public bool TieneCodigoSap(ControlCargaResEnum controlCargaRes)
         {

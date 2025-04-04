@@ -21,7 +21,6 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IRepositorioOrdenResiduos repositorioResiduos;
         private readonly IEmailResiduosService emailResiduosService;
-        private readonly IUbicacionGeograficaService ubicacionGeograficaService;
 
         public OrdenResiduosService(
             IOrdenCargaConsumerMOA ordenCargaConsumer,
@@ -32,11 +31,10 @@ namespace SustitucionMOAUtils.Services
             IFeriadoService feriadoService,
             IEmailResiduosService emailResiduosService,
             IUbicacionGeograficaService ubicacionGeograficaService
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorioResiduos, cNRTClient, feriadoService)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorioResiduos, cNRTClient, feriadoService, ubicacionGeograficaService)
         {
             this.repositorioResiduos = repositorioResiduos;
             this.emailResiduosService = emailResiduosService;
-            this.ubicacionGeograficaService = ubicacionGeograficaService;
         }
 
         public List<SustitucionMOAModel.Dto.ProveedorDto> ObtenerClientes()
@@ -372,16 +370,6 @@ namespace SustitucionMOAUtils.Services
                 var distanciaARecorrer = ObtenerDistanciaARecorrer(ordenDto.Domicilio.Descripcion);
                 ordenDto.DestinoMercaderia.KmsARecorrer = distanciaARecorrer.HasValue ? distanciaARecorrer.ToString() : null;
             }
-        }
-
-        private int? ObtenerDistanciaARecorrer(string domicilioDescripcion)
-        {
-            if (string.IsNullOrEmpty(domicilioDescripcion))
-            {
-                return null;
-            }
-            var distanciaDomicilio = ubicacionGeograficaService.ObtenerDistanciaDePlantaMoaADestino(domicilioDescripcion);
-            return distanciaDomicilio?.DistanciaKm;
         }
     }
 }

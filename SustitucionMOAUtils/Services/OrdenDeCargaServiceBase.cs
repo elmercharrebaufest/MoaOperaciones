@@ -27,6 +27,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IFeriadoService feriadoService;
         protected readonly IRepositorio repositorio;
         protected readonly ICNRTClient cNRTClient;
+        private readonly IUbicacionGeograficaService ubicacionGeograficaService;
 
         protected OrdenDeCargaServiceBase(
             IOrdenCargaConsumerMOA ordenCargaConsumer,
@@ -34,7 +35,8 @@ namespace SustitucionMOAUtils.Services
             IScatoRepositorioClient scatoRepositorioClient,
             IRepositorio repositorio,
             ICNRTClient cNRTClient,
-            IFeriadoService feriadoService
+            IFeriadoService feriadoService,
+            IUbicacionGeograficaService ubicacionGeograficaService
             )
         {
             this.scatoConsumer = scatoConsumer;
@@ -43,6 +45,7 @@ namespace SustitucionMOAUtils.Services
             this.repositorio = repositorio;
             this.cNRTClient = cNRTClient;
             this.feriadoService = feriadoService;
+            this.ubicacionGeograficaService = ubicacionGeograficaService;
         }
 
         public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
@@ -323,6 +326,16 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException($"CUIT {cuit} no tiene el formato correcto.");
             }
             return scatoConsumer.BuscarDestinos(cuit);
+        }
+
+        protected int? ObtenerDistanciaARecorrer(string domicilioDescripcion)
+        {
+            if (string.IsNullOrEmpty(domicilioDescripcion))
+            {
+                return null;
+            }
+            var distanciaDomicilio = ubicacionGeograficaService.ObtenerDistanciaDePlantaMoaADestino(domicilioDescripcion);
+            return distanciaDomicilio?.DistanciaKm;
         }
 
         private (bool, ScatoRepo.Chofer) ValidarCuitTransporte(string cuitTransporte)
