@@ -272,4 +272,11 @@ export class Generacion2Component extends ListBaseComponent {
             }
         }
     }
+
+    public get responsableTrabajoDisabled() {
+        if (this.model.tipoSolp === 'SIN_PLIEGO') { return false; }
+        if (this.model.tipoSolp === 'PLIEGO_MULTIPLE') { return false; }
+
+        return true;
+    }
 }

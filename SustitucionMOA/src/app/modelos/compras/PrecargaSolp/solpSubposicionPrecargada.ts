@@ -6,6 +6,7 @@ export interface SolpSubposicionPrecargada {
     Tarea: string;
     Codigo: string;
     Cantidad: number;
+    Precio: number;
     UnidadId: number;
     CuentaMayor: TablaSap;
     Imputacion: TablaSap;

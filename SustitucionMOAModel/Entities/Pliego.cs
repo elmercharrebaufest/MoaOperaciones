@@ -43,6 +43,9 @@ namespace SustitucionMOAModel.Entities
         public DateTime? FechaModificacion { get; set; }
 
         public int? Usuario_Id { get; set; }
+
+        public bool MultipleFinalizado { get; set; }
+
         [ForeignKey(nameof(Usuario_Id))]
         public virtual Usuario Usuario { get; set; }
 
@@ -52,5 +55,7 @@ namespace SustitucionMOAModel.Entities
         public virtual ICollection<Archivo> Archivos { get; set; }
         public bool? RequisitoCiberseguridad { get; set; }
 
+        [InverseProperty(nameof(Solp.Pliego))]
+        public virtual ICollection<Solp> Solps { get; set; }
     }
 }

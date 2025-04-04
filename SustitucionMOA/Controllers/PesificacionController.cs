@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class PesificacionController : BaseController
     {
         private readonly IPesificacionService pesificacionService;
@@ -48,7 +49,7 @@ namespace SustitucionMOA.Controllers
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.PESIFICACION)]
         public ActionResult SetComprobante(string contrato)
         {
-            Log.Info($"{System.Web.HttpContext.Current.Request.UserHostAddress}, {SessionPersister.getUsername()}, {this.GetType().Name}, {System.Reflection.MethodBase.GetCurrentMethod().Name}, SetComprobante(string contrato)  {contrato ?? "null"})");
+            Log.Info($"{System.Web.HttpContext.Current.Request.UserHostAddress}, {SessionPersister.Mail}, {this.GetType().Name}, {System.Reflection.MethodBase.GetCurrentMethod().Name}, SetComprobante(string contrato)  {contrato ?? "null"})");
             var contratoJson = JsonConvert.DeserializeObject<ContratoContenido>(contrato);
 
             //registro MOAOperaciones el alta de una pesificacion
@@ -102,7 +103,7 @@ namespace SustitucionMOA.Controllers
 
         private UsuarioDto ObtenerUsuarioActual()
         {
-            string userMail = SessionPersister.getUsername();
+            string userMail = SessionPersister.Mail;
             return usuarioService.GetUsuario(userMail);
         }
 

@@ -1,10 +1,6 @@
-﻿using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
+﻿using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -20,7 +16,7 @@ namespace SustitucionMOAModel.Dto
 
         public int? IdDataAgro { get; set; }
         public int? IdComercialDataAgro { get; set; }
-        public string EstadoAprobacionDescripcion { get; set; }
+        public string EstadoAprobacionDescripcion { get { return this.EstadoAprobacion.ToFriendlyString(); } }
 
         public virtual List<ProveedorHistorialAprobacionDto> HistorialAprobaciones { get; set; }
         public string Comercial { get; set; }
@@ -52,12 +48,13 @@ namespace SustitucionMOAModel.Dto
         public string Rubro { get; set; }
         public bool? RequiereVerificacionCompras { get; set; }
         public int? IdSituacionIVA { get; set; }
-        public string SituacionIVA { get; set; }
+        public string SituacionIVA { get { return ((SituacionIVA)(this.IdSituacionIVA ?? 0)).ToFriendlyString(); } }
         public int? IdIngresoBruto { get; set; }
-        public string IngresoBruto { get; set; }
+        public string IngresoBruto { get { return ((IngresosBrutos)(this.IdIngresoBruto ?? 0)).ToFriendlyString(); } }
         public string CBU { get; set; }
         public bool? SiperObligatorio { get; set; }
 
         public bool? ContieneDocumentacionFisica { get; set; }
+        public string TipoProveedorNombre { get; set; }
     }
 }

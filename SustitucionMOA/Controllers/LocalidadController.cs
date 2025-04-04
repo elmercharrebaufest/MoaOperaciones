@@ -1,13 +1,9 @@
 ﻿using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAWS.ScatoWebService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class LocalidadController : Controller
     {
         private readonly ILocalidadService localidadServices;

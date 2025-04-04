@@ -117,10 +117,8 @@
                                 <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
                                     Codigo<div>
                                         <span>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection > 0 }"></i>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection < 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection < 0 }"></i>
                                         </span>
                                     </div>
                                 </th>
@@ -128,10 +126,17 @@
                                     CUIT
                                     <div>
                                         <span>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection > 0 }"></i>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection < 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('TipoProveedorNombre')">
+                                    Tipo
+                                    <div>
+                                        <span>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'TipoProveedorNombre' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'TipoProveedorNombre' && orderDirection < 0 }"></i>
                                         </span>
                                     </div>
                                 </th>
@@ -139,10 +144,8 @@
                                     Razon Social
                                     <div>
                                         <span>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection > 0 }"></i>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection < 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection < 0 }"></i>
                                         </span>
                                     </div>
                                 </th>
@@ -150,10 +153,8 @@
                                     Corredor
                                     <div>
                                         <span>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocialCorredor' && orderDirection > 0 }"></i>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocialCorredor' && orderDirection < 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocialCorredor' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocialCorredor' && orderDirection < 0 }"></i>
                                         </span>
                                     </div>
                                 </th>
@@ -161,10 +162,8 @@
                                     Comercial
                                     <div>
                                         <span>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection > 0 }"></i>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection < 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection < 0 }"></i>
                                         </span>
                                     </div>
                                 </th>
@@ -172,10 +171,8 @@
                                     SISA
                                     <div>
                                         <span>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'SISAEstadoCuit' && orderDirection > 0 }"></i>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'SISAEstadoCuit' && orderDirection < 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'SISAEstadoCuit' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'SISAEstadoCuit' && orderDirection < 0 }"></i>
                                         </span>
                                     </div>
                                 </th>
@@ -183,10 +180,8 @@
                                     Estado Siper
                                     <div>
                                         <span>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection > 0 }"></i>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection < 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection < 0 }"></i>
                                         </span>
                                     </div>
                                 </th>
@@ -194,10 +189,8 @@
                                     Ultima Edición
                                     <div>
                                         <span>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection > 0 }"></i>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection < 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection < 0 }"></i>
                                         </span>
                                     </div>
                                 </th>
@@ -205,10 +198,8 @@
                                     Fecha Solicitud
                                     <div>
                                         <span>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaSolicitud' && orderDirection > 0 }"></i>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaSolicitud' && orderDirection < 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaSolicitud' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaSolicitud' && orderDirection < 0 }"></i>
                                         </span>
                                     </div>
                                 </th>
@@ -217,10 +208,8 @@
                                     Estado
                                     <div>
                                         <span>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection > 0 }"></i>
-                                            <i
-                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection < 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection < 0 }"></i>
                                         </span>
                                     </div>
                                 </th>
@@ -239,82 +228,84 @@
                                 tabindex="0">
                                 <td>{{empresa.CodigoProveedor || "-"}}</td>
                                 <td>{{empresa.CUIT}}</td>
+                                <td>{{empresa.TipoProveedorNombre || "-"}}</td>
                                 <td>{{empresa.RazonSocial || "-"}}</td>
                                 <td>{{empresa.RazonSocialCorredor || "-"}}</td>
                                 <td>{{empresa.Comercial || "-"}}</td>
                                 <td>{{empresa.SISAEstadoCuit || "-"}}</td>
                                 <td>{{empresa.EstadoSIPER || "-"}}</td>
                                 <td>
-                                    {{ empresa.UltimaEdicion ? (empresa.UltimaEdicion.slice(6,-2) | date: 'dd/MM/yyyy')
+                                    {{
+ empresa.UltimaEdicion ? (empresa.UltimaEdicion.slice(6,-2) | date: 'dd/MM/yyyy')
                                     : ""
                                     }}
                                 </td>
                                 <td>
-                                    {{ empresa.FechaSolicitud ? (empresa.FechaSolicitud.slice(6,-2) | date:
+                                    {{
+ empresa.FechaSolicitud ? (empresa.FechaSolicitud.slice(6,-2) | date:
                                     'dd/MM/yyyy') :
-                                    "" }}
+                                    ""
+                                    }}
                                 </td>
 
                                 <td>{{empresa.EstadoAprobacionDescripcion}}</td>
                                 <td class="acciones">
                                     <a (click)="copiar(empresa.Mail,empresa.Id)" id="h{{empresa.Id}}"
-                                        data-toggle="popover" data-trigger="focus" data-placement="top"
-                                        title="{{empresa.Mail}}" data-html="true"
-                                        data-content="Mail Copiado al portapapeles">
+                                       data-toggle="popover" data-trigger="focus" data-placement="top"
+                                       title="{{empresa.Mail}}" data-html="true"
+                                       data-content="Mail Copiado al portapapeles">
                                         <span title="Copiar correo del proveedor" class="fa fa-envelope"
-                                            style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
+                                              style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
                                     </a>
                                     <a id="p{{empresa.Id}}" *ngIf="empresa.EstadoAprobacion == 15 && esAdmin"
-                                        (click)="confirmarBorrarAlta(empresa.Id, empresa.Mail)" data-toggle="popover"
-                                        data-trigger="focus" data-placement="top" title="{{empresa.Mail}}"
-                                        data-html="true">
+                                       (click)="confirmarBorrarAlta(empresa.Id, empresa.Mail)" data-toggle="popover"
+                                       data-trigger="focus" data-placement="top" title="{{empresa.Mail}}"
+                                       data-html="true">
                                         <span title="Eliminar proveedor del sistema" class="fa fa-trash"
-                                            style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
+                                              style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
                                     </a>
-                                    <button
-                                        *ngIf="empresa.EstadoAprobacion != 3 && empresa.EstadoAprobacion != 11  && empresa.EstadoAprobacion != 15"
-                                        type="button" style="width: 70px;font-size: 12px;"
-                                        class="btn-custom btn-add btn-chico" (click)="abrirModal(empresa)">
+                                    <button *ngIf="empresa.EstadoAprobacion != 3 && empresa.EstadoAprobacion != 11  && empresa.EstadoAprobacion != 15"
+                                            type="button" style="width: 70px;font-size: 12px;"
+                                            class="btn-custom btn-add btn-chico" (click)="abrirModal(empresa)">
                                         Ver
                                     </button>
                                     <button type="button" style="display:none" id="openModalHiddenButton"
-                                        data-toggle="modal" data-target="#myModal"></button>
+                                            data-toggle="modal" data-target="#myModal"></button>
                                     <button type="button" style="display:none" id="openModalVieneOperando"
-                                        data-toggle="modal" data-target="#ModalVieneOperando"></button>
+                                            data-toggle="modal" data-target="#ModalVieneOperando"></button>
 
                                     <button type="button"
-                                        *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario === 3 && empresa.AltaInterna && puedeAltaInternaNoGranos"
-                                        class="btn-custom btn-add btn-chico" (click)="altaInterna(empresa)">
+                                            *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario === 3 && empresa.AltaInterna && puedeAltaInternaNoGranos"
+                                            class="btn-custom btn-add btn-chico" (click)="altaInterna(empresa)">
                                         Alta interna
                                     </button>
 
                                     <button type="button"
-                                        *ngIf="empresa.EstadoAprobacion === 15 && empresa.IdTipoUsuario === 3"
-                                        class="btn-custom btn-add btn-chico" (click)="completarAlta(empresa)">
+                                            *ngIf="empresa.EstadoAprobacion === 15 && empresa.IdTipoUsuario === 3"
+                                            class="btn-custom btn-add btn-chico" (click)="completarAlta(empresa)">
                                         Completar Alta
                                     </button>
 
 
                                     <button *ngIf="empresa.EstadoAprobacion === 3 || empresa.EstadoAprobacion === 11"
-                                        type="button" style="width: 70px;font-size: 12px;"
-                                        class="btn-custom btn-add btn-chico" (click)="VerificarEstadoDataAgro(empresa)">
+                                            type="button" style="width: 70px;font-size: 12px;"
+                                            class="btn-custom btn-add btn-chico" (click)="VerificarEstadoDataAgro(empresa)">
                                         Verificar DataAgro
                                     </button>
 
-                                    <button
-                                        *ngIf="empresa.EstadoAprobacion === 15  && isAuthorized('ALTA EMPRESA NO GRANOS') && empresa.IdTipoUsuario === 3"
-                                        type="button" style="width: 70px;font-size: 12px;"
-                                        class="btn-custom btn-add btn-chico"
-                                        (click)="AbrilModalYaVenianOperando(empresa)">
+                                    <button *ngIf="empresa.EstadoAprobacion === 15  && isAuthorized('ALTA EMPRESA NO GRANOS') && empresa.IdTipoUsuario === 3"
+                                            type="button" style="width: 70px;font-size: 12px;"
+                                            class="btn-custom btn-add btn-chico"
+                                            (click)="AbrilModalYaVenianOperando(empresa)">
                                         Validar usuario
                                     </button>
 
                                     <!-- Alta interna Granos-->
                                     <!--Comento está opción que la vamos a dejar para mejorarla en el próximo sprint-->
                                     <button type="button"
-                                        *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario != 3 && puedeAltaInterna && (isAuthorized('NOTIFICAR ALTA INTERNA GRANOS') || isAuthorized('ABM EMPRESAS')) && empresa.AltaInterna"
-                                        class="btn-custom btn-add btn-chico"
-                                        (click)="goToSeccionParam('/alta-empresa-granos',  empresa.Id)">
+                                            *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario != 3 && puedeAltaInterna && (isAuthorized('NOTIFICAR ALTA INTERNA GRANOS') || isAuthorized('ABM EMPRESAS')) && empresa.AltaInterna"
+                                            class="btn-custom btn-add btn-chico"
+                                            (click)="goToSeccionParam('/alta-empresa-granos',  empresa.Id)">
                                         Alta Interna
                                     </button>
                                     <!-- Fin Granos-->

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
+import { Component, Input, OnInit, Output, EventEmitter, ViewChild, ElementRef } from "@angular/core";
 import { ComprasService } from "../../../../compras.service";
 import { SessionDataService } from "../../../../../common/services/SessionDataService";
 import { SolpPosicionPrecargada } from "../../../../../modelos/compras/PrecargaSolp/solpPosicionPrecargada";
@@ -8,6 +8,7 @@ import { SolpPosicionPrecargada } from "../../../../../modelos/compras/PrecargaS
     templateUrl: './precarga-solp-archivo.component.html'
 })
 export class PrecargaSolpArchivoComponent implements OnInit {
+    @ViewChild('fileInput') fileInput!: ElementRef;
 
     @Input()
     displayPrecargaSolp: boolean;
@@ -36,7 +37,11 @@ export class PrecargaSolpArchivoComponent implements OnInit {
         // this.displayPrecargaSolp = false;
         this.cerrarPrecargaEmitter.next();
     }
-
+    resetearArchivo() {
+        if (this.fileInput) {
+            this.fileInput.nativeElement.value = '';
+        }
+    }
     onArchivoCargado(event: any) {
         this.limpiarDatos();
         let archivos: FileList = event.target.files;

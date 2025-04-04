@@ -35,6 +35,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     {
                                         Urgencia = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia,
                                         TrabajoYaHecho = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho,
+                                        ConPresupuesto = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto,
+                                        CertificacionAutomatica = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.CertificacionAutomatica,
                                         Adicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Adicional,
                                         CondEspProveedorAsignado = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.CondEspProveedorAsignado,
                                         ObservacionesCotizacionLista =
@@ -61,6 +63,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Adicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Adicional,
                                     Urgencia = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia,
                                     TrabajoHecho = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho,
+                                    ConPresupuesto = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto,
                                     NroOrdenDeCompraAdicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.NroOrdenDeCompraAdicional,
                                     EstaLiberado = po.Posiciones.Select(x => x.SolpPosicion.Solp).All(solp => solp.EstadoSolpSap.CodigoSap == "05" || solp.EstadoSolpSap.CodigoSap == "02"),
                                     RevisionFinalizada = po.RevisionTecnica == null ? false : po.RevisionTecnica.Finalizada,
@@ -133,7 +136,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 join cotizacion in contexto.Set<Cotizacion>() on u.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
                                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
                                                 where po.Id == u.PeticionDeOferta_Id
-                                                select new PeticionDeOfertaUsarioDto()
+                                                select new PeticionDeOfertaUsuarioDto()
                                                 {
                                                     Id = u.Id,
                                                     VisibleSolicitante = u.VisibleSolicitante == true,
@@ -145,11 +148,48 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                                                     RealizoVisita = u.RealizoVisita,
                                                     THCategoria = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.THProveedorDirecto == true ? "Proveedor directo" : (po.Posiciones.FirstOrDefault().SolpPosicion.Solp.THAjustePolinomica == true ? "Ajuste polinómica" : "Servicio permanente"),
-                                                    EstadoVisita = u.RealizoVisita == true ? "Realizada" : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true || po.Posiciones.Select(posi => posi.SolpPosicion.Solp.Pliego).All(pliego => pliego.TieneVisitaObraMasiva != true) ? "No requerida" : "Sin realizar",
-                                                    EstadoVisitaColor = u.RealizoVisita == true ? "Green" : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true || po.Posiciones.Select(posi => posi.SolpPosicion.Solp.Pliego).All(pliego => pliego.TieneVisitaObraMasiva != true) ? "Green" : "Red",
-                                                    EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null && po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true ? "Sin analizar" : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true ? "Trabajo ya hecho" : (u.PropuestaTecnicaAprobada == true && po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true ? "Aprobada" : "Rechazada"),
+                                                    EstadoVisita =
+                                                        u.RealizoVisita == true
+                                                            ? "Realizada"
+                                                            :
+                                                                po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true ||
+                                                                po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto ||
+                                                                po.Posiciones.Select(posi => posi.SolpPosicion.Solp.Pliego).All(pliego => pliego.TieneVisitaObraMasiva != true)
+                                                                    ? "No requerida"
+                                                                    : "Sin realizar",
+                                                    EstadoVisitaColor =
+                                                        u.RealizoVisita == true ||
+                                                        po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true ||
+                                                        po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto ||
+                                                        po.Posiciones.Select(posi => posi.SolpPosicion.Solp.Pliego).All(pliego => pliego.TieneVisitaObraMasiva != true)
+                                                            ? "Green"
+                                                            : "Red",
+                                                    EstadoPropuestaTecnica =
+                                                        u.PropuestaTecnicaAprobada == null &&
+                                                        po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true &&
+                                                        !po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto
+                                                            ? "Sin analizar"
+                                                            : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true
+                                                                ? "Trabajo ya hecho"
+                                                                : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto
+                                                                    ? "Con presupuesto"
+                                                                    :
+                                                                        (u.PropuestaTecnicaAprobada == true &&
+                                                                        po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true
+                                                                            ? "Aprobada"
+                                                                            : "Rechazada"),
                                                     ObservacionNoCumple = u.ObservacionNoCumple,
-                                                    EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null && po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true ? "Orange" : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true ? "Green" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
+                                                    EstadoPropuestaTecnicaColor =
+                                                        u.PropuestaTecnicaAprobada == null &&
+                                                        po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true &&
+                                                        !po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto
+                                                            ? "Orange"
+                                                            :
+                                                                po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true ||
+                                                                po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto ||
+                                                                u.PropuestaTecnicaAprobada == true
+                                                                    ? "Green"
+                                                                    : "Red",
 
                                                     //PlazoDeOferta = u.Circulares.Any(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue) ?
                                                     //u.Circulares.Where(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue)
@@ -255,9 +295,12 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         TieneAdjuntos = cotizacion.Archivos.Any(),
                                                         Adjudicaciones = cotizacion.Adjudicaciones.Select(a => new AdjudicacionDto
                                                         {
+                                                            AdmiteCertificacionesParciales = a.AdmiteCertificacionesParciales,
                                                             CondicionesDeEntrega = a.CondicionesDeEntrega,
                                                             CondicionesDePago = a.CondicionesDePago,
                                                             Garantias = a.Garantias,
+                                                            NumeroOrdenDeCompra = a.NumeroOrdenDeCompra,
+                                                            RegionSap = a.RegionSap_Id,
                                                             TextoDeCabecera = a.TextoDeCabecera
                                                         }).ToList(),
                                                     } : null,

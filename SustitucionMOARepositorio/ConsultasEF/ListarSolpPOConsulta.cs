@@ -99,7 +99,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
 
                                     AdjuntoPliego = peticionDeOfertaUsuario.PeticionDeOferta.AdjuntoPliego,
 
-                                    Usuarios = new List<PeticionDeOfertaUsarioDto> { new PeticionDeOfertaUsarioDto {
+                                    Usuarios = new List<PeticionDeOfertaUsuarioDto> { new PeticionDeOfertaUsuarioDto {
                                         Id = peticionDeOfertaUsuario.Id,
                                         PropuestaTecnicaAprobada = peticionDeOfertaUsuario.PropuestaTecnicaAprobada,
                                         RealizoVisita = peticionDeOfertaUsuario.RealizoVisita,

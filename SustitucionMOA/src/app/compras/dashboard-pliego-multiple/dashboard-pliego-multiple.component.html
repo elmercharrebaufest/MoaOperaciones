@@ -1,0 +1,73 @@
+<div class="row titleSection" style="margin-bottom: 10px;">
+    <div class="col-xs-12 col-sm-10 ">
+        <strong>Pliegos Múltiples Generados</strong>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-3">
+        <input class="inputAltura"
+               pInputText
+               [(ngModel)]="nombrePliego"
+               placeholder="Buscar Pliego por Nombre"
+               style="-webkit-appearance: textfield; -moz-appearance: textfield; width:100%"
+               (keyup)="onSearchkeyPress()" />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-3">
+        <button pButton
+                class="btn-nuevoPliego"
+                type="button"
+                label="Crear Nuevo Pliego"
+                (click)="goToSeccion('/compras/solp/0/PLIEGO_MULTIPLE')">
+        </button>
+    </div>
+</div>
+
+<spinner></spinner>
+
+<div class="" *ngIf="cargaCompleta">
+    <section class="container-fluid clearfix">
+        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="pliegos" dataKey="Id" [autoLayout]="true">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th class="columna">Compras</th>
+                    <th class="columna">Nombre Pliego</th>
+                    <th class="columna">Fecha Creación</th>
+                    <th class="columna">Fecha Última Modificación</th>
+                    <th class="columna">SOLPs Asociadas</th>
+                    <th class="columna">Estado</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-pliego>
+                <tr>
+                    <td>
+                        <span style="cursor:pointer !important;" class="rowButtons fa fa-copy" pTooltip="Copiar Pliego" (click)="copiarPliego(pliego.Id)"></span>
+                        <span style="cursor:pointer !important;" class="rowButtons fa fa-trash" pTooltip="Eliminar Pliego" (click)="eliminarPliego(pliego.Id)"></span>
+                        <span style="cursor:pointer !important;" class="rowButtons fa fa-edit" pTooltip="Modificar Pliego" (click)="editarPliego(pliego.Id)"></span>
+                        <span style="cursor:pointer !important;" class="rowButtons fa fa-download" pTooltip="Descargar Pliego" (click)="generarZipPliego(pliego.Id)"></span>
+                    </td>
+                    <td>{{ pliego.NombreObra }}</td>
+                    <td>{{ pliego.FechaAlta | customDateFormat | date :'d/M/yyyy' }}</td>
+                    <td>{{ pliego.FechaModificacion | customDateFormat | date :'d/M/yyyy' }}</td>
+                    <td>{{ pliego.Solps | join:', ' }}</td>
+                    <td>{{ pliego.MultipleFinalizado? 'Finalizado':'En Gestión'}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </section>
+</div>
+
+
+<p-confirmDialog #dialogo key="eliminarPliego" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"
+                 appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal"
+                (click)="dialogo.reject()"></button>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
+                (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>

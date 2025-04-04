@@ -1,31 +1,21 @@
-﻿using Microsoft.Ajax.Utilities;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOARepositorio;
-using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using HttpPostAttribute = System.Web.Mvc.HttpPostAttribute;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class AltaEmpresaNoGranosController : BaseController
     {
         protected readonly IRepositorio repositorio;
@@ -218,8 +208,8 @@ namespace SustitucionMOA.Controllers
                 Telefono = proveedor.Telefono,
                 Mail = proveedor.Mail ?? "",
                 CUIT = proveedor.CUIT,
-                IngresoBruto = ((IngresosBrutos)(proveedor.IdIngresoBruto ?? 0)).ToFriendlyString(),
-                SituacionIVA = ((SituacionIVA)(proveedor.IdSituacionIVA ?? 0)).ToFriendlyString(),
+                IdIngresoBruto = proveedor.IdIngresoBruto,
+                IdSituacionIVA = proveedor.IdSituacionIVA,
                 Observaciones = proveedor.Observaciones,
                 CBU = proveedor.CBU,
                 Rubro = proveedor.Rubro != null ? proveedor.Rubro.Nombre : "",

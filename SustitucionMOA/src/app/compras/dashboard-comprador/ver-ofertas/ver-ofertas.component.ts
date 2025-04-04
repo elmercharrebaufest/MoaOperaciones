@@ -62,6 +62,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     ordenDeCompra: AdjudicacionDto;
     nroOC: string;
     displayValidacionMoneda: boolean = false;
+    displayAdmiteCertificacionesParciales: boolean = false;
 
     @Input()
     public peticionHs: CotizacionHoraDto;
@@ -131,12 +132,17 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         if (this.adjudicacion == null || this.adjudicacion == undefined) {
             this.adjudicacion = {
                 Id: undefined,
+                AdmiteCertificacionesParciales: true
             };
         }
     }
 
     ngAfterViewInit(): void {
         this.getCombos();
+    }
+
+    esTipoSolpMateriales(): boolean {
+        return this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES';
     }
 
     seleccionarTodo() {
@@ -162,7 +168,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.blockUI.start('Cargando...');
             this.subscription = this.service.getListarOfertasComprador(peticionOferta_Id).subscribe(
                 (result) => {
-                    let peticionDto: PeticionDeOfertaDto = this.manejarErroresApiResponse(result);
+                    let peticionDto = this.manejarErroresApiResponse(result);
                     if (peticionDto) {
                         this.tablaOfertas = peticionDto;
                         if (peticionDto.NrosSolp && peticionDto.NrosSolp.length > 1) {
@@ -279,6 +285,35 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayPanelHs = false;
     }
 
+    guardarCertificacionesParciales() {
+        let adjudicaciones: AdjudicacionDto[] = [];
+        if (this.tablaOfertas.Usuarios) {
+            this.tablaOfertas.Usuarios.forEach((poUsuario, i, arr) => {
+                if (poUsuario.Cotizacion && poUsuario.Cotizacion.Adjudicaciones) {
+                    adjudicaciones.push(...poUsuario.Cotizacion.Adjudicaciones);
+                }
+            });
+        }
+
+        try {
+            this.blockUI.start();
+            this.subscription = this.service.GuardarCertificacionesParciales(adjudicaciones).subscribe(
+                (result) => {
+                    this.manejarErroresApiResponse(result);
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            );
+        }
+        catch (err) {
+            this.floatMsgService.setErrorMsg(err);
+            this.blockUI.stop();
+        }
+    }
+
     crearAdjudicacion(usuario: PeticionDeOfertaUsarioDto) {
         this.lista = []
         this.usuario = usuario;
@@ -293,19 +328,17 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                                 Posicion: peticion.Posicion.Indice,
                                 CotizacionPosicion_Id: cotizacionPos.Id,
                                 PlazoDeEntrega: peticion.Posicion.FechaEntregaServicio,
-                                Cantidad: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' ?
-                                    peticion.Posicion.CantidadAdjudicacion : 1,
+                                Cantidad: this.esTipoSolpMateriales() ? peticion.Posicion.CantidadAdjudicacion : 1,
                                 SolpPosicion_Id: peticion.Posicion.Id,
                                 CantidadCotizada: cotizacionPos.Cantidad,
                                 CantidadSolp: peticion.Posicion.CantidadPendiente,
-                                CantidadAdjudicada: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' ?
-                                    peticion.Posicion.CantidadAdjudicada : 1,
+                                CantidadAdjudicada: this.esTipoSolpMateriales() ? peticion.Posicion.CantidadAdjudicada : 1,
                                 NoDisponible: cotizacionPos.NoDisponible,
                                 MonedaCotizacion: cotizacionPos.Moneda_Id,
                                 MonedaPO: peticion.Posicion.MonedaId,
                                 MonedaId: cotizacionPos.Moneda_Id,
                                 CentroPosicion: peticion.Posicion.Centro,
-                                EsMaterialCatalogado: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' && !!peticion.Posicion.CodigoMaterialSap.Codigo,
+                                EsMaterialCatalogado: this.esTipoSolpMateriales() && !!peticion.Posicion.CodigoMaterialSap.Codigo,
                                 CodigoMaterialSap: peticion.Posicion.CodigoMaterialSap.Codigo,
                                 CodigoCentroSap: peticion.Posicion.Centro.CodigoSap,
                                 CodigoGrupoComprasSap: peticion.Posicion.GrupoCompras.CodigoSap,
@@ -350,7 +383,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.error = "";
         lista.forEach(element => {
             if (!breakFor) {
-                if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES') {
+                if (this.esTipoSolpMateriales()) {
                     if (element.Cantidad == null || element.Cantidad == undefined || element.Cantidad <= 0) {
                         self.error = "Pos " + element.Posicion + " - La cantidad adjudicada debe ser mayor a 0";
                         breakFor = true;
@@ -358,7 +391,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     }
                 }
 
-                if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES') {
+                if (this.esTipoSolpMateriales()) {
                     if (element.Cantidad > element.CantidadSolp) {
                         self.error = "Pos " + element.Posicion + " - La cantidad adjudicada no debe ser mayor que la cantidad pendiente";
                         breakFor = true;
@@ -372,7 +405,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     return self.error;
                 }
 
-                if (this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' && this.tablaOfertas.Adicional) {
+                if (this.esTipoSolpMateriales() && this.tablaOfertas.Adicional) {
                     if (element.MonedaCotizacion != element.MonedaPO) {
                         self.error = "Pos " + element.Posicion + " - La moneda de la cotización y de la OC debe ser la misma";
                         breakFor = true;
@@ -412,7 +445,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     ocultarGenerarOCSerivicioDiferentesMonedas() {
-        if (this.tablaOfertas.TipoPosicionCodigo != 'MATERIALES') {
+        if (!this.esTipoSolpMateriales()) {
 
         }
     }
@@ -445,9 +478,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                             this.mensajeValidacionMoneda = result.data.Errores[0];
                             this.displayValidacionMoneda = true;
                         } else {
-                            this.confirmacionAdjudicar();
+                            this.verificarCertificacionesParciales();
                         }
-
                     }
                 },
                 (error) => {
@@ -470,7 +502,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     onSiguientePasoValidacionMoneda() {
         this.displayValidacionMoneda = false;
-        this.confirmacionAdjudicar();
+        this.verificarCertificacionesParciales();
     }
 
     onGenerarOC() {
@@ -602,8 +634,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     guardarAdjudicacionTextos() {
+        const txtCondPago = (this.tablaOfertas.SolpDto.CertificacionAutomatica ?
+            "* Certificaciones automáticas\n* Forma de facturar: ver NOTA V condiciones predeterminadas\n " : "") + this.modalTexto.adjudicacion.CondicionesDePago;
+
         this.adjudicacion.CondicionesDeEntrega = this.modalTexto.adjudicacion.CondicionesDeEntrega;
-        this.adjudicacion.CondicionesDePago = this.modalTexto.adjudicacion.CondicionesDePago;
+        this.adjudicacion.CondicionesDePago = txtCondPago;
         this.adjudicacion.Garantias = this.modalTexto.adjudicacion.Garantias;
         this.adjudicacion.TextoDeCabecera = this.modalTexto.adjudicacion.TextoDeCabecera;
     }
@@ -705,6 +740,16 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayTextoIncompleto = false;
     }
 
+    configurarAdmiteCertificacionesParciales(admite: boolean) {
+        this.adjudicacion.AdmiteCertificacionesParciales = admite;
+        this.displayAdmiteCertificacionesParciales = false;
+        this.confirmacionAdjudicar();
+    }
+
+    cancelarAdmiteCertificacionesParciales() {
+        this.displayAdmiteCertificacionesParciales = false;
+    }
+
     getCombos() {
         try {
             this.subscription = this.service.getCombos().subscribe(
@@ -753,7 +798,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     verificarCondicionEspecial(): boolean {
-        return this.tablaOfertas.SolpDto.Urgencia == true || this.tablaOfertas.SolpDto.Adicional == true || this.tablaOfertas.SolpDto.TrabajoYaHecho == true || this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true
+        return this.tablaOfertas.SolpDto.Urgencia == true ||
+            this.tablaOfertas.SolpDto.Adicional == true ||
+            this.tablaOfertas.SolpDto.TrabajoYaHecho == true ||
+            this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true ||
+            this.tablaOfertas.SolpDto.ConPresupuesto == true
     }
 
     setTextoCondicionEspecial(): void {
@@ -931,8 +980,15 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
 
         this.displayRegionSap = true;
+    }
 
-        this.validacionTextosIncompletos();
+    verificarCertificacionesParciales() {
+        if (this.esTipoSolpMateriales() || this.tablaOfertas.TrabajoHecho === true) {
+            this.confirmacionAdjudicar();
+        }
+        else {
+            this.displayAdmiteCertificacionesParciales = true;
+        }
     }
 
     manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {

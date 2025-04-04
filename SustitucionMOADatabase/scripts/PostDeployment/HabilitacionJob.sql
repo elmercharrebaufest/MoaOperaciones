@@ -27,3 +27,4 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'EnviarCamposU
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'VencimientoOrdenesResiduosJob') BEGIN    INSERT into HabilitacionJob VALUES ('VencimientoOrdenesResiduosJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'NotificacionErroresJob') BEGIN    INSERT into HabilitacionJob VALUES ('NotificacionErroresJob',1)END
 IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'EliminarFacturasAntiguasJob') BEGIN    INSERT into HabilitacionJob VALUES ('EliminarFacturasAntiguasJob',1)END
+IF NOT EXISTS (SELECT TOP 1 1 FROM HabilitacionJob WHERE Nombre = 'ActualizarLegajoImpositivoJob') BEGIN    INSERT into HabilitacionJob VALUES ('ActualizarLegajoImpositivoJob',1)END

@@ -10,6 +10,9 @@
     [Error] VARCHAR(MAX) NULL, 
     [FechaAlta] DATETIME NOT NULL, 
     [FechaActualizacion] DATETIME NULL, 
+    [CodigoCorredor] VARCHAR(50) NULL, 
+    [CodigoCentro] VARCHAR(50) NULL, 
+    [CodigoMaterial] VARCHAR(50) NULL, 
     CONSTRAINT [FK_AplicacionCartaPorte_Proveedor] FOREIGN KEY (Proveedor_Id) REFERENCES Proveedor(Id),
     CONSTRAINT [FK_AplicacionCartaPorte_Usuario] FOREIGN KEY (Usuario_Id) REFERENCES Usuario(Id),
 )

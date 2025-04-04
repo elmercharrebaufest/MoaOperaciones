@@ -26,6 +26,8 @@ namespace SustitucionMOAModel.Entities
         public string Token { get; set; }
         public int RegionSap_Id { get; set; }
 
+        public bool AdmiteCertificacionesParciales { get; set; }
+
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario Usuario { get; set; }
         

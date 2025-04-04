@@ -198,25 +198,25 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
         this.listarContratosAsociados();
     }
-    
+
     public setCombos(): void {
         if (this.combos != undefined) {
             this.claseDocumento = this.combos.ClaseDocumento.map(ds => {
                 return {
-                    label: ds.CodigoDescripcion, 
+                    label: ds.CodigoDescripcion,
                     value: {
-                        Id: ds.Id, 
+                        Id: ds.Id,
                         Tabla: ds.Tabla,
                         Codigo: ds.Codigo,
-                        CodigoDescripcion: ds.Codigo + " - " + ds.Descripcion,	
-                        CodigoSap: ds.CodigoSap, 
+                        CodigoDescripcion: ds.Codigo + " - " + ds.Descripcion,
+                        CodigoSap: ds.CodigoSap,
                         Descripcion: ds.Descripcion,
-                        IdPadre: ds.IdPadre, 
+                        IdPadre: ds.IdPadre,
                         FiltroComprador: ds.FiltroComprador,
                         Deshabilitado: ds.Deshabilitado
-                    }, 
+                    },
                     disabled: ds.Deshabilitado
-                 }
+                }
             });
 
             this.centroEntrega = this.combos.Centro;
@@ -226,9 +226,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             if (this.model.posiciones.length > 0) {
                 this.model.posiciones.forEach(posicion => {
                     posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
-                    console.log("2this.combos.Unidades", this.combos.Unidades);
-
-                    posicion.unidadesAlternativas =  this.combos.Unidades;
+                    posicion.unidadesAlternativas = this.combos.Unidades;
                 });
             }
         }
@@ -269,7 +267,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
         else {
             this.mensajesEncabezado = [];
-            if(this.formularioActual != undefined){
+            if (this.formularioActual != undefined) {
                 this.formularioActual.enable();
             }
         }
@@ -332,7 +330,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 newPos.concluido = false;
                 _this.model.posiciones.push(newPos);
                 _this.model.posicionActual = _this.model.posiciones[_this.model.posiciones.length - 1];
-                
+
                 _this.setupAlmacenEntregaByCentro();
             });
             //  el.scrollIntoView();
@@ -990,7 +988,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 return of(null); // Por si no se devuelve nada desde el observable
             })
         ).subscribe(() => {
-            if (this.autocompletePosicionRFC != undefined) {                
+            if (this.autocompletePosicionRFC != undefined) {
                 if (this.combos.Unidades.find(x => x.Codigo == this.autocompletePosicionRFC.Unidad)) {
                     posicion.unidadSeleccionada = this.combos.Unidades.find(x => x.Codigo == this.autocompletePosicionRFC.Unidad);
                     posicion.unidadMedida = this.autocompletePosicionRFC.Unidad;
@@ -999,15 +997,24 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     posicion.monedaSeleccionada = this.combos.Moneda.find(x => x.Codigo == this.autocompletePosicionRFC.Moneda);
                 }
                 posicion.precioBruto = this.autocompletePosicionRFC.Precio;
+                posicion.calcularValorTotal();
+                this.model.calcularValorTotalPorMoneda();
             }
         });
+
         posicion.cuentaMayor = "";
-        var grupoArticuloAux = this.combos.GrupoArticulo.find(x => x.Descripcion == posicion.codigoServicio.GrupoArticulo.Descripcion);
+        if (this.autocompleteServiciosSolp) {
+            let materialdelalista = this.autocompleteServiciosSolp.find(x => x.Codigo == posicion.tareaSubcontratarObj.Codigo) as any;
+            if (materialdelalista) {
+                posicion.cuentaMayor = materialdelalista.CuentaMayor;
+            }
+        }
+        let grupoArticuloAux = this.combos.GrupoArticulo.find(x => x.Descripcion == posicion.codigoServicio.GrupoArticulo.Descripcion);
         if (grupoArticuloAux) {
             posicion.selectArticuloCompras = grupoArticuloAux;
         }
 
-        var grupoComprasAux = this.combos.GrupoCompras.find(x => x.Descripcion == posicion.codigoServicio.GrupoCompras.Descripcion);
+        let grupoComprasAux = this.combos.GrupoCompras.find(x => x.Descripcion == posicion.codigoServicio.GrupoCompras.Descripcion);
         if (grupoComprasAux) {
             posicion.selectGrupoCompras = grupoComprasAux;
         }
@@ -1188,9 +1195,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
-                console.log("1this.combos.Unidades", this.combos.Unidades);
                 newPos.unidadesAlternativas = this.combos.Unidades;
-                
+
             });
             this.model.calcularValorTotalPorMoneda();
         }
@@ -1360,19 +1366,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     cargarPosicionesDesdeArchivo(posicionesPrecargadas: SolpPosicionPrecargada[]) {
         this.displayPrecargarDesdeArchivo = false;
-        let posicionesACargar: SolpPosicion[] = [];
-
+        this.model.posiciones = [];
+        if (!this.autocompleteServiciosSolp) { this.autocompleteServiciosSolp = []; }
         for (let i = 0; i < posicionesPrecargadas.length; i++) {
             let posArchivo = posicionesPrecargadas[i];
-            //let newPos = new SolpPosicion();
 
             this.model.agregarNuevaPosicion(null as SolpPosicion);
 
-            let newPos = this.model.posicionActual;
-
-            newPos.listadoSubPosiciones = new Array<SubPosicionViewModel>();
-
-            this.model.posicionActual = newPos;
+            this.model.posicionActual.listadoSubPosiciones = new Array<SubPosicionViewModel>();
 
             let centroEnt = (this.centroEntrega as any[]).find(x => x.Codigo == (posArchivo.Centro ? posArchivo.Centro.Codigo : ''));
             let moneda = this.combos.Moneda.find(x => x.Id == posArchivo.MonedaId);
@@ -1380,19 +1381,24 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             let grupoArticulo = this.combos.GrupoArticulo.find(x => x.Id == posArchivo.GrupoArticuloId);
             let tipoImputacion = this.tipoImputacion.find(x => x.Id == posArchivo.TipoImputacionId);
 
-            newPos.numeroPosicion = i + 1;
-            newPos.tipoImputacion = tipoImputacion;
             
-            newPos.selectCentroEntrega = centroEnt;
-            newPos.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == (posArchivo.Centro ? posArchivo.Centro.Id : ''));
+            this.model.posicionActual.indice = posArchivo.Indice;
+            this.model.posicionActual.numeroPosicion = i + 1;
+            this.model.posicionActual.posicionCheck = false;
+            this.model.posicionActual.id = uuid.v4();
+            this.model.posicionActual.concluido = false;
 
-            let almacen = newPos.selectComboAlmacenes.find(x => x.Id == posArchivo.AlmacenId);
-            newPos.selectAlmacenEntrega = almacen;
+            this.model.posicionActual.tipoImputacion = tipoImputacion;
+            this.model.posicionActual.selectCentroEntrega = centroEnt;
+            this.model.posicionActual.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == (posArchivo.Centro ? posArchivo.Centro.Id : ''));
 
-            newPos.monedaSeleccionada = moneda;
-            newPos.GrupoCompras = grupoCompras;
-            newPos.selectGrupoCompras = grupoCompras;
-            newPos.selectArticuloCompras = grupoArticulo;
+            let almacen = this.model.posicionActual.selectComboAlmacenes.find(x => x.Id == posArchivo.AlmacenId);
+            this.model.posicionActual.selectAlmacenEntrega = almacen;
+
+            this.model.posicionActual.monedaSeleccionada = moneda;
+            this.model.posicionActual.GrupoCompras = grupoCompras;
+            this.model.posicionActual.selectGrupoCompras = grupoCompras;
+            this.model.posicionActual.selectArticuloCompras = grupoArticulo;
 
 
             let servicioMaterialObj = {
@@ -1402,42 +1408,43 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 UnidadMedidaBase: posArchivo.Unidad.Codigo
             };
 
-            newPos.codigoServicio = servicioMaterialObj;
-            newPos.tareaSubcontratar = servicioMaterialObj.Descripcion;
-            newPos.tareaSubcontratarObj = { ...servicioMaterialObj };
+            this.model.posicionActual.codigoServicio = servicioMaterialObj;
+            this.model.posicionActual.tareaSubcontratar = servicioMaterialObj.Descripcion;
+            this.model.posicionActual.tareaSubcontratarObj = { ...servicioMaterialObj };
 
-            newPos.tipoPosicion = posArchivo.TipoPosicion;
-            newPos.indice = posArchivo.Indice;
-            newPos.fechaEntregaServicio = new Date(posArchivo.FechaEntregaServicio);
-            let today = new Date();    
+            if (!posArchivo.Codigo) {
+                this.model.posicionActual.precioBruto = posArchivo.Precio;
+            }
 
-            if (newPos.fechaEntregaServicio > today) {
+            this.model.posicionActual.tipoPosicion = posArchivo.TipoPosicion;
+            this.model.posicionActual.fechaEntregaServicio = new Date(posArchivo.FechaEntregaServicio);
+            let today = new Date();
+
+            if (this.model.posicionActual.fechaEntregaServicio > today) {
                 // resta de fecha seleccionada menos la fecha minima parseada en dias
-                let plazoNuevo = Math.ceil((newPos.fechaEntregaServicio.getTime() - this.model.fechaEntrega.getTime()) / (1000 * 60 * 60 * 24));
+                let plazoNuevo = Math.ceil((this.model.posicionActual.fechaEntregaServicio.getTime() - this.model.fechaEntrega.getTime()) / (1000 * 60 * 60 * 24));
                 if (plazoNuevo >= 0) {
-                    newPos.plazoDeEntrega = plazoNuevo;
+                    this.model.posicionActual.plazoDeEntrega = plazoNuevo;
                 } else {
-                    newPos.fechaEntregaServicio = new Date(this.model.fechaEntrega);
-                    newPos.plazoDeEntrega = 0;
+                    this.model.posicionActual.fechaEntregaServicio = new Date(this.model.fechaEntrega);
+                    this.model.posicionActual.plazoDeEntrega = 0;
                 }
             } else {
-                newPos.plazoDeEntrega = 0;
+                this.model.posicionActual.plazoDeEntrega = 0;
             }
 
-            newPos.Cantidad = posArchivo.Cantidad;
-            newPos.cuentaMayor = posArchivo.CuentaMayor;
-            newPos.valorImputacion = posArchivo.Imputacion;
+            this.model.posicionActual.selectSolicitanteCompras = posArchivo.Solicitante;
+            this.model.posicionActual.cuentaTd = posArchivo.Cantidad;
+            this.model.posicionActual.cuentaMayor = posArchivo.CuentaMayor;
+            this.model.posicionActual.valorImputacion = posArchivo.Imputacion;
 
-            if (posArchivo.MaterialCatalogado) {
-                newPos.codigoServicio = posArchivo.MaterialCatalogado;
-                this.servicioSeleccionado(newPos);
-            }
+
 
             posArchivo.Subposiciones.forEach(subposArch => {
                 let newSubpos = new SubPosicionViewModel(subposArch.Numero);
 
                 let codigoServicioObj = {
-                    Codigo: subposArch.Numero,
+                    Codigo: subposArch.Codigo,
                     Descripcion: subposArch.Tarea,
                     UnidadMedidaBase: subposArch.Unidad
                 };
@@ -1446,6 +1453,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 newSubpos.tareaSubcontratarObj = { ...codigoServicioObj };
                 newSubpos.cuentaMayor = subposArch.CuentaMayor;
                 newSubpos.tipoImputacion = subposArch.Imputacion;
+                newSubpos.precioBruto = subposArch.Precio;
 
                 let unidadSeleccionadaObj = this.combos.Unidades.find(x => x.Descripcion == (subposArch.Unidad ? subposArch.Unidad.Descripcion : ''));
                 if (unidadSeleccionadaObj) {
@@ -1454,20 +1462,40 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 newSubpos.cuentaTd = subposArch.Cantidad;
-                
+
                 if (subposArch.ServicioCatalogado) {
                     newSubpos.codigoServicio = subposArch.ServicioCatalogado;
                     this.servicioSubposSeleccionado(newSubpos);
                 }
-                
+
                 newSubpos.calcularValorNeto();
-                newPos.agregarSubPosicion(newSubpos);
-                newPos.calcularValorTotal();
+                this.model.posicionActual.agregarSubPosicion(newSubpos);
+                this.model.posicionActual.calcularValorTotal();
             });
 
-            posicionesACargar.push(newPos);
+            if (this.model.posicionActual.tipoPosicion.Codigo === "MATERIALES") {
+                this.model.posicionActual.unidadesAlternativas = this.combos.Unidades;
+                if (posArchivo.MaterialCatalogado) {
+                    this.model.posicionActual.codigoServicio = posArchivo.MaterialCatalogado;                    
+                    this.autocompleteServiciosSolp.push({ Codigo: posArchivo.MaterialCatalogado.Codigo, CuentaMayor: posArchivo.CuentaMayor } as any);                    
+                    this.servicioSeleccionado(this.model.posicionActual);
+                } else {
+                    this.model.posicionActual.codigoServicio = null;
+                    let unidadSeleccionadaObj = this.combos.Unidades.find(x => x.Descripcion == (posArchivo.Unidad ? posArchivo.Unidad.Descripcion : ''));
+                    if (unidadSeleccionadaObj) {
+                        this.model.posicionActual.unidadSeleccionada = unidadSeleccionadaObj;
+                        this.model.posicionActual.unidadMedida = unidadSeleccionadaObj.Descripcion;
+                    }
+                    this.model.posicionActual.textoSuministro = posArchivo.Tarea;
+                    this.model.posicionActual.motivo = posArchivo.Motivo;
+                    this.model.posicionActual.modelo = posArchivo.Modelo;
+                }
+                this.model.posicionActual.calcularValorTotal();
+            }
+            this.setupAlmacenEntregaByCentro();
         };
-        this.model.posiciones = posicionesACargar;
+        this.validarNuevaPosicion();
+        this.model.calcularValorTotalPorMoneda();
     }
 
     servicioSubposSeleccionado(subposicion: SubPosicionViewModel) {
@@ -1481,7 +1509,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             subposicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
         }
     }
-    
+
     abrirPrecargaSolpDesdeArchivo() {
         this.displayPrecargarDesdeArchivo = true;
     }

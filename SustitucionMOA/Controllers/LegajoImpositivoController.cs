@@ -5,6 +5,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class LegajoImpositivoController : BaseController
     {
         // GET: LegajoImpositivo/Actualizar

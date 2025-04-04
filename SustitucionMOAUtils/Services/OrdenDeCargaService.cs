@@ -62,8 +62,9 @@ namespace SustitucionMOAUtils.Services
             IEmailFasService emailFasService,
             IFacturaAnticipadaService facturaAnticipadaService,
             IKgDisponiblesFasService kgDisponiblesFasService,
-            ICNRTClient cNRTClient
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, (IRepositorio)repositorioOrdenDeCarga, cNRTClient, feriadoService)
+            ICNRTClient cNRTClient,
+            IUbicacionGeograficaService ubicacionGeograficaService
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, (IRepositorio)repositorioOrdenDeCarga, cNRTClient, feriadoService, ubicacionGeograficaService)
         {
             this.emailFasService = emailFasService;
             this.facturaAnticipadaService = facturaAnticipadaService;
@@ -1701,7 +1702,9 @@ namespace SustitucionMOAUtils.Services
                 }
                 ordenDeCarga.DestinoMercaderia = null;
                 ordenDeCarga.Reventa = ordenDeCarga.CUITCliente != ordenDeCarga.CUITDestino;
+                ordenDeCarga.KmsARecorrer = ObtenerDistanciaARecorrer(ordenDeCarga.DomicilioDescr);
             }
+
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
             ordenDeCarga.FechaVencimiento = CalcularFechaVencimiento(DateTime.Now);
         }

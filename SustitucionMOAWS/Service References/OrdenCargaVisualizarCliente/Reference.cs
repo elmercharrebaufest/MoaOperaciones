@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -71,7 +71,7 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -115,6 +115,8 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
         private decimal kILOS_ENTREGAField;
         
         private bool kILOS_ENTREGAFieldSpecified;
+        
+        private string bLOQUEO_ENTREGAField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -344,6 +346,18 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
             }
         }
         
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=16)]
+        public string BLOQUEO_ENTREGA {
+            get {
+                return this.bLOQUEO_ENTREGAField;
+            }
+            set {
+                this.bLOQUEO_ENTREGAField = value;
+                this.RaisePropertyChanged("BLOQUEO_ENTREGA");
+            }
+        }
+        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -355,7 +369,7 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -435,6 +449,8 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
         private string nOMBRE_CENTROField;
         
         private string mONEDA_FLETEField;
+        
+        private string bLOQUEO_ENTREGAField;
         
         private ZMPES6760[] dETALLEField;
         
@@ -883,7 +899,19 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=29)]
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=29)]
+        public string BLOQUEO_ENTREGA {
+            get {
+                return this.bLOQUEO_ENTREGAField;
+            }
+            set {
+                this.bLOQUEO_ENTREGAField = value;
+                this.RaisePropertyChanged("BLOQUEO_ENTREGA");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=30)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
         public ZMPES6760[] DETALLE {
             get {

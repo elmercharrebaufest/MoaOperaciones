@@ -12,7 +12,8 @@
         Web = 1,
         Mantenimiento = 2,
         Sap = 3,
-        ReposicionAutomatica = 4
+        ReposicionAutomatica = 4,
+        //ContratoMarco => solp.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))
     }
 
     public enum SolpDescargaZipPorLink

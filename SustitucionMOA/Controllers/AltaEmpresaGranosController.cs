@@ -23,6 +23,7 @@ using HttpPostAttribute = System.Web.Mvc.HttpPostAttribute;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class AltaEmpresaGranosController : BaseController
     {
         protected readonly IRepositorio repositorio;
@@ -41,7 +42,7 @@ namespace SustitucionMOA.Controllers
             informeComercialJson = informeComercialJson.Replace("nia", "ña");
             var informeComercial = JsonConvert.DeserializeObject<ParamInformeComercial>(informeComercialJson);
 
-            mailUsuario = SessionPersister.getUsername();
+            mailUsuario = SessionPersister.Mail;
 
             if (proveedorId == 0)
             {
@@ -105,7 +106,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult GrabarNuevoProveedorGranos(string cuit, string mailVendedor)
         {
-            var userMail = SessionPersister.getUsername();
+            var userMail = SessionPersister.Mail;
 
             return JsonCustom(new
             {
@@ -116,7 +117,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson, int proveedorId)
         {
-            string mailUsuario = SessionPersister.getUsername();
+            string mailUsuario = SessionPersister.Mail;
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             if (proveedorId == 0)
@@ -361,7 +362,7 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public ActionResult SolicitudAltaInterna(int proveedorId, string datosJson)
         {
-            string mail = SessionPersister.getUsername();
+            string mail = SessionPersister.Mail;
             var altaEmpresa = JsonConvert.DeserializeObject<AltaEmpresaViewModel>(datosJson);
 
             return JsonCustom(altaEmpresaService.SolicitudAltaInterna(mail, proveedorId, altaEmpresa));

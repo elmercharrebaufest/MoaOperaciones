@@ -4,7 +4,8 @@
         <!--Title-->
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 ">
-                <strong *ngIf="!titulo">¿Qu&eacute; tipo de SOLP quiere iniciar?</strong>
+                <strong *ngIf="!titulo && !esCreacionPliegoMultiple">¿Qu&eacute; tipo de SOLP quiere iniciar?</strong>
+                <strong *ngIf="!titulo && esCreacionPliegoMultiple">¿Qu&eacute; tipo de Pliego quiere iniciar?</strong>
                 <p><strong *ngIf="titulo">{{titulo}}</strong> {{tituloNroSolp}}</p>
             </div>
         </div>
@@ -15,6 +16,14 @@
                 <stepper [(pasos)]="pasos" (change)="cambioPaso($event)" [(paso)]="pasoActual"></stepper>
             </div>
         </div>
+
+        <div class="alert alert-warning mt-0 mb-0" *ngIf="mostrarAdvertenciaPliegoMultiple">
+            <strong>Advertencia</strong> La solp está asociada a un pliego múltiple.
+            Para editar el pliego, puede hacerlo desde la 
+            <a style="cursor:pointer !important;" (click)="editarPliegoMultiple()">edición de pliegos múltiples</a>
+
+        </div>
+
         <spinner></spinner>
         <p-toast [style]="{marginTop: '105px'}"></p-toast>
         <div class="row myRow mySearch" style="margin-bottom: 4em;">
@@ -42,6 +51,13 @@
                     <div *ngSwitchCase="enumSolp.SolpCabecera" [@fadeInOut]>
                         <cabecera #cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" [(esCreacionSolp)]="esCreacionSolp" [(getDatosUltimaSolp)]="getDatosUltimaSolp"></cabecera>
                     </div>
+                    <div *ngSwitchCase="enumSolp.PliegoMultipleVincularSolp" [@fadeInOut]>
+                        <vincular-solp-pliego-multiple [(locale)]="es"
+                                                       [existingCheckedSolps]="existingCheckedSolps"
+                                                       (solpSeleccionadaListChanged)="onSolpSeleccionadaListChanged($event)"
+                                                       (solpDtoSeleccionadaListChanged)="onSolpDtoSeleccionadaListChanged($event)"
+                                                       [pliegoId]="pliegoIdWhenEditing"></vincular-solp-pliego-multiple>
+                    </div>
                     <div *ngSwitchDefault [@fadeInOut]>
                         Paso en construccion
                     </div>
@@ -50,17 +66,19 @@
         </div>
 
         <stepper-actions [(disabledSave)]="disabledSave"
+                         [saveButtonAvailable]="steppeerSaveButtonAvailable"
+                         [saveButtonPliegoMultipleAvailable]="steppeerSaveButtonPliegoMultipleAvailable"
+                         [(solpActual)]="solpActual"
                          [(pasos)]="pasos"
                          [(pasoActual)]="pasoActual"
                          [(tipoSolp)]="solpActual.tipoSolp"
-                         [(nroSolp)]="solpActual.nroSolp"
-                         [(tipoSolpSap)]="solpActual.tipoSolpSap"
                          (cancelarSolpEmitter)="cancelarSolp()"
                          (navegarEmitter)="navegar($event)"
                          (guardarCambiosEmitter)="guardarCambios($event)"
                          (showFinalizarDialogEmitter)="showFinalizarDialog()"
                          (previewEmitter)="preview()"
-                         [(esAuditor)]="esAuditor">
+                         [(esAuditor)]="esAuditor"
+                         (finalizarEmitter)="finalizar($event)">
         </stepper-actions>
 
         <!-- END form-->
@@ -105,6 +123,18 @@
     <p-footer>
         <button class="btn btn-success botonesComprasColor" (click)="showEmailPopup(displaySAP, false)">Enviar Email</button>
         <button *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || tieneAdjuntos" class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
+        <button class="btn btn-primary botonesComprasColor botonModal" (click)="solpFinalizadaVolverHome()">Volver a la home</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displayPliegoMultipleOk" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Felicitaciones!
+    </p-header>
+    <br> Vinculación de pliego múltiple realizada con éxito
+    <br>
+    <br>
+    <p-footer>
         <button class="btn btn-primary botonesComprasColor botonModal" (click)="solpFinalizadaVolverHome()">Volver a la home</button>
     </p-footer>
 </p-dialog>

@@ -12,7 +12,6 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
         private readonly string c_TipoOrden = "RESIDUOS";
 
         public int AlmacenId { get; set; }
-        public string KmARecorrer { get; set; }
         public string PagadorFlete { get; set; }
 
         public OrdenResiduosApiDto(Entities.OrdenResiduos ordenResiduos)
@@ -29,6 +28,7 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
             DomicilioOrden = ordenResiduos.DomicilioOrden;
             DomicilioTipo = ordenResiduos.DomicilioTipo;
             FechaCreacion = ordenResiduos.FechaCreacion.ToString();
+            KmARecorrer = ordenResiduos.KmsARecorrer;
             LocalidadDescripcion = ordenResiduos.LocalidadDescripcion;
             LocalidadId = ordenResiduos.LocalidadId ?? 0;
             NombreChofer = ordenResiduos.ChoferApellido + " " + ordenResiduos.ChoferNombre;
@@ -40,7 +40,6 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
             PatenteChasis = ordenResiduos.PatenteChasis;
             PlantaCodigo = ordenResiduos.PlantaCodigo;
             RazonSocialTransporte = ordenResiduos.TransporteRazonSocial;
-            KmARecorrer = ordenResiduos.KmsARecorrer;
             TipoOrden = c_TipoOrden;
         }
     }

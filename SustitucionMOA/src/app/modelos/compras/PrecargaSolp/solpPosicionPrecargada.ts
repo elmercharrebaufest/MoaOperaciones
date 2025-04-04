@@ -14,6 +14,8 @@ export interface SolpPosicionPrecargada {
     Codigo: string;
     MaterialCatalogado?: MaterialSolp;
     Tarea: string;
+    Motivo: string;
+    Modelo: string;
     MonedaId: number;
     Moneda: TablaSap;
     FechaEntregaServicio: string;
@@ -24,9 +26,11 @@ export interface SolpPosicionPrecargada {
     AlmacenId: number;
     Almacen: TablaSap;
     Cantidad: number;
+    Precio: number;
     UnidadId: number;
     Unidad: TablaSap;
     CuentaMayor: TablaSap;
     Imputacion: TablaSap;
     Subposiciones: SolpSubposicionPrecargada[];
+    Solicitante: string;
 }

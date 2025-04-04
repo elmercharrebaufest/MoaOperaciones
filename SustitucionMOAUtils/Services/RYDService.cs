@@ -49,7 +49,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                return InicializarDropdownVacio(ObtenerBalanzas(centro,false));
+                return InicializarDropdownVacio(ObtenerBalanzas(centro, false));
             }
             catch (Exception e)
             {
@@ -77,7 +77,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 PesadaBalanzaInforme data = _dbService.SqlSPInformeBalanza(centro, balanza);
-                if (data.pesadas.Count == 0) {
+                if (data.pesadas.Count == 0)
+                {
                     throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Pesadas"));
                 }
                 return data;
@@ -123,7 +124,7 @@ namespace SustitucionMOAUtils.Services
             {
                 PesadaBalanzaInforme data = ObtenerInforme(centro, balanza);
 
-                return ExcelExport.ToExcel(data.pesadas, new string[] { "Nro Pesada", "Fecha", "Hora", "Peso Tara", "Peso Bruto", "Peso Neto"}, "Reporte RYD Informe");
+                return ExcelExport.ToExcel(data.pesadas, new string[] { "Nro Pesada", "Fecha", "Hora", "Peso Tara", "Peso Bruto", "Peso Neto" }, "Reporte RYD Informe");
             }
             catch (InfoCustomException e)
             {
@@ -175,11 +176,14 @@ namespace SustitucionMOAUtils.Services
             {
                 commodityInt = Convert.ToInt32(commodity);
 
-            }catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorIncorrecto, "Commodity"), e);
             }
             Commodity comm = _dbService.SqlSPCBCommodity(commodityInt);
-            if (comm.AlmacenOrigen == null && comm.label == null && comm.MaterialSap == null && comm.value == null) {
+            if (comm.AlmacenOrigen == null && comm.label == null && comm.MaterialSap == null && comm.value == null)
+            {
                 throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorIncorrecto, "Commodity"));
             }
 
@@ -193,18 +197,19 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorIncorrecto, "Exportador"), e);
             }
             Exportador expo = _dbService.SqlSPCBExportador(exportadorInt);
-            if (expo.AlmacenSap == null& expo.label == null && expo.value == null)
+            if (expo.AlmacenSap == null && expo.label == null && expo.value == null)
             {
                 throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorIncorrecto, "Exportador"));
             }
-            
+
             MovimientoBalanzaMOAResponse response = new MovimientoBalanzaConsumerMOA().request(fechaInicio.ToString("yyyy-MM-dd"), fechaPesadaDT.ToString("yyyy-MM-dd"), "1029", comm.AlmacenOrigen != null ? comm.AlmacenOrigen : "", expo.AlmacenSap != null ? expo.AlmacenSap : "", comm.MaterialSap != null ? comm.MaterialSap : "", Convert.ToDecimal(pesoBruto - pesoTara));
-            if (response.imMessage != "" && response.imMessage != null) {
+            if (response.imMessage != "" && response.imMessage != null)
+            {
                 throw new ValidationCustomException(response.imMessage);
             }
             docSap = response.imMaterialdocument;
             _dbService.SqlSPGrabarPesadaBalanzaPuerto(codigo, fechaInicio, balanza, comm.label, bodega, destino, expo.label, vapor, pesoProgramado, numeroPesada, fechaPesadaDT, pesoTara, pesoBruto, pesoBruto - pesoTara, null, docSap);
-            
+
             return "";
         }
 
@@ -220,12 +225,13 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException(String.Format(ErrorMsg.ErrorFechaInvalida, "Fecha Encabezado"), e);
             }
-            
+
             _dbService.SqlSPCerrarPesadaBalanzaPuerto(codigo, fechaInicio, balanza);
             return SuccessMsg.DatosPesadasGuardadosOK;
         }
 
-        public CargaPesadaBalanza VerificarBalanzaEnProceso(int codigo, string balanza) {
+        public CargaPesadaBalanza VerificarBalanzaEnProceso(int codigo, string balanza)
+        {
             CargaPesadaBalanza cargaEnProceso = _dbService.SqlSPBalanzaEnProcesoData(codigo, balanza);
             return cargaEnProceso;
         }
@@ -286,11 +292,13 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        private void ValidarDatosEncabezadoFinalizarCarga(string balanza, string fecha) {
+        private void ValidarDatosEncabezadoFinalizarCarga(string balanza, string fecha)
+        {
             InputValidator.notEmptyOrNull(balanza, "Balanza");
         }
 
-        private void ValidarDatos(string balanza, string fecha, string bodega, string commodity, string destino, string exportador, string vapor, int pesoProgramado, int pesoAcumulado, int numeroPesada, string fechaPesada, double pesoTara, double pesoBruto) {
+        private void ValidarDatos(string balanza, string fecha, string bodega, string commodity, string destino, string exportador, string vapor, int pesoProgramado, int pesoAcumulado, int numeroPesada, string fechaPesada, double pesoTara, double pesoBruto)
+        {
             ValidarDatosEncabezado(balanza, fecha, bodega, commodity, destino, exportador, vapor, pesoProgramado, pesoAcumulado);
             ValidarDatosPesada(numeroPesada, fechaPesada, pesoTara, pesoBruto);
         }

@@ -3,7 +3,6 @@
     public class OrdenDeCargaFasonApiDto : OrdenDeCargaNoResiduoApiDto
     {
         public string FechaRetiro { get; set; }
-        public string KmARecorrer { get; set; }
 
         public OrdenDeCargaFasonApiDto(Entities.OrdenDeCargaFason ordenFason)
         {
