@@ -54,6 +54,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
     @ViewChild('mensajeGeneral')
     protected mensajeComponent: MensajeComponent;
 
+    @ViewChild('mensajeCamposSugeridos')
+    protected mensajeCamposSugeridos: MensajeComponent;
+
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
@@ -77,6 +80,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.spinnerComponent = new SpinnerComponent();
     }
 
+    renspaEditable: boolean;
     nombreEstablecimiento: string;
     renspa: string;
     renspaExiste: RenspaExiste;
@@ -589,6 +593,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
         let proveedorId: number = this.proveedorId;
         let cosechaId: number = this.cosechaId;
         let cuitTitularCP: string = this.CUIT;
+        this.mensajeCamposSugeridos.setMsgsEmpty();
 
         if (proveedorId && cosechaId && cuitTitularCP) {
             this.spinnerComponent.showIt();
@@ -641,10 +646,20 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     grabarSugerenciaCamposNuevos() {
         this.blockUI.start();
-        this.mostrarSugerenciasCamposNuevos = false;
         this.mensajeComponent.setMsgsEmpty();
+        this.mensajeCamposSugeridos.setMsgsEmpty();
 
         let camposAGuardar = this.camposNuevosSugeridos.filter(x => x.Seleccionado);
+
+        for (let campo of camposAGuardar) {
+            if (!campo.Renspa || campo.Renspa.trim() === "" || campo.Renspa.length < 13) {                
+                this.mensajeCamposSugeridos.setErrorMsg(`Falta completar RENSPA o el formato es incorrecto en el campo: ${campo.NombreCampo}.`);
+                this.blockUI.stop();
+                return;
+            }
+        }
+
+        this.mostrarSugerenciasCamposNuevos = false;
         this.service.guardarSugerenciasCamposNuevaCosecha(camposAGuardar, this.archivosNuevosSugerencias).subscribe(
             (result) => {
                 this.blockUI.stop();
@@ -721,11 +736,13 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     abrirEdicionCampoSugerido(campo: SugerenciaCampo) {
+        this.mensajeCamposSugeridos.setMsgsEmpty();
         this.mensajeEdicionSugerencia.setMsgsEmpty();
         this.campoSugeridoEnEdicion = {...campo};
         this.setLocalidadCampoSugeridoEnEdicion(campo.Localidad_Id, campo.LocalidadNombre);
         this.fileInputSugerencia.nativeElement.value = '';
         this.mostrarEdicionSugerencia = true;
+        this.renspaEditable = !this.campoSugeridoEnEdicion.Renspa;
     }
 
     setLocalidadCampoSugeridoEnEdicion(idLocalidad: number, nombreLocalidad: string) {
@@ -741,7 +758,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             return;
         }
         this.mostrarEdicionSugerencia = false;
-        let campoEditado = this.camposNuevosSugeridos.find(x => x.Renspa == this.campoSugeridoEnEdicion.Renspa);
+        let campoEditado = this.camposNuevosSugeridos.find(x => x.CampoCosechaId == this.campoSugeridoEnEdicion.CampoCosechaId);
         if (campoEditado) {
             campoEditado.NombreCampo = this.campoSugeridoEnEdicion.NombreCampo;
             campoEditado.Localidad_Id = this.campoSugeridoEnEdicion.Localidad_Id;
@@ -752,6 +769,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             campoEditado.Longitud = this.campoSugeridoEnEdicion.Longitud;
             campoEditado.NombreNuevoKmz = this.campoSugeridoEnEdicion.NombreNuevoKmz;
             campoEditado.Archivo_Id = this.campoSugeridoEnEdicion.Archivo_Id;
+            campoEditado.Renspa = this.campoSugeridoEnEdicion.Renspa;
         }
     }
 
@@ -787,6 +805,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }
         if (!this.campoSugeridoEnEdicion.Longitud || this.campoSugeridoEnEdicion.Longitud == "") {
             this.mensajeEdicionSugerencia.setErrorMsg("Falta completar Longitud.");
+            return false;
+        }
+        if (!this.campoSugeridoEnEdicion.Renspa || this.campoSugeridoEnEdicion.Renspa.trim() === "" || this.campoSugeridoEnEdicion.Renspa.length < 13) {
+            this.mensajeEdicionSugerencia.setErrorMsg(`Falta completar RENSPA o el formato es incorrecto en el campo: ${this.campoSugeridoEnEdicion.NombreCampo}.`);
             return false;
         }
         return true;

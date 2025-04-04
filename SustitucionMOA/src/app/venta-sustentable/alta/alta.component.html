@@ -8,7 +8,7 @@
         <mensaje #mensajeGeneral></mensaje>
         <spinner></spinner>
         <app-declaracion-conformidad [proveedorId]="proveedorId" [cosechaId]="cosechaId"
-            (resultadoDeclaracion)="onResultadoDeclaracion($event)" [nombreCosecha]="nombreCosecha">
+                                     (resultadoDeclaracion)="onResultadoDeclaracion($event)" [nombreCosecha]="nombreCosecha">
         </app-declaracion-conformidad>
         <p-toast [style]="{marginTop: '105px'}"></p-toast>
         <!--End Title-->
@@ -20,14 +20,14 @@
                         <div class="col-xs-12 col-sm-12 col-md-3">
                             <p class="crearConsultaTitulos">Modo de ingreso</p>
                             <input type="radio" id="operarComoCorredor" [(ngModel)]="operarComo" name="operarComo"
-                                [value]="1" (change)="cambiarModoOperacion()" checked="checked">
+                                   [value]="1" (change)="cambiarModoOperacion()" checked="checked">
                             <label for="operarComoCorredor">Corredor</label>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-3">
                             <p class="crearConsultaTitulos"></p>
                             <input type="radio" id="operarComoAcopiador" [(ngModel)]="operarComo" name="operarComo"
-                                [value]="2" (change)="cambiarModoOperacion()">
+                                   [value]="2" (change)="cambiarModoOperacion()">
                             <label for="operarComoAcopiador">Acopiador</label>
                         </div>
 
@@ -39,15 +39,15 @@
                         <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="!ingresarProveedorPorCUIT">
                             <p class="crearConsultaTitulos">Titular de la CP<span class="requerido">*</span></p>
                             <app-seleccionar-proveedor (onProveedorSeleccionado)="onselectProveedor($event)"
-                                [(valorInicial)]="CodigoProveedorEdit"
-                                (onProveedorPreSeleccionado)="onSePreseleccionaProveedor()"
-                                (onBlur)="revisarProveedorSeleccionado()" (onFocus)="sePreseleccionoProveedor=false"
-                                (onQuery)="onQuery($event)">
+                                                       [(valorInicial)]="CodigoProveedorEdit"
+                                                       (onProveedorPreSeleccionado)="onSePreseleccionaProveedor()"
+                                                       (onBlur)="revisarProveedorSeleccionado()" (onFocus)="sePreseleccionoProveedor=false"
+                                                       (onQuery)="onQuery($event)">
                             </app-seleccionar-proveedor>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6"
-                            *ngIf="ingresarProveedorPorCUIT || corredorDebeCargarCuit">
+                             *ngIf="ingresarProveedorPorCUIT || corredorDebeCargarCuit">
                             <p class="crearConsultaTitulos">
                                 CUIT
                                 <ng-container *ngIf="!corredorDebeCargarCuit">
@@ -58,7 +58,7 @@
                             </p>
                             <div class="styled-select" style="overflow: initial;">
                                 <input type="search" [(ngModel)]="CUIT" class="fourRounded" mask="00-00000000-0"
-                                    maxlength="13" (change)="verificarCUITIngresado(); renspaChanged();" aria-controls="tableModal">
+                                       maxlength="13" (change)="verificarCUITIngresado(); renspaChanged();" aria-controls="tableModal">
                             </div>
                         </div>
 
@@ -75,7 +75,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row myRow cargaDeDatosFields">
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
@@ -83,17 +83,16 @@
                             </p>
                             <div class="styled-select ">
                                 <input type="search" [(ngModel)]="nombreEstablecimiento" class="fourRounded"
-                                    aria-controls="tableModal">
+                                       aria-controls="tableModal">
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Localidad <span class="requerido">*</span></p>
-                            <app-autocomplete-localidad
-                                (onLocalidadSeleccionada)="localidadId = $event"
-                                [localidad_Id]="campoProveedorE?.Localidad_Id"
-                                [localidadPreseleccionada]="localidadPreseleccionada"
-                                (nombreLocalidadSeleccionada)="campoProveedorE.LocalidadNombre = $event">
+                            <app-autocomplete-localidad (onLocalidadSeleccionada)="localidadId = $event"
+                                                        [localidad_Id]="campoProveedorE?.Localidad_Id"
+                                                        [localidadPreseleccionada]="localidadPreseleccionada"
+                                                        (nombreLocalidadSeleccionada)="campoProveedorE.LocalidadNombre = $event">
                             </app-autocomplete-localidad>
                         </div>
                     </div>
@@ -103,7 +102,7 @@
                             <p class="crearConsultaTitulos">RENSPA <span class="requerido">*</span></p>
                             <div class="styled-select">
                                 <input type="text" pInputText [(ngModel)]="renspa" (change)="renspaChanged()" class="fourRounded"
-                                    aria-controls="tableModal" mask="00.000.0.00000/00">
+                                       aria-controls="tableModal" mask="00.000.0.00000/00">
                             </div>
                             <div class="alert alert-warning" *ngIf="renspaExiste.RenspaExiste && !renspaExiste.MismoCuit">
                                 Este campo ya fue presentado, la carga se vinculará a su CUIT.
@@ -113,13 +112,13 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row myRow cargaDeDatosFields">
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Hectareas Totales<span class="requerido">*</span></p>
                             <div class="styled-select ">
                                 <input min="1" [type]="'number'" name="hectareasTotales" [(ngModel)]="hectareasTotales"
-                                    class="fourRounded" aria-controls="tableModal">
+                                       class="fourRounded" aria-controls="tableModal">
                             </div>
                         </div>
 
@@ -127,7 +126,7 @@
                             <p class="crearConsultaTitulos">Hectareas de Soja<span class="requerido">*</span></p>
                             <div class="styled-select ">
                                 <input type="number" name="hectareasSoja" [(ngModel)]="hectareasSoja"
-                                    class="fourRounded" aria-controls="tableModal">
+                                       class="fourRounded" aria-controls="tableModal">
                             </div>
                         </div>
                     </div>
@@ -137,7 +136,7 @@
                             <p class="crearConsultaTitulos">Latitud<span class="requerido">*</span></p>
                             <div class="styled-select ">
                                 <input type="search" name="latitud" [(ngModel)]="latitud" class="fourRounded"
-                                    aria-controls="tableModal">
+                                       aria-controls="tableModal">
                             </div>
                         </div>
 
@@ -145,7 +144,7 @@
                             <p class="crearConsultaTitulos">Longitud<span class="requerido">*</span></p>
                             <div class="styled-select ">
                                 <input type="search" name="longitud" [(ngModel)]="longitud" class="fourRounded"
-                                    aria-controls="tableModal">
+                                       aria-controls="tableModal">
                             </div>
                         </div>
                     </div>
@@ -155,12 +154,12 @@
                             <p class="crearConsultaTitulos">Utilizar KMZ de la carga anterior</p>
                             <span class="col-md-6">
                                 <input type="radio" id="UsarArchivo_Id" [(ngModel)]="UsarArchivo_Id"
-                                    name="UsarArchivo_IdSi" [value]="true" checked="checked">
+                                       name="UsarArchivo_IdSi" [value]="true" checked="checked">
                                 <label for="UsarArchivo_IdSi">Si</label>
                             </span>
                             <span class="col-md-6">
                                 <input type="radio" id="UsarArchivo_Id" [(ngModel)]="UsarArchivo_Id"
-                                    name="UsarArchivo_IdNo" [value]="false">
+                                       name="UsarArchivo_IdNo" [value]="false">
                                 <label for="UsarArchivo_IdNo">No</label>
                             </span>
 
@@ -202,93 +201,93 @@
     <!--End CONTENT-->
 </div>
 
+<!--Editar campo-->
 <p-dialog [header]="'Editar campo para campaña ' + getNombreCosecha()"
-    [(visible)]="mostrarEdicionSugerencia" [modal]="true" [responsive]="true" [closable]="false"
-    [style]="{width: '800px', minWidth: '700px', maxWidth:'800px'}" [minY]="70" [draggable]="false" appendTo="body">
+          [(visible)]="mostrarEdicionSugerencia" [modal]="true" [responsive]="true" [closable]="false"
+          [style]="{width: '800px', minWidth: '700px', maxWidth:'800px'}" [minY]="70" [draggable]="false" appendTo="body">
     <div class="content-wraper">
         <mensaje #mensajeEdicionSugerencia></mensaje>
         <div class="row myRow firstSection mySearch cargaDeDatos">
-                <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
-                    <div class="row myRow cargaDeDatosFields">
-                        <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">
-                                Nombre establecimiento <span class="requerido">*</span>
-                            </p>
-                            <div class="styled-select">
-                                <input type="search" [(ngModel)]="campoSugeridoEnEdicion.NombreCampo" class="fourRounded" aria-controls="tableModal">
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">
-                                Localidad
-                            </p>
-                            <app-autocomplete-localidad
-                                (onLocalidadSeleccionada)="campoSugeridoEnEdicion.Localidad_Id = $event"
-                                [localidad_Id]="campoSugeridoEnEdicion.Localidad_Id"
-                                [localidadPreseleccionada]="localidadCampoSugeridoEnEdicion"
-                                (nombreLocalidadSeleccionada)="campoSugeridoEnEdicion.LocalidadNombre = $event">
-                            </app-autocomplete-localidad>
+            <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
+                <div class="row myRow cargaDeDatosFields">
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        <p class="crearConsultaTitulos">
+                            Nombre establecimiento <span class="requerido">*</span>
+                        </p>
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="campoSugeridoEnEdicion.NombreCampo" class="fourRounded" aria-controls="tableModal">
                         </div>
                     </div>
-                    <div class="row myRow cargaDeDatosFields">
-                        <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">
-                                RENSPA
-                            </p>
-                            <div class="styled-select">
-                                <input type="text" [(ngModel)]="campoSugeridoEnEdicion.Renspa" class="fourRounded" aria-controls="tableModal" mask="00.000.0.00000/00" disabled>
-                            </div>
-                        </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        <p class="crearConsultaTitulos">
+                            Localidad
+                        </p>
+                        <app-autocomplete-localidad (onLocalidadSeleccionada)="campoSugeridoEnEdicion.Localidad_Id = $event"
+                                                    [localidad_Id]="campoSugeridoEnEdicion.Localidad_Id"
+                                                    [localidadPreseleccionada]="localidadCampoSugeridoEnEdicion"
+                                                    (nombreLocalidadSeleccionada)="campoSugeridoEnEdicion.LocalidadNombre = $event">
+                        </app-autocomplete-localidad>
                     </div>
-                    <div class="row myRow cargaDeDatosFields">
-                        <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">
-                                Hectáreas totales <span class="requerido">*</span>
-                            </p>
-                            <div class="styled-select">
-                                <input min="1" [type]="'number'" name="campoSugeridoEnEdicion.HectareasTotales"
-                                    [(ngModel)]="campoSugeridoEnEdicion.HectareasTotales" class="fourRounded" aria-controls="tableModal">
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">
-                                Hectáreas de soja <span class="requerido">*</span>
-                            </p>
-                            <div class="styled-select">
-                                <input min="1" [type]="'number'" name="campoSugeridoEnEdicion.HectareasSoja"
-                                    [(ngModel)]="campoSugeridoEnEdicion.HectareasSoja" class="fourRounded" aria-controls="tableModal">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row myRow cargaDeDatosFields">
-                        <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">
-                                Latitud <span class="requerido">*</span>
-                            </p>
-                            <div class="styled-select">
-                                <input type="search" [(ngModel)]="campoSugeridoEnEdicion.Latitud" class="fourRounded" aria-controls="tableModal">
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">
-                                Longitud <span class="requerido">*</span>
-                            </p>
-                            <div class="styled-select">
-                                <input type="search" [(ngModel)]="campoSugeridoEnEdicion.Longitud" class="fourRounded" aria-controls="tableModal">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row myRow cargaDeDatosFields">
-                        <div class="col-xs-12 col-sm-12 col-md-12">
-                            <p class="crearConsultaTitulos">
-                                Usar nuevo KMZ
-                            </p>
-                            <div class="styled-select">
-                                <input #fileInputSugerencia type="file" (change)="cargarArchivoEnSugerencia($event)" placeholder="Cargar nuevo archivo">
-                            </div>
+                </div>
+                <div class="row myRow cargaDeDatosFields">
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        <p class="crearConsultaTitulos">
+                            RENSPA
+                        </p>
+                        <div class="styled-select">
+                            <input type="text" [(ngModel)]="campoSugeridoEnEdicion.Renspa" class="fourRounded" aria-controls="tableModal" mask="00.000.0.00000/00" [disabled]="!renspaEditable">
                         </div>
                     </div>
                 </div>
+                <div class="row myRow cargaDeDatosFields">
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        <p class="crearConsultaTitulos">
+                            Hectáreas totales <span class="requerido">*</span>
+                        </p>
+                        <div class="styled-select">
+                            <input min="1" [type]="'number'" name="campoSugeridoEnEdicion.HectareasTotales"
+                                   [(ngModel)]="campoSugeridoEnEdicion.HectareasTotales" class="fourRounded" aria-controls="tableModal">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        <p class="crearConsultaTitulos">
+                            Hectáreas de soja <span class="requerido">*</span>
+                        </p>
+                        <div class="styled-select">
+                            <input min="1" [type]="'number'" name="campoSugeridoEnEdicion.HectareasSoja"
+                                   [(ngModel)]="campoSugeridoEnEdicion.HectareasSoja" class="fourRounded" aria-controls="tableModal">
+                        </div>
+                    </div>
+                </div>
+                <div class="row myRow cargaDeDatosFields">
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        <p class="crearConsultaTitulos">
+                            Latitud <span class="requerido">*</span>
+                        </p>
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="campoSugeridoEnEdicion.Latitud" class="fourRounded" aria-controls="tableModal">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        <p class="crearConsultaTitulos">
+                            Longitud <span class="requerido">*</span>
+                        </p>
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="campoSugeridoEnEdicion.Longitud" class="fourRounded" aria-controls="tableModal">
+                        </div>
+                    </div>
+                </div>
+                <div class="row myRow cargaDeDatosFields">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <p class="crearConsultaTitulos">
+                            Usar nuevo KMZ
+                        </p>
+                        <div class="styled-select">
+                            <input #fileInputSugerencia type="file" (change)="cargarArchivoEnSugerencia($event)" placeholder="Cargar nuevo archivo">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <p-footer>
@@ -297,10 +296,12 @@
     </p-footer>
 </p-dialog>
 
+<!--Listado campos a copiar-->
 <p-dialog [header]="'Campos sugeridos para la campaña ' + getNombreCosecha()"
-    [(visible)]="mostrarSugerenciasCamposNuevos" [modal]="true" [responsive]="true" [closable]="false"
-    [style]="{width: '800px', minWidth: '700px', maxWidth:'800px'}" [minY]="70" [draggable]="false" appendTo="body">
+          [(visible)]="mostrarSugerenciasCamposNuevos" [modal]="true" [responsive]="true" [closable]="false"
+          [style]="{width: '800px', minWidth: '700px', maxWidth:'800px'}" [minY]="70" [draggable]="false" appendTo="body">
     <div class="row titleSection">
+        <mensaje #mensajeCamposSugeridos></mensaje>
         <div class="col-xs-12 col-sm-6"></div>
         <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
             <div class="row">
@@ -317,8 +318,8 @@
     </div>
     <div>
         <table id="tablaCamposSugeridos" *ngIf="camposNuevosSugeridos && camposNuevosSugeridos.length > 0"
-            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"
-            cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+               class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"
+               cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
             <thead>
                 <tr role="row">
                     <th>
@@ -348,10 +349,10 @@
                 <tr *ngFor="let campo of camposNuevosSugeridos">
                     <td>
                         <input type="checkbox"
-                            [disabled]="campo.CampoYaPresentado"
-                            [(ngModel)]="campo.Seleccionado"
-                            (change)="onSugerenciaSeleccionadaChange(campo)"
-                            [title]="campo.CampoYaPresentado ? 'El campo ya fue presentado' : ''" />
+                               [disabled]="campo.CampoYaPresentado"
+                               [(ngModel)]="campo.Seleccionado"
+                               (change)="onSugerenciaSeleccionadaChange(campo)"
+                               [title]="campo.CampoYaPresentado ? 'El campo ya fue presentado' : ''" />
                     </td>
                     <td>{{campo.NombreCampo}}</td>
                     <td>{{campo.LocalidadNombre}}</td>
@@ -363,13 +364,13 @@
                             <div class="col-sm-2" style="padding-left: 0px; padding-right: 14px;">
                                 <span>
                                     <button type="button" class="btn-sin-fondo btn-descargar" title="Descargar KMZ"
-                                        (click)="descargarKmz(campo.CampoCosechaId, campo.Proveedor_Id)">
+                                            (click)="descargarKmz(campo.CampoCosechaId, campo.Proveedor_Id)">
                                     </button>
                                 </span>
                                 <span *ngIf="!campo.CampoYaPresentado">
                                     <button type="button" class="btn-sin-fondo fa fa-edit" title="Editar"
-                                        style="font-size: 22px; color: #009688; margin-right: 5px;"
-                                        (click)="abrirEdicionCampoSugerido(campo)">
+                                            style="font-size: 22px; color: #009688; margin-right: 5px;"
+                                            (click)="abrirEdicionCampoSugerido(campo)">
                                     </button>
                                 </span>
                             </div>
@@ -381,8 +382,8 @@
     </div>
     <p-footer>
         <button type="button" pButton icon="pi pi-check" (click)="grabarSugerenciaCamposNuevos()" label="Guardar"
-            [disabled]="!haySugerenciaSeleccionada()"></button>
+                [disabled]="!haySugerenciaSeleccionada()"></button>
         <button type="button" pButton icon="pi pi-close" (click)="cancelarSugerenciaCamposNuevos()" label="Cancelar" class="ui-button-secondary"></button>
     </p-footer>
 </p-dialog>
-    
+

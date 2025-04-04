@@ -4,7 +4,6 @@ using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Util;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -42,9 +41,9 @@ namespace SustitucionMOAWS.WSConsumers
                     var responseMessage = client.SendAsync(requestMessage).ConfigureAwait(false).GetAwaiter().GetResult();
 
                     var createResponseContent = responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                    
+
                     Logger.Log.Debug("Respuesta CrearEntradaServicio: " + createResponseContent);
-                    
+
                     var respuestaCreacionESDto = ParseReturnInfo(createResponseContent);
 
                     return respuestaCreacionESDto;
@@ -66,7 +65,7 @@ namespace SustitucionMOAWS.WSConsumers
                     var requestMessage = CrearRequestMessage();
 
                     var content = CrearHttpContent(parametros);
-                    
+
                     string contentAsString = await content.ReadAsStringAsync();
                     Logger.Log.Debug("CrearEntradaDeServicioConsumerMOA content: " + contentAsString);
 
@@ -198,17 +197,17 @@ namespace SustitucionMOAWS.WSConsumers
         {
             return $@"
                 <item>
-                    <PCKG_NO>{ item.PackageNumber }</PCKG_NO>
-                    <LINE_NO>{ item.LineNumber }</LINE_NO>
-                    <OUTL_IND>{ item.OutlineIndicator }</OUTL_IND>
-                    <SUBPCKG_NO>{ item.SubPackageNumber }</SUBPCKG_NO>
-                    <EXT_LINE>{ item.ExternalLineNumber }</EXT_LINE>
-                    <SERVICE>{ item.Service }</SERVICE>
-                    <QUANTITY>{ item.Quantity.Replace(",", ".") }</QUANTITY>
-                    <GR_PRICE>{ item.GrossPrice.ToString().Replace(",", ".") }</GR_PRICE>
-                    <SHORT_TEXT>{ item.ShortText }</SHORT_TEXT>
-                    <PLN_PCKG>{ item.PlannedPackage }</PLN_PCKG>
-                    <PLN_LINE>{ item.PlannedLine }</PLN_LINE>
+                    <PCKG_NO>{item.PackageNumber}</PCKG_NO>
+                    <LINE_NO>{item.LineNumber}</LINE_NO>
+                    <OUTL_IND>{item.OutlineIndicator}</OUTL_IND>
+                    <SUBPCKG_NO>{item.SubPackageNumber}</SUBPCKG_NO>
+                    <EXT_LINE>{item.ExternalLineNumber}</EXT_LINE>
+                    <SERVICE>{((item.Service ?? "0").Trim() == "0" ? "" : item.Service)}</SERVICE>
+                    <QUANTITY>{item.Quantity.Replace(",", ".")}</QUANTITY>
+                    <GR_PRICE>{item.GrossPrice.ToString().Replace(",", ".")}</GR_PRICE>
+                    <SHORT_TEXT>{item.ShortText}</SHORT_TEXT>
+                    <PLN_PCKG>{item.PlannedPackage}</PLN_PCKG>
+                    <PLN_LINE>{item.PlannedLine}</PLN_LINE>
                 </item>";
         }
 
