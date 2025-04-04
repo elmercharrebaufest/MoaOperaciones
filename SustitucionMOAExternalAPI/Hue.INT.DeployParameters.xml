@@ -30,4 +30,10 @@
 
     <setParameter name="Z_MMRFC_OC_PARA_SOLPPortType Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=Z_MMRFC_OC_PARA_SOLPPortType&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
+	  <setParameter name="SpaUrl Config" value="https://moa.operaciones.huenei.com.ar/web" />
+	  
+	  <setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
+	  <setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
+	  <setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=webopdevstorage;AccountKey=degh9HC+9hXxFOEU/2HqhP1ZusanUvm9X31YqPQIT68DNsU+GuVnphhYa7Okoexu4R1X5s7xiH5/X3ouTXURew==;EndpointSuffix=core.windows.net" />
+	  
   </parameters>

@@ -26,6 +26,7 @@ namespace SustitucionMOATest.Services
         private Mock<IRepositorio> mIRepositorio;
         private Mock<ICNRTClient> mICNRTClient;
         private Mock<IFeriadoService> mIFeriadoService;
+        private Mock<IUbicacionGeograficaService> mIUbicacionGeograficaService;
 
         [SetUp]
         public void SetUp()
@@ -36,6 +37,7 @@ namespace SustitucionMOATest.Services
             mIRepositorio = new Mock<IRepositorio>();
             mICNRTClient = new Mock<ICNRTClient>();
             mIFeriadoService = new Mock<IFeriadoService>();
+            mIUbicacionGeograficaService = new Mock<IUbicacionGeograficaService>();
 
             target = new Mock<OrdenDeCargaServiceBase>(
                 new object[]
@@ -45,7 +47,8 @@ namespace SustitucionMOATest.Services
                     mIScatoRepositorioClient.Object,
                     mIRepositorio.Object,
                     mICNRTClient.Object,
-                    mIFeriadoService.Object
+                    mIFeriadoService.Object,
+                    mIUbicacionGeograficaService.Object
                 })
             {
                 CallBase = true,

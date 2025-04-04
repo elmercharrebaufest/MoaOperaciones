@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -14,10 +12,11 @@ namespace SustitucionMOAModel.Dto
         public DateTime Timestamp { get; set; }
         public string FileName { get; set; }
         public string LineNumber { get; set; }
+        public string User { get; set; }
 
-        public string ToString()
+        public override string ToString()
         {
-            return $"{Timestamp} -> Message={Message} - FileName={FileName} - LineNumber={LineNumber}";
+            return $"{Message} - {(Additional?.Any() ?? false ? (Additional[0] ?? "").ToString() : "")} - {User}";
         }
     }
 }

@@ -34,6 +34,7 @@ namespace SustitucionMOA.Controllers
 
         [HttpGet]
         public JsonResult GetSolpDisponiblesPliegosMultiple(string numeroSolp,
+                                                            string nombrePliego,
                                                             DateTime? fechaInicio,
                                                             DateTime? fechaFin,
                                                             string creador,
@@ -55,6 +56,7 @@ namespace SustitucionMOA.Controllers
                 : fiscal.Split(',');
 
             return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp,
+                                                                                      nombrePliego,
                                                                                       fechaInicio,
                                                                                       fechaFin,
                                                                                       creadorList,
@@ -115,7 +117,7 @@ namespace SustitucionMOA.Controllers
 
         private ComprasDto.UsuarioDto ObtenerUsuarioActual()
         {
-            string userMail = SessionPersister.getUsername();
+            string userMail = SessionPersister.Mail;
             return usuarioService.GetUsuario(userMail);
         }
     }

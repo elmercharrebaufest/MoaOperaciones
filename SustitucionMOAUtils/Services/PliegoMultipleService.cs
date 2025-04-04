@@ -24,17 +24,22 @@ namespace SustitucionMOAUtils.Services
 
         private readonly IComprasService comprasService;
 
+        private readonly IEmailComprasService emailComprasService;
+
         public PliegoMultipleService(IRepositorio repositorio,
-                                     IComprasService comprasService)
+                                     IComprasService comprasService,
+                                     IEmailComprasService emailComprasService)
         {
             this.repositorio = repositorio;
             this.comprasService = comprasService;
+            this.emailComprasService = emailComprasService;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1155:Use StringComparison when comparing strings", Justification = "Not supported by EF")]
         public List<PliegoPMDto> GetPliegosMultiples(string nombrePliego)
         {
             IQueryable<Pliego> pliegos = repositorio.ListarConsultable<Pliego>(pliego => pliego.Multiple);
+            Console.WriteLine(pliegos.ToString());
             if (string.IsNullOrWhiteSpace(nombrePliego))
             {
                 return pliegos
@@ -51,6 +56,7 @@ namespace SustitucionMOAUtils.Services
         }
 
         public List<SolpPMDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp,
+                                                               string nombrePliego,
                                                                DateTime? fechaInicio,
                                                                DateTime? fechaFin,
                                                                IEnumerable<int> creador,
@@ -63,7 +69,6 @@ namespace SustitucionMOAUtils.Services
                                                                bool incluirGuardadas = false,
                                                                int? pliegoId = null)
         {
-            IEnumerable<string> codigosSapEstadosSolpValidos = new HashSet<string> { "02", "05" };
             IEnumerable<string> tiposSolpValidos = new HashSet<string> { "CON_PLIEGO", "SIN_PLIEGO" };
             IEnumerable<string> tiposPosicionSolpValidos = new HashSet<string> { "SERVICIO", "MATERIALES" };
 
@@ -72,11 +77,12 @@ namespace SustitucionMOAUtils.Services
 
             IQueryable<Solp> consultaSolp = repositorio
                 .ListarConsultable<Solp>(solpQuery =>
-                        codigosSapEstadosSolpValidos.Contains(solpQuery.EstadoSolpSap.CodigoSap)
-                        && solpQuery.Posiciones.Any() && solpQuery.Posiciones.FirstOrDefault().TipoPosicion != null && solpQuery.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO"
+                        solpQuery.NroSolp != null
+                        && solpQuery.NroSolp != ""
+                        && solpQuery.Posiciones.Any(x => x.Estado) && solpQuery.Posiciones.FirstOrDefault().TipoPosicion != null && solpQuery.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO"
                         && tiposSolpValidos.Contains(solpQuery.TipoSolp.Codigo)
                         && solpQuery.Posiciones.Any(posicion => tiposPosicionSolpValidos.Contains(posicion.TipoPosicion.Codigo))
-                        && !(solpQuery.TrabajoYaHecho == true || solpQuery.Adicional == true || solpQuery.Urgencia == true || solpQuery.CondEspProveedorAsignado == true)
+                        && !(solpQuery.TrabajoYaHecho == true || solpQuery.Adicional == true || solpQuery.Urgencia == true || solpQuery.CondEspProveedorAsignado == true || solpQuery.ConPresupuesto == true)
                         && !solpQuery.Pliego.Multiple
                         && !solpQuery.Posiciones.Any(posicion => posicion.AdjudicacionPosiciones.Any())
                     )
@@ -87,6 +93,11 @@ namespace SustitucionMOAUtils.Services
             if (!string.IsNullOrWhiteSpace(numeroSolp))
             {
                 filtros.Add(solp => solp.NroSolp.Contains(numeroSolp));
+            }
+
+            if (!string.IsNullOrWhiteSpace(nombrePliego))
+            {
+                filtros.Add(solp => solp.Pliego.NombreObra.ToLower().Contains(nombrePliego));
             }
 
             if (fechaInicio.HasValue)
@@ -213,6 +224,11 @@ namespace SustitucionMOAUtils.Services
                 }
                 solp.TipoSolp = repositorio
                     .Obtener<TablaGeneral>(x => x.Tabla.ToLower() == "TipoSolp".ToLower() && x.Codigo.ToLower() == "CON_PLIEGO".ToLower());
+            }
+
+            // Send email when MultipleFinalizado is true
+            if (pliego.MultipleFinalizado == true) {
+                emailComprasService.EnviarMailFinalizacionPliegoMultiple(pliego,solps);
             }
 
             repositorio.GuardarCambios();

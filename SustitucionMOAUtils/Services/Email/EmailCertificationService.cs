@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -302,6 +303,17 @@ namespace SustitucionMOAUtils.Services.Email
             {
                 Log.Error(ex);
             }
+        }
+
+        public void EnviarMailCertificacionAutomatica(string nroOC, string nroSolp, string mensaje, IEnumerable<string> destinatarios)
+        {
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(destinatarios),
+                Asunto = $"Certificación automática. OC: {nroOC} - SOLP: {nroSolp}",
+                Cuerpo = mensaje
+            };
+            emailService.EnviarMail(emailSenderData);
         }
 
         private static StringBuilder GenerarTablaAprobaciones(List<ReporteDto> reports)

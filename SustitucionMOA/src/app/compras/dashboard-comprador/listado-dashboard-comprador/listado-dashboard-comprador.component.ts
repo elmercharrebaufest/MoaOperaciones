@@ -216,9 +216,30 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     listarSolp() {
         this.spinnerComponent.showIt();
-        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.nombrePedido, this.selectEstadoSolp.join(","), this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","),
-            this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.listarPendienteOrDefault(), this.contratoMarco, this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","),
-            this.selectTipoPliego.join(",")        );
+        this.service.getListarSolpCompras(
+            this.pageIndex,
+            this.pageSize,
+            this.orden,
+            this.columnaOrden,
+            this.nroSolp,
+            this.nombrePedido,
+            this.selectEstadoSolp ? this.selectEstadoSolp.join(",") : "",
+            this.selectUsuario ? this.selectUsuario.join(",") : "",
+            this.selectCentro ? this.selectCentro.join(",") : "",
+            this.selectGrupoCompras ? this.selectGrupoCompras.join(",") : "",
+            this.fechaDesde,
+            this.fechaHasta,
+            this.sap,
+            this.mantenimiento,
+            this.web,
+            this.repoAutomatica,
+            this.listarPendienteOrDefault(),
+            this.contratoMarco,
+            this.selectClaseDocumento ? this.selectClaseDocumento.join(",") : "",
+            this.selectTipoImputacion ? this.selectTipoImputacion.join(",") : "",
+            this.selectValorTipoImputacion ? this.selectValorTipoImputacion.join(",") : "",
+            this.selectTipoPliego ? this.selectTipoPliego.join(",") : ""
+        );
     }
 
     private listarPendienteOrDefault(): number {
@@ -588,7 +609,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                 PrecioFinal: item.PrecioFinal || 0,
                 PrecioBruto: item.PrecioBruto || 0,
                 EstadoLiberacionDetalle: item.EstadoLiberacionDetalle || '',
-
+                AdmiteCertificacionesParciales: true
             };
             this.ordenesDeCompra.push(adjudicacion);
         });

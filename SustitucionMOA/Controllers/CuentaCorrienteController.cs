@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOASecurity;
+﻿using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
+using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    [Authorize]
     public class CuentaCorrienteController : BaseController
     {
         readonly ICuentaCorrienteService cuentaCorrienteService;

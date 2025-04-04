@@ -1,6 +1,7 @@
-﻿using System;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
+using System;
 using System.Collections.Generic;
-using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -8,17 +9,19 @@ namespace SustitucionMOAModel.Dto
     {
         public int Id { get; set; }
         public string Usuario { get; set; }
-        public string EstadoAprobacionDescripcion { get; set; }
+        public string EstadoAprobacionDescripcion { get { return this.EstadoAprobacion.ToFriendlyString(); } }
+        public EstadoAprobacion EstadoAprobacion { get; set; }
         public string Observacion { get; set; }
         public DateTime Fecha { get; set; }
         public string ObservacionParaProveedor { get; set; }
-        
+        public int Proveedor_Id { get; set; }
+
         public ProveedorHistorialAprobacionDto() { }
 
         public ProveedorHistorialAprobacionDto(ProveedorHistorialAprobacion historial)
         {
             Id = historial.Id;
-            EstadoAprobacionDescripcion = historial.EstadoAprobacion.ToString();
+            EstadoAprobacion = historial.EstadoAprobacion;
             Fecha = historial.Fecha;
             Observacion = historial.Observacion;
             Usuario = historial.Usuario.Mail;

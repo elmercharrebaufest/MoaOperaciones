@@ -38,7 +38,8 @@ export class TextosAdjudicarComponent implements OnInit {
     ngOnInit() {
         if (this.adjudicacion == null) {
             this.adjudicacion = {
-                Id: null,
+                Id: undefined,
+                AdmiteCertificacionesParciales: true
             }
         }
         setTimeout(() => {

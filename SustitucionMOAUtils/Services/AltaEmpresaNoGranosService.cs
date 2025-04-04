@@ -6,6 +6,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.CredentialService;
 using System;
@@ -17,9 +18,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Web;
-using System.Threading.Tasks;
-using SustitucionMOAUtils.Email;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -41,7 +39,7 @@ namespace SustitucionMOAUtils.Services
             , string ServicioPrestado, string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual, string SolicitanteInterno, string usuarioMail,
             int? idProveedor, string observacionesParaElProveedor, bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna, bool siperObligatorio, string observacionInterna)
         {
-            if (repositorio.Existe<Proveedor>(x => x.CUIT == cuit && x.Id != idProveedor ))
+            if (repositorio.Existe<Proveedor>(x => x.CUIT == cuit && x.Id != idProveedor))
             {
                 throw new ValidationCustomException("El CUIT ya esta registrado.");
             }
@@ -124,7 +122,7 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        private void EnviarMailAltaNoGranos(Proveedor proveedor, string observacionParaElProveedor, List<string> copia, string asunto, string estado)
+        private static void EnviarMailAltaNoGranos(Proveedor proveedor, string observacionParaElProveedor, List<string> copia, string asunto, string estado)
         {
             try
             {
@@ -135,7 +133,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
-
+                Logger.Log.Error(e);
             }
 
         }
@@ -332,7 +330,7 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
-        private string FormatearCodigoProveedor(string CUIT)
+        private static string FormatearCodigoProveedor(string CUIT)
         {
             return string.Concat("00", CUIT.Substring(2, 8));
         }
@@ -381,12 +379,13 @@ namespace SustitucionMOAUtils.Services
 
 
                     urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
-                    WebClient clienteDescarga = new WebClient();
-                    clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
 
-                    byte[] formularioAltaNoGranos = clienteDescarga.DownloadData(urlReporte);
-
-                    return formularioAltaNoGranos;
+                    using (WebClient clienteDescarga = new WebClient())
+                    {
+                        clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
+                        byte[] formularioAltaNoGranos = clienteDescarga.DownloadData(urlReporte);
+                        return formularioAltaNoGranos;
+                    }
 
                 }
             }

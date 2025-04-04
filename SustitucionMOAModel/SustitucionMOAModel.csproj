@@ -73,6 +73,11 @@
     <Compile Include="Dto\Compras\AdjudicacionPosicionDtoCopia.cs" />
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
+    <Compile Include="Dto\Compras\CertificacionDto.cs" />
+    <Compile Include="Dto\Compras\PeticionDeOfertaRevisionTecnicaDto.cs" />
+    <Compile Include="Dto\Compras\PeticionDeOfertaSolpPosicionDto.cs" />
+    <Compile Include="Dto\Compras\PeticionDeOfertaUsuarioAdicionalDto.cs" />
+    <Compile Include="Dto\Compras\PeticionDeOfertaUsuarioDto.cs" />
     <Compile Include="Dto\Compras\PrecargaSolp\ProcesarPrecargaSolpResponse.cs" />
     <Compile Include="Dto\Compras\PrecargaSolp\SolpPosicionPrecargadaDto.cs" />
     <Compile Include="Dto\Compras\PrecargaSolp\SolpSubposicionPrecargadaDto.cs" />
@@ -153,6 +158,7 @@
     <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
     <Compile Include="Entities\Aprobaciones.cs" />
     <Compile Include="Entities\Area.cs" />
+    <Compile Include="Entities\CertificacionRegistrada.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\DistanciaDomicilio.cs" />
     <Compile Include="Entities\DistanciaDomicilioReemplazos.cs" />

@@ -46,6 +46,7 @@ export interface PeticionDeOfertaDto {
     TieneVisitaObraBool?: boolean,
     TieneVisitaObraMasiva?: boolean,
     TipoPosicionCodigo?: string,
+    TrabajoHecho?: boolean,
     UsuarioCreador_Id?: number,
     Usuarios?: PeticionDeOfertaUsarioDto[],
     UsuariosAdicionales?: PeticionDeOfertaUsarioAdicionalDto[],

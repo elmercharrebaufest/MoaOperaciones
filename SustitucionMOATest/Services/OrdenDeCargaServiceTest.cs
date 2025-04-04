@@ -43,6 +43,7 @@ namespace SustitucionMOATest.Services
         private Mock<IScatoConsumer> mIScatoConsumer;
         private Mock<IKgDisponiblesFasService> mIKgDisponiblesFasService;
         private Mock<ICNRTClient> mICNRTClient;
+        private Mock<IUbicacionGeograficaService> mIUbicacionGeograficaService;
 
         private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaChofer;
         private ScatoRepo.Respuesta<ScatoRepo.Chofer> _respuestaTransporte;
@@ -69,11 +70,12 @@ namespace SustitucionMOATest.Services
             mIEmailFasService = new Mock<IEmailFasService>();
             mIKgDisponiblesFasService = new Mock<IKgDisponiblesFasService>();
             mICNRTClient = new Mock<ICNRTClient>();
+            mIUbicacionGeograficaService = new Mock<IUbicacionGeograficaService>();
 
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
                 mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object, mIFacturaAnticipadaService.Object,
-                mIKgDisponiblesFasService.Object, mICNRTClient.Object);
+                mIKgDisponiblesFasService.Object, mICNRTClient.Object, mIUbicacionGeograficaService.Object);
             ordenDeCarga = new OrdenDeCarga
             {
                 Id = 1,

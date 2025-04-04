@@ -53,7 +53,9 @@
                     </div>
                     <div *ngSwitchCase="enumSolp.PliegoMultipleVincularSolp" [@fadeInOut]>
                         <vincular-solp-pliego-multiple [(locale)]="es"
+                                                       [existingCheckedSolps]="existingCheckedSolps"
                                                        (solpSeleccionadaListChanged)="onSolpSeleccionadaListChanged($event)"
+                                                       (solpDtoSeleccionadaListChanged)="onSolpDtoSeleccionadaListChanged($event)"
                                                        [pliegoId]="pliegoIdWhenEditing"></vincular-solp-pliego-multiple>
                     </div>
                     <div *ngSwitchDefault [@fadeInOut]>
@@ -65,6 +67,8 @@
 
         <stepper-actions [(disabledSave)]="disabledSave"
                          [saveButtonAvailable]="steppeerSaveButtonAvailable"
+                         [saveButtonPliegoMultipleAvailable]="steppeerSaveButtonPliegoMultipleAvailable"
+                         [(solpActual)]="solpActual"
                          [(pasos)]="pasos"
                          [(pasoActual)]="pasoActual"
                          [(tipoSolp)]="solpActual.tipoSolp"
@@ -73,7 +77,8 @@
                          (guardarCambiosEmitter)="guardarCambios($event)"
                          (showFinalizarDialogEmitter)="showFinalizarDialog()"
                          (previewEmitter)="preview()"
-                         [(esAuditor)]="esAuditor">
+                         [(esAuditor)]="esAuditor"
+                         (finalizarEmitter)="finalizar($event)">
         </stepper-actions>
 
         <!-- END form-->

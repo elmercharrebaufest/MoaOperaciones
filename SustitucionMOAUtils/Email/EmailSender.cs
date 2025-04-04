@@ -286,7 +286,7 @@ namespace SustitucionMOAUtils.Email
 #if DEBUG
                     if (!EsCorreoValido(mail))
                     {
-                        Logger.Log.Info($"Correo no válido: {mail}, no se intenta continuar por ser ambiente DEBUG");
+                        Log.Info($"Correo no válido: {mail}, no se intenta continuar por ser ambiente DEBUG");
                         return;
                     }
 #endif
@@ -298,7 +298,7 @@ namespace SustitucionMOAUtils.Email
 
                 if (emailSenderData.Copias != null)
                 {
-                    foreach (string copia in emailSenderData.Copias)
+                    foreach (string copia in emailSenderData.Copias.Where(c => !string.IsNullOrEmpty(c)))
                     {
                         if (EsCorreoValido(copia))
                         {
@@ -307,7 +307,7 @@ namespace SustitucionMOAUtils.Email
 #if DEBUG
                         if (!EsCorreoValido(copia))
                         {
-                            Logger.Log.Info($"Correo no válido: {copia}, no se intenta continuar por ser ambiente DEBUG");
+                            Log.Info($"Correo no válido: {copia}, no se intenta continuar por ser ambiente DEBUG");
                             return;
                         }
 #endif
@@ -332,27 +332,20 @@ namespace SustitucionMOAUtils.Email
             }
             catch (SmtpException ex)
             {
-                Logger.Log.Info(ex.Message);
+                Log.Info(ex.Message);
                 if (ex.InnerException != null)
                 {
-                    Logger.Log.Info($"{ex.InnerException.Message}");
+                    Log.Info($"{ex.InnerException.Message}");
                 }
-                Logger.Log.Info("Stack: ");
-                Logger.Log.Info(ex.StackTrace);
+                Log.Info("Stack: ");
+                Log.Info(ex.StackTrace);
 #if !DEBUG
                 throw;
 #endif
             }
             catch (Exception ex)
             {
-                Logger.Log.Info(ex.Message);
-                if (ex.InnerException != null)
-                {
-                    Logger.Log.Info($"{ex.InnerException.Message}");
-                }
-                Logger.Log.Info("Stack: ");
-                Logger.Log.Info(ex.StackTrace);
-
+                Log.Error(ex);
                 throw;
             }
         }

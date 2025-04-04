@@ -13,6 +13,7 @@ using SustitucionMOAUtils.Services;
 namespace SustitucionMOA.Controllers
 {
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    [Authorize]
     public class ContratoController : BaseController
     {
         private readonly IContratoService contratoService;

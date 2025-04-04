@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class EcheqController : BaseController
     {
         private readonly IEcheqService service;
@@ -100,7 +101,7 @@ namespace SustitucionMOA.Controllers
 
         private UsuarioDto ObtenerUsuarioActual()
         {
-            string userMail = SessionPersister.getUsername();
+            string userMail = SessionPersister.Mail;
             return usuarioService.GetUsuario(userMail);
         }
 

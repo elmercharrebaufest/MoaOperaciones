@@ -1,18 +1,12 @@
-﻿using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
-using SustitucionMOASecurity;
+﻿using SustitucionMOA.Utils;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
 using System;
 using System.Web.Mvc;
-using SustitucionMOA.Utils;
 
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class DerivacionController : BaseController
     {
         private readonly ILogicaDerivacionAutomaticaService logicaDerivacionAutomaticaService;

@@ -36,7 +36,7 @@
                         <p-fileUpload #fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}"  maxFileSize="10000000" 
                                       name="fileUploadPeticionDeOferta" auto="true" multiple="multiple"
                                       chooseLabel="Elegir archivos" [showUploadButton]=false [showCancelButton]=false
-                                      [customUpload]="true" (uploadHandler)="uploadHandler($event)" >
+                                      [customUpload]="true" (uploadHandler)="uploadHandler($event)" (onRemove)="removeFile($event)">
                         </p-fileUpload>
                     </div>
                     <br />
@@ -47,13 +47,61 @@
                                     site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
                     </div>
                 </div>
-                <div class="row myRow cargaDeDatosBtn">
-                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                        <spinner-small></spinner-small>
-                        <a (click)="subirPDF()" href="#" style="text-decoration:none!important"
-                           *ngIf="!this.spinnerSmallComponent.visible">
-                            <div class="btnSection animate">Guardar <span class="fa  fa-play "></span></div>
-                        </a>
+                <div *ngIf="certificaciones?.length > 0">
+                    <table class="table table-striped table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th></th>
+                                <th>Nombre Archivo</th>
+                                <th>Número OC</th>
+                                <th>Número Certificación</th>
+                                <th>Importe Certificación</th>
+                                <th>Moneda</th>
+                                <th>Archivo Adjunto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let certificacion of certificaciones">
+                                <td>
+                                    <input
+                                    type="checkbox"
+                                    (change)="onCheckCertificacion(certificacion.NRO_Certificacion)"
+                                    >
+                                </td>
+                                <td>{{certificacion.NombreDeArchivo}}</td>
+                                <td>{{certificacion.NRO_OC}}</td>
+                                <td>{{certificacion.NRO_Certificacion}}</td>
+                                <td>{{formatPrice(certificacion.Importe)}}</td>
+                                <td>{{certificacion.Moneda}}</td>
+                                <td *ngIf="certificacion.Archivo.length !== 0">
+                                    <div class="filesColumn">
+                                        <a *ngFor="let archivo of certificacion.Archivo" (click)="descargarDocumentoAdjunto(archivo.Id)">{{obtenerNombreDeArchivo(archivo.Ruta)}}</a>
+                                    </div>
+                                </td>
+                                <td *ngIf="certificacion.Archivo.length == 0"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div *ngIf="archivos?.length > 0" class="row myRow cargaDeDatosBtn">
+                    <spinner-small></spinner-small>
+                    <div class="col-xs-12 col-sm-6 col-md-3">
+                        <button pButton
+                                class="btn-nuevoPliego"
+                                type="button"
+                                label="Enviar"
+                                (click)="obtenerCertificaciones()"
+                                [disabled]="certificaciones.length > 0">
+                        </button>
+                    </div>
+                    <div *ngIf="certificaciones.length > 0" class="col-xs-12 col-sm-6 col-md-3">
+                        <button pButton
+                                class="btn-nuevoPliego"
+                                type="button"
+                                label="Guardar selección"
+                                (click)="registrarCertificaciones()"
+                                [disabled]="certificacionesAgregadas?.length == 0">
+                        </button>
                     </div>
                 </div>
             </div>

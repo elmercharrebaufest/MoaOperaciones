@@ -202,7 +202,7 @@ namespace SustitucionMOATest.Services
             .Returns(new List<UsuarioCompras>());
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, PeticionDeOfertaDto>>>(), It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
               .Returns(new List<PeticionDeOfertaDto>() { new PeticionDeOfertaDto { Id = 1, Solp_Id = 1, RegistroInfo = false, UsuarioCreador_Id = 1, FechaCreacion = new DateTime(), Observaciones = "",
-              Usuarios = new List<PeticionDeOfertaUsarioDto>() } });
+              Usuarios = new List<PeticionDeOfertaUsuarioDto>() } });
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Adjudicacion, AdjudicacionDto>>>(), It.IsAny<Expression<Func<Adjudicacion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
               .Returns(new List<AdjudicacionDto>() { new AdjudicacionDto { Id = 1, Solp_Id = 1, UsuarioCreador_Id = 1, FechaCreacion = new DateTime(), NumeroOrdenDeCompra = "Nro",
               Proveedor = "Proveedor" } });

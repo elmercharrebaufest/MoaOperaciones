@@ -5062,3 +5062,9 @@ html {
 .mt-5 {
     margin-top: 3rem;
 }
+
+.filesColumn{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}

@@ -121,6 +121,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displayPliegoMultipleOk: boolean;
 
     pliegoMultipleIdSolpsSeleccionadas: number[] = [];
+    existingCheckedSolps: SolpDto[] = [];
 
 
     set pasoActual(value: Paso) {
@@ -139,6 +140,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
         if (this.esOperacionPliegoMultiple) { return false; }
 
         return this.solpActual.nroSolp == null || this.solpActual.nroSolp == 0 || this.solpActual.tipoSolpSap == 2
+    }
+
+    get steppeerSaveButtonPliegoMultipleAvailable(): boolean {
+        if (this.esOperacionPliegoMultiple && !this.solpActual.MultipleFinalizado) { return true; }
+        return false;
+
     }
 
 
@@ -196,6 +203,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             //circuito de pliego múltiple
                             this.solpActual.EsPliegoMultiple = true;
                             this.pasos = this.pasosMaster.pliegoMultiple;
+                            this.solpActual.MultipleFinalizado = false;
                         }
                         this.solpActual.tipoSolp = params["tipoSolp"];
                     }
@@ -479,6 +487,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.solpActual.id = undefined;
                             this.solpActual.nroSolp = undefined;
                             this.solpActual.Pliego_Id = undefined;
+                            this.solpActual.MultipleFinalizado = false;
                         }
 
                         this.traerCommon();
@@ -503,6 +512,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.usuarioSolicitanteList = this.usuarioSolicitanteListCache;
         this.condEspOriginales = {
             trabajoHecho: this.solpActual.trabajoHecho,
+            certificacionAutomatica: this.solpActual.certificacionAutomatica,
             adicional: this.solpActual.adicional,
             proveedorAsignado: this.solpActual.condEspProveedorAsignado,
             urgencia: this.solpActual.urgencia,
@@ -896,6 +906,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     public onSolpSeleccionadaListChanged(data: number[]): void {
         this.pliegoMultipleIdSolpsSeleccionadas = data;
+    }
+
+    public onSolpDtoSeleccionadaListChanged(data: SolpDto[]): void {
+        this.existingCheckedSolps = data;
     }
 
     base64ToBlob(base64Data, contentType) {

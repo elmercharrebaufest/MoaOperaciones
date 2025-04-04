@@ -8,5 +8,6 @@ namespace SustitucionMOAUtils.Interfaces
     {
         void EnviarMailCotizacionCreada(Cotizacion cotizacion);
         void EnviarMailSolpLiberada(Solp solp);
+        void EnviarMailFinalizacionPliegoMultiple(Pliego pliego,List<Solp> solps);
     }
 }

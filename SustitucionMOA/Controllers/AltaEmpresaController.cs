@@ -1,20 +1,14 @@
-﻿using Microsoft.Ajax.Utilities;
-using SustitucionMOA.Utils;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
+﻿using SustitucionMOA.Utils;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Text;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class AltaEmpresaController : BaseController
     {
         protected readonly IRepositorio repositorio;
@@ -54,15 +48,7 @@ namespace SustitucionMOA.Controllers
             }
 
             var empresas = altaEmpresaService.GetEmpresas(idTiposProveedor, fechaInicio, fechaFin);
-            //MP: Comento esta parte, ya que esto ahora lo formateamos en el service. Ademas, esto generaba que se rompan algunos filtros
-            //foreach (var item in empresas)
-            //{
-            //    item.EstadoAprobacionDescripcion = AddSpacesToSentence(item.EstadoAprobacionDescripcion);
-            //    foreach (var item2 in item.HistorialAprobaciones)
-            //    {
-            //        item2.EstadoAprobacionDescripcion = AddSpacesToSentence(item2.EstadoAprobacionDescripcion);
-            //    }
-            //}
+
             return JsonCustom(new { data = empresas });
 
         }
@@ -162,7 +148,7 @@ namespace SustitucionMOA.Controllers
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.MODIFICAR_ESTADO_PROVEEDOR)]
         public JsonResult ModificarEstadoProveedor(int proveedorId, string nuevoEstado)
         {
-            var emailUsuario = SessionPersister.getUsername();
+            var emailUsuario = SessionPersister.Mail;
             var nuevoEstadoInt = altaEmpresaService.ModificarEstadoProveedor(proveedorId, nuevoEstado, emailUsuario);
             return JsonCustom(new { data = new { nuevoEstado = nuevoEstadoInt } });
 

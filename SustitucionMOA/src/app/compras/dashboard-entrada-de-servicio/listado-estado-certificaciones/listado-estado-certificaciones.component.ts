@@ -1273,6 +1273,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       link.href = window.URL.createObjectURL(data);
       link.download = nombreArchivo + this.EXCEL_EXTENSION;
       link.click();
-    }
+  }
 
 }

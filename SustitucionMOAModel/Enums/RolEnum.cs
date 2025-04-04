@@ -77,6 +77,7 @@
         Residuos,
         ResiduosAdmin,
         ApiOrdenesResiduos,
+        ApiOrdenesCarga,
         AdminContabilizacionMesAnterior,
         AuditorCompras,
         AdminCursos,

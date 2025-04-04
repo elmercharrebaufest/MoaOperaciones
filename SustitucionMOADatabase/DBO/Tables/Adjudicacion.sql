@@ -13,6 +13,7 @@
     [FechaLiberacionSap] DATETIME2 NULL, 
     [Token] NVARCHAR(50) NULL, 
     [RegionSap_Id] INT NOT NULL DEFAULT 20, 
+    [AdmiteCertificacionesParciales] BIT NOT NULL DEFAULT 1, 
     CONSTRAINT [PK_Adjudicacion] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.Adjudicacion_Usuario_UsuarioCreadorId] FOREIGN KEY ([UsuarioCreador_Id]) REFERENCES [Usuario]([Id]),
     CONSTRAINT [FK.Adjudicacion_Usuario_CotizacionId] FOREIGN KEY ([Cotizacion_Id]) REFERENCES [Cotizacion]([Id]),

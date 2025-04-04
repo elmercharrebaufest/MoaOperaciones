@@ -16,6 +16,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class ConsultaController : BaseController
     {
         private readonly IConsultaService consultaService;
@@ -239,7 +240,7 @@ namespace SustitucionMOA.Controllers
 
         private UsuarioDto ObtenerUsuarioActual()
         {
-            string userMail = SessionPersister.getUsername();
+            string userMail = SessionPersister.Mail;
             return usuarioService.GetUsuario(userMail);
         }
 

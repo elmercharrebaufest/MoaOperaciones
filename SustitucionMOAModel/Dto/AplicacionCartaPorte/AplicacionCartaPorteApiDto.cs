@@ -1,25 +1,21 @@
-﻿using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
 
 namespace SustitucionMOAModel.Dto.AplicacionCartaPorte
 {
     public class AplicacionCartaPorteApiDto
     {
         public int Id { get; set; }
-        
-        public string Contrato { get; set; }
-        
-        public string CartaPorte { get; set; }
-        
-        public EstadoAplicacionCartaPorte Estado { get; set; }
-        
-        public int Kilogramos { get; set; }
 
+        public string Contrato { get; set; }
+
+        public string CartaPorte { get; set; }
+
+        public EstadoAplicacionCartaPorte Estado { get; set; }
+
+        public int Kilogramos { get; set; }
+        public string CodigoCentro { get; set; }
+        public string CodigoCorredor { get; set; }
+        public string CodigoMaterial { get; set; }
 
         public AplicacionCartaPorteApiDto(Entities.AplicacionCartaPorte entidad)
         {
@@ -28,6 +24,9 @@ namespace SustitucionMOAModel.Dto.AplicacionCartaPorte
             CartaPorte = entidad.CartaPorte;
             Estado = entidad.Estado;
             Kilogramos = entidad.Kilogramos;
+            CodigoCentro = entidad.CodigoCentro;
+            CodigoCorredor = entidad.CodigoCorredor;
+            CodigoMaterial = entidad.CodigoMaterial;
         }
     }
 }

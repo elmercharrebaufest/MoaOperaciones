@@ -5,6 +5,7 @@ using System.Web.Mvc;
 namespace SustitucionMOA.Controllers
 {
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    [Authorize]
     public class PagoController : BaseController
     {
         protected readonly IPDFService pDFService;

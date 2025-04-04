@@ -22,6 +22,7 @@ export class Solp extends CommonResponse {
     public Adjuntos?: { Id: number, Nombre: string }[];
     public EsPliegoMultiple: boolean = false;
     public Pliego_Id?: number;
+    public MultipleFinalizado :boolean;
 
     //paso 1
     public nombreDePedido: string;
@@ -67,6 +68,8 @@ export class Solp extends CommonResponse {
     public observacionesCotizacion: string;
     public observacionesCotizacionCondEsp: string;
     public trabajoHecho: boolean;
+    public conPresupuesto: boolean;
+    public certificacionAutomatica: boolean;
     public adicional: boolean;
     public urgencia: boolean;
     public monedaOC: string;
@@ -190,6 +193,7 @@ export class Solp extends CommonResponse {
             this.fiscalContrato = solp.FiscalContrato || '';
             this.telefono = solp.Telefono || '';
             this.mail = solp.Email || sessionStorage.getItem("username");
+            this.MultipleFinalizado = solp.MultipleFinalizado;
 
             if (solp.FechaHoraEntrega != null) {
                 this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
@@ -278,6 +282,8 @@ export class Solp extends CommonResponse {
             this.proveedorAsignado = solp.ProveedorAsignado;
             this.codigoProveedorSap = solp.CodigoProveedorSap;
             this.trabajoHecho = solp.TrabajoYaHecho;
+            this.conPresupuesto = solp.ConPresupuesto;
+            this.certificacionAutomatica = solp.CertificacionAutomatica;
             this.adicional = solp.Adicional;
             this.urgencia = solp.Urgencia;
             this.condEspProveedorAsignado = solp.CondEspProveedorAsignado;

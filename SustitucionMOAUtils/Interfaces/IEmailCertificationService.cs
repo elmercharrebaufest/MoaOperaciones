@@ -16,5 +16,6 @@ namespace SustitucionMOAUtils.Interfaces
         Task SendAprobalProviderEmail(EmailDetailCertificateDto emailDetailCertificateDto, string reference);
 
         void SendDailyNotification(string to, List<NotificacionEsPendientesDiariasDto> aprobaciones);
+        void EnviarMailCertificacionAutomatica(string nroOC, string nroSolp, string mensaje, IEnumerable<string> destinatarios);
     }
 }

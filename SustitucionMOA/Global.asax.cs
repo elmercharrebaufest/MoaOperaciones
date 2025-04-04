@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
+using SustitucionMOAUtils.Logger;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using SustitucionMOAUtils.Logger;
 
 namespace SustitucionMOA
 {
@@ -20,7 +20,7 @@ namespace SustitucionMOA
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-           // Habilita TLS 1.2
+            // Habilita TLS 1.2
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             // Configurar NLog con la cadena de conexión desde web.config
@@ -107,6 +107,82 @@ namespace SustitucionMOA
                     // Usa AppendHeader para evitar sobrescribir el encabezado Set-Cookie
                     Response.Headers.Add("Set-Cookie", cookieText);
                 }
+            }
+        }
+
+        protected void Application_AuthenticateRequest(object sender, EventArgs e)
+        {
+            try
+            {
+                // Verificar si el usuario no está autenticado
+                if (!(HttpContext.Current.User?.Identity?.IsAuthenticated ?? false))
+                {
+
+                    Regex regex = new Regex(@"/api/(?<controller>\w+)/(?<action>\w+)", RegexOptions.IgnoreCase);
+                    Match match = regex.Match(HttpContext.Current.Request.RawUrl);
+
+                    if (match.Success)
+                    {
+                        string controllerName = match.Groups["controller"].Value;
+                        string actionName = match.Groups["action"].Value;
+
+                        if (string.IsNullOrEmpty(controllerName) || string.IsNullOrEmpty(actionName))
+                        {
+                            return; // Evitar procesar si no hay controlador o acción definidos
+                        }
+
+                        // Obtener todos los controladores de la aplicación (sin importar mayúsculas/minúsculas)
+                        var controllers = AppDomain.CurrentDomain
+                            .GetAssemblies()
+                            .SelectMany(a => a.GetTypes())
+                            .Where(t => t.IsClass && t.IsSubclassOf(typeof(Controller)) && t.Name.EndsWith("Controller", StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+
+                        // Buscar el controlador de forma case-insensitive
+                        var controllerType = controllers.FirstOrDefault(c => c.Name.Equals(controllerName + "Controller", StringComparison.OrdinalIgnoreCase));
+                        if (controllerType == null)
+                        {
+                            return; // Si no se encuentra el controlador, salir
+                        }
+
+                        var controllerDescriptor = new ReflectedControllerDescriptor(controllerType);
+                        var actionDescriptor = controllerDescriptor.GetCanonicalActions()
+                            .FirstOrDefault(a => a.ActionName.Equals(actionName, StringComparison.OrdinalIgnoreCase));
+
+                        if (actionDescriptor == null)
+                        {
+                            return; // Si no se encuentra la acción, salir
+                        }
+
+
+                        // Verificar si la acción o el controlador tiene el atributo [Authorize]
+                        bool isAuthorizedAction = actionDescriptor.GetCustomAttributes(typeof(AuthorizeAttribute), true).Any();
+                        bool isAuthorizedController = controllerDescriptor.GetCustomAttributes(typeof(AuthorizeAttribute), true).Any();
+
+                        // Verificar si el controlador o la acción tienen [AllowAnonymous]
+                        bool isAnonymousAction = actionDescriptor.GetCustomAttributes(typeof(AllowAnonymousAttribute), true).Any();
+                        bool isAnonymousController = controllerDescriptor.GetCustomAttributes(typeof(AllowAnonymousAttribute), true).Any();
+
+                        // Si la acción o el controlador tienen [AllowAnonymous], no aplicar restricción
+                        if (isAnonymousAction || isAnonymousController)
+                        {
+                            return;
+                        }
+
+                        // Si la acción o el controlador tiene [Authorize] y el usuario no está autenticado, devolver un 401
+                        if ((isAuthorizedAction || isAuthorizedController))
+                        {
+                            HttpContext.Current.Response.ContentType = "application/json";
+                            HttpContext.Current.Response.StatusCode = 401;  // Código de no autorizado
+                            HttpContext.Current.Response.Write("{\"success\":false, \"message\":\"Su sesión ha expirado. Por favor, ingrese nuevamente..\"}");
+                            HttpContext.Current.Response.End();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // No hacer nada en el caso que de un error
             }
         }
     }

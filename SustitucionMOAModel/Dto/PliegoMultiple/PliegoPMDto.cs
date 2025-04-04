@@ -17,6 +17,8 @@ namespace SustitucionMOAModel.Dto.PliegoMultiple
 
         public IEnumerable<string> Solps { get; set; }
 
+        public bool MultipleFinalizado { get; set; }
+
         public static PliegoPMDto FromPliego(Pliego pliego)
         {
             return new PliegoPMDto
@@ -26,6 +28,7 @@ namespace SustitucionMOAModel.Dto.PliegoMultiple
                 FechaAlta = pliego.FechaAlta,
                 FechaModificacion = pliego.FechaModificacion,
                 Solps = pliego.Solps?.Select(s => s.NroSolp),
+                MultipleFinalizado = pliego.MultipleFinalizado
             };
         }
 

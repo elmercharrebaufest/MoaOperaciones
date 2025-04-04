@@ -39,6 +39,7 @@
                     <th class="columna">Fecha Creación</th>
                     <th class="columna">Fecha Última Modificación</th>
                     <th class="columna">SOLPs Asociadas</th>
+                    <th class="columna">Estado</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-pliego>
@@ -53,6 +54,7 @@
                     <td>{{ pliego.FechaAlta | customDateFormat | date :'d/M/yyyy' }}</td>
                     <td>{{ pliego.FechaModificacion | customDateFormat | date :'d/M/yyyy' }}</td>
                     <td>{{ pliego.Solps | join:', ' }}</td>
+                    <td>{{ pliego.MultipleFinalizado? 'Finalizado':'En Gestión'}}</td>
                 </tr>
             </ng-template>
         </p-table>

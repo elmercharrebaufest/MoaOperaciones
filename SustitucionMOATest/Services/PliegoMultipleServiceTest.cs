@@ -22,13 +22,15 @@ namespace SustitucionMOATest.Services
         private Mock<IRepositorio> repositorioMock;
         private Mock<IComprasService> comprasServiceMock;
         private PliegoMultipleService pliegoMultipleService;
+        private Mock<IEmailComprasService> emailComprasServiceMock;
 
         [SetUp]
         public void Setup()
         {
             repositorioMock = new Mock<IRepositorio>();
             comprasServiceMock = new Mock<IComprasService>();
-            pliegoMultipleService = new PliegoMultipleService(repositorioMock.Object, comprasServiceMock.Object);
+            emailComprasServiceMock = new Mock<IEmailComprasService>();
+            pliegoMultipleService = new PliegoMultipleService(repositorioMock.Object, comprasServiceMock.Object, emailComprasServiceMock.Object);
         }
 
         [Test]

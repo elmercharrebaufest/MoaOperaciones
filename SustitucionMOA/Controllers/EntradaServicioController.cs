@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class EntradaServicioController : BaseController
     {
         private readonly IEntradaServicioService EntradaServicioService;
@@ -24,7 +25,7 @@ namespace SustitucionMOA.Controllers
 
         private UsuarioDto ObtenerUsuarioActual()
         {
-            string userMail = SessionPersister.getUsername();
+            string userMail = SessionPersister.Mail;
             return usuarioService.GetUsuario(userMail);
         }
 
@@ -117,7 +118,7 @@ namespace SustitucionMOA.Controllers
                 var result = new EntradaServicioCreateRespuestaDto();
                 if (validacion.Message == "Auto")
                 {
-                    result = await EntradaServicioService.CrearEntradaServicio(posicion, userMail, payload.report, payload.IdAdjuntos, solpedNumber, posicion.EntrySheetHeader.Proveedor);
+                    result = await EntradaServicioService.CrearEntradaServicioAsync(posicion, userMail, payload.report, payload.IdAdjuntos, solpedNumber, posicion.EntrySheetHeader.Proveedor);
                 }
                 else if (validacion.Message == "Temporal")
                 {

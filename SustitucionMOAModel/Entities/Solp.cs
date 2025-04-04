@@ -31,6 +31,7 @@ namespace SustitucionMOAModel.Entities
         public int? TipoSolpSap { get; set; }
         public Guid? EmailLinkToken { get; set; }
         public bool? TrabajoYaHecho { get; set; }
+        public bool ConPresupuesto { get; set; }
         public int? ProveedorAsignado_Id { get; set; }
         public bool? Adicional { get; set; }
         public bool? Urgencia { get; set; }
@@ -75,5 +76,7 @@ namespace SustitucionMOAModel.Entities
         public virtual ICollection<ChatInternoCompras> ChatInternoCompras { get; set; } = new List<ChatInternoCompras>();
 
         public bool DebeGenerarPoAutomatica => (TrabajoYaHecho ?? false) || (Adicional ?? false) || (CondEspProveedorAsignado ?? false);
+
+        public bool CertificacionAutomatica { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace SustitucionMOAUtils.Interfaces
         string BorrarEntradaServicio(EntradaServicioParamsDto parametros, UsuarioDto usuarioActual);
         Task<List<EntradaServicioCabeceraDto>> ServicioSAP_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario);
         List<EntradaServicioCabeceraDto> ServicioAprobaciones_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario);
-        Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros, string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber = null, string proveedor = null);
+        Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicioAsync(EntradaServicioCreateParamsDto parametros, string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber = null, string proveedor = null);
 
         EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto parametros, string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber = null, string proveedor = null);
 
@@ -28,5 +28,6 @@ namespace SustitucionMOAUtils.Interfaces
         string ActualizarInformacionIngresante(IngresanteInfoEditableDto info);
 
         Task NotificarReasignaciones(IEnumerable<string> ListaAp);
+        void GenerarCertificacionAutomaticaPorLiberacionOC(string nroOC);
     }
 }

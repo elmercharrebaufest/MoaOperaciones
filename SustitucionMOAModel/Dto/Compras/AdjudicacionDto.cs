@@ -50,6 +50,8 @@ namespace SustitucionMOAModel.Dto
         public string NroSolp { get; set; }
 
         public int PeticionDeOferta_Id { get; set; }
+
+        public bool AdmiteCertificacionesParciales { get; set; }
     }
 
     public class AdjudicacionMailDto

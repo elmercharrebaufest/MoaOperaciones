@@ -22,6 +22,7 @@ using HttpHelper = System.Web.Http;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class ComprasController : BaseController
     {
         private readonly IComprasService service;
@@ -50,7 +51,6 @@ namespace SustitucionMOA.Controllers
         [CustomPermisoAuthorize(Roles = Permiso.ABM_SOLP)]
         public ActionResult GuardarSolp(string solpJson)
         {
-
             var solp = JsonConvert.DeserializeObject<SolpDto>(solpJson);
             solp.UsuarioActual = ObtenerUsuarioActual();
             var result = service.GuardarSolp(solp, Request.Files);
@@ -65,7 +65,6 @@ namespace SustitucionMOA.Controllers
             }
 
             return JsonCustom(result);
-
         }
 
         public ActionResult DescargarArchivo(int archivoId)
@@ -138,7 +137,7 @@ namespace SustitucionMOA.Controllers
 
         private UsuarioDto ObtenerUsuarioActual()
         {
-            string userMail = SessionPersister.getUsername();
+            string userMail = SessionPersister.Mail;
             return usuarioService.GetUsuario(userMail);
         }
 
@@ -431,7 +430,7 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom(new
             {
-                data = service.ListarPOProveedor(paginacion, nroSolp, nroPo, nombrePedido, SessionPersister.getUsername(), fechaDesde, fechaHasta, estadoLicitacion, estadoCotizacion)
+                data = service.ListarPOProveedor(paginacion, nroSolp, nroPo, nombrePedido, SessionPersister.Mail, fechaDesde, fechaHasta, estadoLicitacion, estadoCotizacion)
             });
 
         }
@@ -486,7 +485,7 @@ namespace SustitucionMOA.Controllers
         {
             var response = new SustitucionMOAApiResponse<ObtenerLegajoResponse>();
 
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             response.Data = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor, mailUsuario, esSolicitante);
 
             return ContentCustom(response);
@@ -504,7 +503,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult DescargarLegajo(int idPeticion, int? idPeticionDeOfertaUsuario, bool esProveedor, int? adjudicacionId, bool esSolicitante)
         {
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
             Directory.CreateDirectory(path);
 
@@ -561,7 +560,6 @@ namespace SustitucionMOA.Controllers
             var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
             var result = service.GrabarAdjudicacion(adjudicacion, ObtenerUsuarioActual().Id, "");
             return JsonCustom(result);
-
         }
 
         [HttpGet]
@@ -584,7 +582,7 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public ActionResult GrabarRevisionTecnica(string json, bool finalizar, string jsonRevision)
         {
-            var peticionDeOfertaUsuarioDto = JsonConvert.DeserializeObject<List<PeticionDeOfertaUsarioDto>>(json);
+            var peticionDeOfertaUsuarioDto = JsonConvert.DeserializeObject<List<PeticionDeOfertaUsuarioDto>>(json);
             var revision = JsonConvert.DeserializeObject<PeticionDeOfertaRevisionTecnicaDto>(jsonRevision);
 
             var result = service.GrabarRevisionTecnica(peticionDeOfertaUsuarioDto, ObtenerUsuarioActual().Id, finalizar, revision);
@@ -618,10 +616,8 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ObtenerAdjudicacion(string nroOC)
         {
-
-            var result = comprasSapService.ObtenerAdjudicacion(nroOC);
+            var result = service.ObtenerAdjudicacion(nroOC);
             return JsonCustom(new { data = result });
-
         }
 
         [HttpGet]
@@ -689,7 +685,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ObtenerLegajoParaExternos(int adjudicacionId, string token)
         {
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             var result = service.ObtenerLegajoParaExternos(adjudicacionId, token, mailUsuario);
             return JsonCustom(new { data = result });
         }
@@ -1187,6 +1183,13 @@ namespace SustitucionMOA.Controllers
                 Data = service.ProcesarArchivoPrecargaSolp(archivo, tipoSolpId)
             };
             return ContentCustom(response);
+        }
+
+        [HttpPost]
+        public ActionResult GuardarCertificacionesParciales(List<AdjudicacionDto> adjudicaciones)
+        {
+            service.GuardarCertificacionesParciales(adjudicaciones);
+            return JsonCustom(new SustitucionMOAApiResponse());
         }
     }
 }

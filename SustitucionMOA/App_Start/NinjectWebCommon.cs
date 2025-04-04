@@ -112,6 +112,7 @@ namespace SustitucionMOA.App_Start
 
             kernel.Bind<INotificacionErroresJob>().To(typeof(NotificacionErroresJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEliminarFacturasAntiguasJob>().To(typeof(EliminarFacturasAntiguasJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IActualizarLegajoImpositivoJob>().To(typeof(ActualizarLegajoImpositivoJob)).InScope(ctx => OperationContext.Current);
 
 
             #region Registro
@@ -212,6 +213,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioUbicacionGeografica>().To<RepositorioUbicacionGeografica>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioConsultas>().To<RepositorioConsultas>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioEntradaServicio>().To<RepositorioEntradaServicio>().InScope(ctx => HttpContext.Current);
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
 
             //Consulta Strategies

@@ -365,6 +365,8 @@ export class ComprasService extends BaseService {
             ObservacionesCotizacionCondEsp: solp.observacionesCotizacionCondEsp,
             ProveedorAsignado_Id: solp.proveedorAsignado_Id,
             TrabajoYaHecho: solp.trabajoHecho,
+            ConPresupuesto: solp.conPresupuesto,
+            CertificacionAutomatica: solp.certificacionAutomatica,
             Adicional: solp.adicional,
             Urgencia: solp.urgencia,
             CondEspProveedorAsignado: solp.condEspProveedorAsignado,
@@ -379,6 +381,7 @@ export class ComprasService extends BaseService {
             EnvioCircularA: solp.envioCircularA,
             CodigoProveedorSap: solp.codigoProveedorSap,
             Posiciones: null,
+            MultipleFinalizado: solp.MultipleFinalizado,
         };
 
         if (incluirPosiciones) {
@@ -469,7 +472,6 @@ export class ComprasService extends BaseService {
             for (let i = 0; i < archivos.length; i++) {
                 let fileToUpload = archivos[i];
                 payload.append("fileEspecificaciones", fileToUpload, fileToUpload.name);
-
             }
         }
 
@@ -1061,7 +1063,8 @@ export class ComprasService extends BaseService {
             Garantias: adjudicacion.Garantias,
             EsMonedaProveedor: adjudicacion.EsMonedaProveedor,
             Proveedor: adjudicacion.Proveedor,
-            RegionSap: adjudicacion.RegionSap
+            RegionSap: adjudicacion.RegionSap,
+            AdmiteCertificacionesParciales: adjudicacion.AdmiteCertificacionesParciales
         });
 
         var payload = new FormData();
@@ -1069,6 +1072,12 @@ export class ComprasService extends BaseService {
 
         return this.http
             .post<any>('/api/compras/CrearOrdenDeCompra', payload, { headers: this.headers });
+    }
+
+    public GuardarCertificacionesParciales(adjudicaciones: AdjudicacionDto[]): Observable<ApiResponse<any>> {
+        return this.http
+            .post<ApiResponse<any>>('/api/compras/GuardarCertificacionesParciales', adjudicaciones, { headers: this.headersPost })
+            .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
     public listarAdjudicaciones(id: number): Observable<any> {
