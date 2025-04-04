@@ -372,6 +372,16 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
+          <xsd:element minOccurs="0" name="BLOQUEO_ENTREGA">
+            <xsd:annotation>
+              <xsd:documentation>Delivery block (document header)</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="2" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
           <xsd:element minOccurs="0" name="DETALLE" type="rfc:ZMPTT9580" />
         </xsd:sequence>
       </xsd:complexType>
@@ -546,6 +556,16 @@
               <xsd:restriction base="xsd:decimal">
                 <xsd:totalDigits value="15" />
                 <xsd:fractionDigits value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="BLOQUEO_ENTREGA">
+            <xsd:annotation>
+              <xsd:documentation>Delivery block (document header)</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="2" />
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
