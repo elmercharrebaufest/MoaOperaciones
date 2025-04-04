@@ -86,6 +86,46 @@
                            /endpoint[@name='BasicHttpBinding_IDataAgroServices']
                            /@address" />
   </parameter>
+
+	<parameter name="SpaUrl Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='SpaUrl']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ComputerVisionApiKey Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='ComputerVisionApiKey']
+                           /@value" />
+	</parameter>
+	<parameter name="ComputerVisionEndpoint Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='ComputerVisionEndpoint']
+                           /@value" />
+	</parameter>
+    <parameter name="BlobStorageEndpoint Config">
+	    <parameterEntry kind="XmlFile" scope="Web.config"
+						    match="/configuration/appSettings/add[@key='BlobStorageEndpoint']
+                            /@value" />
+    </parameter>
+	<parameter name="SI_MMRFC_BAPI_ENTRYSHEET_GETLIST Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                    /endpoint[@name='SI_MMRFC_BAPI_ENTRYSHEET_GETLIST']
+                    /@address" />
+	</parameter>
+	<parameter name="SI_MMRFC_BAPI_ENTRYSHEET_CREATE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                    /endpoint[@name='SI_MMRFC_BAPI_ENTRYSHEET_CREATE']
+                    /@address" />
+	</parameter>
+
+	<parameter name="EmailRegexFormato Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='EmailRegexFormato']
+                           /@value" />
+	</parameter>
   
 </parameters>
 

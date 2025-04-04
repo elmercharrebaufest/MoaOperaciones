@@ -145,7 +145,14 @@
        </p-table>
             </div>
             <div class="row">
-                <div class="col-md-9"></div>
+                <div class="col-md-9">
+                    <p-checkbox *ngIf="ordenDeCompra?.TipoPosicionCodigo != 'MATERIALES'"
+                        [ngModel]="ordenDeCompra?.AdmiteCertificacionesParciales"
+                        binary="true"
+                        [disabled]="true"
+                        label="Admite certificaciones parciales">
+                    </p-checkbox>
+                </div>
                 <div class="inline-flex-end col-md-3" style="text-align: end;">  
                     <button class="publicar btn valorTotal p-1 textCenter" style="cursor: default; background-color: #5a35aa; border-color: #5a35aa;color:white">Valor Total: $ {{ordenDeCompra?.PrecioFinal | number:'1.2-2'}} ARP </button>  
                 </div>  

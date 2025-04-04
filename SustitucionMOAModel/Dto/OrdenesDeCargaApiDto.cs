@@ -18,6 +18,7 @@
             CUITTransporte = ordenFas.CUITTransporte;
             DescripcionProducto = ParseNombreProducto(ordenFas.Producto.Nombre);
             FechaCreacion = ordenFas.FechaCarga.ToString();
+            KmARecorrer = ordenFas.KmsARecorrer?.ToString();
             NombreChofer = ordenFas.NombreChofer;
             Observacion = ordenFas.Observacion;
             PatenteAcoplado = ordenFas.PatenteAcoplado;

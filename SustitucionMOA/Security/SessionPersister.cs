@@ -40,11 +40,6 @@ namespace SustitucionMOASecurity
                 }
                 return null;
             }
-            set
-            {
-                //TODO: Ver como cambiar el valor del proveedor en el claim. Esto es para cuando un corredor cambia de vendedor
-                //HttpContext.Current.Session[proveedorSessionvar] = value;
-            }
         }
 
         public static string CUIT
@@ -57,11 +52,6 @@ namespace SustitucionMOASecurity
                 }
                 return null;
             }
-            set
-            {
-                //TODO: Ver como cambiar el valor del proveedor en el claim. Esto es para cuando un corredor cambia de vendedor
-                //HttpContext.Current.Session[proveedorSessionvar] = value;
-            }
         }
 
         public static int ProveedorId
@@ -73,11 +63,6 @@ namespace SustitucionMOASecurity
                     return int.Parse(ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorId).Value);
                 }
                 return 0;
-            }
-            set
-            {
-                //TODO: Ver como cambiar el valor del proveedor en el claim. Esto es para cuando un corredor cambia de vendedor
-                //HttpContext.Current.Session[proveedorSessionvar] = value;
             }
         }
 
@@ -107,13 +92,17 @@ namespace SustitucionMOASecurity
             }
         }
 
-        public static string getUsername()
+        public static string Mail
         {
-            if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType) != null)
+            get
             {
-                return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value;
+                if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType) != null)
+                {
+                    return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value;
+                }
+                return "No User";
             }
-            return "No User";
+
         }
     }
 }

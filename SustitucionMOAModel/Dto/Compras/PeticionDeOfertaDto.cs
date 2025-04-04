@@ -13,53 +13,9 @@ namespace SustitucionMOAModel.Dto
         public int UsuarioCreador_Id { get; set; }
         public DateTime FechaCreacion { get; set; }
 
-        public DateTime PlazoDeOferta
-        {
-            get
-            {
-                if (PlazoDeOfertaCierre == null && FechaCircular == null)
-                {
-                    return PlazoDeOfertaOriginal;
-                }
-
-                if (PlazoDeOfertaCierre == null)
-                {
-                    return PlazoDeOfertaCircular.Value;
-                }
-
-                if (FechaCircular == null)
-                {
-                    return PlazoDeOfertaCierre.Value;
-                }
-
-                if (PlazoDeOfertaCierre.Value > FechaCircular.Value)
-                {
-                    return PlazoDeOfertaCierre.Value;
-                }
-
-                return PlazoDeOfertaCircular.Value;
-            }
-        }
-
         public string Observaciones { get; set; }
-        public string PlazoDeOfertaFormateado { get { return PlazoDeOferta.ToString("dd/MM/yyyy HH:mm"); } }
 
-        public string Estado
-        {
-            get { return PlazoDeOferta >= DateTime.Now ? "Abierto" : "Cerrado"; }
-        }
-
-        public int Estado_Id
-        {
-            get { return PlazoDeOferta >= DateTime.Now ? 1 : 2; }
-        }
-
-        public string EstadoColor
-        {
-            get { return PlazoDeOferta >= DateTime.Now ? "Green" : "Red"; }
-        }
-
-        public List<PeticionDeOfertaUsarioDto> Usuarios { get; set; }
+        public List<PeticionDeOfertaUsuarioDto> Usuarios { get; set; }
         public DateTime? FechaEntrega { get; set; }
         public string FechaEntregaFormateado { get; set; }
         public IQueryable<CircularDto> CircularDto { get; set; }
@@ -111,6 +67,7 @@ namespace SustitucionMOAModel.Dto
         public bool PideDocumentacionTecnica { get; set; }
         public int? RevisionTecnicaId { get; set; }
         public bool? TrabajoHecho { get; set; }
+        public bool ConPresupuesto { get; set; }
         public IEnumerable<string> NrosSolp { get; set; }
         public bool TienePosicionesEliminadas { get; set; }
         public bool VerCotizar { get; set; }
@@ -125,178 +82,64 @@ namespace SustitucionMOAModel.Dto
         public IEnumerable<ArchivoDto> ArchivosPaso4Cotizacion { get; set; }
 
         public bool SolpModificada { get; set; }
-    }
 
-    public class PeticionDeOfertaSolpPosicionDto
-    {
-        public int Id { get; set; }
-        public int PeticionDeOferta_Id { get; set; }
-        public int SolpPosicion_Id { get; set; }
-        public SolpPosicionDto Posicion { get; set; }
-        public SolpPosicionDto Posiciones { get; set; }
-        public int SolpId { get; set; }
-        public SolpPosicionDto PosicionPeticion { get; set; }
-        public bool EstaEliminado { get; set; }
-    }
-
-    public class PeticionDeOfertaUsarioDto
-    {
-        public int UsuarioId { get; set; }
-
-        private string razonSocial;
-        private bool razonSocialOverride;
-        public string RazonSocial
+        public DateTime PlazoDeOferta
         {
             get
             {
-                if (razonSocialOverride) { return razonSocial; }
-                return DatosProveedor?.RazonSocial ?? CuitRegistroUsuario;
-            }
-            set
-            {
-                razonSocial = value;
-                razonSocialOverride = true;
+                if (PlazoDeOfertaCierre == null && FechaCircular == null)
+                {
+                    return PlazoDeOfertaOriginal;
+                }
+
+                if (PlazoDeOfertaCierre == null)
+                {
+                    return PlazoDeOfertaCircular.Value;
+                }
+
+                if (FechaCircular == null)
+                {
+                    return PlazoDeOfertaCierre.Value;
+                }
+
+                if (PlazoDeOfertaCierre.Value > FechaCircular.Value)
+                {
+                    return PlazoDeOfertaCierre.Value;
+                }
+
+                return PlazoDeOfertaCircular.Value;
             }
         }
 
-        public int Id { get; set; }
+        public string PlazoDeOfertaFormateado { get { return PlazoDeOferta.ToString("dd/MM/yyyy HH:mm"); } }
 
-        private string cuit;
-        private bool cuitOverride;
-        public string CUIT
+        public string Estado
         {
-            get
-            {
-                if (cuitOverride) { return cuit; }
-                return DatosProveedor?.CUIT ?? CuitRegistroUsuario;
-            }
-            set
-            {
-                cuit = value;
-                cuitOverride = true;
-            }
+            get { return PlazoDeOferta >= DateTime.Now ? "Abierto" : "Cerrado"; }
         }
 
-        private string mail;
-        private bool mailOverride;
-        public string Mail
+        public int Estado_Id
         {
-            get
-            {
-                if (mailOverride) { return mail; }
-                return DatosProveedor?.Mail ?? CuitRegistroUsuario;
-            }
-            set
-            {
-                mail = value;
-                mailOverride = true;
-            }
+            get { return PlazoDeOferta >= DateTime.Now ? 1 : 2; }
         }
 
-        public bool? PropuestaTecnicaAprobada { get; set; }
-        public bool? RealizoVisita { get; set; }
-        public CotizacionDto Cotizacion { get; set; }
-        public bool CircularSinLeer { get; set; }
-        public IEnumerable<int> CircularesSinLeer { get; set; }
-        public string EstadoVisita { get; set; }
-        public string EstadoVisitaColor { get; set; }
-        public string EstadoPropuestaTecnica { get; set; }
-        public string EstadoPropuestaTecnicaColor { get; set; }
-        public string CotizacionEstado { get; set; }
-        public bool VerAdjudicar { get; set; }
-        public bool VerImportes { get; set; }
-        public bool EstaHabilitado { get; set; }
-
-        private EstadoAprobacion? proveedorEstadoAprobacion;
-        private bool proveedorEstadoAprobacionOverride;
-        public EstadoAprobacion? ProveedorEstadoAprobacion
+        public string EstadoColor
         {
-            get
-            {
-                if (proveedorEstadoAprobacionOverride) { return proveedorEstadoAprobacion; }
-                return DatosProveedor?.EstadoAprobacion;
-            }
-            set
-            {
-                proveedorEstadoAprobacion = value;
-                proveedorEstadoAprobacionOverride = true;
-            }
+            get { return PlazoDeOferta >= DateTime.Now ? "Green" : "Red"; }
         }
 
-        public string MensajeAdjudicar { get; set; }
-        public bool ValidacionCircularSolicitante { get; set; }
-        public string ObservacionNoCumple { get; set; }
-        public DateTime PlazoDeOferta { get; set; }
-        public DateTime PlazoDeOfertaOriginal { get; set; }
-        public DateTime? PlazoDeOfertaCircular { get; set; }
-        public DateTime? PlazoDeOfertaCierre { get; set; }
-        public DateTime? FechaCircular { get; set; }
-
-        private string codigoProveedor;
-        private bool codigoProveedorOverride;
-        public string CodigoProveedor
+        public bool EsMateriales()
         {
-            get
-            {
-                if (codigoProveedorOverride) { return codigoProveedor; }
-                return DatosProveedor?.CodigoProveedor ?? "";
-            }
-            set
-            {
-                codigoProveedor = value;
-                codigoProveedorOverride = true;
-            }
+            return TipoPosicionCodigo == "MATERIALES";
         }
-
-        public string THCategoria { get; set; }
-        public bool? VisibleSolicitante { get; set; }
-        public bool Deshabilitado { get; set; }
-        public List<MonedaTotalDto> TotalesPorMoneda { get; set; }
-
-        public Proveedor DatosProveedor { private get; set; }
-        public string CuitRegistroUsuario { private get; set; }
     }
 
-    public class PeticionDeOfertaCierreDto
-    {
-        public int Id { get; set; }
-        public int PeticionDeOferta_Id { get; set; }
-        public int Usuario_Id { get; set; }
-        public DateTime Fecha { get; set; }
-        public string Observacion { get; set; }
-    }
-
-    public class PeticionDeOfertaRevisionTecnicaDto
-    {
-        public int Id { get; set; }
-        public int Usuario_Id { get; set; }
-        public DateTime Fecha { get; set; }
-        public bool RecotizacionEconomica { get; set; }
-        public bool? ModificacionSolp { get; set; }
-        public string ObservacionRecotizacion { get; set; }
-        public bool Finalizada { get; set; }
-    }
-
-    public class PeticionDeOfertaUsuarioAdicionalDto
-    {
-
-        public PeticionDeOfertaUsuarioAdicionalDto()
-        {
-        }
-
-        public PeticionDeOfertaUsuarioAdicionalDto(PeticionDeOfertaUsuarioAdicional entidad)
-        {
-            UsuarioId = entidad.Usuario_Id;
-            Id = entidad.Id;
-            RazonSocial = entidad.Usuario.ObtenerRazonSocial();
-            CUIT = entidad.Usuario.CUITRegistro;
-            Mail = entidad.Usuario.Mail;
-        }
-
-        public int UsuarioId { get; set; }
-        public string RazonSocial { get; set; }
-        public int Id { get; set; }
-        public string CUIT { get; set; }
-        public string Mail { get; set; }
-    }
+    //public class PeticionDeOfertaCierreDto
+    //{
+    //    public int Id { get; set; }
+    //    public int PeticionDeOferta_Id { get; set; }
+    //    public int Usuario_Id { get; set; }
+    //    public DateTime Fecha { get; set; }
+    //    public string Observacion { get; set; }
+    //}
 }

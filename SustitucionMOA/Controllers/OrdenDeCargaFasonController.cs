@@ -14,6 +14,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class OrdenDeCargaFasonController : BaseController
     {
         private readonly IOrdenDeCargaFasonService ordenDeCargaFasonService;
@@ -31,12 +32,13 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<ListarOrdenDeCargaFasonResponse>();
             try
             {
-                var mailUsuario = SessionPersister.getUsername();
+                var mailUsuario = SessionPersister.Mail;
                 var request = new ListarOrdenDeCargaFasonRequest()
                 {
                     MailUsuario = mailUsuario,
                     FechaDesde = fechaInicio,
-                    FechaHasta = fechaFin
+                    FechaHasta = fechaFin,
+                    EsCorredor = SessionPersister.EsCodigoDeCorredor
                 };
                 response.Data = ordenDeCargaFasonService.Listar(request);
             }
@@ -50,7 +52,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -59,7 +61,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult GetDetalle(int IdOrdenCargaFason)
         {
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             var request = new DetalleOrdenDeCargaFasonRequest()
             {
                 MailUsuario = mailUsuario
@@ -75,7 +77,7 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<OrdenDeCargaFasonDto>();
             try
             {
-                var mailUsuario = SessionPersister.getUsername();
+                var mailUsuario = SessionPersister.Mail;
                 response.Data = ordenDeCargaFasonService.VerificarTransporte(IdOrdenCargaFason, mailUsuario);
             }
             catch (InfoCustomException ice)
@@ -88,7 +90,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -107,7 +109,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var crearOrdenReq = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
-                var mailUsuario = SessionPersister.getUsername();
+                var mailUsuario = SessionPersister.Mail;
 
                 response.Data = ordenDeCargaFasonService.Crear(crearOrdenReq, mailUsuario);
             }
@@ -121,7 +123,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -131,7 +133,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult Editar(string ordenDeCargaJson)
         {
             var editarOrdenReq = JsonConvert.DeserializeObject<EditarOrdenDeCargaFasonRequest>(ordenDeCargaJson);
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             var resultado = ordenDeCargaFasonService.Editar(editarOrdenReq, mailUsuario);
             return JsonCustom(new { data = resultado });
         }
@@ -174,7 +176,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -198,7 +200,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -222,7 +224,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -246,7 +248,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -270,7 +272,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -294,7 +296,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -306,7 +308,7 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<OrdenDeCargaFasonDto>();
             try
             {
-                var mailUsuario = SessionPersister.getUsername();
+                var mailUsuario = SessionPersister.Mail;
                 response.Data = ordenDeCargaFasonService.AnularOrden(ordenId, mailUsuario);
             }
             catch (InfoCustomException ice)
@@ -319,7 +321,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -343,7 +345,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -367,7 +369,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -391,7 +393,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -401,7 +403,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult ObtenerCuilsChofer(string ordenDeCargaFasonJson)
         {
             var ordenDeCarga = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             return Json(new { cuils = ordenDeCargaFasonService.ObtenerCuilsChofer(ordenDeCarga, mailUsuario) }, JsonRequestBehavior.AllowGet);
 
         }
@@ -410,7 +412,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult ObtenerCuitsTransporte(string ordenDeCargaFasonJson)
         {
             var ordenDeCarga = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             return Json(new { cuits = ordenDeCargaFasonService.ObtenerCuitsTransporte(ordenDeCarga, mailUsuario) }, JsonRequestBehavior.AllowGet);
 
         }
@@ -418,7 +420,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult ObtenerPatentes(string ordenDeCargaFasonJson)
         {
             var ordenDeCarga = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             return Json(ordenDeCargaFasonService.ObtenerPatentes(ordenDeCarga, mailUsuario), JsonRequestBehavior.AllowGet);
         }
 
@@ -440,7 +442,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -465,7 +467,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -474,7 +476,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult VerificarCuitsTerceros(int ordenId)
         {
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             return JsonCustom(new { data = ordenDeCargaFasonService.VerificarCuitsTerceros(ordenId, mailUsuario) });
         }
 
@@ -496,7 +498,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -520,7 +522,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -543,7 +545,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);

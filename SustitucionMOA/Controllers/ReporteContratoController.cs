@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class ReporteContratoController : BaseController
     {
         private readonly IOrdenDeCargaService ordenDeCargaService;
@@ -23,7 +24,7 @@ namespace SustitucionMOA.Controllers
         public JsonResult GetContratos(string fechaInicio, string fechaFin, bool mostrarPendientes, string contrato)
         {
             var proveedor = SessionPersister.Proveedor;
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             if (string.IsNullOrEmpty(proveedor))
             {
                 return JsonCustom(new { logout = true });
@@ -36,7 +37,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult ObtenerContratosFiltro(string fechaInicio, string fechaFin, string cliente, string producto, string tipoContrato, bool mostrarPendientes, string dataContrato)
         {
             var proveedor = SessionPersister.Proveedor;
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             if (string.IsNullOrEmpty(proveedor))
             {
                 return JsonCustom(new { logout = true });
@@ -48,7 +49,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ObtenerDetalleContrato(string contrato, string fechaInicio, string fechaFin)
         {
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             var detalleContrato = reporteContratoService.GetContratosDetalle(contrato, SessionPersister.Proveedor, fechaInicio, fechaFin);
 
             Result result = new Result();
@@ -77,7 +78,7 @@ namespace SustitucionMOA.Controllers
         }
         public ActionResult ObtenerOrdenDeCarga(string nroEntrega)
         {
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
 
             return JsonCustom(new { data = ordenDeCargaService.ObtenerPorNroEntrega(mailUsuario, nroEntrega) });
         }

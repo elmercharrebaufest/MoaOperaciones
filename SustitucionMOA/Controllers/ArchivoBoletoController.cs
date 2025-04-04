@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using WebHttp = System.Web.Http;
-using System.Web.Mvc;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.ArchivoBoleto;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using WebHttp = System.Web.Http;
 
 namespace SustitucionMOA.Controllers
 {
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    [Authorize]
     public class ArchivoBoletoController : BaseController
     {
         private readonly IArchivoBoletoService archivoBoletoService;
@@ -26,7 +25,7 @@ namespace SustitucionMOA.Controllers
         {
             var apiResponse = new SustitucionMOAApiResponse<ArchivoBoletoDto>();
             data.ProveedorId = SessionPersister.ProveedorId;
-            data.EmailUsuario = SessionPersister.getUsername();
+            data.EmailUsuario = SessionPersister.Mail;
             apiResponse.Data = await archivoBoletoService.CrearArchivoBoleto(data);
             return ContentCustom(apiResponse);
         }

@@ -64,7 +64,8 @@ export class ComprasService extends BaseService {
         claseDocumento: "",
         tipoImputacion: "",
         valorTipoImputacion: "",
-        tratada: null
+        tratada: null,
+        tipoPliego: "",
     }
     listaSolp: any;
     observableListaSolp = new Subject<any[]>();
@@ -317,9 +318,12 @@ export class ComprasService extends BaseService {
     }
 
 
-    public GuardarSolp(solp: Solp) {
-        let solpJson = JSON.stringify({
+    public armarSolpString(solp: Solp, incluirPosiciones: boolean = true): string {
+
+        let solpObject =
+        {
             Id: solp.id,
+            Pliego_Id: solp.Pliego_Id,
             TipoSolp: this.getObjetoCodigo(solp.tipoSolp),
             TipoSolpSap: solp.tipoSolpSap,
             NombreDeObra: solp.nombreDePedido,
@@ -361,6 +365,8 @@ export class ComprasService extends BaseService {
             ObservacionesCotizacionCondEsp: solp.observacionesCotizacionCondEsp,
             ProveedorAsignado_Id: solp.proveedorAsignado_Id,
             TrabajoYaHecho: solp.trabajoHecho,
+            ConPresupuesto: solp.conPresupuesto,
+            CertificacionAutomatica: solp.certificacionAutomatica,
             Adicional: solp.adicional,
             Urgencia: solp.urgencia,
             CondEspProveedorAsignado: solp.condEspProveedorAsignado,
@@ -374,8 +380,12 @@ export class ComprasService extends BaseService {
             THProveedorDirecto: solp.thProveedorDirecto,
             EnvioCircularA: solp.envioCircularA,
             CodigoProveedorSap: solp.codigoProveedorSap,
-            Posiciones: solp.posiciones.map(x => {
+            Posiciones: null,
+            MultipleFinalizado: solp.MultipleFinalizado,
+        };
 
+        if (incluirPosiciones) {
+            solpObject.Posiciones = solp.posiciones.map(x => {
                 return {
                     Codigo: x.id,
                     PlazoEntrega: x.plazoDeEntrega,
@@ -445,8 +455,15 @@ export class ComprasService extends BaseService {
                         ...this.getProveedores(x.proveedoresInvalidos, 'INVALIDO')
                     ]
                 }
-            })
-        });
+            });
+        }
+
+        return JSON.stringify(solpObject);
+    }
+
+
+    public GuardarSolp(solp: Solp) {
+        let solpJson = this.armarSolpString(solp);
 
         var payload = new FormData();
 
@@ -455,7 +472,6 @@ export class ComprasService extends BaseService {
             for (let i = 0; i < archivos.length; i++) {
                 let fileToUpload = archivos[i];
                 payload.append("fileEspecificaciones", fileToUpload, fileToUpload.name);
-
             }
         }
 
@@ -664,7 +680,8 @@ export class ComprasService extends BaseService {
         contratoMarco: boolean = this.filtros.contratoMarco,
         claseDocumento: any = this.filtros.claseDocumento,
         tipoImputacion: any = this.filtros.tipoImputacion,
-        valorTipoImputacion: any = this.filtros.valorTipoImputacion) {
+        valorTipoImputacion: any = this.filtros.valorTipoImputacion,
+        tipoPliego: string = this.filtros.tipoPliego) {
         let params: HttpParams = new HttpParams()
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -690,6 +707,7 @@ export class ComprasService extends BaseService {
         params = params.set('claseDocumento', claseDocumento);
         params = params.set('tipoImputacion', tipoImputacion);
         params = params.set('valorTipoImputacion', valorTipoImputacion);
+        params = params.set('tipoPliego', tipoPliego);
         return this.http
             .get<any[]>('/api/compras/ListarSolpComprador', { params: params, headers: this.headers }).subscribe(
                 (data: any[]) => {
@@ -1045,7 +1063,8 @@ export class ComprasService extends BaseService {
             Garantias: adjudicacion.Garantias,
             EsMonedaProveedor: adjudicacion.EsMonedaProveedor,
             Proveedor: adjudicacion.Proveedor,
-            RegionSap: adjudicacion.RegionSap
+            RegionSap: adjudicacion.RegionSap,
+            AdmiteCertificacionesParciales: adjudicacion.AdmiteCertificacionesParciales
         });
 
         var payload = new FormData();
@@ -1053,6 +1072,12 @@ export class ComprasService extends BaseService {
 
         return this.http
             .post<any>('/api/compras/CrearOrdenDeCompra', payload, { headers: this.headers });
+    }
+
+    public GuardarCertificacionesParciales(adjudicaciones: AdjudicacionDto[]): Observable<ApiResponse<any>> {
+        return this.http
+            .post<ApiResponse<any>>('/api/compras/GuardarCertificacionesParciales', adjudicaciones, { headers: this.headersPost })
+            .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
     public listarAdjudicaciones(id: number): Observable<any> {
@@ -1256,6 +1281,12 @@ export class ComprasService extends BaseService {
         });
     }
 
+    public listarFiscalesSolp(): Observable<any> {
+        return this.http.get("/api/compras/ListarFiscalesSolp", {
+            headers: this.headers,
+        });
+    }
+
     public ModificarAdjudicacion(adjudicacion: AdjudicacionEdicionDto) {
         let json = JSON.stringify(adjudicacion);
         var payload = new FormData();
@@ -1330,6 +1361,7 @@ export class ComprasService extends BaseService {
         numeroPo?: number,
         tipoSolp?: string,
         nombrePliego?: string,
+        tipoPliego?: string
     ): Observable<ActionResult<POPosicionDto[]> | ActionResult<SolpCrearPoMultipleDto[]>> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
@@ -1349,6 +1381,7 @@ export class ComprasService extends BaseService {
 
         if (tipoSolp === "SERVICIO") {
             params = params.set('nombrePliego', nombrePliego != null ? nombrePliego : "");
+            params = params.set('tipoPliego', tipoPliego);
             return this.http.get<ActionResult<SolpCrearPoMultipleDto[]>>('/api/compras/ListarPosicionesPOMultipleServicio', { params: params, headers: this.headers });
         } else {
             return this.http.get<ActionResult<POPosicionDto[]>>('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });

@@ -63,6 +63,8 @@ namespace SustitucionMOAWS.WSConsumers
                 ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POCOND, out POACCOUNT, out POSRVACCESSVALUES, out POHISTORY);
 
                 var resultado = mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POCOND, POSRVACCESSVALUES, POHISTORY);
+                // Filtrar certificaciones con saldo mayor a 0
+                resultado.Certificaciones = resultado.Certificaciones.Where(x => x.Saldo > 0).ToList();
                 Log.Info("BAPI_PO_GETDETAIL1PortTypeClient" + resultado.ToJson());
                 return resultado;
 
@@ -339,7 +341,7 @@ namespace SustitucionMOAWS.WSConsumers
                         IndiceSolp = pos.PREQ_ITEM,
                         RegistroInfo = pos.INFO_REC,
                         NroSolp = pos.PREQ_NO,
-                        TipoPosicion = pos.ITEM_CAT == "9" ? "SERVICIOS" : "MATERIALES",
+                        TipoPosicion = pos.ITEM_CAT == "9" ? "SERVICIO" : "MATERIALES",
                         DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
                         {
                             RegionSap = region?.REGION
@@ -350,12 +352,39 @@ namespace SustitucionMOAWS.WSConsumers
                     });
                 }
 
+                //Certificaciones
+                foreach (var poh in POHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D"))
+                {
+                    resultado.Certificaciones.Add(new OrdenDeCompraSAPCertificacion
+                    {
+                        NroCertificacion = poh.MAT_DOC,
+                        Saldo = poh.VAL_LOCCUR,
+                        Moneda = poh.CURRENCY,
+                        //importe = poh.importe // Nos tienen que decir el nombre de este campo
+                    });
+                }
 
+                foreach (var poh in POHISTORY.Where(x => (x.PROCESS_ID == "2" && x.HIST_TYPE == "Q") || (x.PROCESS_ID == "3" && x.HIST_TYPE == "N")))
+                {
+                    var certificacion = resultado.Certificaciones.First(x => x.NroCertificacion == poh.REF_DOC);
+                    switch (poh.HIST_TYPE)
+                    {
+                        case "Q":
+                            certificacion.Saldo -= poh.VAL_LOCCUR;
+                            break;
+                        case "N":
+                            certificacion.Saldo += poh.VAL_LOCCUR;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                //resultado.Certificaciones = resultado.Certificaciones.Where(x => x.Saldo > 0).ToList();
             }
-
 
             return resultado;
         }
+
         private decimal CalcularSaldoDisponible(BAPIEKBE[] POHISTORY)
         {
             var registros = POHISTORY.ToList();
@@ -400,7 +429,7 @@ namespace SustitucionMOAWS.WSConsumers
             adjudicacion.Solp_Id = solp;
 
             adjudicacion.Id = 0;
-            adjudicacion.TipoPosicionCodigo = POITEM.First().ITEM_CAT == "9" ? "SERVICIOS" : "MATERIALES";
+            adjudicacion.TipoPosicionCodigo = POITEM.First().ITEM_CAT == "9" ? "SERVICIO" : "MATERIALES";
             adjudicacion.NumeroOrdenDeCompra = POHEADER.PO_NUMBER;
             adjudicacion.Proveedor = POHEADER.VENDOR;
             adjudicacion.Centro = POADDRDELIVERY.FirstOrDefault()?.NAME;
@@ -663,22 +692,26 @@ namespace SustitucionMOAWS.WSConsumers
                 if (centro == null)
                 {
                     pos.Centro = posicion.PLANT + "- ";
-                };
+                }
+                ;
 
                 if (centro != null)
                 {
                     pos.Centro = posicion.PLANT + "-" + centro.Descripcion;
-                };
+                }
+                ;
 
                 if (Almacen == null)
                 {
                     pos.Almacen = posicion.STGE_LOC + "- ";
-                };
+                }
+                ;
 
                 if (Almacen != null)
                 {
                     pos.Almacen = posicion.STGE_LOC + "-" + Almacen.Descripcion;
-                };
+                }
+                ;
 
 
                 //pos.Centro = posicion.PLANT;

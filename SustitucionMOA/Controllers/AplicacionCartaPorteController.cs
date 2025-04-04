@@ -1,19 +1,16 @@
 ﻿using Newtonsoft.Json;
-using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.AplicacionCartaPorte;
-using SustitucionMOAModel.Entities;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class AplicacionCartaPorteController : BaseController
     {
         readonly IAplicacionCartaPorteService aplicacionCCPPService;
@@ -26,7 +23,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult GetListado(string fechaInicio, string fechaFin)
         {
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             var data = aplicacionCCPPService.Listar(mailUsuario, fechaInicio, fechaFin);
             if (!(data.Count > 0))
                 throw new InfoCustomException("No se han encontrado aplicaciones cargadas");
@@ -39,7 +36,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult Get(int aplicacionCCPPId)
         {
 
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
 
             return JsonCustom(new { data = aplicacionCCPPService.Obtener(aplicacionCCPPId, mailUsuario) });
 
@@ -59,7 +56,7 @@ namespace SustitucionMOA.Controllers
         {
             var response = new SustitucionMOAApiResponse<ComboAplicacionesContratosCcppResponse>();
 
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             var codigoProveedor = SessionPersister.Proveedor;
             var esCodigoCorredor = SessionPersister.EsCodigoDeCorredor;
             response.Data = aplicacionCCPPService.ObtenerCombosDeContratoCCPP(mailUsuario, codigoProveedor, esCodigoCorredor);
@@ -72,8 +69,10 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<bool>();
 
             var aplicacionACrear = JsonConvert.DeserializeObject<CrearAplicacionCartaPorte>(aplicacionCCPPJSON);
-            var mailUsuario = SessionPersister.getUsername();
-            aplicacionCCPPService.GuardarAplicacion(aplicacionACrear, mailUsuario);
+            var mailUsuario = SessionPersister.Mail;
+            var codigoProveedor = SessionPersister.Proveedor;
+            var esCodigoCorredor = SessionPersister.EsCodigoDeCorredor;
+            aplicacionCCPPService.GuardarAplicacion(aplicacionACrear, mailUsuario, codigoProveedor, esCodigoCorredor);
             response.Data = true;
 
             return ContentCustom(response);
@@ -83,7 +82,7 @@ namespace SustitucionMOA.Controllers
         public ContentResult CargarMasiva(HttpPostedFileBase archivo)
         {
             var response = new SustitucionMOAApiResponse<CargaMasivaResponse>();
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             var codigoProveedor = SessionPersister.Proveedor;
             var esCodigoCorredor = SessionPersister.EsCodigoDeCorredor;
             response.Data = aplicacionCCPPService.ProcesarCargaMasiva(archivo, mailUsuario, codigoProveedor, esCodigoCorredor);

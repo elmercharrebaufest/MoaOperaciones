@@ -82,6 +82,8 @@ namespace SustitucionMOAModel.Dto
         public IQueryable<AdjudicacionDto> OrdenesDeCompra { get; set; }
         public List<AdjudicacionDto> OrdenesDeCompraSolicitante { get; set; }
         public bool? TrabajoYaHecho { get; set; }
+        public bool ConPresupuesto { get; set; }
+        public bool CertificacionAutomatica { get; set; }
         public int? ProveedorAsignado_Id { get; set; }
         public string ProveedorAsignado { get; set; }
         public bool VerPublicar { get; set; }
@@ -126,6 +128,8 @@ namespace SustitucionMOAModel.Dto
         public EnviarCircularEnum? EnvioCircularA { get; set; }
         public bool PliegoVinculado { get; set; }
 
+        public bool EsPliegoMultiple { get; set; }
+        public bool MultipleFinalizado { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -176,6 +180,7 @@ namespace SustitucionMOAModel.Dto
             ProveedorAsignado_Id = entity.ProveedorAsignado_Id;
             TrabajoYaHecho = entity.TrabajoYaHecho;
             LiberadoresSapSolp = new List<LiberadorSapSolpDto>();
+            MultipleFinalizado = entity.Pliego.MultipleFinalizado;
         }
     }
 

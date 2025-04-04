@@ -97,6 +97,12 @@ namespace SustitucionMOA
 
             ValidarLogin(notification.AuthenticationTicket.Identity);
 
+            var cookies = notification.OwinContext.Response.Cookies;
+            foreach (var cookie in notification.OwinContext.Request.Cookies.Where(c => c.Key.StartsWith("OpenIdConnect.nonce")))
+            {
+                cookies.Delete(cookie.Key);
+            }
+
             return Task.FromResult(0);
         }
 

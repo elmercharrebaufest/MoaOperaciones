@@ -66,8 +66,8 @@
                 <tr>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 40px !important; "><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(tablaOfertas.PeticionDeOfertaPosicion)"></p-checkbox></th>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 40px !important; ">Pos.</th>
-                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 100px !important;">Codigo</th>
-                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 150px !important;">Descripcion </th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 100px !important;">Código</th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 150px !important;">Descripción </th>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 90px !important; ">Texto de <br />suministro</th>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 80px !important; ">Ctd. Pendiente</th>
                     <th class="headerth" rowspan="3" style="width: 96px; background-color: #4a1884 !important; width: 60px !important;">Ctd. <br />a Adj</th>
@@ -112,7 +112,7 @@
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="8" style="width: 620px !important;">Propuesta técnica</td>
-                </tr>
+                </tr>                
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="8" style="width: 620px !important; height: 60px !important;">
                         <button class="publicar btn " style="margin-right: 10px; font-size: 12px;" (click)="abrirModalTextos()">
@@ -277,7 +277,7 @@
                             <td class="columna border2-left" colspan="7" style="width: 660px !important;">
                                 <button [disabled]="!proveedor.VerAdjudicar || esAuditor" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                     Adjudicar
-                                </button>
+                                </button>                                
                                 <br />
                                 <label for="Mensaje" [ngStyle]="{'color': (proveedor.MensajeAdjudicar == 'Adjudicar') ? 'green' : 'red'}">{{proveedor.MensajeAdjudicar}}</label>
                             </td>
@@ -334,7 +334,7 @@
                 </tr>
                 <tr *ngIf="peticionPosicion.expanded == true">
                     <td class="headerth" style="width: 40px !important;">Sub <br>Pos</td>
-                    <td class="headerth" style="width: 80px !important;" colspan="2">Codigo</td>
+                    <td class="headerth" style="width: 80px !important;" colspan="2">Código</td>
                     <td class="headerth" style="width: 350px !important;">Tarea a subcontratar</td>
                     <td class="headerth" style="width: 40px !important;">Ctd.</td>
                     <td class="headerth border2-right" style="width: 40px !important;">UM.</td>
@@ -368,6 +368,9 @@
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="6" style="width: 550px !important;">Propuesta técnica</td>
+                </tr>
+                <tr *ngIf="esUltimaPosicion(peticionPosicion)" >
+                    <td class="columna border2-right" colspan="6" style="width: 550px !important; height: 43px !important;">Certificaciones</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="6" style="width: 550px !important; height: 60px !important;">
@@ -606,9 +609,38 @@
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                            <td colspan="9" class="columna border2-left" style="width: 540px !important; height: 43px !important;">
+                                <table>
+                                    <tr>
+                        <ng-container *ngIf="proveedor.Cotizacion != null">
+                                        <td *ngFor="let adjudicacion of proveedor.Cotizacion.Adjudicaciones">
+                                            OC {{ adjudicacion.NumeroOrdenDeCompra }}
+                                            <br />
+                                            <p-checkbox
+                                                [(ngModel)]="adjudicacion.AdmiteCertificacionesParciales"
+                                                [disabled]="tablaOfertas.TrabajoHecho"
+                                                binary="true">
+                                            </p-checkbox>
+                                            Certificaciones parciales
+                                        </td>
+                        </ng-container>
+                                    </tr>
+                                </table>
+                            </td>
+                    </ng-container>
+                </tr>
+                <tr *ngIf="esUltimaPosicion(peticionPosicion)">
+                    <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <td colspan="9" style="width: 540px !important;" class="columna border2-left">
                             <button [disabled]="!proveedor.VerAdjudicar || esAuditor" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                 Adjudicar
+                            </button>
+                            <button
+                                class="publicar btn btn-success"
+                                style="font-size: 12px; margin-left: 5px;"
+                                (click)="guardarCertificacionesParciales()"
+                                [disabled]="tablaOfertas.TrabajoHecho || proveedor.Cotizacion == null || proveedor.Cotizacion.Adjudicaciones == null || proveedor.Cotizacion.Adjudicaciones.length == 0">
+                                Guardar certificaciones parciales
                             </button>
                             <br />
                             <label for="Mensaje" [ngStyle]="{'color': (proveedor.MensajeAdjudicar == 'Adjudicar') ? 'green' : 'red'}">{{proveedor.MensajeAdjudicar}}</label>
@@ -655,7 +687,7 @@
     <p-header class="headerModal">
         ¡Adjudicación creada!
     </p-header>
-    <br> A continuacion se listan las ordenes de compras creadas:
+    <br> A continuación se listan las órdenes de compras creadas:
     <div *ngFor="let numero of numerosDePedido">
         {{ numero }}
     </div>
@@ -691,6 +723,20 @@
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor botonModal" (click)="noContinuarAdjudicacion()">No</button>
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="continuarAdjudicacion()">Sí</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displayAdmiteCertificacionesParciales" [width]="500" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'max-height':'500px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Certificaciones parciales</b>
+    </p-header>
+    <br />
+    <div>¿La OC admite certificaciones parciales?</div>
+    <br />
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="configurarAdmiteCertificacionesParciales(true)">SI</button>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="configurarAdmiteCertificacionesParciales(false)">NO</button>
+        <button type="button" class="btn btn-danger botonesComprasColor botonModal" (click)="cancelarAdmiteCertificacionesParciales()">Cancelar</button>
     </p-footer>
 </p-dialog>
 

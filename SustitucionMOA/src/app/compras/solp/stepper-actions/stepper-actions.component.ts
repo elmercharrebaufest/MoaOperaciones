@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Paso } from '../../../common/models/paso';
+import { Solp } from '../solp';
 
 @Component({
     selector: 'stepper-actions',
@@ -10,6 +11,15 @@ export class StepperActionsComponent implements OnInit {
 
     @Input()
     disabledSave: boolean;
+
+    @Input()
+    saveButtonAvailable: boolean;
+
+    @Input()
+    saveButtonPliegoMultipleAvailable: boolean;
+
+    @Input()
+    solpActual: Solp;
 
     @Input()
     esAuditor: boolean;
@@ -23,12 +33,6 @@ export class StepperActionsComponent implements OnInit {
     @Input()
     tipoSolp: string;
 
-    @Input()
-    nroSolp: string;
-
-    @Input()
-    tipoSolpSap: string;
-
     @Output() cancelarSolpEmitter = new EventEmitter();
 
     @Output() navegarEmitter = new EventEmitter<any>();
@@ -38,6 +42,9 @@ export class StepperActionsComponent implements OnInit {
     @Output() showFinalizarDialogEmitter = new EventEmitter();
 
     @Output() previewEmitter = new EventEmitter();
+
+    @Output() finalizarEmitter = new EventEmitter<{ selectUsuarioCompras: any, solpActual: Solp }>();
+
 
     constructor() { }
 
@@ -93,9 +100,9 @@ export class StepperActionsComponent implements OnInit {
             enviarSap: false,
             guardarPorPaso: true
         };
-        if(!this.esAuditor){
+        if (!this.esAuditor) {
             this.guardarCambiosEmitter.next(params);
-        }    
+        }
     }
 
     onPasoSiguiente() {
@@ -105,7 +112,7 @@ export class StepperActionsComponent implements OnInit {
             enviarSap: false,
             guardarPorPaso: true
         };
-        if(!this.esAuditor){
+        if (!this.esAuditor) {
             this.guardarCambiosEmitter.next(params);
         }
     }
@@ -116,13 +123,22 @@ export class StepperActionsComponent implements OnInit {
             enviarSap: false,
             guardarPorPaso: false
         };
-        if(!this.esAuditor){
+        if (!this.esAuditor) {
             this.guardarCambiosEmitter.next(params);
-        }    
+        }
+    }
+
+    onGuardarPliegoMultiple(){
+        this.solpActual.revisadoPor="-";
+        const updatedInfo = {
+            selectUsuarioCompras: this.solpActual.selectUsuarioCompras,
+            solpActual: this.solpActual
+        };
+        this.finalizarEmitter.next(updatedInfo);
     }
 
     onShowFinalizarDialog() {
-        if(!this.esAuditor){
+        if (!this.esAuditor) {
             this.showFinalizarDialogEmitter.next();
         }
     }

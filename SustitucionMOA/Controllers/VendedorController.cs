@@ -1,11 +1,7 @@
 ﻿using SustitucionMOA.Utils;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -13,6 +9,7 @@ using System.Web.Mvc;
 namespace SustitucionMOA.Controllers
 {
     [SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    [Authorize]
     public class VendedorController : BaseController
     {
         private readonly IVendedorService _vendedorService;

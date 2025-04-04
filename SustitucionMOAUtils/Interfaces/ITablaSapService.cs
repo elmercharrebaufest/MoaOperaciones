@@ -19,5 +19,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSap> Listar(Expression<Func<TablaSap, bool>> filtros);
 
         List<TablaSapDto> ListarTablaSap(List<string> tablas);
+        List<TablaSap> ObtenerMonedas();
     }
 }

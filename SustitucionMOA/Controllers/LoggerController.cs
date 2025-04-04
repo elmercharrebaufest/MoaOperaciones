@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class LoggerController : BaseController
     {
         private readonly ILogTableService logTableService;
@@ -17,6 +19,7 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public ActionResult Front(FrontLoggerRequestDto data)
         {
+            data.User = SessionPersister.Mail;
             Log.FrontError(data);
             return JsonCustom(true);
         }

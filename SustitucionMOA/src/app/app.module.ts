@@ -108,8 +108,8 @@ import { ZoomControlComponent } from './zoom-control/zoom-control.component';
         LoggerModule.forRoot(
             {
                 serverLoggingUrl: '/api/Logger/Front',
-                level: NgxLoggerLevel.DEBUG,
-                serverLogLevel: NgxLoggerLevel.ERROR
+                level: NgxLoggerLevel.TRACE,
+                serverLogLevel: NgxLoggerLevel.TRACE
             }
         ),
     ComprasModule,

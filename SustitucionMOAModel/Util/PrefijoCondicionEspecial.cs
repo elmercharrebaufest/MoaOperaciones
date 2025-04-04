@@ -6,18 +6,74 @@ namespace SustitucionMOAModel.Util
 {
     public static class PrefijoCondicionEspecial
     {
-        public const string none = "";
-        public const string TR = "TR-";
-        public const string PA = "PA-";
-        public const string UR = "UR-";
-        public const string AD = "AD-";
-        public const string AOR = "AOR-";
-        public const string TUR = "TUR-";
-        public const string SP = "SP-";
-        public const string AJ = "AJ-";
-        public const string PD = "PD-";
+        private const string none = "";
 
-        public readonly static IReadOnlyCollection<string> PrefijosValidos = new List<string>
+        /// <summary>
+        /// Trabajo ya hecho
+        /// </summary>
+        private const string TR = "TR-";
+
+        /// <summary>
+        /// Proveedor asignado
+        /// </summary>
+        private const string PA = "PA-";
+
+        /// <summary>
+        /// Urgencia
+        /// </summary>
+        private const string UR = "UR-";
+
+        /// <summary>
+        /// Adicional
+        /// </summary>
+        private const string AD = "AD-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Adicional
+        /// </summary>
+        private const string AOR = "AOR-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Urgencia
+        /// </summary>
+        private const string TUR = "TUR-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Servicio permanente. Sin Adicional ni Urgencia
+        /// </summary>
+        private const string SP = "SP-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Ajuste polinómica. Sin Adicional ni Urgencia
+        /// </summary>
+        private const string AJ = "AJ-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Proveedor directo. Sin Adicional ni Urgencia
+        /// </summary>
+        private const string PD = "PD-";
+
+        /// <summary>
+        /// Con presupuesto
+        /// </summary>
+        private const string CPD = "CPD-";
+
+        /// <summary>
+        /// Con presupuesto + adicional
+        /// </summary>
+        private const string CPOR = "CPOR-";
+
+        /// <summary>
+        /// Con presupuesto + urgencia
+        /// </summary>
+        private const string CPU = "CPU-";
+
+        /// <summary>
+        /// Con presupuesto + adicional + urgencia
+        /// </summary>
+        private const string CPAU = "CPAU-";
+
+        private readonly static IReadOnlyCollection<string> PrefijosValidos = new List<string>
         {
             TR,
             PA,
@@ -28,6 +84,10 @@ namespace SustitucionMOAModel.Util
             SP,
             AJ,
             PD,
+            CPD,
+            CPOR,
+            CPU,
+            CPAU
         }
         .AsReadOnly();
 
@@ -71,33 +131,58 @@ namespace SustitucionMOAModel.Util
                 prefijo = AD;
             }
 
-            if (solp.TrabajoYaHecho == true && solp.Adicional == true)
+            if (solp.TrabajoYaHecho == true)
             {
-                prefijo = AOR;
-            }
+                if (solp.Adicional == true)
+                {
+                    prefijo = AOR;
+                }
 
-            if ((solp.TrabajoYaHecho == true && solp.Urgencia == true) || (solp.TrabajoYaHecho == true && solp.Urgencia == true && solp.Adicional == true))
-            {
-                prefijo = TUR;
-            }
+                if (solp.Urgencia == true || (solp.Urgencia == true && solp.Adicional == true))
+                {
+                    prefijo = TUR;
+                }
 
-            if (solp.TrabajoYaHecho == true && solp.THServicioPermanente == true && solp.Adicional != true && solp.Urgencia != true)
-            {
-                prefijo = SP;
-            }
+                if (solp.THServicioPermanente == true && solp.Adicional != true && solp.Urgencia != true)
+                {
+                    prefijo = SP;
+                }
 
-            if (solp.TrabajoYaHecho == true && solp.THAjustePolinomica == true && solp.Adicional != true && solp.Urgencia != true)
-            {
-                prefijo = AJ;
-            }
+                if (solp.THAjustePolinomica == true && solp.Adicional != true && solp.Urgencia != true)
+                {
+                    prefijo = AJ;
+                }
 
-            if (solp.TrabajoYaHecho == true && solp.THProveedorDirecto == true && solp.Adicional != true && solp.Urgencia != true)
+                if (solp.THProveedorDirecto == true && solp.Adicional != true && solp.Urgencia != true)
+                {
+                    prefijo = PD;
+                }
+            }
+            else
             {
-                prefijo = PD;
+                if (solp.ConPresupuesto)
+                {
+                    prefijo = CPD;
+
+                    if (solp.Adicional == true && solp.Urgencia == true)
+                    {
+                        prefijo = CPAU;
+                    }
+                    else
+                    {
+                        if (solp.Adicional == true)
+                        {
+                            prefijo = CPOR;
+                        }
+                        if (solp.Urgencia == true)
+                        {
+                            prefijo = CPU;
+                        }
+                    }
+                }
             }
 
             return prefijo;
-
         }
     }
 }

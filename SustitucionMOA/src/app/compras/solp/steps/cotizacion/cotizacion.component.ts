@@ -113,6 +113,8 @@ export class CotizacionComponent extends ListBaseComponent {
             terminoJornadaLaboral: new FormControl('', Validators.required),
             dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias]),
             trabajoHecho: new FormControl('', Validators.required),
+            conPresupuesto: new FormControl('', Validators.required),
+            certificacionAutomatica: new FormControl('', Validators.required),
             proveedorSeleccionado: new FormControl('', Validators.required),
             adicional: new FormControl('', Validators.required),
             ordenDeCompra: new FormControl({ value: '', disabled: this.model.deshabilitarAdicional }, Validators.required),
@@ -322,7 +324,7 @@ export class CotizacionComponent extends ListBaseComponent {
     validarChecks() {
         this.model.validacionCheck = true;
 
-        if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true) {
+        if (this.model.trabajoHecho == true || this.model.conPresupuesto || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true) {
 
             if ((this.model.archivosCotizacionesCondEsp == null || this.model.archivosCotizacionesCondEsp.length == 0) && (this.model.archivosCotizacionesNuevosCondEsp == null || this.model.archivosCotizacionesNuevosCondEsp.length == 0)) {
                 this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
@@ -336,7 +338,7 @@ export class CotizacionComponent extends ListBaseComponent {
                 this.model.validacionCheck = false;
             }
 
-            if (this.model.trabajoHecho == true && this.model.adicional != true || this.model.condEspProveedorAsignado == true) {
+            if ((this.model.trabajoHecho == true || this.model.conPresupuesto) && this.model.adicional != true || this.model.condEspProveedorAsignado == true) {
                 if (!this.proveedorSeleccionado || this.proveedorSeleccionado == "" || typeof this.proveedorSeleccionado === "undefined") {
                     this.model.mensajeCotizacion = "Debe agregar un proveedor en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
@@ -360,7 +362,7 @@ export class CotizacionComponent extends ListBaseComponent {
                 }
             }
 
-            if (this.model.urgencia == true && this.model.trabajoHecho != true && this.selectJefes.length == 0) {
+            if (this.model.urgencia == true && this.model.trabajoHecho != true && !this.model.conPresupuesto && this.selectJefes.length == 0) {
                 this.model.mensajeCotizacion = "Debe elegir al menos un jefe en el paso #4 para enviarle la notificación de urgencia";
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                 this.model.validacionCheck = false;
@@ -368,7 +370,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
             if(this.model.trabajoHecho == true){
                 if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
-                    this.model.mensajeCotizacion = "Debe elegir una categoria de trabajo ya hacho en el paso #4";
+                    this.model.mensajeCotizacion = "Debe elegir una categoría de trabajo ya hacho en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                     this.model.validacionCheck = false;
                 }
@@ -386,10 +388,15 @@ export class CotizacionComponent extends ListBaseComponent {
             this.model.thProveedorDirecto = false;
             this.model.thServicioPermanente = true;
         }
+        this.model.certificacionAutomatica = this.model.trabajoHecho;
     }
 
     limpiarCheckProveedorAsignado() {
-        if ((this.model.condEspProveedorAsignado == undefined || this.model.condEspProveedorAsignado == false) && this.model.editarCondicionesEspeciales && this.model.trabajoHecho == false) {
+        if ((this.model.condEspProveedorAsignado == undefined || this.model.condEspProveedorAsignado == false) &&
+            this.model.editarCondicionesEspeciales &&
+            this.model.trabajoHecho == false &&
+            this.model.conPresupuesto
+            ) {
             this.model.proveedorAsignado = "";
             this.model.proveedorAsignado_Id = null;
             this.proveedorSeleccionado = null;
@@ -548,7 +555,7 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     verificarCondicionesEspeciales(): void {
-        if (!this.model.condEspProveedorAsignado && !this.model.urgencia && !this.model.adicional && !this.model.trabajoHecho) {
+        if (!this.model.condEspProveedorAsignado && !this.model.urgencia && !this.model.adicional && !this.model.trabajoHecho && !this.model.conPresupuesto) {
             this.borrarArchivosCargados();
         }
     }
@@ -563,11 +570,13 @@ export class CotizacionComponent extends ListBaseComponent {
 
     habilitarCondicionesEspeciales(condicionEspecial){
         if (!condicionEspecial && this.model.editarCondicionesEspeciales == true) {
-            this.formularioCotizacion.controls['urgencia'].enable();
-            this.formularioCotizacion.controls['adicional'].enable();
-            this.formularioCotizacion.controls['trabajoHecho'].enable();
-            this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
-            this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
+            this.habilitarUrgencia(true);
+            this.habilitarAdicional(true);
+            this.habilitarTrabajoHecho(true);
+            this.habilitarConPresupuesto(true);
+            this.habilitarCertificacionAutomatica(true);
+            this.habilitarCondEspProveedorAsignado(true);
+            this.habilitarProveedorSeleccionado(true);
         }
     }
 
@@ -579,79 +588,95 @@ export class CotizacionComponent extends ListBaseComponent {
             this.ajustePolinomicaDisabled = false;
         }
 
-        this.condicionEspecial = this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true;
+        this.condicionEspecial = this.model.trabajoHecho == true || this.model.conPresupuesto || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true;
         this.habilitarCondicionesEspeciales(this.condicionEspecial)
 
-        if(this.model.editarCondicionesEspeciales == false){
+        if (this.model.editarCondicionesEspeciales == false) {
 
-            this.formularioCotizacion.controls['urgencia'].disable();
-            this.formularioCotizacion.controls['adicional'].disable();
-            this.formularioCotizacion.controls['trabajoHecho'].disable();
-            this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
-            this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
+            this.habilitarUrgencia(false);
+            this.habilitarAdicional(false);
+            this.habilitarTrabajoHecho(false);
+            this.habilitarConPresupuesto(false);
+            this.habilitarCertificacionAutomatica(false);
+            this.habilitarProveedorSeleccionado(false);
+            this.habilitarCondEspProveedorAsignado(false);
             
-            if(this.condEspOriginales.trabajoHecho || (this.condEspOriginales.trabajoHecho && this.condEspOriginales.adicional)){
-                this.formularioCotizacion.controls['trabajoHecho'].disable();
-                this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
-                this.formularioCotizacion.controls['adicional'].enable();
-                this.formularioCotizacion.controls['urgencia'].enable();
+            if (this.condEspOriginales.trabajoHecho || (this.condEspOriginales.trabajoHecho && this.condEspOriginales.adicional)) {
+                this.habilitarAdicional(true);
+                this.habilitarUrgencia(true);
                 this.verificarMismoProveedor();
-            } else if(this.condEspOriginales.proveedorAsignado || this.condEspOriginales.adicional){
-                this.formularioCotizacion.controls['trabajoHecho'].disable();
-                this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
+            }
+            else {
+                if (this.condEspOriginales.proveedorAsignado || this.condEspOriginales.adicional) {
 
-                if(this.model.condEspProveedorAsignado == true){
-                    this.formularioCotizacion.controls['adicional'].disable();
-                    this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
-                    this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
-                } 
+                    if (this.model.condEspProveedorAsignado == true) {
+                        this.habilitarCondEspProveedorAsignado(true);
+                        this.habilitarProveedorSeleccionado(true);
+                    }
 
-                if(this.model.adicional == true){
-                    this.formularioCotizacion.controls['adicional'].enable();
-                    this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
-                    this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
-                } 
+                    if(this.model.adicional == true){
+                        this.habilitarAdicional(true);
+                        this.habilitarCondEspProveedorAsignado(false);
+                        this.habilitarProveedorSeleccionado(false);
+                    } 
 
-                if(this.model.condEspProveedorAsignado != true && this.model.adicional != true){
-                    this.formularioCotizacion.controls['adicional'].enable();
-                    this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
-                    this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
-                } 
-                this.verificarMismoProveedor();
+                    if(this.model.condEspProveedorAsignado != true && this.model.adicional != true){
+                        this.habilitarAdicional(true);
+                        this.habilitarCondEspProveedorAsignado(true);
+                        this.habilitarProveedorSeleccionado(true);
+                    } 
+                    this.verificarMismoProveedor();
 
-            } else if(this.condEspOriginales.urgencia){
-                this.formularioCotizacion.controls['adicional'].disable();
-                this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
-                this.formularioCotizacion.controls['trabajoHecho'].disable();
-                this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
+                }
+                else {
+                    if (this.condEspOriginales.urgencia) {
+                        this.habilitarAdicional(false);
+                        this.habilitarCondEspProveedorAsignado(false);
+                        this.habilitarTrabajoHecho(false);
+                        this.habilitarConPresupuesto(false);
+                        this.habilitarCertificacionAutomatica(false);
+                        this.habilitarProveedorSeleccionado(false);
+                    }
+                }
             }
 
-            if(this.condicionEspecial != true){
+            if (this.condicionEspecial != true) {
                 this.validarCondicionEspecial()
             }
-
-        } else {
+        }
+        else {
             this.condicionesEspecialesSolpSinLiberar();
-        }     
+        }
+
+        if (this.model.trabajoHecho) {
+            this.habilitarConPresupuesto(false);
+            this.habilitarCertificacionAutomatica(false);
+        }
+        if (this.model.conPresupuesto) {
+            this.habilitarTrabajoHecho(false);
+        }
     }
 
     condicionesEspecialesSolpSinLiberar() {
         if (this.model.trabajoHecho == true || this.model.adicional == true) {
-            this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
-            this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
+            this.habilitarCondEspProveedorAsignado(false);
+            this.habilitarProveedorSeleccionado(false);
         } else {
-            this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
-            this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
-
+            this.habilitarCondEspProveedorAsignado(true);
+            this.habilitarProveedorSeleccionado(true);
         }
 
         if (this.model.condEspProveedorAsignado == true) {
-            this.formularioCotizacion.controls['trabajoHecho'].disable();
-            this.formularioCotizacion.controls['adicional'].disable();
+            this.habilitarTrabajoHecho(false);
+            this.habilitarConPresupuesto(false);
+            this.habilitarCertificacionAutomatica(false);
+            this.habilitarAdicional(false);
         } else {
-            this.formularioCotizacion.controls['trabajoHecho'].enable();
-            this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
-            this.formularioCotizacion.controls['adicional'].enable();
+            this.habilitarTrabajoHecho(true);
+            this.habilitarConPresupuesto(true);
+            this.habilitarCertificacionAutomatica(true);
+            this.habilitarProveedorSeleccionado(true);
+            this.habilitarAdicional(true);
         }
     }
 
@@ -675,6 +700,43 @@ export class CotizacionComponent extends ListBaseComponent {
     validarCondicionEspecial(){
         if(this.tieneCondEspOriginal()){
             this.floatMsgService.setErrorMsg("Debe completar la condicion especial");
+        }
+    }
+
+    habilitarUrgencia(habilitar: boolean) {
+        this.habilitarControlFormulario('urgencia', habilitar);
+    }
+    
+    habilitarAdicional(habilitar: boolean) {
+        this.habilitarControlFormulario('adicional', habilitar);
+    }
+
+    habilitarTrabajoHecho(habilitar: boolean) {
+        this.habilitarControlFormulario('trabajoHecho', habilitar);
+    }
+
+    habilitarConPresupuesto(habilitar: boolean) {
+        this.habilitarControlFormulario('conPresupuesto', habilitar);
+    }
+
+    habilitarCertificacionAutomatica(habilitar: boolean) {
+        this.habilitarControlFormulario('certificacionAutomatica', habilitar);
+    }
+
+    habilitarProveedorSeleccionado(habilitar: boolean) {
+        this.habilitarControlFormulario('proveedorSeleccionado', habilitar);
+    }
+
+    habilitarCondEspProveedorAsignado(habilitar: boolean) {
+        this.habilitarControlFormulario('condEspProveedorAsignado', habilitar);
+    }
+
+    habilitarControlFormulario(control: string, habilitar: boolean) {
+        if (habilitar) {
+            this.formularioCotizacion.controls[control].enable();
+        }
+        else {
+            this.formularioCotizacion.controls[control].disable();
         }
     }
 };

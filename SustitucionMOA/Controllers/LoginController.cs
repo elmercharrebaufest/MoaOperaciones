@@ -1,22 +1,9 @@
-﻿using SustitucionMOA.Utils;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
-using SustitucionMOAModel.Models.WSMapMOA.Login;
-using SustitucionMOAModel.Models.WSMapMOA.Noticia;
-using SustitucionMOARepositorio;
-using SustitucionMOASecurity;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
-using System;
-using System.Linq;
+﻿using SustitucionMOARepositorio;
 using System.Web.Mvc;
-using Entidades = SustitucionMOAModel.Entities;
-using Model = SustitucionMOAModel.Models;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class LoginController : Controller
     {
 

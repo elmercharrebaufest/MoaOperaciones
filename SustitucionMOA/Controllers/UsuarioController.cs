@@ -24,6 +24,7 @@ using HttpGetAttribute = System.Web.Http.HttpGetAttribute;
 namespace SustitucionMOA.Controllers
 {
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    [Authorize]
     public class UsuarioController : BaseController
     {
         //LoginService _loginService = new LoginService();
@@ -104,7 +105,7 @@ namespace SustitucionMOA.Controllers
         [System.Web.Http.HttpGet]
         public ActionResult SeccionVisitada(string seccion)
         {
-            _usuarioService.SeccionVisitada(SessionPersister.getUsername(), seccion);
+            _usuarioService.SeccionVisitada(SessionPersister.Mail, seccion);
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
@@ -199,7 +200,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
             }
 
 
@@ -463,13 +464,13 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult GetProveedorPorCodigo(string codigo)
         {
-            return JsonCustom(_usuarioService.GetProveedorPorCodigo(codigo, SessionPersister.getUsername()));
+            return JsonCustom(_usuarioService.GetProveedorPorCodigo(codigo, SessionPersister.Mail));
         }
 
         [HttpGet]
         public ActionResult VerificarYObtenerProveedor(string codigoProveedor)
         {
-            return JsonCustom(_usuarioService.VerificarYObtenerProveedor(SessionPersister.getUsername(), SessionPersister.Proveedor, codigoProveedor));
+            return JsonCustom(_usuarioService.VerificarYObtenerProveedor(SessionPersister.Mail, SessionPersister.Proveedor, codigoProveedor));
         }
 
         public ActionResult RechazarProveedorNoGranos(int idProveedor, string observacionesParaElProveedor)
@@ -482,7 +483,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ObtenerNuevaApiKey()
         {
-            return JsonCustom(new { data = _usuarioService.ObtenerNuevoApiKey(SessionPersister.getUsername()) });
+            return JsonCustom(new { data = _usuarioService.ObtenerNuevoApiKey(SessionPersister.Mail) });
         }
 
         [System.Web.Http.HttpPost]
@@ -492,7 +493,7 @@ namespace SustitucionMOA.Controllers
             var result = _usuarioService.GrabarProveedor(proveedorDto: proveedor,
                                                          estadoAprobacion: EstadoAprobacion.AltaIncompleta,
                                                          mantenerEstadoAprobacionExistente: true,
-                                                         mailUsuarioAdmin: SessionPersister.getUsername());
+                                                         mailUsuarioAdmin: SessionPersister.Mail);
             return JsonCustom(new { data = result });
         }
 
@@ -517,7 +518,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -539,7 +540,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -561,7 +562,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -583,7 +584,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -605,7 +606,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -626,7 +627,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -649,7 +650,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -658,20 +659,20 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult EliminarCuitNoHabilitado(int proveedorId)
         {
-            string mailUsuarioSesion = SessionPersister.getUsername();
+            string mailUsuarioSesion = SessionPersister.Mail;
             return JsonCustom(new { data = _usuarioService.EliminarCuitNoHabilitado(proveedorId, mailUsuarioSesion) });
         }
         #region AsignarNuevoCUIT
         [System.Web.Http.HttpGet]
         public ActionResult GetProveedorAprobadoPorCuit(string cuit)
         {
-            string mailUsuarioSesion = SessionPersister.getUsername();
+            string mailUsuarioSesion = SessionPersister.Mail;
             return JsonCustom(new { data = _usuarioService.GetProveedorAprobadoPorCuit(cuit, mailUsuarioSesion) });
         }
         [System.Web.Http.HttpPost]
         public ActionResult AsignarNuevaCUIT(string datosAAsignar)
         {
-            string mailUsuarioSesion = SessionPersister.getUsername();
+            string mailUsuarioSesion = SessionPersister.Mail;
             var datos = JsonConvert.DeserializeObject<AsignarNuevaCuitDto>(datosAAsignar);
             _usuarioService.AsignarNuevaCUIT(datos, mailUsuarioSesion);
             return JsonCustom(new { data = true });
@@ -680,7 +681,7 @@ namespace SustitucionMOA.Controllers
         [System.Web.Http.HttpPost]
         public ActionResult DesasociarVendedor(int usuarioId, int proveedorId)
         {
-            string mailUsuarioSesion = SessionPersister.getUsername();
+            string mailUsuarioSesion = SessionPersister.Mail;
             _usuarioService.DesasociarVendedor(usuarioId, proveedorId, mailUsuarioSesion);
             return JsonCustom(new { data = true });
         }
@@ -705,7 +706,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -714,14 +715,14 @@ namespace SustitucionMOA.Controllers
         [System.Web.Http.HttpPost]
         public ActionResult GuardarConfiguracionUsuario([System.Web.Http.FromBody] string valor, [System.Web.Http.FromBody] int tipo)
         {
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             _usuarioService.GuardarConfiguracionUsuario(mailUsuario, valor, (TipoConfiguracionUsuario)tipo);
             return JsonCustom(true);
         }
         [HttpGet]
         public ActionResult ObtenerConfiguracionUsuario(TipoConfiguracionUsuario tipo)
         {
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             return JsonCustom(_usuarioService.ObtenerConfiguracion(mailUsuario, tipo));
         }
     }

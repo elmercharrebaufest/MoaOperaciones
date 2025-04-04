@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using ICSharpCode.SharpZipLib.Core;
+﻿using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using SustitucionMOAAssets;
@@ -12,17 +6,21 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOASecurity;
-using SustitucionMOAUtils.DBMethods;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
 using SustitucionMOAValidator;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 
 //AGREGO CAMBIO DE PRUEBA
 
 namespace SustitucionMOA.Controllers
 {
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    [Authorize]
     public class CartaPorteController : BaseController
     {
         ICartaPorteService _cartaPorteService;

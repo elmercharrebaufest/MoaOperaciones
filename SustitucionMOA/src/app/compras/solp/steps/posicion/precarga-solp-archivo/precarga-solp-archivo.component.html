@@ -24,7 +24,7 @@
                         <label class="m-label">
                             <b>Cargar archivo</b>
                         </label>
-                        <input type="file" accept=".xlsx" (change)="onArchivoCargado($event)" placeholder="Cargar archivo">
+                        <input #fileInput id="fileInput" type="file" accept=".xlsx" (change)="onArchivoCargado($event)" (click)="resetearArchivo()" placeholder="Cargar archivo">
                     </div>
                     <div class="col-xs-12 col-md-3 ui-fluid">
                         <a href="../../../../../../../Documentacion/TemplatePrecargaSolp.xlsx" target="_blank">

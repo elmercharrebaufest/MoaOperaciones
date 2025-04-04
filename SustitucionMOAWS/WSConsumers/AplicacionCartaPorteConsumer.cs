@@ -2,7 +2,6 @@
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
-using SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WSRequests.AplicacionCartaPorte;
 using System.Collections.Generic;
@@ -56,6 +55,7 @@ namespace SustitucionMOAWS.WSConsumers
                     {
                         Cantidad = aplicPend.CANTIDAD,
                         Material = aplicPend.MATERIAL,
+                        Centro = aplicPend.CENTRO,
                         NumeroCartaPorte = aplicPend.CCPP
                     });
                 }
@@ -66,6 +66,7 @@ namespace SustitucionMOAWS.WSConsumers
                     {
                         CodigoProveedor = aplicPend.PROVEEDOR,
                         Material = aplicPend.MATERIAL,
+                        Centro = aplicPend.CENTRO,
                         NumeroContrato = aplicPend.CONTRATO,
                         TieneAnticipo = aplicPend.CD_CG == "X" || aplicPend.WARRANT == "X"
                     });
