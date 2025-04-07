@@ -106,18 +106,12 @@ namespace SustitucionMOAUtils.Services
                                      Pliego pliegoEntity = null,
                                      bool esPliegoMultiple = false)
         {
-            if (pliegoEntity is null)
-            {
-                pliegoEntity = new Pliego();
-                pliegoEntity = repositorio.Agregar(pliegoEntity);
-            }
+            pliegoEntity = pliegoEntity ?? repositorio.Agregar(new Pliego { NombreObra = solp.NombreDeObra });
 
             pliegoEntity.RevisadoPor = solp.RevisadoPor;
-
             pliegoEntity.Usuario_Id = solp.UsuarioActual.Id;
             pliegoEntity.FechaModificacion = DateTime.Now; //FechaAlta es valor predeterminado en clase Pliego
 
-            pliegoEntity.NombreObra = solp.NombreDeObra;
             pliegoEntity.FiscalContrato = solp.FiscalContrato;
             pliegoEntity.Telefono = solp.Telefono;
             pliegoEntity.Email = solp.Email;
