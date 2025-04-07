@@ -117,7 +117,7 @@ namespace SustitucionMOAUtils.Services
             pliegoEntity.Usuario_Id = solp.UsuarioActual.Id;
             pliegoEntity.FechaModificacion = DateTime.Now; //FechaAlta es valor predeterminado en clase Pliego
 
-
+            pliegoEntity.NombreObra = solp.NombreDeObra;
             pliegoEntity.FiscalContrato = solp.FiscalContrato;
             pliegoEntity.Telefono = solp.Telefono;
             pliegoEntity.Email = solp.Email;
