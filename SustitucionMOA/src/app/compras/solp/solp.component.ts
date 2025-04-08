@@ -1105,7 +1105,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     validarContratoMarco() {
         var validacionContratoTrabajo = false;
 
-        if (this.solpActual.trabajoHecho == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
+        if ((this.solpActual.trabajoHecho || this.solpActual.conPresupuesto || this.solpActual.adicional || this.solpActual.urgencia || this.solpActual.proveedorAsignado) == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
             return validacionContratoTrabajo = true;
         }
         return validacionContratoTrabajo;
@@ -1144,7 +1144,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         })
 
         if (this.validarContratoMarco()) {
-            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP con contrato marco cargado no pueden tener el tilde en el check de trabajo hecho en el paso #4" });
+            this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "Las SOLP con contrato marco cargado no pueden tener el tilde en alguna condición especial en el paso #4" });
         }
 
         if (this.validarAdicional()) {
