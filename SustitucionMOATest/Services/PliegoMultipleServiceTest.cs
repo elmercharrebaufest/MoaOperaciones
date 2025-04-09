@@ -84,7 +84,10 @@ namespace SustitucionMOATest.Services
             var adjuntos = new Mock<HttpFileCollectionBase>().Object;
             var solpsAsociar = new List<int> { 1, 2, 3 };
 
-            comprasServiceMock.Setup(cs => cs.GuardarPliego(It.IsAny<SolpDto>(), It.IsAny<HttpFileCollectionBase>(), It.IsAny<bool>(), null, null, true))
+            repositorioMock
+                .Setup(r => r.Agregar(It.IsAny<Pliego>()))
+                .Returns(new Pliego());
+            comprasServiceMock.Setup(cs => cs.GuardarPliego(It.IsAny<SolpDto>(), It.IsAny<HttpFileCollectionBase>(), It.IsAny<bool>(), null, It.IsAny<Pliego>(), true))
                               .Returns(new Pliego());
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
                             .Returns(new List<Solp>() { new Solp { Id = 1, TipoSolpSap = (int)TipoSolpSap.Sap } });
@@ -93,7 +96,7 @@ namespace SustitucionMOATest.Services
             pliegoMultipleService.CrearPliegoMultiple(pliegoData, adjuntos, solpsAsociar);
 
             // Assert
-            comprasServiceMock.Verify(cs => cs.GuardarPliego(pliegoData, adjuntos, It.IsAny<bool>(), null, null, true), Times.Once);
+            comprasServiceMock.Verify(cs => cs.GuardarPliego(pliegoData, adjuntos, It.IsAny<bool>(), null, It.IsAny<Pliego>(), true), Times.Once);
         }
 
         [Test]

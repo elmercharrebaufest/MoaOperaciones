@@ -106,7 +106,7 @@ namespace SustitucionMOAUtils.Services
                                      Pliego pliegoEntity = null,
                                      bool esPliegoMultiple = false)
         {
-            pliegoEntity = pliegoEntity ?? repositorio.Agregar(new Pliego { NombreObra = solp.NombreDeObra });
+            pliegoEntity = pliegoEntity ?? new Pliego();
 
             pliegoEntity.RevisadoPor = solp.RevisadoPor;
             pliegoEntity.Usuario_Id = solp.UsuarioActual.Id;
