@@ -6,8 +6,6 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
-using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.Interfaces;
@@ -16,11 +14,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -258,7 +254,7 @@ namespace SustitucionMOAUtils.Services
 
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -681,7 +677,7 @@ namespace SustitucionMOAUtils.Services
                 if (nuevaAprobacion != null)
                 {
                     var aprobacionesES = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nuevaAprobacion.NRO_ES_LOCAL);
-                    
+
                     var orderParams = new OrderParamsDto { OrdenCompraId = nuevaAprobacion.NRO_OC };
                     var proveedor = orderService.BuscarProveedor(orderParams);
 
@@ -1265,6 +1261,7 @@ namespace SustitucionMOAUtils.Services
         /// <returns></returns>
         public async Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local, string Moneda)
         {
+            Logger.Log.Info($"AprobarEntradaDeServicio: '{nro_es_local}', moneda '{Moneda}'");
             List<Aprobaciones> EntradasDeServicioTemp = repositorioEntradaServicio.Listar<SustitucionMOAModel.Entities.Aprobaciones>(x => x.NRO_ES_LOCAL == nro_es_local);
             EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
             string status = CheckESStatus(EntradasDeServicioTemp);
@@ -1363,7 +1360,8 @@ namespace SustitucionMOAUtils.Services
                 }
                 catch (Exception e)
                 {
-                    throw e;
+                    Logger.Log.Error($"Error al aprobar la certificacion temporal {nro_es_local}", e);
+                    throw;
                 }
 
                 if (result.Type == "I" && result.Id == "SE")
@@ -1390,10 +1388,11 @@ namespace SustitucionMOAUtils.Services
                     }
                     catch (Exception e)
                     {
-                        Logger.Log.Info(e.Message);
+                        Logger.Log.Error(e);
                     }
                 }
             }
+            Logger.Log.Info($"AprobarEntradaDeServicio: '{nro_es_local}' aprobada.");
 
             return result;
         }
@@ -1708,7 +1707,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var solpNro = posicionOC.NumeroSolp;
                 var solpACertificar = solps.FirstOrDefault(s => s.NroSolp == solpNro);
-                
+
                 if (posicionOC.Bloqueada || posicionOC.EsConEntregaFinal || solpACertificar == null || !posicionOC.Items.Any())
                 {
                     continue;

@@ -444,6 +444,9 @@
     <TypeScriptCompile Include="src\app\alta-proveedores\informe-comercial\informe-comercial.component.ts" />
     <TypeScriptCompile Include="src\app\apikey\apikey-routing.module.ts" />
     <TypeScriptCompile Include="src\app\apikey\apikey.module.ts" />
+    <TypeScriptCompile Include="src\app\aprobacion-externa\aprobacion-externa.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\aprobacion-externa\aprobacion-externa.component.ts" />
+    <TypeScriptCompile Include="src\app\aprobacion-externa\aprobacion-externa.service.ts" />
     <TypeScriptCompile Include="src\app\archivo-boleto\listar-archivo-boleto\listar-archivo-boleto.component.ts" />
     <TypeScriptCompile Include="src\app\common\animations\fade-in.animation.ts" />
     <TypeScriptCompile Include="src\app\common\animations\main.animation.ts" />
