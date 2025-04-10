@@ -135,6 +135,7 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(new { data = ret });
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public ActionResult RechazarEntradaDeServicio(string json)
         {
@@ -143,6 +144,7 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(new { data = toRet });
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult> AprobarEntradaDeServicio(string nro_es_local, string Moneda)
         {
