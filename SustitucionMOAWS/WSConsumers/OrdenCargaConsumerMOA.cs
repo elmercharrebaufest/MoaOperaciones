@@ -340,7 +340,8 @@ namespace SustitucionMOAWS.WSConsumers
                     Producto = item.PRODUCTO,
                     PuntoExpedicion = item.PTO_EXPEDICION,
                     TipoContrato = ConvertirDeTipoContratoFasSAP(item.TIPO_CONTRATO),
-                    PrecioFlete = item.PRECIO_FLETE
+                    PrecioFlete = item.PRECIO_FLETE,
+                    BloqueoEntrega = item.BLOQUEO_ENTREGA == "X"
                 };
                 var detalles = new List<Detail>();
                 foreach (var detalle in item.DETALLE)
@@ -362,6 +363,7 @@ namespace SustitucionMOAWS.WSConsumers
                         Destinatario = detalle.DESTINATARIO,
                         NombreDestinatario = detalle.NOMBRE_DESTINATARIO,
                         KilosEntrega = detalle.KILOS_ENTREGA,
+                        BloqueoEntrega = detalle.BLOQUEO_ENTREGA == "X"
                     });
                 }
                 if (detalles != null)
