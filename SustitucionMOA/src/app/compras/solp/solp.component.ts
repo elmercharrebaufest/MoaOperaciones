@@ -1105,7 +1105,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     validarContratoMarco() {
         var validacionContratoTrabajo = false;
 
-        if ((this.solpActual.trabajoHecho || this.solpActual.conPresupuesto || this.solpActual.adicional || this.solpActual.urgencia || this.solpActual.proveedorAsignado) == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
+        if ((this.solpActual.trabajoHecho || this.solpActual.conPresupuesto || this.solpActual.adicional || this.solpActual.urgencia || this.solpActual.condEspProveedorAsignado) == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
             return validacionContratoTrabajo = true;
         }
         return validacionContratoTrabajo;
