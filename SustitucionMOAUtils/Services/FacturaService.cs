@@ -280,22 +280,22 @@ namespace SustitucionMOAUtils.Services
                 return result;
             }
 
+            //Verify that only one file must have one oc
+            if (resultadoAnalisis.Where(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name).Select(a => a.Value).Distinct().Count() > 1)
+            {
+                // Get the list of OCs
+                var ocs = resultadoAnalisis.Where(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name).Select(a => a.Value).Distinct().ToList();
+                string texto = "No se puede procesar el documento ya que tiene mas de una orden de compra: ";
+                ocs.ForEach(oc => texto += oc + ", ");
+                texto = texto.Substring(0, texto.Length - 2) + ".";
+
+                result.Add(new ValidationResult(false, texto, typeof(OrdenCompraValidationCommand).Name, "", ""));
+                return result;
+            }
+
             var OrdenDeCompraEncontrada = resultadoAnalisis.Find(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name);
             if (OrdenDeCompraEncontrada != null)
             {
-                //Verify that only one file must have one oc
-                if (resultadoAnalisis.Count(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name) > 1)
-                {
-                    // Get the list of OCs
-                    var ocs = resultadoAnalisis.Where(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name).Select(a => a.Value).ToList();
-                    string texto = "No se puede procesar el documento ya que tiene mas de una orden de compra: ";
-                    ocs.ForEach(oc => texto += oc + ", ");
-                    texto = texto.Substring(0, texto.Length - 2) + ".";
-
-                    result.Add(new ValidationResult(false, texto, typeof(OrdenCompraValidationCommand).Name, "", ""));
-                    return result;
-                }
-
                 var ordenDeCompraSAP = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra(OrdenDeCompraEncontrada.Value);
                 if (ordenDeCompraSAP.Cabecera.CodigoProveedor != codigoProveedor)
                 {
