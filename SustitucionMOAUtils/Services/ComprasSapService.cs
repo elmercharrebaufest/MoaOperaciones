@@ -411,7 +411,8 @@ namespace SustitucionMOAUtils.Services
                             GL_ACCOUNT = getCodigoTablaSap(subPosicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             COSTCENTER = getCodigoTablaSap(subPosicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
                             ORDERID = getCodigoTablaSap(subPosicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
-                            PROFIT_CTR = getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
+                            PROFIT_CTR = getCodigoTablaSap(subPosicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
+                            BUS_AREA = "GENE"
                         };
 
                         solpSAP.IM_PRACCOUNTList.Add(imputacionPosicion);
@@ -424,6 +425,7 @@ namespace SustitucionMOAUtils.Services
                             SERIAL_NOX = "X",
                             QUANTITY = "X",
                             GL_ACCOUNT = "X",
+                            BUS_AREA = "X",
                             COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
                             ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
                             PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : ""
