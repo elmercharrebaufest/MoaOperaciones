@@ -193,11 +193,11 @@ namespace SustitucionMOAUtils.Services
             bool condEsp = comprasService.TieneCondicionEspecial(pliegoData);
             bool esEdicion = pliegoData.Pliego_Id != null;
 
-            Pliego pliego = null;
-            if (esEdicion)
-            {
-                pliego = repositorio.Obtener<Pliego>(pliegoData.Pliego_Id);
-            }
+            var pliego = esEdicion ?
+                repositorio.Obtener<Pliego>(pliegoData.Pliego_Id) :
+                repositorio.Agregar(new Pliego());
+
+            pliego.NombreObra = pliegoData.NombreDeObra;
 
             pliego = comprasService.GuardarPliego(pliegoData, adjuntos, condEsp, pliegoEntity: pliego, esPliegoMultiple: true);
 
