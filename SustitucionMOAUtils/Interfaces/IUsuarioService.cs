@@ -18,7 +18,7 @@ namespace SustitucionMOAUtils.Interfaces
         Rol ObtenerRolPorCodigo(string codigo);
         List<RolDropdownDto> GetRoles();
         byte[] getDocumento(string nombre);
-        string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno, bool puedeEditarSuplente);
+        string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap);
         List<ProveedorDto> GetVendedoresUsuario(string usuarioMail);
         List<RolDropdownDto> GetRolesUsuario(int idUsuario);
         List<Rol> GetRolesUsuario(string email);
@@ -54,5 +54,6 @@ namespace SustitucionMOAUtils.Interfaces
         VendedoresWSMOAResponse ObtenerVendedorSap(string codigoProveedor, List<Models.FechaWS> fechas);
 
         List<UsuarioComprasDto> ListarUsuarioCompras();
+        void GuardarSuplente(int idUsuario, string suplente, string fechaDesde, string fechaHasta, bool esExterno);
     }
 }

@@ -11,8 +11,13 @@ export class SecurityService {
     }
 
     tienePermisoRedirect(permiso: string) {
-        if (sessionStorage.getItem("permisos")) {
-            if (JSON.parse(sessionStorage.getItem("permisos")).indexOf(permiso) == -1) {
+        this.tieneAlgunPermisoRedirect([permiso]);
+    }
+
+    tieneAlgunPermisoRedirect(permisosBuscados: string[]) {
+        let permisosUsuario = sessionStorage.getItem("permisos");
+        if (permisosUsuario) {
+            if (permisosBuscados.every(perm => JSON.parse(permisosUsuario).indexOf(perm) == -1)) {
                 this.router.navigate(['no-autorizado']);
             }
         }

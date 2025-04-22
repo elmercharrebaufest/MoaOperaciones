@@ -83,17 +83,11 @@ namespace SustitucionMOATest.Controllers
                         s.GuardarRoles(
                                 It.IsAny<List<int>>(),
                                 It.Is<int>(i => i == 1),
-                                It.IsAny<string>(),
-                                It.IsAny<string>(),
-                                It.IsAny<string>(),
-                                It.IsAny<string>(),
-                                It.IsAny<bool>(),
-                                It.IsAny<bool>()
-                                )
+                                It.IsAny<string>())
                     )
                 .Returns(successMessage);
 
-            var resultado = (JsonResult)target.GuardarRoles("1,2,3", 1, "", "", "", "", false);
+            var resultado = (JsonResult)target.GuardarRoles("1,2,3", 1, "");
 
             resultJson = JsonConvert.SerializeObject(resultado.Data);
 

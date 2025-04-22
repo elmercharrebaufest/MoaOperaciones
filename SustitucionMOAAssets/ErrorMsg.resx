@@ -130,7 +130,7 @@
     <value>Error al ejecutar: {0}.{1}() por el usuario {2} ({3}), mensaje: {4} \n</value>
   </data>
   <data name="ErrorSinPermiso" xml:space="preserve">
-    <value>El usuario no posee permisos para ejecutar dicha accion</value>
+    <value>El usuario no posee permisos para ejecutar dicha acción</value>
   </data>
   <data name="ErrorUserNoLogueado" xml:space="preserve">
     <value>El usuario debe loguearse</value>

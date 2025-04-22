@@ -239,7 +239,7 @@ namespace SustitucionMOATest.Services
 
             int IdUsuario = 1;
 
-            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap, "", "", "", false, true);
+            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap);
 
             repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
@@ -314,13 +314,13 @@ namespace SustitucionMOATest.Services
                                It.IsAny<IEnumerable<Expression<Func<Aprobaciones, object>>>>()))
               .Returns(new List<Aprobaciones> { });
 
-            var expected = string.Format(SuccessMsg.RolesActualizadosOk, mailUsuario, " ( CUIT: 23333333333)");
+            var expected = string.Format(SuccessMsg.RolesActualizadosOk, mailUsuario, " (CUIT: 23333333333)");
 
             List<int> idRoles = new List<int> { 1, 2 };
 
             int IdUsuario = 1;
 
-            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap, "", "", "", false, true);
+            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap);
 
             repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 

@@ -598,7 +598,7 @@
                     </div>
                     <div id="collapseU" class="collapse" aria-labelledby="usuarios" role="tabpanel">
                         <div class="panel-body">
-                            <div *ngIf="isAuthorized('ABM USUARIOS')">
+                            <div *ngIf="isAuthorized('ABM USUARIOS') || isAuthorized('EDITAR SUPLENTE')">
                                 <a (click)="goToSeccion('/usuario/list')" href="#">
                                     Listado de usuarios
                                 </a>

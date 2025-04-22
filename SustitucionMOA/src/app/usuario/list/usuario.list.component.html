@@ -69,10 +69,11 @@
                                 </div>
                             </th>
                             <!--<th tabindex="0" rowspan="1" colspan="1">Desbloquear</th>-->
-                            <th tabindex="0" rowspan="1" colspan="1">Hab/Deshab</th>
-                            <th tabindex="0" rowspan="1" colspan="1">Roles</th>
-                            <th tabindex="0" rowspan="1" colspan="1"></th>
-                            <th tabindex="0" rowspan="1" colspan="1"></th>
+                            <th *ngIf="tienePermisoEditarUsuario" tabindex="0" rowspan="1" colspan="1">Hab/Deshab</th>
+                            <th *ngIf="tienePermisoEditarUsuario" tabindex="0" rowspan="1" colspan="1">Roles</th>
+                            <th *ngIf="tienePermisoEditarSuplente" tabindex="0" rowspan="1" colspan="1">Suplente</th>
+                            <th *ngIf="tienePermisoEditarUsuario" tabindex="0" rowspan="1" colspan="1"></th>
+                            <th *ngIf="tienePermisoEditarUsuario" tabindex="0" rowspan="1" colspan="1"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -91,26 +92,29 @@
                             <td>{{usuario.CodigoProveedor}}</td>
                             <td>{{usuario.Tipo}}</td>
                             <!--<td><a class="animate" (click)="desbloquear(usuario.usuario)" href="#" *ngIf=isBloqueado(usuario.bloqueo)>Desbloquear</a><span *ngIf=!isBloqueado(usuario.bloqueo)>Desbloqueado</span></td>-->
-                            <td>
+                            <td *ngIf="tienePermisoEditarUsuario">
                                 <a class="animate" (click)="deshabilitar(usuario.Mail)" href="#"
                                    *ngIf=usuario.Habilitado>Deshabilitar</a>
                                 <a class="animate" (click)="habilitar(usuario.Mail)" href="#"
                                    *ngIf=!usuario.Habilitado>Habilitar</a>
                             </td>
-                            <td>
+                            <td *ngIf="tienePermisoEditarUsuario">
                                 <a class="animate" (click)="abrirModalEditarRoles(usuario)" href="#">Editar roles</a>
                             </td>
-                            <td>
+                            <td *ngIf="tienePermisoEditarSuplente">
+                                <a class="animate" (click)="abrirModalEditarSuplente(usuario)" href="#">Editar suplente</a>
+                            </td>
+                            <td *ngIf="tienePermisoEditarUsuario">
                                 <span title="Modificar Usuario" class="fa fa-edit cursor-pointer" data-toggle="modal"
                                       data-target="#modalModificarUsuario" (click)="abrirModalModificarDatos(usuario)"
                                       style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
                             </td>
-                            <td>
+                            <td *ngIf="tienePermisoEditarUsuario">
                                 <span title="Historial de cambios" class="fa fa-list cursor-pointer" data-toggle="modal"
                                       data-target="#modalAuditoriaUsuario" (click)="abrirModalAuditoriaUsuario(usuario.Id)"
                                       style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
                             </td>
-                            <td>
+                            <td *ngIf="tienePermisoEditarUsuario">
                                 <span title="Ver vendedores" class="fa fa-users cursor-pointer" data-toggle="modal"
                                       data-target="#modalVerVendedores" (click)="abrirModalVerVendedores(usuario)"
                                       style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
@@ -197,6 +201,89 @@
     </section>
     <!--End CONTENT-->
 
+    <button type="button" style="display:none" id="openModalSuplenteHiddenButton" data-toggle="modal" data-target="#modalEditarSuplente"></button>
+    <div class="modal fade" id="modalEditarSuplente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="cerrarModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Editar suplente - {{usuarioSeleccionado?.Mail || ""}}</h4>
+                </div>
+                <form [formGroup]="formularioUsuario">
+                    <div class="modal-body">
+                        <div>
+                            <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
+                                SUPLENTE
+                            </div>
+                            <div class="styled-select" style="width: 40% !important;">
+                                <input pInputText formControlName="suplente" 
+                                    (keyup)="validarSuplente()" 
+                                    (input)="onInputSuplente()"  
+                                    (blur)="validarEmailSuplente()" 
+                                    autocomplete="off">
+                            </div>
+                            <ul *ngIf="filteredList.length > 0" class="suggestion-list">
+                                <li *ngFor="let item of filteredList" class="suggestion-item" (click)="seleccionarSuplente(item)">{{ item.Mail }}</li>
+                            </ul>
+                            <div *ngIf="shouldShowErrorSuplente()" class="error-message">
+                                El correo electrónico ingresado no es válido.
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
+                                <p>Período de reasignación</p>
+                            </div>
+                            <div style="margin-top: 10px; padding-top: 0.8em;">
+                                <p-calendar #fechaReasignar
+                                    [(ngModel)]="rangoReasignacion"
+                                    (ngModelChange)="onCalendarChange($event)"
+                                    selectionMode="range"
+                                    formControlName="fechaReasignar1"
+                                    id="fechaReasignar"
+                                    dateFormat="dd/mm/yy"
+                                    [readonlyInput]="true"
+                                    [monthNavigator]="true"
+                                    [yearNavigator]="true"
+                                    [locale]="es"
+                                    autoZIndex="true"
+                                    [minDate]="fechaReasignacionMin"
+                                    [maxDate]="fechaReasignacionMax"
+                                    yearRange="{{fechaReasignacionMin.getFullYear()}}:{{fechaReasignacionMax.getFullYear()}}"
+                                    [showIcon]="true">
+                                    <p-footer>
+                                        <div class="calendar-footer">
+                                            <button type="button" class="btn btn-primary btn-style center-today-button" (click)="onCalendarioAceptar()">Aceptar</button>
+                                            <button type="button" class="btn btn-primary btn-style center-clear-button" (click)="limpiarCalendarioAsignacionSuplente()">Limpiar</button>
+                                        </div>
+                                    </p-footer>
+                                </p-calendar>
+                            </div>
+                            <div *ngIf="validationError">
+                                <p style="color:red; font-size: 1em">Por favor, cargue un rango de fechas</p>
+                            </div>
+                        </div>
+                        &nbsp;
+                        <div class=""> 
+                            <input type="checkbox" name="externo" (change)="onExternoChange($event)" #externoCheckbox [disabled]="isCheckboxDisabled">
+                            &nbsp;
+                            <label> Es usuario externo</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closeModalSuplente" style="display: inline-flex;">
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn-custom btn-add btn-chico" [disabled]="suplenteEsValido" (click)="guardarSuplente()" style="display: inline-flex;">
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 
     <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
@@ -221,69 +308,7 @@
                             <div class="styled-select" style="width: 30% !important;">
                                 <input pInputText formControlName="usuarioSap" (keyup)="validarConExpresionesRegulares('usuarioSap')">
                             </div>
-                        </div>
-
-                        <div style="margin-top: 10px;">
-                            <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
-                                SUPLENTE
-                            </div>
-                            <div class="styled-select" style="width: 40% !important;">
-                                <input pInputText formControlName="suplente" 
-                                (keyup)="validarConExpresionesRegulares('suplente')" 
-                                (input)="onInput()"  
-                                (blur)="validateEmail()" 
-                                autocomplete="off">
-                            </div>
-                            <ul *ngIf="filteredList.length > 0" class="suggestion-list">
-                                <li *ngFor="let item of filteredList" class="suggestion-item" (click)="selectItem(item)">{{ item.Mail }}</li>
-                            </ul>
-                            <div *ngIf="shouldShowError()" class="error-message">
-                                El correo electrónico ingresado no es válido.
-                              </div>
-                        </div>
-
-                        <div style="margin-top: 10px;">
-                            <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
-                                <p>Periodo de reasignación</p>
-                            </div>
-                            <div style="margin-top: 10px; padding-top: 0.8em;">
-                                <p-calendar #fechaReasignar
-                                            [(ngModel)]="rangoReasignacion"
-                                            (ngModelChange)="onCalendarChange($event)"
-                                            selectionMode="range"
-                                            formControlName="fechaReasignar1"
-                                            id="fechaReasignar"
-                                            dateFormat="dd/mm/yy"
-                                            [readonlyInput]="true"
-                                            [monthNavigator]="true"
-                                            [yearNavigator]="true"
-                                            [locale]="es"
-                                            autoZIndex="true"
-                                            [minDate]="fechaReasignacionMin"
-                                            [maxDate]="fechaReasignacionMax"
-                                            yearRange="{{fechaReasignacionMin.getFullYear()}}:{{fechaReasignacionMax.getFullYear()}}"
-                                            [showIcon]="true">
-                                    <p-footer>
-                                        <div class="calendar-footer">
-                                            <button type="button" class="btn btn-primary btn-style center-today-button" (click)="onCustomAcceptClick()">Aceptar</button>
-                                            <button type="button" class="btn btn-primary btn-style center-clear-button" (click)="handleClearClick()">Limpiar</button>
-                                        </div>
-                                    </p-footer>
-                                </p-calendar>
-                            </div>
-                            <div *ngIf="validationError">
-                                <p style="color:red; font-size: 1em">Por favor, cargue un rango de fechas</p>
-                            </div>                           
-                        </div>
-                        &nbsp;
-                        <div class=""> 
-                            <input type="checkbox" name="externo" 
-                            (change)="onCheckboxChange($event)" 
-                            #externoCheckbox 
-                            [disabled]="isCheckboxDisabled">
-                            &nbsp;
-                            <label> Es usuario externo</label>
-                        </div>  
+                        </div> 
 
                         <div class="row" *ngFor="let titulo of titulos">
                             <h5 class="tituloCategoriaListaUsuarios col-md-12">{{titulo}}</h5><br>
@@ -299,13 +324,12 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closeModal"
-                            style="display: inline-flex;">Cancelar</button>
-                        <button type="button" class="btn-custom btn-add btn-chico" [disabled]="validacionOk" (click)="guardarRolesUsuario()"
-                            style="display: inline-flex;">
+                        <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closeModal" style="display: inline-flex;">
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn-custom btn-add btn-chico" (click)="guardarRolesUsuario()" style="display: inline-flex;">
                             Guardar
                         </button>
-    
                     </div>
                 </form>
             </div>

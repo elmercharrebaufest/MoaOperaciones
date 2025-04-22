@@ -73,7 +73,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     usuarioModificacionSel: string = '';
     rangoReasignacion: Date[];
     fechaReasignacionMin: Date = new Date();
-    fechaReasignacionMax: Date = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+    fechaReasignacionMax: Date = new Date(new Date().setFullYear(new Date().getFullYear() + 100));
     es: any;
     validationError: boolean = false;
     beInfo: boolean = true;
@@ -82,7 +82,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     isCheckboxDisabled: boolean = true;
 
     tienePermisoEditarSuplente: boolean = false;
-
+    tienePermisoEditarUsuario: boolean = false;
 
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
@@ -114,7 +114,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         });
         
         this.setTabs();
-        this.securityService.tienePermisoRedirect("ABM USUARIOS");
+        this.securityService.tieneAlgunPermisoRedirect(["ABM USUARIOS", "EDITAR SUPLENTE"]);
         this.navService.setSeccionList([new Seccion('/usuario/list', 'usuario', 'Listado Usuarios')]);
         //this.navService.setSeccionList([new Seccion('/usuario/list', 'usuario', 'Listado Usuarios'), new Seccion('/usuario/alta', 'usuario', 'Alta Usuario')]);
         this.getUsuario();
@@ -141,13 +141,14 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     }
 
     verificarPermisosEdicion() {
+        this.tienePermisoEditarUsuario = this.securityService.tienePermiso("ABM USUARIOS");
         this.tienePermisoEditarSuplente = this.securityService.tienePermiso("EDITAR SUPLENTE");
     }
 
 
-    closeCalendar() {
-        this.calendar.overlayVisible = false;
-    }
+    // closeCalendar() {
+    //     this.calendar.overlayVisible = false;
+    // }
 
     getRolesOptions() {
         try {
@@ -348,12 +349,12 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     abrirModalEditarRoles(usuario: any) {
         this.usuarioSeleccionado = usuario;
         this.formularioUsuario.controls['usuarioSap'].patchValue(usuario.UsuarioSap);
-        this.formularioUsuario.controls['suplente'].patchValue(usuario.Suplente);
+        // this.formularioUsuario.controls['suplente'].patchValue(usuario.Suplente);
 
-        if (usuario.Suplente) {
-            this.isCheckboxDisabled = false;
-        }
-        this.cleanReasignarInput();
+        // if (usuario.Suplente) {
+        //     this.isCheckboxDisabled = false;
+        // }
+        // this.cleanReasignarInput();
         this.rolesUsuarioSeleccionado = new Array<Rol>();
         this.rolOptions = [];
         this.rolOptionsAll.forEach(val => this.rolesUsuarioSeleccionado.push(Object.assign({}, val)));
@@ -362,7 +363,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.rolesUsuarioSeleccionado[i].checked = false;
         }
 
-        this.externoCheckbox.nativeElement.checked = usuario.Externo;
+        // this.externoCheckbox.nativeElement.checked = usuario.Externo;
 
         usuario.Roles = this.obtenerRolesUsuario();
         this.obtenerReasignacionUsuario();
@@ -374,6 +375,20 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
                 this.rolesUsuarioSeleccionado[index].checked = true;
         });*/
 
+        return false;
+    }
+
+    abrirModalEditarSuplente(usuario: any) {
+        this.usuarioSeleccionado = usuario;
+        this.formularioUsuario.controls['suplente'].patchValue(usuario.Suplente);
+
+        if (usuario.Suplente) {
+            this.isCheckboxDisabled = false;
+        }
+        this.externoCheckbox.nativeElement.checked = usuario.Externo;
+
+        document.getElementById("openModalSuplenteHiddenButton").click();
+        this.obtenerReasignacionUsuario();
         return false;
     }
 
@@ -453,20 +468,17 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         }
     }
 
-    onCheckboxChange(event: Event): void {
+    onExternoChange(event: Event): void {
         this.esExterno = (event.target as HTMLInputElement).checked;
-      }
+    }
 
-    guardarRolesUsuario() {
-        if (this.validateReasignacionValues() === true) {
+    guardarSuplente() {
+        if (this.validateReasignacionValues()) {
             const suplente = this.formularioUsuario.controls['suplente'].value;
-            const usuarioSap = this.formularioUsuario.controls['usuarioSap'].value;
+            const usuarioId = this.usuarioSeleccionado.Id;
             
-            this.usuarioSeleccionado.Suplente = suplente;
-            this.usuarioSeleccionado.UsuarioSap = usuarioSap;
             this.spinnerComponent.showIt();
             this.mensajeComponent.setMsgsEmpty();
-            const idRoles = this.rolesUsuarioSeleccionado.filter(r => r.checked).map(({ Id }) => Id);
 
             let fDesde = '';
             let fHasta = '';
@@ -475,31 +487,67 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
                 fHasta = this.dateFormatter(this.rangoReasignacion[1]);
             }
 
-            this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles, fDesde, fHasta, this.esExterno).subscribe(
+            this.service.guardarSuplente(usuarioId, suplente, fDesde, fHasta, this.esExterno).subscribe(
                 (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.mensajeComponent.setSuccessMsg(result.data);
-                        this.getUsuario();
-
-                        document.getElementById("closeModal").click();
-                        this.mensajeComponent.setSuccessMsg(result.data);
-
+                    }
+                    else {
+                        if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        }
+                        else {
+                            if (result.info != undefined) {
+                                this.mensajeComponent.setInfoMsg(result.info);
+                            }
+                            this.getUsuario();
+                            document.getElementById("closeModalSuplente").click();
+                            this.mensajeComponent.setSuccessMsg("El usuario ha sido actualizado correctamente");
+                        }
                     }
                 },
                 error => {
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
+            return false;
+        }
+    }
 
-            return false; //<-- Prevent Refresh
-        }      
+    guardarRolesUsuario() {
+        const suplente = this.formularioUsuario.controls['suplente'].value;
+        const usuarioSap = this.formularioUsuario.controls['usuarioSap'].value;
+        
+        this.usuarioSeleccionado.Suplente = suplente;
+        this.usuarioSeleccionado.UsuarioSap = usuarioSap;
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        const idRoles = this.rolesUsuarioSeleccionado.filter(r => r.checked).map(({ Id }) => Id);
+
+        this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles).subscribe(
+            (result: any) => {
+                this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.mensajeComponent.setSuccessMsg(result.data);
+                    this.getUsuario();
+
+                    document.getElementById("closeModal").click();
+                    this.mensajeComponent.setSuccessMsg(result.data);
+                }
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+
+        return false; //<-- Prevent Refresh
     }
     
     /**
@@ -510,15 +558,22 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         const control = this.formularioUsuario.get(controlName);
         if (control) {
             switch (controlName) {
-                case 'suplente':
-                    control.setValue(control.value.replace(/\s+/g, ''));
-                    break;
+                // case 'suplente':
+                //     control.setValue(control.value.replace(/\s+/g, ''));
+                //     break;
                 case 'usuarioSap':
                     let value = control.value
                     value = value.replace(/\s+/g, ' ');
                     control.setValue(value.toUpperCase());
                     break;
             }
+        }
+    }
+
+    validarSuplente() {
+        const controlSuplente = this.formularioUsuario.get('suplente');
+        if (controlSuplente) {
+            controlSuplente.setValue(controlSuplente.value.replace(/\s+/g, ''));
         }
     }
 
@@ -540,19 +595,24 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             const date_String: string = `${year}-${month}-${day}`;
             return date_String;
         }
+        return '';
     }
 
-    handleClearClick() {
-        this.cleanReasignarInput();
-        this.validationError = false;
-    }
-
-    cleanReasignarInput() {
+    limpiarCalendarioAsignacionSuplente() {
+        //this.cleanReasignarInput();
         this.formularioUsuario.controls['fechaReasignar1'].setValue(null);
         this.formularioUsuario.controls['fechaReasignar1'].markAsPristine();
         this.formularioUsuario.controls['fechaReasignar1'].markAsUntouched();
         this.formularioUsuario.controls['fechaReasignar1'].updateValueAndValidity();
+        this.validationError = false;
     }
+
+    // cleanReasignarInput() {
+    //     this.formularioUsuario.controls['fechaReasignar1'].setValue(null);
+    //     this.formularioUsuario.controls['fechaReasignar1'].markAsPristine();
+    //     this.formularioUsuario.controls['fechaReasignar1'].markAsUntouched();
+    //     this.formularioUsuario.controls['fechaReasignar1'].updateValueAndValidity();
+    // }
 
     onCalendarChange(event: Event): void { 
         if (this.beInfo) {
@@ -591,15 +651,16 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     }
     
 
-    onCustomAcceptClick() {
-        this.closeCalendar();
+    onCalendarioAceptar() {
+        // this.closeCalendar();
+        this.calendar.overlayVisible = false;
         this.validationError = false;
     }
 
     filteredList: any[] = [];
-    validacionOk: boolean = false;
+    suplenteEsValido: boolean = false;
 
-    onInput() {
+    onInputSuplente() {
         var inputValue = this.formularioUsuario.controls['suplente'].value || '';
         if (inputValue.length > 3) {
             this.filteredList = this.data.filter(item => item.Mail.toLowerCase().includes(inputValue));
@@ -612,47 +673,48 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.esExterno = false;
             this.externoCheckbox.nativeElement.checked = false;
         }
-
         this.isCheckboxDisabled = inputValue.trim() === '';
-
     }    
 
-    selectItem(item: any) {
+    seleccionarSuplente(item: any) {
         this.formularioUsuario.controls['suplente'].setValue(item.Mail);
         this.formularioUsuario.controls['suplente'].markAsTouched();
         this.formularioUsuario.controls['suplente'].markAsDirty();
         this.filteredList = [];
 
         this.isCheckboxDisabled = false;
+    }
 
-      }
-
-    validateEmail() {
+    validarEmailSuplente() {
         const inputValue = this.formularioUsuario.controls['suplente'].value;
         const valid = this.data.some(item => item.Mail === inputValue);
+
         if (!valid && inputValue.length > 0) {
-          this.formularioUsuario.controls['suplente'].setErrors({ invalidEmail: true });
-          this.validacionOk = false;
-          this.isCheckboxDisabled = true;
-          this.esExterno = false;
-          this.externoCheckbox.nativeElement.checked = false;
-        } else {
-          this.formularioUsuario.controls['suplente'].setErrors(null);
-          this.validacionOk = false;
-          this.isCheckboxDisabled = false;      
+            this.formularioUsuario.controls['suplente'].setErrors({ invalidEmail: true });
+            this.suplenteEsValido = false;
+            this.isCheckboxDisabled = true;
+            this.esExterno = false;
+            this.externoCheckbox.nativeElement.checked = false;
         }
-      }
+        else {
+            this.formularioUsuario.controls['suplente'].setErrors(null);
+            this.suplenteEsValido = false;
+            this.isCheckboxDisabled = false;      
+        }
+    }
       
-      shouldShowError(): boolean {
+    shouldShowErrorSuplente(): boolean {
         const control = this.formularioUsuario.controls['suplente'];
-        
+
         if (control.touched && control.invalid && control.errors && control.errors.invalidEmail) {
-            this.validacionOk = true;
-
-        }else{this.validacionOk = false;}
-
+            this.suplenteEsValido = true;
+        }
+        else {
+            this.suplenteEsValido = false;
+        }
         return control.touched && control.invalid && control.errors && control.errors.invalidEmail;
     }
+
     abrirModalVerVendedores(usuario) {
         this.usuarioModificacionSel = usuario.Mail;
         const id: number = usuario.Id;

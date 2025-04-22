@@ -232,7 +232,7 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to El usuario no posee permisos para ejecutar dicha accion.
+        ///   Looks up a localized string similar to El usuario no posee permisos para ejecutar dicha acción.
         /// </summary>
         public static string ErrorSinPermiso {
             get {
