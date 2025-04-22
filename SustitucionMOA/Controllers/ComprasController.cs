@@ -4,6 +4,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Helpers;
@@ -13,6 +14,7 @@ using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -1191,5 +1193,83 @@ namespace SustitucionMOA.Controllers
             service.GuardarCertificacionesParciales(adjudicaciones);
             return JsonCustom(new SustitucionMOAApiResponse());
         }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.REPORTE_FACTURAS_CERTIFICACIONES)]
+        [HttpGet]
+        public ActionResult ObtenerReporteFacturasCertificaciones(
+            string fechaInicio,
+            string fechaFin,
+            int? pagina = null,
+            int? itemsPorPagina = null,
+            string orden = null,
+            string columna = null,
+            string ordenDeCompra = null,  // Nuevo parámetro para filtrar por orden de compra
+            string proveedor = null)
+        {
+            try
+            {
+                // Preparar objeto de paginación si se especifican los parámetros
+                Paginacion paginacion = null;
+                if (pagina.HasValue || itemsPorPagina.HasValue)
+                {
+                    var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
+                    paginacion = new Paginacion(
+                        (!string.IsNullOrEmpty(columna) ? columna : null),
+                        ordenar,
+                        (pagina == null) ? 0 : pagina.Value,
+                        (itemsPorPagina == null || itemsPorPagina == 0) ? 10 : itemsPorPagina.Value
+                    );
+                }
+
+                // Llama al servicio para obtener las certificaciones con paginación y los nuevos filtros
+                var certificacionesPaginadas = service.ObtenerReporteFacturasCertificaciones(
+                    fechaInicio,
+                    fechaFin,
+                    paginacion,
+                    ordenDeCompra,  // Pasar el nuevo filtro de orden de compra
+                    proveedor       // Pasar el nuevo filtro de proveedor
+                );
+
+                // Fix for the error CS1061: "List<CertificacionRegistrada>" no contiene una definición para "Items"...
+
+                // The issue is that `certificacionesPaginadas` is being treated as if it has a property `Items`,
+                // but it is actually a `List<CertificacionRegistrada>`. To fix this, we should directly iterate
+                // over `certificacionesPaginadas` instead of trying to access a non-existent `Items` property.
+
+                var certificacionesSinAreas = certificacionesPaginadas.Select(c => new
+                {
+                    c.Id,
+                    c.Proveedor.RazonSocial,
+                    c.NRO_OC,
+                    c.NRO_Certificacion,
+                    c.Importe,
+                    c.Archivo,
+                    c.FechaDeRegistro,
+                    c.Usuario.Mail,
+                    c.Moneda
+                }).ToList();
+
+                // Fix for CS0428: Ensure that the `Count` method is invoked correctly.
+                int totalItems = certificacionesPaginadas.Items.Count;
+                itemsPorPagina = paginacion?.ItemsPorPagina ?? totalItems;
+                int paginaActual = paginacion?.Pagina ?? 1;
+                int totalPaginas = (int)Math.Ceiling((decimal)totalItems / itemsPorPagina.Value);
+
+                return JsonCustom(new
+                {
+                    certificaciones = certificacionesSinAreas,
+                    totalItems = totalItems,
+                    totalPaginas = totalPaginas,
+                    paginaActual = paginaActual
+                });
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores
+                Log.Error($"Error al obtener reporte de facturas: {ex.Message}", ex);
+                return JsonCustom(new { error = "Error al obtener certificaciones", mensaje = ex.Message });
+            }
+        }
+
     }
 }
