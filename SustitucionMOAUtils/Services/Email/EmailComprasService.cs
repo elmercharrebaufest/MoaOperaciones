@@ -133,7 +133,7 @@ namespace SustitucionMOAUtils.Services.Email
                     }
                 }
 
-                var asunto = $"En el presente mail se informa la finalizacion de un Nuevo Pliego Multiple {pliego.NombreObra}";
+                var asunto = $"En el presente mail se informa la finalización de un Nuevo Pliego Múltiple {pliego.NombreObra}";
 
                 emailService.EnviarMail(enviarA.Distinct().ToList(), asunto, "", copia.Distinct().ToList(), ObtenerCuerpoSolpsAsociadas(pliego, solps), null, "");
             }
@@ -284,7 +284,7 @@ namespace SustitucionMOAUtils.Services.Email
                 ContentId = Guid.NewGuid().ToString()
             };
 
-            var htmlBody = $"En el presente mail se informa la finalizacion de un Nuevo Pliego Multiple {pliego.NombreObra} <br /><br/>";
+            var htmlBody = $"En el presente mail se informa la finalización de un Nuevo Pliego Múltiple {pliego.NombreObra} <br /><br/>";
 
             foreach (Solp solp in solps) {
                 var esMaterial = solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "MATERIALES";
