@@ -1715,6 +1715,7 @@
     <TypeScriptCompile Include="src\app\echeq\mis-echeq\mis-echeq.grilla\mis-echeq-grilla.component.spec.ts" />
     <TypeScriptCompile Include="src\app\echeq\mis-echeq\mis-echeq.grilla\mis-echeq-grilla.component.ts" />
     <TypeScriptCompile Include="src\app\error.interceptor.ts" />
+    <TypeScriptCompile Include="src\app\factura\factura.model.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.service.ts" />
     <TypeScriptCompile Include="src\app\faq\faq-routing.module.ts" />

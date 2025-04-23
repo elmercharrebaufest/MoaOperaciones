@@ -47,41 +47,44 @@
                                     site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
                     </div>
                 </div>
-                <div *ngIf="certificaciones?.length > 0">
-                    <table class="table table-striped table-bordered">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th></th>
-                                <th>Nombre Archivo</th>
-                                <th>Número OC</th>
-                                <th>Número Certificación</th>
-                                <th>Importe Certificación</th>
-                                <th>Moneda</th>
-                                <th>Archivo Adjunto</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let certificacion of certificaciones">
-                                <td>
-                                    <input
-                                    type="checkbox"
-                                    (change)="onCheckCertificacion(certificacion.NRO_Certificacion)"
-                                    >
-                                </td>
-                                <td>{{certificacion.NombreDeArchivo}}</td>
-                                <td>{{certificacion.NRO_OC}}</td>
-                                <td>{{certificacion.NRO_Certificacion}}</td>
-                                <td>{{formatPrice(certificacion.Importe)}}</td>
-                                <td>{{certificacion.Moneda}}</td>
-                                <td *ngIf="certificacion.Archivo.length !== 0">
-                                    <div class="filesColumn">
-                                        <a *ngFor="let archivo of certificacion.Archivo" (click)="descargarDocumentoAdjunto(archivo.Id)">{{obtenerNombreDeArchivo(archivo.Ruta)}}</a>
-                                    </div>
-                                </td>
-                                <td *ngIf="certificacion.Archivo.length == 0"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div *ngIf="certificaciones?.length > 0" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div *ngFor="let grupo of agrupadasPorArchivo">
+                        <h1>{{ grupo.nombreArchivo }}</h1>
+
+                        <table class="table table-striped table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th></th>
+                                    <th>Número OC</th>
+                                    <th>Número Certificación</th>
+                                    <th>Importe Certificación</th>
+                                    <th>Moneda</th>
+                                    <th>Archivo Adjunto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let certificacion of grupo.items">
+                                    <td>
+                                        <input type="checkbox"
+                                               (change)="onCheckCertificacion(certificacion)">
+                                    </td>
+                                    <td>{{ certificacion.NRO_OC }}</td>
+                                    <td>{{ certificacion.NRO_Certificacion }}</td>
+                                    <td>{{ formatPrice(certificacion.Importe) }}</td>
+                                    <td>{{ certificacion.Moneda }}</td>
+                                    <td *ngIf="certificacion.Archivo.length !== 0">
+                                        <div class="filesColumn">
+                                            <a *ngFor="let archivo of certificacion.Archivo"
+                                               (click)="descargarDocumentoAdjunto(archivo.Id)">
+                                                {{ obtenerNombreDeArchivo(archivo.Ruta) }}
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td *ngIf="certificacion.Archivo.length == 0"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div *ngIf="archivos?.length > 0" class="row myRow cargaDeDatosBtn">
                     <spinner-small></spinner-small>
@@ -100,7 +103,7 @@
                                 type="button"
                                 label="Guardar selección"
                                 (click)="registrarCertificaciones()"
-                                [disabled]="certificacionesAgregadas?.length == 0">
+                                [disabled]="alMenosUnaSeleccionadaPorGrupo()">
                         </button>
                     </div>
                 </div>

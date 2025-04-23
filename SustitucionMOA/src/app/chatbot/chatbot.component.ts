@@ -31,7 +31,6 @@ export class ChatbotComponent extends BaseComponent implements OnInit {
         let tienepermiso = this.securityService.tienePermiso("HANGFIREDASHBOARD");
         // se usa este permiso para no crear uno nuevo y es el unico que tiene solo adminsitracion.
         //borrar cuando se pase a produccion todo la logica de permisos para ver le chat.
-        console.log("tienepermiso", tienepermiso);
         return tienepermiso;
     }
 
