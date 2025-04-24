@@ -9158,61 +9158,10 @@ namespace SustitucionMOAUtils.Services
                 // Validar las fechas
                 var fechaInicioParsed = DateTime.Parse(fechaInicio);
                 var fechaFinParsed = DateTime.Parse(fechaFin);
-
-                // Consultar todas las certificaciones que cumplan con el filtro de fechas
-                var query = repositorio.Listar<CertificacionRegistrada>(
-                    x => x.FechaDeRegistro >= fechaInicioParsed &&
-                         x.FechaDeRegistro <= fechaFinParsed
-                );
-
-                // Aplicar filtro de Orden de Compra si se especifica
-                if (!string.IsNullOrEmpty(ordenDeCompra))
-                {
-                    query = query.Where(x => x.NRO_OC.Trim().Contains(ordenDeCompra)).ToList();
-                }
-
-
-                // Aplicar filtro de Proveedor si se especifica
-                if (!string.IsNullOrEmpty(proveedor))
-                {
-                    query = query.Where(x => x.Proveedor.RazonSocial.Contains(proveedor.ToUpper())).ToList();
-                }
-
-                // Aplicar paginación si se especifica
-                if (paginacion != null)
-                {
-                    // Aplicar ordenamiento si se especifica
-                    if (!string.IsNullOrEmpty(paginacion.OrdenarPor))
-                    {
-                        query = paginacion.DireccionOrden == DirOrden.Asc
-                            ? query.OrderBy(x => x.FechaDeRegistro).ToList()
-                            : query.OrderByDescending(x => x.FechaDeRegistro).ToList();
-                    }
-                    else
-                    {
-                        // Ordenamiento predeterminado por FechaDeRegistro descendente
-                        query = query.OrderByDescending(x => x.FechaDeRegistro).ToList();
-                    }
-
-                    // Crear ListaPaginada con la consulta paginada
-                    int itemsTotales = query.Count(); // Calcular el total de elementos
-                    return new ListaPaginada<CertificacionRegistrada>(
-                        query,
-                        paginacion.ItemsPorPagina,
-                        paginacion.Pagina,
-                        itemsTotales); // Proveer el argumento requerido "itemsTotales"
-                }
-                else
-                {
-                    // Si no se especifica paginación, devolver todos los resultados ordenados
-                    var items = query.OrderByDescending(x => x.FechaDeRegistro).ToList();
-                    return new ListaPaginada<CertificacionRegistrada>(
-                        items,
-                        pagina: 1, // Página predeterminada
-                        itemsPorPagina: items.Count, // Todos los elementos
-                        itemsTotales: items.Count // Total de elementos
-                    );
-                }
+                var pag = new Paginacion("FechaDeRegistro", DirOrden.Desc, 1, 10);
+                var consulta = new ListarCertificacionRegistradaConsulta(paginacion, ordenDeCompra, proveedor, fechaInicioParsed,fechaFinParsed);
+                var resultado = repositorio.ListarConsultaPaginada(consulta);
+                return resultado;
             }
             catch (Exception ex)
             {
