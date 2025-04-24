@@ -1,9 +1,13 @@
-﻿using SustitucionMOAModel.CustomExceptions;
+﻿using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -362,6 +366,72 @@ namespace SustitucionMOAUtils.Services
         public Archivo ObtenerArchivo(int archivoId)
         {
             return repositorio.Obtener<Archivo>(a => a.Id == archivoId);
+        }
+
+        public object ObtenerReporteFacturasCertificaciones(
+            string fechaInicio,
+            string fechaFin,
+            string ordenDeCompra = null,
+            string proveedor = null,
+            int? itemsPorPagina = null,
+            int? pagina = null,
+            string orden = null,
+            string columna = null
+            )
+        {
+            try
+            {
+                // Preparar objeto de paginación si se especifican los parámetros
+                Paginacion paginacion = null;
+                if (pagina.HasValue || itemsPorPagina.HasValue)
+                {
+                    var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
+                    paginacion = new Paginacion(
+                    (!string.IsNullOrEmpty(columna) ? columna : null),
+                    ordenar,
+                        (pagina == null) ? 0 : pagina.Value,
+                        (itemsPorPagina == null || itemsPorPagina == 0) ? 10 : itemsPorPagina.Value
+                    );
+                }
+
+                // Validar las fechas
+                var fechaInicioParsed = DateTime.Parse(fechaInicio);
+                var fechaFinParsed = DateTime.Parse(fechaFin);
+                var pag = new Paginacion("FechaDeRegistro", DirOrden.Desc, 1, 10);
+                var consulta = new ListarCertificacionRegistradaConsulta(paginacion, ordenDeCompra, proveedor, fechaInicioParsed, fechaFinParsed);
+                var resultado = repositorio.ListarConsultaPaginada(consulta);
+                var certificacionesSinAreas = resultado.Select(c => new
+                {
+                    c.Id,
+                    c.Proveedor.RazonSocial,
+                    c.NRO_OC,
+                    c.NRO_Certificacion,
+                    c.Importe,
+                    c.Archivo,
+                    c.FechaDeRegistro,
+                    c.Usuario.Mail,
+                    c.Moneda
+                }).ToList();
+
+                int totalItems = resultado.Items.Count;
+                itemsPorPagina = paginacion?.ItemsPorPagina ?? totalItems;
+                int paginaActual = paginacion?.Pagina ?? 1;
+                int totalPaginas = (int)Math.Ceiling((decimal)totalItems / itemsPorPagina.Value);
+
+                return new
+                {
+                    certificaciones = certificacionesSinAreas,
+                    totalItems = totalItems,
+                    totalPaginas = totalPaginas,
+                    paginaActual = paginaActual
+                };
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error en ObtenerReporteFacturasCertificaciones: {ex.Message}", ex);
+                throw;
+            }
         }
     }
 }

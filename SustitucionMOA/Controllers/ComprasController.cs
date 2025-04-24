@@ -28,6 +28,7 @@ namespace SustitucionMOA.Controllers
     public class ComprasController : BaseController
     {
         private readonly IComprasService service;
+        private readonly IFacturaService facturaService;
         private readonly IComprasSapService comprasSapService;
         private readonly IComprasSolicitanteService comprasSolicitanteService;
         private readonly IUsuarioService usuarioService;
@@ -35,6 +36,7 @@ namespace SustitucionMOA.Controllers
         private readonly ITablaSapService tablaSapService;
 
         public ComprasController(IComprasService comprasService,
+                                 IFacturaService facturaService,
                                  IComprasSapService comprasSapService,
                                  IComprasSolicitanteService comprasSolicitanteService,
                                  IUsuarioService usuarioService,
@@ -42,6 +44,7 @@ namespace SustitucionMOA.Controllers
                                  ITablaSapService tablaSapService)
         {
             this.service = comprasService;
+            this.facturaService = facturaService;
             this.comprasSapService = comprasSapService;
             this.comprasSolicitanteService = comprasSolicitanteService;
             this.usuarioService = usuarioService;
@@ -1208,60 +1211,20 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                // Preparar objeto de paginación si se especifican los parámetros
-                Paginacion paginacion = null;
-                if (pagina.HasValue || itemsPorPagina.HasValue)
-                {
-                    var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
-                    paginacion = new Paginacion(
-                        (!string.IsNullOrEmpty(columna) ? columna : null),
-                        ordenar,
-                        (pagina == null) ? 0 : pagina.Value,
-                        (itemsPorPagina == null || itemsPorPagina == 0) ? 10 : itemsPorPagina.Value
-                    );
-                }
-
                 // Llama al servicio para obtener las certificaciones con paginación y los nuevos filtros
-                var certificacionesPaginadas = service.ObtenerReporteFacturasCertificaciones(
+                var certificacionesPaginadas = facturaService.ObtenerReporteFacturasCertificaciones(
                     fechaInicio,
                     fechaFin,
-                    paginacion,
-                    ordenDeCompra,  // Pasar el nuevo filtro de orden de compra
-                    proveedor       // Pasar el nuevo filtro de proveedor
+                    ordenDeCompra,
+                    proveedor,
+                    itemsPorPagina,
+                    pagina,
+                    orden,
+                    columna
                 );
 
-                // Fix for the error CS1061: "List<CertificacionRegistrada>" no contiene una definición para "Items"...
-
-                // The issue is that `certificacionesPaginadas` is being treated as if it has a property `Items`,
-                // but it is actually a `List<CertificacionRegistrada>`. To fix this, we should directly iterate
-                // over `certificacionesPaginadas` instead of trying to access a non-existent `Items` property.
-
-                var certificacionesSinAreas = certificacionesPaginadas.Select(c => new
-                {
-                    c.Id,
-                    c.Proveedor.RazonSocial,
-                    c.NRO_OC,
-                    c.NRO_Certificacion,
-                    c.Importe,
-                    c.Archivo,
-                    c.FechaDeRegistro,
-                    c.Usuario.Mail,
-                    c.Moneda
-                }).ToList();
-
-                // Fix for CS0428: Ensure that the `Count` method is invoked correctly.
-                int totalItems = certificacionesPaginadas.Items.Count;
-                itemsPorPagina = paginacion?.ItemsPorPagina ?? totalItems;
-                int paginaActual = paginacion?.Pagina ?? 1;
-                int totalPaginas = (int)Math.Ceiling((decimal)totalItems / itemsPorPagina.Value);
-
-                return JsonCustom(new
-                {
-                    certificaciones = certificacionesSinAreas,
-                    totalItems = totalItems,
-                    totalPaginas = totalPaginas,
-                    paginaActual = paginaActual
-                });
+                // Convertir el resultado a un tipo compatible con ActionResult
+                return JsonCustom(certificacionesPaginadas);
             }
             catch (Exception ex)
             {

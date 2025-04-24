@@ -9146,31 +9146,6 @@ namespace SustitucionMOAUtils.Services
             return adjudicacionSap;
         }
 
-        public ListaPaginada<CertificacionRegistrada> ObtenerReporteFacturasCertificaciones(
-            string fechaInicio,
-            string fechaFin,
-            Paginacion paginacion = null,
-            string ordenDeCompra = null,
-            string proveedor = null)
-        {
-            try
-            {
-                // Validar las fechas
-                var fechaInicioParsed = DateTime.Parse(fechaInicio);
-                var fechaFinParsed = DateTime.Parse(fechaFin);
-                var pag = new Paginacion("FechaDeRegistro", DirOrden.Desc, 1, 10);
-                var consulta = new ListarCertificacionRegistradaConsulta(paginacion, ordenDeCompra, proveedor, fechaInicioParsed,fechaFinParsed);
-                var resultado = repositorio.ListarConsultaPaginada(consulta);
-                return resultado;
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Error en ObtenerReporteFacturasCertificaciones: {ex.Message}", ex);
-                throw;
-            }
-        }
-
-
         private void CompletarValoresPOPorProveedor(PeticionDeOfertaDto peticionDeOferta, bool esAdmin, bool noSolicitoVerPrecios)
         {
             var tiposDeCambio = new Dictionary<int, decimal>();
