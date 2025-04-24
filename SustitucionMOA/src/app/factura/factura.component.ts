@@ -367,4 +367,22 @@ export class FacturaComponent extends ListBaseComponent {
             });
         });
     }
+
+    todasSeleccionadas(grupo: { items: Certificacion[] }): boolean {
+        const itemsAConsiderar = this.verPendientes
+            ? grupo.items.filter(cert => !cert.Archivo || cert.Archivo.length === 0)
+            : grupo.items;
+
+        return itemsAConsiderar.length > 0 && itemsAConsiderar.every(cert => cert.Seleccionada);
+    }
+
+    toggleSeleccionGrupo(grupo: { items: Certificacion[] }, event: Event): void {
+        const checked = (event.target as HTMLInputElement).checked;
+
+        grupo.items.forEach(cert => {
+            if (!this.verPendientes || !cert.Archivo || cert.Archivo.length === 0) {
+                cert.Seleccionada = checked;
+            }
+        });
+    }
 }
