@@ -61,7 +61,7 @@ export class FacturaComponent extends ListBaseComponent {
     certificacionesAgregadas: Certificacion[] = [];
 
     certificacionesRegistradasExistentes = [];
-
+    verPendientes: boolean = false;
 
     setTabs() {
         this.setMenuSeccionTab("factura", "Factura");
@@ -174,13 +174,15 @@ export class FacturaComponent extends ListBaseComponent {
     }
 
     onCheckCertificacion(certificacionSeleccionada: Certificacion) {
-        certificacionSeleccionada.Seleccionada = !certificacionSeleccionada.Seleccionada;
         // Verificar si la certificación ya fue registrada con uno o más archivos
-        if (certificacionSeleccionada.Archivo != null && certificacionSeleccionada.Archivo.length > 0) {
-            this.floatMsgService.setInfoMsg(
-                `Advertencia: La certificación ${certificacionSeleccionada.NRO_Certificacion} ya está vinculada a otra factura.`
-            );
+        if (certificacionSeleccionada.Seleccionada) {
+            if (certificacionSeleccionada.Archivo != null && certificacionSeleccionada.Archivo.length > 0) {
+                this.floatMsgService.setInfoMsg(
+                    `Advertencia: La certificación ${certificacionSeleccionada.NRO_Certificacion} ya está vinculada a otra factura.`
+                );
+            }
         }
+
     }
 
     alMenosUnaSeleccionadaPorGrupo(): boolean {
@@ -351,5 +353,18 @@ export class FacturaComponent extends ListBaseComponent {
         this.certificacionesAgregadas = [];
         this.certificacionesRegistradasExistentes = [];
         this.resultados = [];
+    }
+
+    verCertificacionesPendientes() {
+        this.verPendientes = !this.verPendientes;
+        this.desmarcarTodasLasCertificaciones();
+    }
+
+    desmarcarTodasLasCertificaciones(): void {
+        this.agrupadasPorArchivo.forEach(grupo => {
+            grupo.items.forEach(certificacion => {
+                certificacion.Seleccionada = false;
+            });
+        });
     }
 }
