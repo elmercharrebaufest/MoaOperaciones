@@ -4,6 +4,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Helpers;
@@ -13,6 +14,7 @@ using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -26,6 +28,7 @@ namespace SustitucionMOA.Controllers
     public class ComprasController : BaseController
     {
         private readonly IComprasService service;
+        private readonly IFacturaService facturaService;
         private readonly IComprasSapService comprasSapService;
         private readonly IComprasSolicitanteService comprasSolicitanteService;
         private readonly IUsuarioService usuarioService;
@@ -33,6 +36,7 @@ namespace SustitucionMOA.Controllers
         private readonly ITablaSapService tablaSapService;
 
         public ComprasController(IComprasService comprasService,
+                                 IFacturaService facturaService,
                                  IComprasSapService comprasSapService,
                                  IComprasSolicitanteService comprasSolicitanteService,
                                  IUsuarioService usuarioService,
@@ -40,6 +44,7 @@ namespace SustitucionMOA.Controllers
                                  ITablaSapService tablaSapService)
         {
             this.service = comprasService;
+            this.facturaService = facturaService;
             this.comprasSapService = comprasSapService;
             this.comprasSolicitanteService = comprasSolicitanteService;
             this.usuarioService = usuarioService;
@@ -1191,5 +1196,43 @@ namespace SustitucionMOA.Controllers
             service.GuardarCertificacionesParciales(adjudicaciones);
             return JsonCustom(new SustitucionMOAApiResponse());
         }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.REPORTE_FACTURAS_CERTIFICACIONES)]
+        [HttpGet]
+        public ActionResult ObtenerReporteFacturasCertificaciones(
+            string fechaInicio,
+            string fechaFin,
+            int? pagina = null,
+            int? itemsPorPagina = null,
+            string orden = null,
+            string columna = null,
+            string ordenDeCompra = null,  // Nuevo parámetro para filtrar por orden de compra
+            string proveedor = null)
+        {
+            try
+            {
+                // Llama al servicio para obtener las certificaciones con paginación y los nuevos filtros
+                var certificacionesPaginadas = facturaService.ObtenerReporteFacturasCertificaciones(
+                    fechaInicio,
+                    fechaFin,
+                    ordenDeCompra,
+                    proveedor,
+                    itemsPorPagina,
+                    pagina,
+                    orden,
+                    columna
+                );
+
+                // Convertir el resultado a un tipo compatible con ActionResult
+                return JsonCustom(certificacionesPaginadas);
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores
+                Log.Error($"Error al obtener reporte de facturas: {ex.Message}", ex);
+                return JsonCustom(new { error = "Error al obtener certificaciones", mensaje = ex.Message });
+            }
+        }
+
     }
 }

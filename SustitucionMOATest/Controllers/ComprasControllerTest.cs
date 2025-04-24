@@ -24,6 +24,7 @@ namespace SustitucionMOATest.Controllers
     {
         private ComprasController target;
         private Mock<IComprasService> comprasServiceMock;
+        private Mock<IFacturaService> facturaServiceMock;
         private Mock<IComprasSapService> comprasSapServiceMock;
         private Mock<IComprasSolicitanteService> comprasSolicitanteServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
@@ -41,6 +42,7 @@ namespace SustitucionMOATest.Controllers
         public void SetUp()
         {
             comprasServiceMock = new Mock<IComprasService>();
+            facturaServiceMock = new Mock<IFacturaService>();
             comprasSapServiceMock = new Mock<IComprasSapService>();
             comprasSolicitanteServiceMock = new Mock<IComprasSolicitanteService>();
             usuarioServiceMock = new Mock<IUsuarioService>();
@@ -64,6 +66,7 @@ namespace SustitucionMOATest.Controllers
             Thread.CurrentPrincipal = principal;
 
             target = new ComprasController(comprasServiceMock.Object,
+                                           facturaServiceMock.Object,
                                            comprasSapServiceMock.Object,
                                            comprasSolicitanteServiceMock.Object,
                                            usuarioServiceMock.Object,
