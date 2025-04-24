@@ -88,7 +88,7 @@
                                     <tr *ngIf="!verPendientes || certificacion.Archivo.length === 0">
 
                                         <td>
-                                            <input type="checkbox" [(ngModel)]="certificacion.Seleccionada" (change)="onCheckCertificacion(certificacion)">                                           
+                                            <input type="checkbox" [(ngModel)]="certificacion.Seleccionada" (change)="onCheckCertificacion(certificacion)">
                                         </td>
                                         <td>{{ certificacion.NRO_OC }}</td>
                                         <td>{{ certificacion.NRO_Certificacion }}</td>
@@ -106,6 +106,23 @@
                                     </tr>
                                 </ng-container>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1rem;">
+                                            <span>
+                                                <strong>Seleccionadas:</strong>
+                                                {{ contarSeleccionadas(grupo) }}
+                                            </span>
+                                            <span>
+                                                <strong>Total:</strong>
+                                                 {{ totalImporteSeleccionadas(grupo) }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+
                         </table>
                     </div>
                 </div>

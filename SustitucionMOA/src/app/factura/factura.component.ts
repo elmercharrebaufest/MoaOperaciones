@@ -385,4 +385,17 @@ export class FacturaComponent extends ListBaseComponent {
             }
         });
     }
+
+    contarSeleccionadas(grupo: { items: Certificacion[] }): number {
+        return grupo.items.filter(cert => cert.Seleccionada).length;
+    }
+
+    totalImporteSeleccionadas(grupo: { items: Certificacion[] }): string {
+        const total = grupo.items
+            .filter(cert => cert.Seleccionada)
+            .reduce((sum, cert) => sum + (cert.Importe || 0), 0);
+
+        return grupo.items[0].Moneda + " " + total.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
 }
