@@ -279,7 +279,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
             }
 
             this.blockUI.start('Confirmando la certificación...');
-            this.service.postCreateAsync(this.entrySheetObjects, items, respIdAdjuntos.data).subscribe(
+            this.service.CrearEntradaServicio(this.entrySheetObjects, items, respIdAdjuntos.data).subscribe(
                 (response) => {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];

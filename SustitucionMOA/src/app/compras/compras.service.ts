@@ -271,7 +271,7 @@ export class ComprasService extends BaseService {
             .post('/api/EntradaServicio/DeleteById', payload, { headers: this.headersPost })
     }
 
-    public postCreateAsync(parametros: any, report: any, IdAdjuntos): Observable<any> {
+    public CrearEntradaServicio(parametros: any, report: any, IdAdjuntos): Observable<any> {
 
         var payload = new FormData();
 
@@ -279,23 +279,21 @@ export class ComprasService extends BaseService {
             Posiciones: parametros,
             report: report,
             IdAdjuntos: IdAdjuntos
-            // Asegúrate de incluir todos los campos requeridos por la interfaz
         };
 
         payload.append('request', JSON.stringify(request));
         //payload.append('report', JSON.stringify(report));
         //payload.append('IdAdjuntos', JSON.stringify(IdAdjuntos));
 
-        return this.http.post('/api/EntradaServicio/CreateAsync', payload, { headers: this.headers })
+        return this.http
+            .post('/api/EntradaServicio/CrearEntradaServicio', payload, { headers: this.headers })
             .pipe(
                 catchError(error => {
                     return throwError(error);
                 })
             );
     }
-
-
-
+    
     public AdjuntarArchivosCertificacion(archivos: File[]): Observable<any> {
 
         var payload = new FormData();

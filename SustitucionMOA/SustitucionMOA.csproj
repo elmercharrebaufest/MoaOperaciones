@@ -686,6 +686,7 @@
     <Content Include="Template\CertificacionesPendientesDeAprobacion-Proveedor.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacionRechazada.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacion.html" />
+    <Content Include="Template\CertificacionesPendientesDeAprobacion_Posicion.html" />
     <Content Include="Template\EnvioCamposSustentablesUcropit.html" />
     <Content Include="Template\NotificacionEsPendientesDeAprobacion.html" />
     <Content Include="Template\NotificacionOrdenesDeCarga.html" />
