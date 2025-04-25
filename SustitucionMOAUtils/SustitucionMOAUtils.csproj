@@ -335,6 +335,7 @@
     <Compile Include="Services\ComprasArchivosService.cs" />
     <Compile Include="Services\ComprasSapService.cs" />
     <Compile Include="Services\ComprasSolicitanteService.cs" />
+    <Compile Include="Services\Email\Dto\MailAprobacionESRequest.cs" />
     <Compile Include="Services\Email\EmailUbicacionGeograficaService.cs" />
     <Compile Include="Services\LogTableService.cs" />
     <Compile Include="Services\AprobacionesService.cs" />
@@ -513,6 +514,7 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -94,45 +94,17 @@ namespace SustitucionMOA.Controllers
         //}
 
         [ValidateInput(false)]
-        public async Task<ActionResult> CreateAsync(string request)
+        public ActionResult CrearEntradaServicio(string request)
         {
             SustitucionMOAWS.Logger.Log.Info("EntradaServicioController.CreateAsync");
 
             var payload = JsonConvert.DeserializeObject<CreateEntradaServicioDto>(request);
 
-            // Este debe combinarse con permisos de usuario.
-            //if (parametros.vendedor == "" || parametros.vendedor == null)
-            //{
-            //    parametros.vendedor = SessionPersister.Proveedor;
-            //}
-            //MMSN-601
-            string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-            List<EntradaServicioCreateRespuestaDto> ret = new List<EntradaServicioCreateRespuestaDto>();
+            var mailUsuario = ClaimsPrincipalExtension.GetClaimValue("emails");
 
+            var response = EntradaServicioService.CrearEntradaServicio(payload, mailUsuario);
 
-            foreach (EntradaServicioCreateParamsDto posicion in payload.Posiciones)
-            {
-                string solpedNumber = posicion.EntrySheetHeader.SolPedNumber;
-
-                var validacion = EntradaServicioService.ValidarIngresante(posicion, userMail, solpedNumber);
-                var result = new EntradaServicioCreateRespuestaDto();
-                if (validacion.Message == "Auto")
-                {
-                    result = await EntradaServicioService.CrearEntradaServicioAsync(posicion, userMail, payload.report, payload.IdAdjuntos, solpedNumber, posicion.EntrySheetHeader.Proveedor);
-                }
-                else if (validacion.Message == "Temporal")
-                {
-                    result = EntradaServicioService.CrearEntradaServicioTemporal(posicion, userMail, payload.report, payload.IdAdjuntos, solpedNumber, posicion.EntrySheetHeader.Proveedor);
-                }
-                else
-                {
-                    result = validacion;
-                }
-                ret.Add(result);
-            }
-
-
-            return JsonCustom(new { data = ret });
+            return JsonCustom(new { data = response });
         }
 
         [AllowAnonymous]

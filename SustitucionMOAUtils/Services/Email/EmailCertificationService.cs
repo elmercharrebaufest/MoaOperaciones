@@ -6,6 +6,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Services.Email.Dto;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -22,6 +23,7 @@ namespace SustitucionMOAUtils.Services.Email
     {
         private static readonly string TEMPLATE_NOTIFICATION_CERTIFICATION_REJECTED = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacionRechazada.html");
         private static readonly string TEMPLATE_NOTIFICACION_APROBACIONES_EXT = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacion.html");
+        private static readonly string TEMPLATE_NOTIFICACION_APROBACIONES_EXT_POSICION = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacion_Posicion.html");
         private static readonly string TEMPLATE_NOTIFICACION_APROBACIONES_PROVEEDOR = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacion-Proveedor.html");
         private static readonly string TEMPLATE_NOTIFICACION_DIARIA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionEsPendientesDeAprobacion.html");
 
@@ -33,6 +35,151 @@ namespace SustitucionMOAUtils.Services.Email
         {
             this.emailService = emailService;
             this.azureService = azureService;
+        }
+
+        public async Task SendNotifyRejectionEmail(EmailDetailCertificateDto emailDetailCertificateDto)
+        {
+            string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICATION_CERTIFICATION_REJECTED);
+
+            (List<string> emails, string subject, string body) emailParts = BuildRejectedEmail(emailDetailCertificateDto, bodyTemplate);
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailParts.emails,
+                Asunto = emailParts.subject,
+                Cuerpo = emailParts.body,
+            };
+
+            Task emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
+            await emailSendTask;
+        }
+
+        public void SendDailyNotification(string to, List<NotificacionEsPendientesDiariasDto> aprobaciones)
+        {
+            string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_DIARIA);
+
+            string body = BuildDailyNotification(aprobaciones, bodyTemplate);
+
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = new List<string> { to },
+                Asunto = "Certificaciones pendientes de aprobación",
+                Cuerpo = body,
+            };
+
+            var emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
+        }
+
+        public async Task SendAprobalProviderEmail(EmailDetailCertificateDto emailDetailCertificateDto, string reference)
+        {
+            string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_PROVEEDOR);
+
+            (List<string> emails, string subject, string body) emailParts = BuildApprovedEmail(emailDetailCertificateDto, bodyTemplate);
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailParts.emails,
+                Asunto = emailParts.subject,
+                Cuerpo = emailParts.body,
+            };
+
+            Task emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
+            await emailSendTask;
+        }
+
+        public void EnviarMailCertificacionAutomatica(string nroOC, string nroSolp, string mensaje, IEnumerable<string> destinatarios)
+        {
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(destinatarios),
+                Asunto = $"Certificación automática. OC: {nroOC} - SOLP: {nroSolp}",
+                Cuerpo = mensaje
+            };
+            emailService.EnviarMail(emailSenderData);
+        }
+
+        public void EnviarMailAprobacion(MailAprobacionESRequest request)
+        {
+            try
+            {
+                var baseURL = ConfigurationManager.AppSettings["SpaUrl"];
+                var asunto = "Aprobación de servicio - Certificaciones: ";
+                var adjuntosMail = new List<EmailAttachment>();
+                var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT);
+                var cuerpoTemplatePosiciones = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT_POSICION);
+                var contenidoHtmlPosiciones = string.Empty;
+
+                foreach (var posicion in request.Posiciones)
+                {
+                    var certificacionNro = posicion.Aprobacion.NRO_ES_LOCAL;
+                    var reporteMemStream = new MemoryStream();
+                    try
+                    {
+                        var reporteES = GetReportES(certificacionNro).ConfigureAwait(false).GetAwaiter().GetResult();
+                        reporteES.CopyTo(reporteMemStream);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.AzureError(ex);
+                        Log.Error("Error al obtener archivo para " + certificacionNro, ex);
+                    }
+
+                    var proveedorRazonSocial = posicion.ProveedorRazonSocial ?? string.Empty;
+                    var usuario = posicion.Aprobacion.Ingresante_CDS;
+                    var fechaCarga = posicion.Aprobacion.Fecha_Carga_ES ?? DateTime.Now;
+                    var fechaCertificacion = fechaCarga.ToString("dd/MM/yyyy");
+                    var servicioDescripcion = posicion.Aprobacion.Texto_breve_servicio;
+                    var importe = posicion.Reportes[0].Moneda == "ARP" ?
+                        "$ " + Convert.ToDecimal(posicion.Aprobacion.Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US")) :
+                        posicion.Reportes[0].Moneda + " " + Convert.ToDecimal(posicion.Aprobacion.Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
+                    var ordenCompraNro = posicion.Aprobacion.NRO_OC;
+                    var tabla = GenerarTablaAprobaciones(posicion.Reportes);
+                    var nroPosicion = posicion.Aprobacion.NRO_POS;
+
+                    asunto += $"{certificacionNro}, {proveedorRazonSocial}, {posicion.Aprobacion.Texto_breve_servicio}. ";
+
+                    var approvalURL = "\"" + $"{baseURL}/aprobacion-externa/approve/{certificacionNro}&{request.UsuarioId}" + "\"";
+                    var rejectURL = "\"" + $"{baseURL}/aprobacion-externa/reject/{certificacionNro}&{request.UsuarioId}" + "\"";
+
+                    var cuerpoPosicion = string.Format(cuerpoTemplatePosiciones, proveedorRazonSocial, request.UsuarioId, certificacionNro, fechaCertificacion, servicioDescripcion,
+                        importe, tabla, approvalURL, rejectURL, ordenCompraNro, nroPosicion);
+
+                    contenidoHtmlPosiciones += cuerpoPosicion;
+
+                    if (reporteMemStream.Length > 0)
+                    {
+                        adjuntosMail.Add(new EmailAttachment(reporteMemStream, $"Reporte_{certificacionNro}.pdf"));
+                    }
+
+                    foreach (var adjuntoPosicion in posicion.Adjuntos)
+                    {
+                        var adjuntoMemStream = azureService.ObtenerArchivoBlobStorageAsync(adjuntoPosicion.NombreEnBlob, "certificaciones").ConfigureAwait(false).GetAwaiter().GetResult();
+                        adjuntoMemStream.Position = 0;
+
+                        if (adjuntoMemStream.Length > 0)
+                        {
+                            adjuntosMail.Add(new EmailAttachment(adjuntoMemStream, adjuntoPosicion.NombreArchivo));
+                        }
+                    }
+                }
+
+                var urlOperaciones = "\"" + baseURL + "\"";
+                var cuerpo = string.Format(cuerpoTemplate, contenidoHtmlPosiciones, urlOperaciones);
+
+                var emailSenderData = new EmailSenderData
+                {
+                    Mails = emailService.ObtenerListaDestinatarios(new[] { request.DestinatarioMail }),
+                    Asunto = asunto,
+                    Cuerpo = cuerpo,
+                    Adjuntos = adjuntosMail
+                };
+                emailService.EnviarMail(emailSenderData);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
         }
 
         private (List<string>, string, string) BuildEmail(EmailDetailCertificateDto emailDetail, string bodyTemplate, string subjectFormat, params object[] subjectArgs)
@@ -73,7 +220,6 @@ namespace SustitucionMOAUtils.Services.Email
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }
 
-
         private string GetImporte(string importe)
         {
             string pattern = @"([^\d]+)\s*([\d,]+(?:\.\d+)?)";
@@ -101,41 +247,6 @@ namespace SustitucionMOAUtils.Services.Email
             return importe;
         }
 
-
-        public async Task SendNotifyRejectionEmail(EmailDetailCertificateDto emailDetailCertificateDto)
-        {
-            string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICATION_CERTIFICATION_REJECTED);
-
-            (List<string> emails, string subject, string body) emailParts = BuildRejectedEmail(emailDetailCertificateDto, bodyTemplate);
-
-            var emailSenderData = new EmailSenderData
-            {
-                Mails = emailParts.emails,
-                Asunto = emailParts.subject,
-                Cuerpo = emailParts.body,
-            };
-
-            Task emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
-            await emailSendTask;
-        }
-
-        public void SendDailyNotification(string to, List<NotificacionEsPendientesDiariasDto> aprobaciones)
-        {
-            string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_DIARIA);
-
-            string body = BuildDailyNotification(aprobaciones, bodyTemplate);
-
-
-            var emailSenderData = new EmailSenderData
-            {
-                Mails = new List<string> { to },
-                Asunto = "Certificaciones pendientes de aprobación",
-                Cuerpo = body,
-            };
-
-            var emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
-        }
-
         private string BuildDailyNotification(List<NotificacionEsPendientesDiariasDto> aprobaciones, string bodyTemplate)
         {
             var bodyTable = BuildTableDailyNotification(aprobaciones);
@@ -143,23 +254,6 @@ namespace SustitucionMOAUtils.Services.Email
             var body = string.Format(bodyTemplate, bodyTable.ToString());
 
             return body;
-        }
-
-        public async Task SendAprobalProviderEmail(EmailDetailCertificateDto emailDetailCertificateDto, string reference)
-        {
-            string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_PROVEEDOR);
-
-            (List<string> emails, string subject, string body) emailParts = BuildApprovedEmail(emailDetailCertificateDto, bodyTemplate);
-
-            var emailSenderData = new EmailSenderData
-            {
-                Mails = emailParts.emails,
-                Asunto = emailParts.subject,
-                Cuerpo = emailParts.body,
-            };
-
-            Task emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
-            await emailSendTask;
         }
 
         private StringBuilder BuildTableDetailES(EmailDetailCertificateDto emailDetailCertificateDto)
@@ -213,107 +307,6 @@ namespace SustitucionMOAUtils.Services.Email
             }
 
             return bodyTable;
-        }
-
-        public async Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov, int userId, string destinatario, List<ReporteDto> reports, IEnumerable<AdjuntosEntradasDeServicio> adjuntosMetadata)
-        {
-            MemoryStream ms = new MemoryStream();
-
-            try
-            {
-                const string dateTimeFormat = "dd/MM/yyyy";
-                List<string> dest = new List<string>();
-                List<EmailAttachment> attachments = new List<EmailAttachment>();
-                dest.Add(destinatario);
-
-                string asunto = $" Aprobación de servicio - Certificación nro {apList[0].NRO_ES_LOCAL} - {prov.RazonSocial} - {apList[0].Texto_breve_servicio}";
-
-                try
-                {
-                    var report = await GetReportES(apList[0].NRO_ES_LOCAL).ConfigureAwait(false);
-
-                    await report.CopyToAsync(ms);
-                }
-                catch (Exception e)
-                {
-                    Log.AzureError(e);
-                    Log.Error("EnviarMailAprobacion: error al obtener archivo ", e);
-                }
-
-                //Leer Template - CertificacionesPendientesDeAprobacion.html
-                string cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT);
-
-                //Variables para completar el template
-                string proveedor = string.IsNullOrEmpty(prov.RazonSocial) ? string.Empty : prov.RazonSocial;
-                string usuario = string.Empty;
-                string cert = string.Empty;
-                string FechaCert = string.Empty;
-                string desc = string.Empty;
-                string importe = string.Empty;
-                //MMSN-928 - Agregar OC al email.
-                string OC = string.Empty;
-                string NroPosicion = string.Empty;
-
-                usuario = apList[0].Ingresante_CDS;
-                cert = apList[0].NRO_ES_LOCAL;
-                DateTime fechaCarga = apList[0].Fecha_Carga_ES != null ? (DateTime)apList[0].Fecha_Carga_ES : DateTime.Now;
-                FechaCert = fechaCarga.ToString(dateTimeFormat);
-                desc = apList[0].Texto_breve_servicio;
-                importe = reports[0].Moneda == "ARP" ? "$ " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US"))
-                    : reports[0].Moneda + " " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
-                OC = apList[0].NRO_OC;
-                StringBuilder tabla = GenerarTablaAprobaciones(reports);
-                NroPosicion = apList[0].NRO_POS;
-
-                string baseURL = ConfigurationManager.AppSettings["SpaUrl"];
-                string approvalURL = "\"" + baseURL + "/aprobacion-externa/approve/" + apList[0].NRO_ES_LOCAL + "&" + userId + "\"";
-                string rejectURL = "\"" + baseURL + "/aprobacion-externa/reject/" + apList[0].NRO_ES_LOCAL + "&" + userId + "\"";
-
-                string _baseURL = "\"" + baseURL + "\"";
-                string cuerpo = string.Format(cuerpoTemplate, proveedor, usuario, cert, FechaCert, desc, importe, tabla, approvalURL, rejectURL, OC, NroPosicion, _baseURL);
-
-                if (ms.Length > 0)
-                {
-                    attachments.Add(new EmailAttachment(ms, "Reporte.pdf"));
-                }
-
-                foreach (AdjuntosEntradasDeServicio adjuntoMetadata in adjuntosMetadata)
-                {
-                    MemoryStream adjunto = await azureService.ObtenerArchivoBlobStorageAsync(adjuntoMetadata.NombreEnBlob, "certificaciones").ConfigureAwait(false);
-                    adjunto.Position = 0;
-
-                    if (adjunto.Length > 0)
-                    {
-                        attachments.Add(new EmailAttachment(adjunto, adjuntoMetadata.NombreArchivo));
-                    }
-                }
-
-                EmailSenderData emailSenderData = new EmailSenderData()
-                {
-                    Mails = dest,
-                    Asunto = asunto,
-                    Cuerpo = cuerpo,
-                    Adjuntos = attachments,
-                };
-
-                Task emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
-                await emailSendTask;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-            }
-        }
-
-        public void EnviarMailCertificacionAutomatica(string nroOC, string nroSolp, string mensaje, IEnumerable<string> destinatarios)
-        {
-            var emailSenderData = new EmailSenderData
-            {
-                Mails = emailService.ObtenerListaDestinatarios(destinatarios),
-                Asunto = $"Certificación automática. OC: {nroOC} - SOLP: {nroSolp}",
-                Cuerpo = mensaje
-            };
-            emailService.EnviarMail(emailSenderData);
         }
 
         private static StringBuilder GenerarTablaAprobaciones(List<ReporteDto> reports)
