@@ -69,7 +69,6 @@ namespace SustitucionMOAUtils.Services
                                                                bool incluirGuardadas = false,
                                                                int? pliegoId = null)
         {
-            IEnumerable<string> tiposSolpValidos = new HashSet<string> { "CON_PLIEGO", "SIN_PLIEGO" };
             IEnumerable<string> tiposPosicionSolpValidos = new HashSet<string> { "SERVICIO", "MATERIALES" };
 
             bool traerTodosLosTipos = (sap && mantenimiento && web && repoAutomatica && contratoMarco)
@@ -80,7 +79,6 @@ namespace SustitucionMOAUtils.Services
                         solpQuery.NroSolp != null
                         && solpQuery.NroSolp != ""
                         && solpQuery.Posiciones.Any(x => x.Estado) && solpQuery.Posiciones.FirstOrDefault().TipoPosicion != null && solpQuery.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO"
-                        && tiposSolpValidos.Contains(solpQuery.TipoSolp.Codigo)
                         && solpQuery.Posiciones.Any(posicion => tiposPosicionSolpValidos.Contains(posicion.TipoPosicion.Codigo))
                         && !(solpQuery.TrabajoYaHecho == true || solpQuery.Adicional == true || solpQuery.Urgencia == true || solpQuery.CondEspProveedorAsignado == true || solpQuery.ConPresupuesto == true)
                         && !solpQuery.Pliego.Multiple
