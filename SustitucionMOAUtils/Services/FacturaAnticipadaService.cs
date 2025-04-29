@@ -45,7 +45,10 @@ namespace SustitucionMOAUtils.Services
 
             Log.Info($"Obtener facturas de contrato: {numeroContrato}");
             var contratoSAP = _consumerOrdenCarga.ObtenerContratoSAP(numeroContrato, TipoContratoFAS.Anticipado);
-            contratoSAP.Detalles = contratoSAP.Detalles.Where(d => !d.BloqueoEntrega).ToList();
+            if (contratoSAP != null && contratoSAP.Detalles != null)
+            {
+                contratoSAP.Detalles = contratoSAP.Detalles.Where(d => !d.BloqueoEntrega).ToList();
+            }
             Log.Info($"Obtener facturas de contrato Result: {numeroContrato}, {contratoSAP.ToJson()}");
 
             return ObtenerFacturasDeContrato(contratoSAP, false);
