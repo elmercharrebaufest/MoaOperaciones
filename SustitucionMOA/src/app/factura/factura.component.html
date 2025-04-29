@@ -51,12 +51,12 @@
                 <div *ngIf="certificaciones?.length > 0" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
 
-                    <div class="myRow mySearch">
+                    <div class="myRow mySearch" style="margin-bottom: 150px;">
                         <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
                             <div class="col-xs-12 col-md-12 search-header">
                                 <title-caps>Refinar resultados</title-caps>
                             </div>
-                            <div id="searchTexto" class="col-xs-12 col-sm-6 col-md-15">
+                            <div id="searchTexto" class="col-md-12">
                                 <span style="margin-right: 7px;">
                                     <p-checkbox class="checkboxFechas" binary="true" label="Certificaciones Pendientes de factura" pTooltip="Certificaciones Pendientes de factura" (click)="verCertificacionesPendientes()"></p-checkbox>
                                 </span>
@@ -68,7 +68,7 @@
 
 
                     <div *ngFor="let grupo of agrupadasPorArchivo">
-                        <h1>{{ grupo.nombreArchivo }}</h1>
+                        <h2>{{ grupo.nombreArchivo }}</h2>
 
                         <table class="table table-striped table-bordered">
                             <thead class="thead-dark">

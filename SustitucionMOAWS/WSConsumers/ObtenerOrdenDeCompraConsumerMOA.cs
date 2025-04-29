@@ -358,7 +358,7 @@ namespace SustitucionMOAWS.WSConsumers
                     resultado.Certificaciones.Add(new OrdenDeCompraSAPCertificacion
                     {
                         NroCertificacion = poh.MAT_DOC,
-                        Saldo = poh.VAL_LOCCUR,
+                        Saldo = poh.VAL_FORCUR,
                         Moneda = poh.CURRENCY,
                         //importe = poh.importe // Nos tienen que decir el nombre de este campo
                     });

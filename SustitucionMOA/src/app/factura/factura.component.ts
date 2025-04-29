@@ -317,7 +317,7 @@ export class FacturaComponent extends ListBaseComponent {
     }
 
     uploadHandler(filesUpload: any): boolean {
-
+        this.removeFile(null);
         for (let file of this.archivos) {
             if (!this.isValidFileType(file)) {
                 this.floatMsgService.setErrorMsg(`El archivo ${file.name} no es válido. Solo se permiten archivos PDF, JPG, JPEG y PNG.`);
