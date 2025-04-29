@@ -1,7 +1,8 @@
 ﻿using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
@@ -9,7 +10,6 @@ using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using SustitucionMOAModel.Dto.OrdenDeCarga;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -45,6 +45,7 @@ namespace SustitucionMOAUtils.Services
 
             Log.Info($"Obtener facturas de contrato: {numeroContrato}");
             var contratoSAP = _consumerOrdenCarga.ObtenerContratoSAP(numeroContrato, TipoContratoFAS.Anticipado);
+            contratoSAP.Detalles = contratoSAP.Detalles.Where(d => !d.BloqueoEntrega).ToList();
             Log.Info($"Obtener facturas de contrato Result: {numeroContrato}, {contratoSAP.ToJson()}");
 
             return ObtenerFacturasDeContrato(contratoSAP, false);
