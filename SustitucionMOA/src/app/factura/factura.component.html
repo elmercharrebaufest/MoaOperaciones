@@ -85,7 +85,7 @@
                             </thead>
                             <tbody>
                                 <ng-container *ngFor="let certificacion of grupo.items">
-                                    <tr *ngIf="!verPendientes || certificacion.Archivo.length === 0">
+                                    <tr *ngIf="(verPendientes && certificacion.Archivo.length === 0) || !verPendientes ">
 
                                         <td>
                                             <input type="checkbox" [(ngModel)]="certificacion.Seleccionada" (change)="onCheckCertificacion(certificacion)">
