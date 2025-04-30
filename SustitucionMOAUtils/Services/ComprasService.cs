@@ -339,6 +339,7 @@ namespace SustitucionMOAUtils.Services
                     Posiciones = new List<SolpPosicion>(),
                     TrabajoYaHecho = solp.TrabajoYaHecho,
                     ConPresupuesto = solp.ConPresupuesto,
+                    SeraUsadoEnPliegoMultiple = solp.SeraUsadoEnPliegoMultiple,
                     CertificacionAutomatica = solp.CertificacionAutomatica,
                     CondEspProveedorAsignado = solp.CondEspProveedorAsignado,
                     Adicional = solp.Adicional,
@@ -374,6 +375,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.CertificacionAutomatica = solp.CertificacionAutomatica;
                 solpEntity.CondEspProveedorAsignado = solp.CondEspProveedorAsignado;
                 solpEntity.ConPresupuesto = solp.ConPresupuesto;
+                solpEntity.SeraUsadoEnPliegoMultiple = solp.SeraUsadoEnPliegoMultiple;
                 solpEntity.Adicional = solp.Adicional;
                 solpEntity.Urgencia = solp.Urgencia;
                 solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
@@ -2672,6 +2674,11 @@ namespace SustitucionMOAUtils.Services
                         EnviarMailErrorCondicionEspecial(solp, $"Se generó la SOLP con condiciones especiales. " +
                             $"Recuerde ingresar la justificacion para completar la SOLP.");
                     }
+                    if (ValidarIncopatibilidadSeraUsadoEnPliegoMultipleConOtrasCondEsp(solp))
+                    {
+                        EnviarMailErrorCondicionEspecial(solp, $"Se generó la SOLP con condiciones especiales. " +
+                            $"Recuerde marcar unicamente a usar en Pliego Multiple o alguna condición especial para completar la SOLP");
+                    }
                 }
                 else
                 {
@@ -2875,6 +2882,11 @@ namespace SustitucionMOAUtils.Services
             return solp.TrabajoYaHecho == true || solp.ConPresupuesto || solp.Adicional == true || solp.CondEspProveedorAsignado == true || solp.Urgencia == true;
         }
 
+        private bool ValidarIncopatibilidadSeraUsadoEnPliegoMultipleConOtrasCondEsp(Solp solp)
+        {
+            return !(solp.TrabajoYaHecho == true || solp.ConPresupuesto || solp.Adicional == true || solp.CondEspProveedorAsignado == true || solp.Urgencia == true) && solp.SeraUsadoEnPliegoMultiple;
+        }
+
         private void GrabarArchivosSapEnPliego(Solp solp, List<ArchivoSolpDto> archivos)
         {
             try
@@ -3018,6 +3030,9 @@ namespace SustitucionMOAUtils.Services
                         break;
                     case "U":
                         solp.Urgencia = true;
+                        break;
+                    case "M":
+                        solp.SeraUsadoEnPliegoMultiple = true;
                         break;
                     default:
                         break;
@@ -7792,6 +7807,7 @@ namespace SustitucionMOAUtils.Services
                     PlazoEntrega = pos.PlazoEntrega,
                     FechaOferta = pos.Solp.Pliego_Id != null ? pos.Solp.Pliego.FechaHoraEntrega : null,
                     TieneCotizacion = pos.Peticiones.Any(),
+                    SeraUsadoEnPliegoMultiple = pos.Solp.SeraUsadoEnPliegoMultiple,
                 },
                     filtros
                 );
@@ -7894,6 +7910,7 @@ namespace SustitucionMOAUtils.Services
                             Centro = solp.Posiciones.FirstOrDefault() != null ? solp.Posiciones.FirstOrDefault().Centro.Descripcion : null,
                             Tipo = solp.TipoSolp.Descripcion,
                             MultipleFinalizado = solp.Pliego.MultipleFinalizado,
+                            SeraUsadoEnPliegoMultiple = solp.SeraUsadoEnPliegoMultiple
                         },
                     solp => solpIds.Contains(solp.Id) && (solp.Pliego.MultipleFinalizado == true || solp.Pliego.Multiple == false)
                 );

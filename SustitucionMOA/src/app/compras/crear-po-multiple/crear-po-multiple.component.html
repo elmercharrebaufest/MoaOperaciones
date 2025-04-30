@@ -151,6 +151,12 @@
                                 <tr>
                                     <td>
                                         <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="posicionCompra.Selected"></p-checkbox>
+                                        <div *ngIf="posicionCompra.SeraUsadoEnPliegoMultiple" class="col-md-2">
+                                            <span>
+                                                <img class="pointer" src="./Content/images/icons/book.svg" alt="Solp para PM"
+                                                     style="height: 30px; cursor:default" />
+                                            </span>
+                                        </div>
                                     </td>
                                     <td class="columna">{{posicionCompra.NroSolp}}</td>
                                     <td class="columna">{{posicionCompra.Indice}}</td>
@@ -204,6 +210,12 @@
                                         <a href="#" [pRowToggler]="rowData" (click)="solpExpandToggle(solp)">
                                             <i [ngClass]="solp.Expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                         </a>
+                                        <div *ngIf="solp.SeraUsadoEnPliegoMultiple" class="col-md-2">
+                                            <span>
+                                                <img class="pointer" src="./Content/images/icons/book.svg" alt="Solp para PM"
+                                                     style="height: 30px; cursor:default" />
+                                            </span>
+                                        </div>
                                     </td>
                                     <td class="columna">{{solp.NroSolp}}</td>
                                     <td class="columna">{{solp.Nombre}}</td>

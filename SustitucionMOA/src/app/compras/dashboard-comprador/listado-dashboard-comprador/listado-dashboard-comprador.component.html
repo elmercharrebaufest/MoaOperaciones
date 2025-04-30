@@ -218,6 +218,12 @@
                                      (click)="generarZipPliego(rowData.Id)" />
                             </span>
                         </div>
+                        <div *ngIf="rowData.SeraUsadoEnPliegoMultiple" class="col-md-2">
+                            <span>
+                                <img class="pointer" src="./Content/images/icons/book.svg" alt="Solp para PM"
+                                     style="height: 30px; cursor:default" />
+                            </span>
+                        </div>
                         <div class="col-md-2" *ngIf="!esAuditor">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"

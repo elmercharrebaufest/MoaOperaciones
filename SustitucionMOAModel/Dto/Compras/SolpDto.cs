@@ -83,6 +83,7 @@ namespace SustitucionMOAModel.Dto
         public List<AdjudicacionDto> OrdenesDeCompraSolicitante { get; set; }
         public bool? TrabajoYaHecho { get; set; }
         public bool ConPresupuesto { get; set; }
+        public bool SeraUsadoEnPliegoMultiple { get; set; }
         public bool CertificacionAutomatica { get; set; }
         public int? ProveedorAsignado_Id { get; set; }
         public string ProveedorAsignado { get; set; }

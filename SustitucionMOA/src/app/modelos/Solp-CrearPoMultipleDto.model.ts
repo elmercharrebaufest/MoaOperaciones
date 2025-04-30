@@ -17,4 +17,5 @@ export interface SolpCrearPoMultipleDto {
 
     Selected: boolean;
     Expanded: boolean;
+    SeraUsadoEnPliegoMultiple: boolean;
 }

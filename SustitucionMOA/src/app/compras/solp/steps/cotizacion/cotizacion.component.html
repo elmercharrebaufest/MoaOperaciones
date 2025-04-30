@@ -94,7 +94,7 @@
                                                 formControlName="trabajoHecho"
                                                 binary="true"
                                                 (click)="validarChecks(); limpiarCheck();"
-                                                (ngModelChange)="resetearFecha(); verificarCondicionesEspeciales(); onConditionChange();">
+                                                (ngModelChange)="resetearFecha(); verificarCondicionesEspeciales(); onConditionChange(); verificarIncopatibilidadCondEsp()">
                                     </p-checkbox>
                                 </div>
                                 <div style="margin-top: 2em;">
@@ -104,7 +104,17 @@
                                                 label="Con presupuesto"
                                                 formControlName="conPresupuesto"
                                                 binary="true"
-                                                (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
+                                                (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange(); verificarIncopatibilidadCondEsp()">
+                                    </p-checkbox>
+                                </div>
+                                <div style="margin-top: 2em;">
+                                    <p-checkbox [ngModelOptions]="{standalone:true}"
+                                                name="seraUsadoEnPliegoMultiple"
+                                                [(ngModel)]="model.seraUsadoEnPliegoMultiple"
+                                                label="Será usado en Pliego Multiple"
+                                                formControlName="seraUsadoEnPliegoMultiple"
+                                                binary="true"
+                                                (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange(); verificarIncopatibilidadCondEsp()">
                                     </p-checkbox>
                                 </div>
                             </div>
