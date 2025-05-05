@@ -19,4 +19,5 @@ export interface POPosicionDto {
     Selected: boolean,
     TodasPosicionesSeleccionadas: boolean,
     ListaPO?:  string[],
+    SeraUsadoEnPliegoMultiple: boolean;
 }

@@ -114,6 +114,7 @@ export class CotizacionComponent extends ListBaseComponent {
             dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias]),
             trabajoHecho: new FormControl('', Validators.required),
             conPresupuesto: new FormControl('', Validators.required),
+            seraUsadoEnPliegoMultiple: new FormControl('', Validators.required),
             certificacionAutomatica: new FormControl('', Validators.required),
             proveedorSeleccionado: new FormControl('', Validators.required),
             adicional: new FormControl('', Validators.required),
@@ -558,6 +559,15 @@ export class CotizacionComponent extends ListBaseComponent {
         if (!this.model.condEspProveedorAsignado && !this.model.urgencia && !this.model.adicional && !this.model.trabajoHecho && !this.model.conPresupuesto) {
             this.borrarArchivosCargados();
         }
+    }
+
+    verificarIncopatibilidadCondEsp(): void {
+        if (!this.model.condEspProveedorAsignado && !this.model.urgencia && !this.model.adicional && !this.model.trabajoHecho && !this.model.conPresupuesto) {
+            this.model.seraUsadoEnPliegoMultiple = false;
+            return
+        }
+        this.borrarArchivosCargados();
+        return;
     }
   
     borrarArchivosCargados(): void {

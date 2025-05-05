@@ -32,6 +32,7 @@ namespace SustitucionMOAModel.Entities
         public Guid? EmailLinkToken { get; set; }
         public bool? TrabajoYaHecho { get; set; }
         public bool ConPresupuesto { get; set; }
+        public bool SeraUsadoEnPliegoMultiple { get; set; }
         public int? ProveedorAsignado_Id { get; set; }
         public bool? Adicional { get; set; }
         public bool? Urgencia { get; set; }

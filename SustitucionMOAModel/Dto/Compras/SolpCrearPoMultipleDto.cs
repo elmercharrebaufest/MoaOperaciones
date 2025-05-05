@@ -59,5 +59,8 @@ namespace SustitucionMOAModel.Dto
 
         [ExcelIgnore]
         public bool MultipleFinalizado { get; set; }
+
+        [ExcelIgnore]
+        public bool SeraUsadoEnPliegoMultiple { get; set; }
     }
 }

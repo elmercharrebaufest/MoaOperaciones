@@ -69,6 +69,7 @@ export class Solp extends CommonResponse {
     public observacionesCotizacionCondEsp: string;
     public trabajoHecho: boolean;
     public conPresupuesto: boolean;
+    public seraUsadoEnPliegoMultiple: boolean;
     public certificacionAutomatica: boolean;
     public adicional: boolean;
     public urgencia: boolean;
