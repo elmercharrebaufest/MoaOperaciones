@@ -3940,7 +3940,7 @@ namespace SustitucionMOAUtils.Services
                     });
                 }
 
-                if (peticion.Usuarios != null)
+                if (peticion.Usuarios != null && !esProveedor)
                 {
                     foreach (var usuario in peticion.Usuarios.Where(x => x.ChatExterno.Count > 0))
                     {
@@ -3976,7 +3976,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             //buscar archivos de la peticion ( menos lo de legajo cuando es un usuario proveedor)
-            foreach (var item in peticion.Archivos.Where(a => idPeticionDeOfertaUsuario == null || (idPeticionDeOfertaUsuario != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
+            foreach (var item in peticion.Archivos.Where(a => !esProveedor || (esProveedor && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
             {
                 legajo.Add(new LegajoDto
                 {
