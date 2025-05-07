@@ -1031,13 +1031,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
         if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
             return false;
         }
-        var esTipoPosicionServicio = this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
+        var esTipoPosicionServicio = this.solpActual.posicionActual != undefined &&  this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
         var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
+        var pliegoMultiple = this.solpActual.tipoSolp === "PLIEGO_MULTIPLE";
         var validarFechaVisitaDeObra = false;
 
 
 
-        if (esTipoPosicionServicio && !sinPliego) {
+        if ((esTipoPosicionServicio && !sinPliego) || pliegoMultiple) {
             // Encuentra la visita con la fecha más larga
             const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
                 if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
@@ -1076,12 +1077,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
         if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
             return false;
         }
-        var esTipoPosicionServicio = this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
+        var esTipoPosicionServicio = this.solpActual.posicionActual != undefined && this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
         var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
+        var pliegoMultiple = this.solpActual.tipoSolp === "PLIEGO_MULTIPLE";
 
         var validarFechaLimiteYObra = false;
 
-        if (esTipoPosicionServicio && !sinPliego) {
+        if ((esTipoPosicionServicio && !sinPliego) || pliegoMultiple) {
             // Encuentra la visita con la fecha más larga
             const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
                 if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
