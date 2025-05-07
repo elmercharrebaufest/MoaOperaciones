@@ -1090,6 +1090,13 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
+        public ActionResult DesvincularSolpDePOMultiple(int solpPosicionId, string[] idsPOsADesvincular)
+        {
+            service.DesvincularSolpDePOMultiple(solpPosicionId, idsPOsADesvincular);
+            return JsonCustom(new { data = true });
+        }
+
+        [HttpPost]
         public ActionResult GuardarEnvioCircularProveedor(int id, EnviarCircularEnum enviarCircularA, string fechaLimite)
         {
             DateTime? fechaLimiteD;

@@ -193,5 +193,6 @@ namespace SustitucionMOAUtils.Interfaces
         ProcesarPrecargaSolpResponse ProcesarArchivoPrecargaSolp(HttpPostedFileBase archivo, int tipoSolpId);
         void GuardarCertificacionesParciales(List<AdjudicacionDto> adjudicaciones);
         AdjudicacionDto ObtenerAdjudicacion(string nroOC);
+        void DesvincularSolpDePOMultiple(int solpPosicionId, string[] idsPOsADesvincular);
     }
 }

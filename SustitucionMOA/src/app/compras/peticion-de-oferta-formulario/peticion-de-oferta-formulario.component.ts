@@ -305,19 +305,19 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
 
     onShowFinalizarDialog() {
         if (!this.solpCompraDto.PosicionCompras.some(x => x.Selected == true)) {
-            this.floatMsgService.setErrorMsg("No selecciono una posicion");
+            this.floatMsgService.setErrorMsg("No seleccionó una posición");
             return;
         }
 
         if (this.proveedoresSeleccionados == null || this.proveedoresSeleccionados.length == 0) {
-            this.floatMsgService.setErrorMsg("No selecciono un Proveedor");
+            this.floatMsgService.setErrorMsg("No seleccionó un Proveedor");
             return;
         }
         this.confirmationService.confirm({
-            header: "¡Ultimo Paso!",
+            header: "¡Último Paso!",
             acceptLabel: "SI, CONFIRMAR",
             rejectLabel: "VOLVER",
-            message: 'Esta a punto de enviar la peticion de oferta. <b>¿Desea confirmar?</b>',
+            message: 'Está a punto de enviar la petición de oferta. <b>¿Desea confirmar?</b>',
             accept: () => {
                 this.guardarPeticion();
             },

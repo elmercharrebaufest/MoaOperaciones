@@ -1,0 +1,46 @@
+<p-dialog
+        [(visible)]="displayDesvincularPoMultiple"
+        modal="modal"
+        [width]="450"
+        [draggable]="false"
+        [closable]="true"
+        appendTo="body"
+        positionTop="30"
+        [contentStyle]="{ 'max-height':'1500px', 'min-height':'400px'}">
+
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Desvincular SOLP de PO múltiple</b>
+    </p-header>
+
+    <div class="col-md-12 row myRow alinearTitulo margenInput">
+        <p>
+            <ngb-alert type="danger" [dismissible]="true" *ngIf="mensajeError">
+                <strong>Error: </strong>{{ mensajeError }}
+            </ngb-alert>
+        </p>
+        <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+            <p-table [value]="listaPO" responsiveLayout="scroll | stack" [scrollable]="true" scrollHeight="300px">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th class="columna" style="border: none !important;"></th>
+                        <th class="columna" style="border: none !important;">PO</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData>
+                    <tr>
+                        <td class="columna" style="border: none !important;">
+                            <input type="checkbox" [(ngModel)]="rowData.seleccionada" (click)="onSeleccionarPO(rowData, $event)" />
+                        </td>
+                        <td class="columna" style="border: none !important;">{{ rowData.nroPO }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <p-footer>
+        <button type="button" class="btn btn-danger botonesComprasColor" (click)="cancelarDesvinculacion()">Cancelar</button>
+        <button *ngIf="true" type="button" class="btn btn-primary botonesComprasColor" (click)="guardarDesvinculacion()">Desvincular</button>
+    </p-footer>
+
+</p-dialog>

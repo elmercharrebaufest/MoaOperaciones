@@ -86,6 +86,7 @@ import { PosicionPlazoComponent } from './dashboard-comprador/ver-ofertas/posici
 import { EditarOrdenDeCompraComponent } from './dashboard-comprador/listado-dashboard-comprador/editar-orden-de-compra/editar-orden-de-compra.component';
 import { CotizacionHistorialComponent } from './dashboard-comprador/ver-ofertas/cotizacion-historial/cotizacion-historial.component';
 import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
+import { DesvincularPoMultiple } from './crear-po-multiple/desvincular-po-multiple/desvincular-po-multiple.component';
 import { VisualizarMovimientoComponent } from './dashboard-comprador/ver-ofertas/visualizar-movimiento/visualizar-movimiento.component';
 import { AgruparPoThComponent } from './agrupar-po-th/agrupar-po-th.component';
 
@@ -203,6 +204,7 @@ import { FacturaService } from '../factura/factura.service';
         EditarOrdenDeCompraComponent,
         CotizacionHistorialComponent,
         CrearPoMultipleComponent,
+        DesvincularPoMultiple,
         ListadoDashboardCertificacionDeServiciosComponent,
         ListadoDashboardCertificacionDeServiciosProveedoresComponent,
         FiltroDashboardCertificacionDeServiciosComponent,

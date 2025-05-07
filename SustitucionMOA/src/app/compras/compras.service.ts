@@ -1576,6 +1576,7 @@ export class ComprasService extends BaseService {
                 headers: this.headers
             });
     }
+
     public runReasignacion() {
         return this.http
             .get('/api/Derivacion/CorrerReasignacionManual', {
@@ -1607,6 +1608,7 @@ export class ComprasService extends BaseService {
         return this.http
             .get<any>('/api/compras/ValidarFechaVigenciaRegistroInfo', { headers: this.headers, params });
     }
+
     public actualizarFechaVigenciaRegistroInfo(nuevaFechaVigencia: string, registrosInfo: { CotizacionPosicion_Id: any, SolpPosicion_Id: any }[]): Observable<ApiResponse<boolean>> {
         var payload = new FormData();
         payload.append('data', JSON.stringify({ registrosInfo, nuevaFechaVigencia }));
@@ -1668,6 +1670,16 @@ export class ComprasService extends BaseService {
 
         return this.http
             .post<ApiResponse<ProcesarPrecargaSolpResponse>>('/api/compras/ProcesarPrecargaSolp', payload, { params: params, headers: this.headersPost })
+            .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    desvincularSolpDePOMultiple(solpPosicionId: number, idsPOsADesvincular: string[]): Observable<ApiResponse<void>> {
+        var payload = new FormData();
+        payload.append('solpPosicionId', solpPosicionId.toString());
+        payload.append('idsPOsADesvincular', idsPOsADesvincular.toString());
+
+        return this.http
+            .post('/api/compras/DesvincularSolpDePOMultiple', payload, { headers: this.headers })
             .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 }

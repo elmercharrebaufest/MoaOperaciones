@@ -17,6 +17,7 @@ import { EnumTipoImputacion } from '../enum-tipo-imputacion';
 import { PosicionCrearPoMultipleDto } from '../../modelos/Posicion-CrearPoMultipleDto.model';
 import { ActionResult } from '../../../serviceHelpers/actionResult.Interface';
 import { SubPosicionCrearPoMultipleDto } from '../../modelos/SubPosicion-CrearPoMultipleDto.model';
+import { POADesvincular } from './desvincular-po-multiple/desvincular-po-multiple.component';
 
 @Component({
     selector: 'app-crear-po-multiple',
@@ -103,6 +104,9 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         return this.showTipoPliegoMultipleConditionList.includes(this.selectTipoSolp);
     }
 
+    mostrarPopupDesvincularPoMultiple: boolean = false;
+    listaPOParaDesvincular: POADesvincular[] = [];
+    solpPosicionDesvincularId: number;
 
     tipoPliegoItem: SelectItem[];
     selectTipoPliego: string[] = [];
@@ -135,7 +139,6 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     };
 
     ngOnInit() {
-
         this.filtrosPOMultiple = _.cloneDeep(this.filtrosPOMultipleDefault);
         this.recuperarFiltros();
         this.listarPosicionesPOMultiple();
@@ -656,6 +659,16 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         } finally {
             this.blockUI.stop();
         }
+    }
+
+    abrirModalDesvincularSolp(solpPosicionId: number, listaPODesvincular: string[]) {
+        this.solpPosicionDesvincularId = solpPosicionId;
+        this.listaPOParaDesvincular = listaPODesvincular.map(x =>
+            {
+                return { nroPO: x, seleccionada: false };
+            }
+        );
+        this.mostrarPopupDesvincularPoMultiple = true;
     }
 }
 

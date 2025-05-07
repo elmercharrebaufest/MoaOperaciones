@@ -175,7 +175,14 @@
                                     <td class="columna">{{posicionCompra.FechaOferta | customDateFormat | date :'d/M/yyyy'}}</td>
                                     <!-- posicionCompra.ListaPO -->
                                     <td class="columna" *ngIf="!posicionCompra.TieneCotizacion">-</td>
-                                    <td class="columna" *ngIf="posicionCompra.TieneCotizacion && !numeroPo">{{posicionCompra.ListaPO.join('-')}}</td>
+                                    <td class="columna" *ngIf="posicionCompra.TieneCotizacion && !numeroPo">
+                                        <span *ngIf="posicionCompra.ListaPO && posicionCompra.ListaPO.length > 1"
+                                            style="cursor: pointer;" pTooltip="Desvincular"
+                                            (click)="abrirModalDesvincularSolp(posicionCompra.Id, posicionCompra.ListaPO)">
+                                            <img src="Content/images/buttons/unlink.svg" />
+                                        </span>
+                                        {{posicionCompra.ListaPO.join('-')}}
+                                    </td>
                                     <td class="columna" *ngIf="posicionCompra.TieneCotizacion && numeroPo">
                                         <span *ngFor="let lpoElem of posicionCompra.ListaPO; last as isLast">
                                             <mark *ngIf="lpoElem == numeroPo.toString()">{{lpoElem}}</mark>
@@ -201,6 +208,7 @@
                                     <th class="columna">Grupo de Compras</th>
                                     <th class="columna">Centro</th>
                                     <th class="columna">Tipo (Sin Doc. / C/Doc. Pliego)</th>
+                                    <th class="columna">Nro PO</th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-solp let-columns="columns">
@@ -225,6 +233,14 @@
                                     <td class="columna">{{solp.GrupoDeCompras}}</td>
                                     <td class="columna">{{solp.Centro}}</td>
                                     <td class="columna">{{solp.Tipo}}</td>
+                                    <td class="columna" *ngIf="solp.TieneCotizacion && !numeroPo">
+                                        <span *ngIf="solp.ListaPO && solp.ListaPO.length > 1"
+                                            style="cursor: pointer;" pTooltip="Desvincular"
+                                            (click)="abrirModalDesvincularSolp(solp.Id, solp.ListaPO)">
+                                            <img src="Content/images/buttons/unlink.svg" />
+                                        </span>
+                                        {{solp.ListaPO.join('-')}}
+                                    </td>
                                 </tr>
                                 <tr *ngIf="solp.Expanded">
                                     <td [attr.colspan]="9">
@@ -316,3 +332,9 @@
         </div>
     </div>
 </p-sidebar>
+
+<app-desvincular-po-multiple
+    [(displayDesvincularPoMultiple)]="mostrarPopupDesvincularPoMultiple"
+    [(listaPO)]="listaPOParaDesvincular"
+    [(solpPosicionId)]="solpPosicionDesvincularId">
+</app-desvincular-po-multiple>
