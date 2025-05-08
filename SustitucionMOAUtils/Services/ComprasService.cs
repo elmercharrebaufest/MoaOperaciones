@@ -3035,6 +3035,9 @@ namespace SustitucionMOAUtils.Services
                     case "M":
                         solp.SeraUsadoEnPliegoMultiple = true;
                         break;
+                    case "V":
+                        solp.CertificacionAutomatica = true;
+                        break;
                     default:
                         break;
                 }

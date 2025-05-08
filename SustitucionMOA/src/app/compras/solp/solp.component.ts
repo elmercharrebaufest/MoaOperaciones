@@ -728,6 +728,23 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.disabledSave = false;
                         return;
                     }
+
+                    if(!this.validarQueTodasLasPosicionesTengamAcuerdoMarco()){
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen acuerdo marco" });
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
+                        this.disabledSave = false;
+                        return;
+                    }
+                    if(!this.validarQueTodasLasPosicionesTenganMismoProveedor()){
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen el mismo proveedor" });
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
+                        this.disabledSave = false;
+                        return;
+                    }
                 }
 
             }
@@ -1024,6 +1041,24 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         if (value != null && value !== '') {
             return EMAIL_REGEXP.test(value)
+        }
+    }
+
+    validarQueTodasLasPosicionesTenganMismoProveedor() {
+        if (this.solpActual.posiciones.length > 0) {
+            let proveedor = this.solpActual.posiciones[0].nombreProveedor;
+            return this.solpActual.posiciones.every(x => x.nombreProveedor == proveedor);
+        } else {
+            return false;
+        }
+    }
+
+    validarQueTodasLasPosicionesTengamAcuerdoMarco() {
+        if (this.solpActual.posiciones.length > 0) {
+            let acuerdoMarco = this.solpActual.posiciones[0].numeroContratoSuperior;
+            return this.solpActual.posiciones.every(x => x.numeroContratoSuperior == acuerdoMarco);
+        } else {
+            return false;
         }
     }
 
