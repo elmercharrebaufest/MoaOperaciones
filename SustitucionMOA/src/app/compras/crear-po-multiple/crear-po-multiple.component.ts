@@ -670,6 +670,10 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         );
         this.mostrarPopupDesvincularPoMultiple = true;
     }
+
+    cerrarModalDesvincularSolp() {
+        this.mostrarPopupDesvincularPoMultiple = false;
+    }
 }
 
 interface iFiltrosPoMultiple {

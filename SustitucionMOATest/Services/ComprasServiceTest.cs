@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -13,6 +14,7 @@ using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAUtils.Services.Email.Dto;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -3342,6 +3344,133 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(fechalimiteEsperada, solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones);
             repositorioMock.Verify(r => r.Obtener<Solp>(It.IsAny<Expression<Func<Solp, bool>>>()), Times.Once);
             repositorioMock.Verify(r => r.GuardarCambios(), Times.Once);
+        }
+
+        [Test]
+        public void DesvincularSolpDePOMultiple_ValidacionPODebeQuedarConAlMenosUnaPosicion()
+        {
+            var solpPosicionId = 19876;
+            var idsPeticionesDesvincular = new string[] { "1001", "1024", "1032" };
+
+            var peticionesOfertaBD = new List<PeticionDeOferta>
+            {
+                new PeticionDeOferta { Id = 1001, Posiciones = new Collection<PeticionDeOfertaSolpPosicion>() },
+                new PeticionDeOferta { Id = 1024, Posiciones = new Collection<PeticionDeOfertaSolpPosicion> { new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = 19876 } } }
+            };
+
+            repositorioMock
+                .Setup(r => r.Listar<PeticionDeOferta>(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), 0, null, DirOrden.Asc, null))
+                .Returns(peticionesOfertaBD);
+
+            Assert.Throws<ValidationCustomException>(
+                () => target.DesvincularSolpDePOMultiple(solpPosicionId, idsPeticionesDesvincular),
+                "La PO 1024 no puede quedar sin posiciones vinculadas");
+        }
+
+        [Test]
+        public void DesvincularSolpDePOMultiple_Ok()
+        {
+            var solpPosicionId = 19876;
+            var idsPeticionesDesvincular = new string[] { "1032" };
+
+            var mUsuario1 = new Mock<Usuario>();
+            mUsuario1.SetupProperty(u => u.Mail, "carlitos@mail.com");
+            mUsuario1.SetupProperty(u => u.CUITRegistro, "20284850123");
+            mUsuario1.Setup(u => u.ObtenerRazonSocial()).Returns("Carlitos");
+            mUsuario1.Setup(u => u.ObtenerCodigoProveedor()).Returns("000487265");
+
+            var mPoUsuario1 = new Mock<PeticionDeOfertaUsuario>().SetupProperty(pou => pou.Usuario, mUsuario1.Object);
+
+            var peticionesOfertaBD = new List<PeticionDeOferta>
+            {
+                new PeticionDeOferta
+                {
+                    Id = 1032,
+                    Posiciones = new Collection<PeticionDeOfertaSolpPosicion>
+                    {
+                        new PeticionDeOfertaSolpPosicion
+                        {
+                            SolpPosicion_Id = 19876,
+                            SolpPosicion = new SolpPosicion
+                            {
+                                Solp = new Solp { Pliego = new Pliego() },
+                                TipoPosicion_Id = 2,
+                                TipoPosicion = new TablaGeneral { Codigo = "SERVICIOS" }
+                            }
+                        },
+                        new PeticionDeOfertaSolpPosicion
+                        {
+                            SolpPosicion_Id = 19543,
+                            SolpPosicion = new SolpPosicion
+                            {
+                                Solp = new Solp { Pliego = new Pliego() },
+                                TipoPosicion_Id = 2,
+                                TipoPosicion = new TablaGeneral { Codigo = "SERVICIOS" }
+                            }
+                        }
+                    },
+                    Usuario = new Usuario { Mail = "carlitos@gmail.com" },
+                    Usuarios = new List<PeticionDeOfertaUsuario> { mPoUsuario1.Object },
+                    UsuariosAdicionales = new List<PeticionDeOfertaUsuarioAdicional>(),
+                    Archivos = new List<PeticionDeOfertaArchivo>()
+                }
+            };
+
+            repositorioMock
+                .Setup(r => r.Listar<PeticionDeOferta>(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), 0, null, DirOrden.Asc, null))
+                .Returns(peticionesOfertaBD);
+
+            var solpPosicionBD = new SolpPosicion
+            {
+                Peticiones = new List<PeticionDeOfertaSolpPosicion>
+                {
+                    new PeticionDeOfertaSolpPosicion { PeticionDeOferta_Id = 1076, Id = 1 },
+                    new PeticionDeOfertaSolpPosicion { PeticionDeOferta_Id = 1032, Id = 2 }
+                }
+            };
+
+            repositorioMock
+                .Setup(r => r.Obtener<SolpPosicion>(It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<Expression<Func<SolpPosicion, object>>[]>()))
+                .Returns(solpPosicionBD);
+
+            repositorioMock
+                .Setup(r => r.RemoverTodos(
+                    It.Is<IEnumerable<PeticionDeOfertaSolpPosicion>>(
+                        x => x.Count() == 1 && x.First().PeticionDeOferta_Id == 1032 && x.First().Id == 2)));
+
+            repositorioMock.Setup(r => r.GuardarCambios());
+
+            repositorioMock
+                .Setup(r => r.Obtener<Configuracion>(It.IsAny<Expression<Func<Configuracion, bool>>>()))
+                .Returns(new Configuracion { Value = "[ { \"Filename\": \"F-2285-4 PLIEGO GENERALIDADES\", \"MimeType\": \"application/pdf\" } ]" });
+
+            mIEmailComprasService.Setup(e => e.EnviarMailPeticionDeOferta(It.Is<MailPeticionDeOfertaRequest>(r => r.EsProveedor)));
+            mIEmailComprasService.Setup(e => e.EnviarMailPeticionDeOferta(It.Is<MailPeticionDeOfertaRequest>(r => !r.EsProveedor)));
+
+            // Act
+            target.DesvincularSolpDePOMultiple(solpPosicionId, idsPeticionesDesvincular);
+
+            // Assert
+            repositorioMock.Verify(r =>
+                r.Listar<PeticionDeOferta>(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), 0, null, DirOrden.Asc, null),
+                Times.Once);
+
+            repositorioMock.Verify(r =>
+                r.Obtener<SolpPosicion>(It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<Expression<Func<SolpPosicion, object>>[]>()),
+                Times.Once);
+
+            repositorioMock.Verify(r =>
+                r.RemoverTodos(It.IsAny<IEnumerable<PeticionDeOfertaSolpPosicion>>()),
+                Times.Once);
+
+            repositorioMock.Verify(r => r.GuardarCambios(), Times.Once);
+
+            repositorioMock.Verify(r =>
+                r.Obtener<Configuracion>(It.IsAny<Expression<Func<Configuracion, bool>>>()),
+                Times.Once);
+
+            mIEmailComprasService.Verify(e => e.EnviarMailPeticionDeOferta(It.Is<MailPeticionDeOfertaRequest>(r => r.EsProveedor)), Times.Once);
+            mIEmailComprasService.Verify(e => e.EnviarMailPeticionDeOferta(It.Is<MailPeticionDeOfertaRequest>(r => !r.EsProveedor)), Times.Once);
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { BaseComponent } from "../../../common/base-components/base-component";
 import { ComprasService } from "../../compras.service";
 import { NavService } from "../../../common/services/NavService";
@@ -23,6 +23,8 @@ export class DesvincularPoMultiple extends BaseComponent implements OnInit {
     @Input() solpPosicionId: number;
     @Input() listaPO: POADesvincular[] = [];
 
+    @Output() cerrarDesvinculacionEmitter = new EventEmitter();
+
     mensajeError: string = '';
 
     ngOnInit() {}
@@ -31,6 +33,7 @@ export class DesvincularPoMultiple extends BaseComponent implements OnInit {
         this.mensajeError = '';
         this.displayDesvincularPoMultiple = false;
         this.listaPO = [];
+        this.cerrarDesvinculacionEmitter.next();
     }
 
     guardarDesvinculacion() {
@@ -53,6 +56,7 @@ export class DesvincularPoMultiple extends BaseComponent implements OnInit {
                             else {
                                 this.displayDesvincularPoMultiple = false;
                                 this.listaPO = [];
+                                this.cerrarDesvinculacionEmitter.next();
                             }
                         }
                     }

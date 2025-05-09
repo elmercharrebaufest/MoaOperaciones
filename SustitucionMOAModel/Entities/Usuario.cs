@@ -15,7 +15,7 @@ namespace SustitucionMOAModel.Entities
         [Key]
         public int Id { get; set; }
         public virtual string Mail { get; set; }
-        public string CUITRegistro { get; set; }
+        public virtual string CUITRegistro { get; set; }
         public bool Habilitado { get; set; }
         public string SeccionesVisitadas { get; set; }
         public virtual TipoUsuario TipoUsuario { get; set; }
@@ -122,7 +122,7 @@ namespace SustitucionMOAModel.Entities
             return Proveedores.Where(p => p.CodigoProveedor == codigoProveedor).Any();
         }
 
-        public string ObtenerRazonSocial()
+        public virtual string ObtenerRazonSocial()
         {
             if (Proveedores != null && Proveedores.Count >= 1)
             {
@@ -137,7 +137,7 @@ namespace SustitucionMOAModel.Entities
             }
         }
 
-        public string ObtenerCodigoProveedor()
+        public virtual string ObtenerCodigoProveedor()
         {
             if (Proveedores != null && Proveedores.Count >= 1)
             {

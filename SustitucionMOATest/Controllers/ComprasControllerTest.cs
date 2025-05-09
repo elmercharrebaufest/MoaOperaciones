@@ -766,5 +766,20 @@ namespace SustitucionMOATest.Controllers
             comprasServiceMock.Verify(x => x.DesagruparPO(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
+        [Test]
+        public void DesvincularSolpDePOMultiple_Ok()
+        {
+            var solpPosicionId = 1;
+            var idsPOsADesvincular = new string[] { "1001", "1002" };
+
+            comprasServiceMock.Setup(x => x.DesvincularSolpDePOMultiple(solpPosicionId, idsPOsADesvincular));
+
+            var result = target.DesvincularSolpDePOMultiple(solpPosicionId, idsPOsADesvincular);
+
+            Assert.IsNotNull(result);
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Data);
+            comprasServiceMock.Verify(x => x.DesvincularSolpDePOMultiple(solpPosicionId, idsPOsADesvincular), Times.Once);
+        }
     }
 }

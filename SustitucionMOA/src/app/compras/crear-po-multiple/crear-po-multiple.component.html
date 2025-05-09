@@ -336,5 +336,6 @@
 <app-desvincular-po-multiple
     [(displayDesvincularPoMultiple)]="mostrarPopupDesvincularPoMultiple"
     [(listaPO)]="listaPOParaDesvincular"
-    [(solpPosicionId)]="solpPosicionDesvincularId">
+    [(solpPosicionId)]="solpPosicionDesvincularId"
+    (cerrarDesvinculacionEmitter)="cerrarModalDesvincularSolp()">
 </app-desvincular-po-multiple>
