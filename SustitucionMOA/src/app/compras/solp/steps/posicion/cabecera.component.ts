@@ -1002,13 +1002,15 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             }
         });
 
-        posicion.cuentaMayor = "";
-        if (this.autocompleteServiciosSolp) {
-            let materialdelalista = this.autocompleteServiciosSolp.find(x => x.Codigo == posicion.tareaSubcontratarObj.Codigo) as any;
-            if (materialdelalista) {
-                posicion.cuentaMayor = materialdelalista.CuentaMayor;
-            }
-        }
+        // Ya no se debe autocompletar el campo Cuenta de mayor al seleccionar un Material/Servicio
+        // posicion.cuentaMayor = "";
+        // if (this.autocompleteServiciosSolp) {
+        //     let materialdelalista = this.autocompleteServiciosSolp.find(x => x.Codigo == posicion.tareaSubcontratarObj.Codigo) as any;
+        //     if (materialdelalista) {
+        //         posicion.cuentaMayor = materialdelalista.CuentaMayor;
+        //     }
+        // }
+
         let grupoArticuloAux = this.combos.GrupoArticulo.find(x => x.Descripcion == posicion.codigoServicio.GrupoArticulo.Descripcion);
         if (grupoArticuloAux) {
             posicion.selectArticuloCompras = grupoArticuloAux;
