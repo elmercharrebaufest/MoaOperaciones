@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" />
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd11" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Entidades" />
+  <xs:complexType name="ConsultarImagenCpe">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q1:Comando">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="NroCtg" type="xs:long" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ConsultarImagenCpe" nillable="true" type="tns:ConsultarImagenCpe" />
+  <xs:complexType name="IdentificableBase">
+    <xs:sequence />
+  </xs:complexType>
+  <xs:element name="IdentificableBase" nillable="true" type="tns:IdentificableBase" />
+  <xs:complexType name="ArrayOfSensorBarrera">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SensorBarrera" nillable="true" type="tns:SensorBarrera" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSensorBarrera" nillable="true" type="tns:ArrayOfSensorBarrera" />
+  <xs:complexType name="SensorBarrera">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Barrera" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="BarreraBajar" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CodigoDispositivoSensorAbajo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CodigoDispositivoSensorArriba" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CodigoDispositivoSensorQuiebre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="NombreBarrera" nillable="true" type="xs:string" />
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Entidades" minOccurs="0" name="VisualizacionBarrera" nillable="true" type="q2:VisualizacionBarrera" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SensorBarrera" nillable="true" type="tns:SensorBarrera" />
+</xs:schema>

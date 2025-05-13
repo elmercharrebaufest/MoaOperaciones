@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto.OperacionesAPI" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto.OperacionesAPI" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="OrdenDeCargaDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CUILChofer" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CUITCliente" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CUITCorredor" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CUITDestinatario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CUITDestino" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CUITIntermediarioFlete" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CUITTransporte" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cantidad" type="xs:int" />
+      <xs:element minOccurs="0" name="ChoferApellido" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ChoferNombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cliente" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CodigoProducto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Contrato" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DescripcionProducto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinatarioId" type="xs:long" />
+      <xs:element minOccurs="0" name="DestinoMercaderia" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DomicilioDescr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DomicilioOrden" type="xs:int" />
+      <xs:element minOccurs="0" name="DomicilioTipo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Escalable" type="xs:boolean" />
+      <xs:element minOccurs="0" name="EstadoDescripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FechaCreacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FechaRetiro" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FleteMOA" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="KmARecorrer" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="LocalidadDescripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="LocalidadId" type="xs:int" />
+      <xs:element minOccurs="0" name="MaterialId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Observacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PagadorFlete" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PagadorFleteId" type="xs:long" />
+      <xs:element minOccurs="0" name="PatenteAcoplado" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PatenteChasis" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pedido" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PlantaCodigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RazonSocialCorredor" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RazonSocialDestinatario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RazonSocialDestino" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RazonSocialIntermediarioFlete" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RazonSocialTransporte" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RemitenteComercial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RemitenteComercialId" type="xs:long" />
+      <xs:element minOccurs="0" name="Reventa" type="xs:boolean" />
+      <xs:element minOccurs="0" name="TipoOrden" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="OrdenDeCargaDto" nillable="true" type="tns:OrdenDeCargaDto" />
+</xs:schema>

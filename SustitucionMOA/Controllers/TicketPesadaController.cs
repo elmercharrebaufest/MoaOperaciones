@@ -20,5 +20,12 @@ namespace SustitucionMOA.Controllers
             var listadoArchivos = ticketPesadaService.ObtenerTicket(consultaTicketPesada);
             return JsonCustom(new { data = listadoArchivos });
         }
+
+        public JsonResult ObtenerNoGranos(string ticketPesadaNoGranosJson)
+        {
+            var consultaTicketPesadaNoGranos = JsonConvert.DeserializeObject<ConsultaTicketPesadaNoGranos>(ticketPesadaNoGranosJson);
+            var listadoArchivos = ticketPesadaService.ObtenerTicketNoGranos(consultaTicketPesadaNoGranos);
+            return JsonCustom(new { data = listadoArchivos });
+        }
     }
 }

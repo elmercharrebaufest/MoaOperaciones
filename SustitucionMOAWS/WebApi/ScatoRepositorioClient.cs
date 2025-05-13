@@ -51,13 +51,13 @@ namespace SustitucionMOAWS.WebApi
             }
         }
 
-        public RespuestaListado<Domicilio> ObtenerDomicilios(string cuitDestino)
+        public RespuestaListado<SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio.Domicilio> ObtenerDomicilios(string cuitDestino)
         {
             var reqUri = $"{AfipApi}/ConsultarDomiciliosPorCUIT/{cuitDestino}";
             HttpResponseMessage response = Cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
-                var domiciliosResponse = response.Content.ReadAsAsync<RespuestaListado<Domicilio>>().GetAwaiter().GetResult();
+                var domiciliosResponse = response.Content.ReadAsAsync<RespuestaListado<SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio.Domicilio>>().GetAwaiter().GetResult();
                 return domiciliosResponse;
             }
             else

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos.ResultadoServicio" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos.ResultadoServicio" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" />
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" />
+  <xs:complexType name="ResultadoOrdenFas">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q1:Resultado">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="ControlRecorrido" nillable="true" type="q2:ControlRecorridoDto" />
+          <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="Dto" nillable="true" type="q3:OrdenCargaFasDto" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResultadoOrdenFas" nillable="true" type="tns:ResultadoOrdenFas" />
+  <xs:complexType name="ResultadoConsultarTicketsNoGranos">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q4="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q4:Resultado">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="TicketsNoGranos" nillable="true" type="tns:ArrayOfResultadoTicketsNoGranos" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResultadoConsultarTicketsNoGranos" nillable="true" type="tns:ResultadoConsultarTicketsNoGranos" />
+  <xs:complexType name="ArrayOfResultadoTicketsNoGranos">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ResultadoTicketsNoGranos" nillable="true" type="tns:ResultadoTicketsNoGranos" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfResultadoTicketsNoGranos" nillable="true" type="tns:ArrayOfResultadoTicketsNoGranos" />
+  <xs:complexType name="ResultadoTicketsNoGranos">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CPEDG" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="NumeroOrdenOperaciones" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TicketPesada" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="TicketReciboMunicipal" nillable="true" type="xs:base64Binary" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResultadoTicketsNoGranos" nillable="true" type="tns:ResultadoTicketsNoGranos" />
+  <xs:complexType name="ResultadoOrdenFason">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q5="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q5:Resultado">
+        <xs:sequence>
+          <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="ControlRecorrido" nillable="true" type="q6:ControlRecorridoDto" />
+          <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="Dto" nillable="true" type="q7:OrdenCargaInternaFasonDto" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResultadoOrdenFason" nillable="true" type="tns:ResultadoOrdenFason" />
+</xs:schema>

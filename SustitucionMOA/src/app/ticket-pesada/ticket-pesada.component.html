@@ -7,8 +7,16 @@
       Información de operaciones y entregas para proveedores de Materias Primas
     </h5>
   </div>
+  <div class="selectorContainer">
+    <div>
+      <button class="btn-custom btn-guardar btn-grande" (click)="showGranosForm()">Granos</button>
+    </div>
+    <div>
+      <button class="btn-custom btn-guardar btn-grande" (click)="showSubproductosForm()">Subproductos</button>
+    </div>
+  </div>
 
-  <div class="inputContainer mySearch">
+  <div *ngIf="granosForm" class="inputContainer mySearch">
     <div class="row myRow">
       <div class="clearfix myTables">
         <mensaje></mensaje>
@@ -78,6 +86,80 @@
           consulta</button>
       </div>
 
+
+    </div>
+  </div>
+
+    <div *ngIf="subproductosForm" class="inputContainer mySearch">
+    <div class="row myRow">
+      <div class="clearfix myTables">
+        <mensaje></mensaje>
+        <spinner></spinner>
+      </div>
+    </div>
+
+    <div [hidden]="hayDatos">
+      <div class="formulario-campo">
+        <div class="formulario-label">
+          Patente del cami&oacute;n
+        </div>
+        <div class="styled-select">
+          <input type="text" [(ngModel)]="TicketPesadaSubproductos.PatenteCamion" maxlength="15">
+        </div>
+      </div>
+
+      <div class="formulario-campo">
+        <div>
+          <div class="formulario-label">
+            Fecha desde
+          </div>
+          <div class="styled-select">
+           <input type="date" [(ngModel)]="TicketPesadaSubproductos.FechaDesde" maxlength="15">
+          </div>
+        </div>
+      </div>
+
+            <div class="formulario-campo">
+        <div>
+          <div class="formulario-label">
+            Fecha hasta
+          </div>
+          <div class="styled-select">
+           <input type="date" [(ngModel)]="TicketPesadaSubproductos.FechaHasta" maxlength="15">
+          </div>
+        </div>
+      </div>
+
+      <div class="formulario-campo captchaContainer">
+        <re-captcha #recaptchaComponent (captchaResponse)="handleCorrectCaptcha($event)"
+          site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
+      </div>
+    </div>
+
+    <div [hidden]="!hayDatos">
+      <div class="titulo">
+        <title-caps class="blue">Seleccione el archivo </title-caps>
+      </div>
+      <div *ngFor="let archivo of data" class="documento">
+        <div class="doc-header" (click)="descargarArchivo(archivo)">
+          <p><i class="fa {{archivo.icon}}" aria-hidden="true"></i>{{archivo.Nombre}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="btnContainer">
+      <div [hidden]="hayDatos">
+        <button [disabled]="buscandoDatos" class="btn-custom btn-guardar btn-grande" (click)="enviarSubproductos()">Buscar
+          comprobantes</button>
+      </div>
+      <div [hidden]="!hayDatos">
+        <button class="btn-custom btn-add btn-grande" (click)="descargarArchivo(archivoZip)">Descargar todos los
+          archivos</button>
+      </div>
+      <div [hidden]="!hayDatos">
+        <button class="btn-custom btn-add btn-grande" (click)="nuevaConsulta()">Nueva
+          consulta</button>
+      </div>
 
     </div>
   </div>

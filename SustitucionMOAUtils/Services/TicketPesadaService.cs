@@ -63,6 +63,42 @@ namespace SustitucionMOAUtils.Services
             return listadoArchivos;
         }
 
+        public List<ArchivoDescargaDto> ObtenerTicketNoGranos(ConsultaTicketPesadaNoGranos consultaTicketPesadaNoGranos)
+        {
+            ResultadoConsultarTicketsNoGranos resultado;
+            try
+            {
+                resultado = scatoComandosConsumer.ObtenerTicketPesadaNoGranos(consultaTicketPesadaNoGranos.PatenteCamion, consultaTicketPesadaNoGranos.FechaDesde, consultaTicketPesadaNoGranos.FechaHasta);
+            }
+            catch (Exception ex)
+            {
+                throw new ValidationCustomException("No se encontró una CCPP con el número ingresado.");
+            }
+
+
+            var listadoArchivos = GenerarListadoArchivosNoGranos(resultado);
+            byte[] archivoResultado = listadoArchivos.FirstOrDefault(a => a.Nombre.Contains("zip")).Datos;
+
+            /*
+            if (consultaTicketPesada.Mail != null)
+            {
+                if (consultaTicketPesada.Mail.Length > 0)
+                {
+                    try
+                    {
+                        Task.Run(() => EnviarMail(consultaTicketPesada, archivoResultado));
+                    }
+                    catch
+                    {
+                        //En el caso de que no podamos mandar el mail, ignoramos la excepción
+                    }
+                }
+            }
+             */
+
+            return listadoArchivos;
+        }
+
         private static List<ArchivoDescargaDto> GenerarListadoArchivos(ResultadoTickets resultado)
         {
             var outputMemStream = new MemoryStream();
@@ -131,6 +167,55 @@ namespace SustitucionMOAUtils.Services
 
             listado.Add(new ArchivoDescargaDto { Nombre = $"Documentación CCPP {resultado.CP}.zip", Datos = archivoResultado });
 
+            return listado;
+        }
+
+        private static List<ArchivoDescargaDto> GenerarListadoArchivosNoGranos(ResultadoConsultarTicketsNoGranos resultado)
+        {
+            var outputMemStream = new MemoryStream();
+            var listado = new List<ArchivoDescargaDto>();
+            using (var zipStream = new ZipOutputStream(outputMemStream))
+            {
+                zipStream.SetLevel(3);
+
+                if (resultado.TicketsNoGranos != null)
+                {
+                    if (resultado.TicketsNoGranos.Length > 0)
+                    {
+                        int i = 1;
+                        foreach (var ticket in resultado.TicketsNoGranos)
+                        {
+                            if (ticket.TicketPesada != null && ticket.TicketPesada.Length > 0)
+                            {
+                                string nombreArchivo = $"Ticket Pesada {ticket.NumeroOrdenOperaciones} - {i++}.pdf";
+                                AgregarAStream(ticket.TicketPesada, nombreArchivo, zipStream);
+                                listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = ticket.TicketPesada });
+                            }
+                            if (ticket.TicketReciboMunicipal != null && ticket.TicketReciboMunicipal.Length > 0)
+                            {
+                                string nombreArchivo = $"Ticket Recibo Municipal {ticket.NumeroOrdenOperaciones} - {i++}.pdf";
+                                AgregarAStream(ticket.TicketReciboMunicipal, nombreArchivo, zipStream);
+                                listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = ticket.TicketReciboMunicipal });
+                            }
+                            if (ticket.CPEDG != null && ticket.CPEDG.Length > 0)
+                            {
+                                string nombreArchivo = $"Certificado CP {ticket.NumeroOrdenOperaciones} - {i++}.pdf";
+                                AgregarAStream(ticket.CPEDG, nombreArchivo, zipStream);
+                                listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = ticket.CPEDG });
+                            }
+                        }
+                    }
+                }
+
+                zipStream.IsStreamOwner = false;
+            }
+            outputMemStream.Position = 0;
+            var archivoResultado = outputMemStream.ToArray();
+            if (archivoResultado.Length < 50)
+            {
+                throw new ValidationCustomException("No hay documentos para la Patente y fechas elegidas.");
+            }
+            listado.Add(new ArchivoDescargaDto { Nombre = $"Documentación CCPP {resultado.TicketsNoGranos[0].NumeroOrdenOperaciones}.zip", Datos = archivoResultado });
             return listado;
         }
 

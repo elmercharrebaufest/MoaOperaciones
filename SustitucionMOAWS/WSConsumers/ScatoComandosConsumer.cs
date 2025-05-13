@@ -21,6 +21,17 @@ namespace SustitucionMOAWS.WSConsumers
             });
         }
 
+        public ResultadoConsultarTicketsNoGranos ObtenerTicketPesadaNoGranos(string patenteCamion, DateTime fechaDesde, DateTime fechaHasta)
+        {
+
+            return (ResultadoConsultarTicketsNoGranos)servicioComandosClient.Ejecutar(new ConsultarTicketsNoGranos
+            {
+                Patente = patenteCamion,
+                FechaDesde = fechaDesde,
+                FechaHasta = fechaHasta
+            });
+        }
+
         public Resultado CrearCpsOtrosPuertos(List<CartaPorteOtrosPuertosDto> cps, string usuario)
         {
             return servicioComandosClient.Ejecutar(new CrearCpOtrosPuertos
