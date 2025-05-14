@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos.Consultas" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos.Consultas" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" />
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" />
+  <xs:complexType name="ConsultarOrdenInsumos">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q1:Comando">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="CentroId" type="xs:int" />
+          <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
+          <xs:element minOccurs="0" name="NumeroOrden" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ConsultarOrdenInsumos" nillable="true" type="tns:ConsultarOrdenInsumos" />
+  <xs:complexType name="ConsultarOrdenesNoGranosCargaDeCupo">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q2="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q2:Comando">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="CentroId" type="xs:int" />
+          <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ConsultarOrdenesNoGranosCargaDeCupo" nillable="true" type="tns:ConsultarOrdenesNoGranosCargaDeCupo" />
+  <xs:complexType name="ConsultarTicketsNoGranos">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q3="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q3:Comando">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FechaDesde" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="FechaHasta" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ConsultarTicketsNoGranos" nillable="true" type="tns:ConsultarTicketsNoGranos" />
+  <xs:complexType name="ResultadoConsultarOrdenInsumos">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q4="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q4:Resultado">
+        <xs:sequence>
+          <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="Dto" nillable="true" type="q5:OrdenCargaInternaDto" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResultadoConsultarOrdenInsumos" nillable="true" type="tns:ResultadoConsultarOrdenInsumos" />
+  <xs:complexType name="ResultadoConsultarOrdenesNoGranosCargaDeCupo">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q6="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q6:Resultado">
+        <xs:sequence>
+          <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="Ordenes" nillable="true" type="q7:ArrayOfOrdenNoGranosCargaDeCupoDto" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResultadoConsultarOrdenesNoGranosCargaDeCupo" nillable="true" type="tns:ResultadoConsultarOrdenesNoGranosCargaDeCupo" />
+</xs:schema>

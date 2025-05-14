@@ -1307,41 +1307,50 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\ReporteOCWebServiceMOA\BAPI_PO_GETITEMS.wsdl" />
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos.wsdl" />
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos1.wsdl" />
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos1.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\ScatoComandosWebService\ServicioComandos10.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ScatoComandosWebService\ServicioComandos101.xsd">
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos11.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ScatoComandosWebService\ServicioComandos1010.xsd">
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos12.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ScatoComandosWebService\ServicioComandos102.xsd">
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos13.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ScatoComandosWebService\ServicioComandos103.xsd">
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ScatoComandosWebService\ServicioComandos104.xsd">
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos3.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ScatoComandosWebService\ServicioComandos105.xsd">
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos4.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ScatoComandosWebService\ServicioComandos106.xsd">
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos5.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ScatoComandosWebService\ServicioComandos107.xsd">
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos6.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ScatoComandosWebService\ServicioComandos108.xsd">
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos7.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ScatoComandosWebService\ServicioComandos109.xsd">
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos8.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ScatoComandosWebService\ServicioComandos2.wsdl" />
-    <None Include="Service References\ScatoComandosWebService\ServicioComandos21.wsdl" />
+    <None Include="Service References\ScatoComandosWebService\ServicioComandos9.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\ScatoComandosWebService\SustitucionMOAWS.ScatoComandosWebService.Resultado.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

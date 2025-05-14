@@ -5,3 +5,9 @@ export class ConsultaTicketPesada {
     PatenteCamion: string = "";
     Mail: string = "";
 }
+
+export class ConsultaTicketPesadaSubproductos {
+    PatenteCamion: string = "";
+    FechaDesde: Date = new Date();
+    FechaHasta: Date = new Date();
+}

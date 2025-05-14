@@ -385,6 +385,7 @@
     <Compile Include="ModelAttributes\ExcelColumnOrderAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelColumnNameAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelIgnoreAttribute.cs" />
+    <Compile Include="Models\ConsultaTicketPesadaNoGranos.cs" />
     <Compile Include="Models\EcheqRequestModel.cs" />
     <Compile Include="Entities\Configuracion.cs" />
     <Compile Include="Entities\HabilitacionJob.cs" />
