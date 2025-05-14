@@ -98,6 +98,11 @@ export class TicketPesadaComponent extends BaseComponent implements OnInit {
             return true;
         }
 
+        if(this.TicketPesadaSubproductos.FechaDesde == null) {
+            this.mensajeComponent.setErrorMsg("Ingrese una fecha válida");
+            return true;
+        }
+
         if (environment.production) {
             if (this.captchaOk == null) {
                 this.mensajeComponent.setErrorMsg("Debe completar el Captcha");
@@ -211,6 +216,7 @@ export class TicketPesadaComponent extends BaseComponent implements OnInit {
     }
 
     enviarSubproductos() {
+        this.TicketPesadaSubproductos.FechaHasta = this.TicketPesadaSubproductos.FechaDesde;
         if (this.hayErrorSubproductos()) {
             this.spinnerComponent.hideIt();
             return;
