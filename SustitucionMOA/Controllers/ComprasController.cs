@@ -1090,10 +1090,35 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult DesvincularSolpDePOMultiple(int solpPosicionId, string[] idsPOsADesvincular)
+        public ActionResult DesvincularSolpDePOMultipleMaterial(int solpPosicionId, string[] idsPOsADesvincular)
         {
-            service.DesvincularSolpDePOMultiple(solpPosicionId, idsPOsADesvincular);
+            var idsPOsADesvincularInt = idsPOsADesvincular.Select(x => int.Parse(x)).ToList();
+
+            service.DesvincularSolpDePOMultipleMaterial(solpPosicionId, idsPOsADesvincularInt);
             return JsonCustom(new { data = true });
+        }
+
+        [HttpPost]
+        public ActionResult DesvincularSolpDePOMultipleServicio(int solpId, string[] idsPOsADesvincular)
+        {
+            var idsPOsADesvincularInt = idsPOsADesvincular.Select(x => int.Parse(x)).ToList();
+
+            service.DesvincularSolpDePOMultipleServicio(solpId, idsPOsADesvincularInt);
+            return JsonCustom(new { data = true });
+        }
+
+        [HttpGet]
+        public ActionResult ObtenerPeticionesDeOfertaParaDesvincularMaterial(int solpPosicionId)
+        {
+            var peticiones = service.ObtenerPeticionesDeOfertaParaDesvincularMaterial(solpPosicionId);
+            return JsonCustom(new { data = peticiones });
+        }
+
+        [HttpGet]
+        public ActionResult ObtenerPeticionesDeOfertaParaDesvincularServicio(int solpId)
+        {
+            var peticiones = service.ObtenerPeticionesDeOfertaParaDesvincularServicio(solpId);
+            return JsonCustom(new { data = peticiones });
         }
 
         [HttpPost]

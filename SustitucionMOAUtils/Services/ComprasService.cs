@@ -15,6 +15,7 @@ using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.POMultiple;
 using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -24,6 +25,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Util;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Helpers;
@@ -43,6 +45,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Mail;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading;
 using System.Web;
@@ -52,7 +55,7 @@ namespace SustitucionMOAUtils.Services
 {
     public class ComprasService : IComprasService
     {
-        private readonly IRepositorio repositorio;
+        private readonly IRepositorioCompras repositorio;
         private readonly IVendedorService vendedorService;
         private readonly IHttpContextService httpContextService;
         private readonly IUsuarioService usuarioService;
@@ -71,7 +74,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IRegistroInfoService registroInfoService;
         private readonly ITablaSapService tablaSapService;
 
-        public ComprasService(IRepositorio repositorio,
+        public ComprasService(IRepositorioCompras repositorioCompras,
             IVendedorService vendedorService,
             IHttpContextService httpContextService,
             IUsuarioService usuarioService,
@@ -85,7 +88,7 @@ namespace SustitucionMOAUtils.Services
             IRegistroInfoService registroInfoService,
             ITablaSapService tablaSapService)
         {
-            this.repositorio = repositorio;
+            this.repositorio = repositorioCompras;
             this.vendedorService = vendedorService;
             this.httpContextService = httpContextService;
             this.usuarioService = usuarioService;
@@ -3776,17 +3779,9 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public void DesvincularSolpDePOMultiple(int solpPosicionId, string[] posADesvincular)
+        public void DesvincularSolpDePOMultipleMaterial(int solpPosicionId, List<int> idsPOsADesvincular)
         {
-            var idsPOsADesvincular = posADesvincular.Select(x => int.Parse(x)).ToList();
-            var peticionesDeOferta = repositorio.Listar<PeticionDeOferta>(x => idsPOsADesvincular.Contains(x.Id));
-            foreach (var po in peticionesDeOferta)
-            {
-                if (po.Posiciones.Count == 1 && po.Posiciones.First().SolpPosicion_Id == solpPosicionId)
-                {
-                    throw new ValidationCustomException($"La PO {po.Id} no puede quedar sin posiciones vinculadas");
-                }
-            }
+            var peticionesDeOfertaADesvincular = ConsultarPeticionesDeOfertaADesvincular(idsPOsADesvincular, solpPosicionId: solpPosicionId);
 
             var solpPosicion = repositorio.Obtener<SolpPosicion>(sp => sp.Id == solpPosicionId, new Expression<Func<SolpPosicion, object>>[] { x => x.Peticiones });
 
@@ -3795,17 +3790,30 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-            foreach (var po in peticionesDeOferta)
-            {
-                try
-                {
-                    EnviarMailPeticionDeOferta(po, po.Usuarios.ToList(), po.UsuariosAdicionales.ToList(), true);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error($"Error al enviar mail PO desvinculada. PO {po.Id}, SolpPosicion {solpPosicionId}", ex);
-                }
-            }
+            NotificarPOsModificadas(peticionesDeOfertaADesvincular);
+        }
+
+        public void DesvincularSolpDePOMultipleServicio(int solpId, List<int> idsPOsADesvincular)
+        {
+            var peticionesDeOfertaADesvincular = ConsultarPeticionesDeOfertaADesvincular(idsPOsADesvincular, solpId: solpId);
+
+            var pospsADesvincular = peticionesDeOfertaADesvincular.SelectMany(po => po.Posiciones).Where(pos => pos.SolpPosicion.Solp_Id == solpId).ToList();
+
+            repositorio.RemoverTodos(pospsADesvincular);
+
+            repositorio.GuardarCambios();
+
+            NotificarPOsModificadas(peticionesDeOfertaADesvincular);
+        }
+
+        public List<PeticionDeOfertaDesvincularDto> ObtenerPeticionesDeOfertaParaDesvincularMaterial(int solpPosicionId)
+        {
+            return repositorio.ListarPOsDesvinculablesDePosicionMaterial(solpPosicionId);
+        }
+
+        public List<PeticionDeOfertaDesvincularDto> ObtenerPeticionesDeOfertaParaDesvincularServicio(int solpId)
+        {
+            return repositorio.ListarPOsDesvinculablesDeSolpServicio(solpId);
         }
 
         private bool TodasLasPosicionesEstanPendientes(List<SolpPosicion> posiciones)
@@ -9316,6 +9324,43 @@ namespace SustitucionMOAUtils.Services
             {
                 adjudicacionesAGrabar.ForEach(a => repositorio.Agregar(a));
                 repositorio.GuardarCambios();
+            }
+        }
+
+        private List<PeticionDeOferta> ConsultarPeticionesDeOfertaADesvincular(List<int> idsPOsADesvincular, int? solpId = null, int? solpPosicionId = null)
+        {
+            var includes = new List<Expression<Func<PeticionDeOferta, object>>>
+            {
+                po => po.Posiciones
+            };
+
+            var peticionesDeOfertaADesvincular = repositorio.Listar(x => idsPOsADesvincular.Contains(x.Id), includes: includes);
+
+            foreach (var po in peticionesDeOfertaADesvincular)
+            {
+                if (po.Posiciones.Count == 1 &&
+                    (solpId == null || po.Posiciones.First().SolpPosicion.Solp_Id == solpId) &&
+                    (solpPosicionId == null || po.Posiciones.First().SolpPosicion_Id == solpPosicionId))
+                {
+                    throw new ValidationCustomException($"La PO {po.Id} no puede quedar sin posiciones vinculadas");
+                }
+            }
+
+            return peticionesDeOfertaADesvincular;
+        }
+
+        private void NotificarPOsModificadas(List<PeticionDeOferta> peticionesDeOferta)
+        {
+            foreach (var po in peticionesDeOferta)
+            {
+                try
+                {
+                    EnviarMailPeticionDeOferta(po, po.Usuarios.ToList(), po.UsuariosAdicionales.ToList(), true);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Error al enviar mail PO desvinculada. PO {po.Id}", ex);
+                }
             }
         }
     }

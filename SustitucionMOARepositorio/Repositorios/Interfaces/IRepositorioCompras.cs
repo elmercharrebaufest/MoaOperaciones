@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Compras.POMultiple;
 using System.Collections.Generic;
 
 namespace SustitucionMOARepositorio.Repositorios.Interfaces
@@ -7,5 +8,7 @@ namespace SustitucionMOARepositorio.Repositorios.Interfaces
     {
         List<MaterialSolpDto> BuscarMaterialesCatalogadosPorCodigoSap(string codigoSapMatch, int centroId);
         List<ServicioSolpDto> BuscarServiciosCatalogadosPorCodigoSap(string codigoSapMatch);
+        List<PeticionDeOfertaDesvincularDto> ListarPOsDesvinculablesDePosicionMaterial(int solpPosicionId);
+        List<PeticionDeOfertaDesvincularDto> ListarPOsDesvinculablesDeSolpServicio(int solpId);
     }
 }

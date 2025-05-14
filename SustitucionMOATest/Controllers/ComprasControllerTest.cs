@@ -771,15 +771,16 @@ namespace SustitucionMOATest.Controllers
         {
             var solpPosicionId = 1;
             var idsPOsADesvincular = new string[] { "1001", "1002" };
+            var idsPOsADesvincularInt = new List<int> { 1001, 1002 };
 
-            comprasServiceMock.Setup(x => x.DesvincularSolpDePOMultiple(solpPosicionId, idsPOsADesvincular));
+            comprasServiceMock.Setup(x => x.DesvincularSolpDePOMultipleMaterial(solpPosicionId, idsPOsADesvincularInt));
 
-            var result = target.DesvincularSolpDePOMultiple(solpPosicionId, idsPOsADesvincular);
+            var result = target.DesvincularSolpDePOMultipleMaterial(solpPosicionId, idsPOsADesvincular);
 
             Assert.IsNotNull(result);
             var jsonResult = (JsonResult)result;
             Assert.IsNotNull(jsonResult.Data);
-            comprasServiceMock.Verify(x => x.DesvincularSolpDePOMultiple(solpPosicionId, idsPOsADesvincular), Times.Once);
+            comprasServiceMock.Verify(x => x.DesvincularSolpDePOMultipleMaterial(solpPosicionId, idsPOsADesvincularInt), Times.Once);
         }
     }
 }

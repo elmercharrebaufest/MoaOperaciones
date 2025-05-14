@@ -17,7 +17,9 @@ import { EnumTipoImputacion } from '../enum-tipo-imputacion';
 import { PosicionCrearPoMultipleDto } from '../../modelos/Posicion-CrearPoMultipleDto.model';
 import { ActionResult } from '../../../serviceHelpers/actionResult.Interface';
 import { SubPosicionCrearPoMultipleDto } from '../../modelos/SubPosicion-CrearPoMultipleDto.model';
-import { POADesvincular } from './desvincular-po-multiple/desvincular-po-multiple.component';
+import { PeticionDeOfertaDesvincularDto } from '../../modelos/compras/POMultiple/peticionDeOfertaDesvincularDto';
+import { Observable } from 'rxjs';
+import { ApiResponse } from '../../common/models/response';
 
 @Component({
     selector: 'app-crear-po-multiple',
@@ -105,8 +107,9 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     }
 
     mostrarPopupDesvincularPoMultiple: boolean = false;
-    listaPOParaDesvincular: POADesvincular[] = [];
-    solpPosicionDesvincularId: number;
+    listaPeticionesParaDesvincular: PeticionDeOfertaDesvincularDto[] = [];
+    solpOPosicionDesvincularId: number; // Contiene el id de la SOLP (para Servicio) o de la solpPosicion (para Material) a desvincular
+    desvincularPeticionesEsMaterial: boolean;
 
     tipoPliegoItem: SelectItem[];
     selectTipoPliego: string[] = [];
@@ -661,18 +664,88 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         }
     }
 
-    abrirModalDesvincularSolp(solpPosicionId: number, listaPODesvincular: string[]) {
-        this.solpPosicionDesvincularId = solpPosicionId;
-        this.listaPOParaDesvincular = listaPODesvincular.map(x =>
-            {
-                return { nroPO: x, seleccionada: false };
-            }
-        );
-        this.mostrarPopupDesvincularPoMultiple = true;
+    dslistarClaseDocumento() {
+        try {
+            this.subscription = this.service.listarClaseDocumento(sessionStorage.getItem("usuarioId")).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else {
+                        this.clasesDocumento = result;
+                        if (this.clasesDocumento.length > 0)
+                            sessionStorage.setItem('clasesDocumentoUsuario', JSON.stringify(this.clasesDocumento));
+                    }
+                },
+                error => { this.floatMsgService.setErrorMsg(error.message); }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false;
+        }
+        return false;
+    }
+
+    abrirModalDesvincularMaterial(solpPosicionId: number) {
+        this.solpOPosicionDesvincularId = solpPosicionId;
+        this.desvincularPeticionesEsMaterial = true;
+        this.abrirModalDesvincularPeticiones(this.service.obtenerPeticionesDeOfertaParaDesvincularMaterial(solpPosicionId));
+    }
+
+    abrirModalDesvincularServicio(solpId: number) {
+        this.solpOPosicionDesvincularId = solpId;
+        this.desvincularPeticionesEsMaterial = false;
+        this.abrirModalDesvincularPeticiones(this.service.obtenerPeticionesDeOfertaParaDesvincularServicio(solpId));
+    }
+
+    abrirModalDesvincularPeticiones(observableListadoDesvincular: Observable<ApiResponse<PeticionDeOfertaDesvincularDto[]>>) {
+        //this.solpPosicionDesvincularId = solpPosicionId;
+        try {
+            this.subscription = observableListadoDesvincular.subscribe( //this.service.obtenerPeticionesDeOfertaParaDesvincularMaterial(solpPosicionId).subscribe(
+                (result) => {
+                    if (result.logout === true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        if (result.error) {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        }
+                        else {
+                            if (result.info) {
+                                this.floatMsgService.setInfoMsg(result.info);
+                            }
+                            if (result.data) {
+                                this.listaPeticionesParaDesvincular = result.data;
+                                this.mostrarPopupDesvincularPoMultiple = true;
+                            }
+                        }
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+            )
+        }
+        catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        }
+
+        // this.listaPOParaDesvincular = listaPODesvincular.map(x =>
+        //     {
+        //         return { nroPO: x, seleccionada: false };
+        //     }
+        // );
+        // this.mostrarPopupDesvincularPoMultiple = true;
     }
 
     cerrarModalDesvincularSolp() {
         this.mostrarPopupDesvincularPoMultiple = false;
+    }
+
+    onDesvinculacionGuardada() {
+        this.cerrarModalDesvincularSolp();
+        this.onBuscar();
     }
 }
 

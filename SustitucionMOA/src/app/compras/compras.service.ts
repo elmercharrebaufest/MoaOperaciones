@@ -30,6 +30,7 @@ import { SubPosicionCrearPoMultipleDto } from '../modelos/SubPosicion-CrearPoMul
 import { ProcesarPrecargaSolpResponse } from '../modelos/compras/PrecargaSolp/procesarPrecargaSolpResponse';
 import { MaterialSolp } from '../modelos/compras/materialSolp';
 import { ServicioSolp } from '../modelos/compras/servicioSolp';
+import { PeticionDeOfertaDesvincularDto } from '../modelos/compras/POMultiple/peticionDeOfertaDesvincularDto';
 
 @Injectable({
     providedIn: 'root'
@@ -1673,13 +1674,47 @@ export class ComprasService extends BaseService {
             .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
-    desvincularSolpDePOMultiple(solpPosicionId: number, idsPOsADesvincular: string[]): Observable<ApiResponse<void>> {
+    desvincularSolpDePOMultipleMaterial(solpPosicionId: number, idsPOsADesvincular: string[]): Observable<ApiResponse<void>> {
         var payload = new FormData();
         payload.append('solpPosicionId', solpPosicionId.toString());
         payload.append('idsPOsADesvincular', idsPOsADesvincular.toString());
 
         return this.http
-            .post('/api/compras/DesvincularSolpDePOMultiple', payload, { headers: this.headers })
+            .post('/api/compras/DesvincularSolpDePOMultipleMaterial', payload, { headers: this.headers })
             .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    desvincularSolpDePOMultipleServicio(solpId: number, idsPOsADesvincular: string[]): Observable<ApiResponse<void>> {
+        var payload = new FormData();
+        payload.append('solpId', solpId.toString());
+        payload.append('idsPOsADesvincular', idsPOsADesvincular.toString());
+
+        return this.http
+            .post('/api/compras/DesvincularSolpDePOMultipleServicio', payload, { headers: this.headers })
+            .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+    
+    obtenerPeticionesDeOfertaParaDesvincularMaterial(solpPosicionId: number): Observable<ApiResponse<PeticionDeOfertaDesvincularDto[]>> {
+        let params: HttpParams = new HttpParams()
+            .append('solpPosicionId', solpPosicionId.toString());
+
+        return this.http
+            .get<ApiResponse<PeticionDeOfertaDesvincularDto[]>>(
+                '/api/compras/ObtenerPeticionesDeOfertaParaDesvincularMaterial',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(120000,
+                throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    obtenerPeticionesDeOfertaParaDesvincularServicio(solpId: number): Observable<ApiResponse<PeticionDeOfertaDesvincularDto[]>> {
+        let params: HttpParams = new HttpParams()
+            .append('solpId', solpId.toString());
+
+        return this.http
+            .get<ApiResponse<PeticionDeOfertaDesvincularDto[]>>(
+                '/api/compras/ObtenerPeticionesDeOfertaParaDesvincularServicio',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(120000,
+                throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 }

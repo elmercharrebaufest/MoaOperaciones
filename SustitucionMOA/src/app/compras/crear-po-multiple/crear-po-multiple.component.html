@@ -176,9 +176,9 @@
                                     <!-- posicionCompra.ListaPO -->
                                     <td class="columna" *ngIf="!posicionCompra.TieneCotizacion">-</td>
                                     <td class="columna" *ngIf="posicionCompra.TieneCotizacion && !numeroPo">
-                                        <span *ngIf="posicionCompra.ListaPO && posicionCompra.ListaPO.length > 1"
+                                        <span *ngIf="posicionCompra.ListaPO && posicionCompra.ListaPO.length > 0"
                                             style="cursor: pointer;" pTooltip="Desvincular"
-                                            (click)="abrirModalDesvincularSolp(posicionCompra.Id, posicionCompra.ListaPO)">
+                                            (click)="abrirModalDesvincularMaterial(posicionCompra.Id)">
                                             <img src="Content/images/buttons/unlink.svg" />
                                         </span>
                                         {{posicionCompra.ListaPO.join('-')}}
@@ -234,12 +234,19 @@
                                     <td class="columna">{{solp.Centro}}</td>
                                     <td class="columna">{{solp.Tipo}}</td>
                                     <td class="columna" *ngIf="solp.TieneCotizacion && !numeroPo">
-                                        <span *ngIf="solp.ListaPO && solp.ListaPO.length > 1"
+                                        <span *ngIf="solp.ListaPO && solp.ListaPO.length > 0"
                                             style="cursor: pointer;" pTooltip="Desvincular"
-                                            (click)="abrirModalDesvincularSolp(solp.Id, solp.ListaPO)">
+                                            (click)="abrirModalDesvincularServicio(solp.Id)">
                                             <img src="Content/images/buttons/unlink.svg" />
                                         </span>
                                         {{solp.ListaPO.join('-')}}
+                                    </td>
+                                    <td class="columna" *ngIf="solp.TieneCotizacion && numeroPo">
+                                        <span *ngFor="let lpoElem of solp.ListaPO; last as isLast">
+                                            <mark *ngIf="lpoElem == numeroPo.toString()">{{lpoElem}}</mark>
+                                            <span *ngIf="lpoElem != numeroPo.toString()">{{lpoElem}}</span>
+                                            <span *ngIf="!isLast">-</span>
+                                        </span>
                                     </td>
                                 </tr>
                                 <tr *ngIf="solp.Expanded">
@@ -336,6 +343,9 @@
 <app-desvincular-po-multiple
     [(displayDesvincularPoMultiple)]="mostrarPopupDesvincularPoMultiple"
     [(listaPO)]="listaPOParaDesvincular"
-    [(solpPosicionId)]="solpPosicionDesvincularId"
+    [(peticiones)]="listaPeticionesParaDesvincular"
+    [(idPosicionOSolp)]="solpOPosicionDesvincularId"
+    [(esMaterial)]="desvincularPeticionesEsMaterial"
+    (guardarDesvinculacionEmitter)="onDesvinculacionGuardada()"
     (cerrarDesvinculacionEmitter)="cerrarModalDesvincularSolp()">
 </app-desvincular-po-multiple>
