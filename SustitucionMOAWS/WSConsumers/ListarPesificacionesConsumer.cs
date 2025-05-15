@@ -48,6 +48,7 @@ namespace SustitucionMOAWS.WSConsumers
         private ListarPesificacionesWSMOAResponse MapSinPI(Z_MPMF_MOAOP_LISTAR_PESIFResponse response)
         {
             var result = new ListarPesificacionesWSMOAResponse();
+            /*
             var soja200FechaCotizacionStr = repositorio.Obtener<Configuracion>(a => a.Code == "Soja200FechaCotizacion").Value;
             var soja200FechaCotizacion = DateTime.ParseExact(soja200FechaCotizacionStr, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
@@ -73,7 +74,7 @@ namespace SustitucionMOAWS.WSConsumers
                     TipoCambio = SAPFormatter.FormatearMonto(pesificacion.TIPO_CAMBIO, "ARP"),
                 });
             }
-
+            */
             return result;
         }
         private ListarPesificacionesWSMOAResponse Map(ListarPesificaciones.ZMPES6500[] pesificaciones)
