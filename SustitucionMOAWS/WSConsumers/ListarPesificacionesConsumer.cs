@@ -32,8 +32,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ListarPesificacionesWSMOAResponse Request(string proveedor)
         {
-            if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
-            {
+            
                 var agent = new Z_WS_MOAOP_DIRECTClient();
                 agent.ClientCredentials.UserName.UserName = UserSap;
                 agent.ClientCredentials.UserName.Password = PassSap;
@@ -43,15 +42,7 @@ namespace SustitucionMOAWS.WSConsumers
                 };
                 var response = agent.Z_MPMF_MOAOP_LISTAR_PESIF(request);
                 return MapSinPI(response);
-            }
-            else
-            {
-                SI_MPMF_MOAOP_LISTAR_PESIFClient service = new SI_MPMF_MOAOP_LISTAR_PESIFClient();
-                service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-                service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                var pesificaciones = service.SI_MPMF_MOAOP_LISTAR_PESIF(proveedor);
-                return Map(pesificaciones);
-            }
+            
 
         }
         private ListarPesificacionesWSMOAResponse MapSinPI(Z_MPMF_MOAOP_LISTAR_PESIFResponse response)
