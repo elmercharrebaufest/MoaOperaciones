@@ -681,6 +681,51 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\WS_GAQ_sin_PI_DIRECT_2012\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WS_GAQ_sin_PI_DIRECT_BAPT\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WS_GAQ_sin_PI_DIRECT_COMPRAS\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWI\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWP\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWQ\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WS_GAQ_sin_PI_DIRECT_MLBO\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WS_GAQ_sin_PI_DIRECT_MOAOP\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WS_GAQ_sin_PI_DIRECT_PANOL\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Util\ConstanteSAP.cs" />
     <Compile Include="Util\ExtensionesSerializacion.cs" />
     <Compile Include="WebApi\CNRTClient.cs" />
@@ -2536,6 +2581,15 @@
     <None Include="Service References\VinculaDetalleWebServiceMOA\SustitucionMOAWS.VinculaDetalleWebServiceMOA.ZMPES6090.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_2012\z_ws_bapi_direct_2012.wsdl" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_BAPT\z_ws_bapi_direct_bapt.wsdl" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_COMPRAS\z_ws_moaop_compras_direct.wsdl" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWI\z_ws_bapi_direct_mewi.wsdl" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWP\z_ws_bapi_direct_mewp.wsdl" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWQ\z_ws_bapi_direct_mewq.wsdl" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MLBO\z_ws_bapi_direct_mlbo.wsdl" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MOAOP\z_ws_moaop_direct.wsdl" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_PANOL\z_ws_panol_direct.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\AgregarRegistroInfoServiceWebMOA\" />
@@ -2645,6 +2699,15 @@
     <WCFMetadataStorage Include="Service References\VendedoresWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\VendedorHabilitadoWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\VinculaDetalleWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\WS_GAQ_sin_PI_DIRECT_2012\" />
+    <WCFMetadataStorage Include="Service References\WS_GAQ_sin_PI_DIRECT_BAPT\" />
+    <WCFMetadataStorage Include="Service References\WS_GAQ_sin_PI_DIRECT_COMPRAS\" />
+    <WCFMetadataStorage Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWI\" />
+    <WCFMetadataStorage Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWP\" />
+    <WCFMetadataStorage Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWQ\" />
+    <WCFMetadataStorage Include="Service References\WS_GAQ_sin_PI_DIRECT_MLBO\" />
+    <WCFMetadataStorage Include="Service References\WS_GAQ_sin_PI_DIRECT_MOAOP\" />
+    <WCFMetadataStorage Include="Service References\WS_GAQ_sin_PI_DIRECT_PANOL\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOAAssets\SustitucionMOAAsset.csproj">
@@ -3806,6 +3869,60 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_PANOL\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_PANOL\configuration.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_PANOL\configuration91.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MOAOP\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MOAOP\configuration.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MOAOP\configuration91.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_COMPRAS\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_COMPRAS\configuration.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_COMPRAS\configuration91.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_BAPT\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_BAPT\configuration.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_BAPT\configuration91.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWQ\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWQ\configuration.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWQ\configuration91.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWP\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWP\configuration.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWP\configuration91.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWI\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWI\configuration.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWI\configuration91.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_2012\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_2012\configuration.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_2012\configuration91.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MLBO\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MLBO\configuration.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MLBO\configuration91.svcinfo" />
     <None Include="Service References\BorrarEntradaServicioNuevoWebServiceMOA\configuration91.svcinfo" />
     <None Include="Service References\BorrarEntradaServicioNuevoWebServiceMOA\configuration.svcinfo" />
     <None Include="Service References\BorrarEntradaServicioNuevoWebServiceMOA\Reference.svcmap">

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Echeq;
@@ -6,39 +7,75 @@ using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.EcheqModificacionDocumentoChequeWebServiceMOA;
 using SustitucionMOAWS.EcheqModificarContratoWebServiceMOA;
 using SustitucionMOAWS.Logger;
+using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
+using static Google.Apis.Requests.BatchRequest;
 
 namespace SustitucionMOAWS.WSConsumers
 {
     public class EcheqModificacionDocumentoChequeConsumerMOA : IEcheqModificacionDocumentoChequeConsumerMOA
     {
-        SI_MPRFC_MODI_DOC_CHEQUEClient service = new SI_MPRFC_MODI_DOC_CHEQUEClient();
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
 
         public EcheqModificacionDocumentoChequeConsumerMOA()
         {
-            service = new SI_MPRFC_MODI_DOC_CHEQUEClient();
-            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
         public ResultadoGenerico Request(string IM_CONTRATO, string IM_DOCUMENTO, string IM_EJERCICIO, string IM_FECHA, string IM_HORA, string IM_PEDIDO, string IM_PROVEEDOR, string IM_REFERENCIA, string IM_SOCIEDAD, string IM_USUARIO, string IM_ZLSCH)
         {
             try
             {
-                IM_USUARIO = string.IsNullOrEmpty(IM_USUARIO) ? "moaoperaciones" : IM_USUARIO;
-                Log.Info($"SI_MPRFC_MODI_DOC_CHEQUE Request: {new { IM_CONTRATO, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA, IM_HORA, IM_PEDIDO, IM_PROVEEDOR, IM_REFERENCIA, IM_SOCIEDAD, IM_USUARIO, IM_ZLSCH }}");
-                string response = service.SI_MPRFC_MODI_DOC_CHEQUE(IM_CONTRATO, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA, IM_HORA, IM_PEDIDO, IM_PROVEEDOR, IM_REFERENCIA, IM_SOCIEDAD, IM_USUARIO, IM_ZLSCH);
-                Log.Info($"SI_MPRFC_MODI_DOC_CHEQUE Response: {response}");
-
-
-                ResultadoGenerico resultado = new ResultadoGenerico();
-
-
-                if (response != "Datos actualizados correctamente")
+                if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
                 {
-                    resultado.Error("", response);
-                }
+                    var agent = new Z_WS_MOAOP_DIRECTClient();
+                    agent.ClientCredentials.UserName.UserName = UserSap;
+                    agent.ClientCredentials.UserName.Password = PassSap;
 
-                return resultado;
+                    IM_USUARIO = string.IsNullOrEmpty(IM_USUARIO) ? "moaoperaciones" : IM_USUARIO;
+                    Log.Info($"Sin PI Z_MPRFC_MODI_DOC_CHEQUE Request: {new { IM_CONTRATO, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA, IM_HORA, IM_PEDIDO, IM_PROVEEDOR, IM_REFERENCIA, IM_SOCIEDAD, IM_USUARIO, IM_ZLSCH }}");
+
+                    var req = new Z_MPRFC_MODI_DOC_CHEQUE()
+                    {
+                        IM_CONTRATO = IM_CONTRATO,
+                        IM_DOCUMENTO = IM_DOCUMENTO,
+                        IM_EJERCICIO = IM_EJERCICIO,
+                        IM_FECHA = IM_FECHA,
+                        IM_HORA = IM_HORA,
+                        IM_PEDIDO = IM_PEDIDO,
+                        IM_PROVEEDOR = IM_PROVEEDOR,
+                        IM_REFERENCIA = IM_REFERENCIA,
+                        IM_SOCIEDAD = IM_SOCIEDAD,
+                        IM_USUARIO = IM_USUARIO,
+                        IM_ZLSCH = IM_ZLSCH
+                    };
+                    var response = agent.Z_MPRFC_MODI_DOC_CHEQUE(req);
+                    Log.Info($"Sin PI Z_MPRFC_MODI_DOC_CHEQUE Response: {response.EX_SALIDA}");
+                    ResultadoGenerico resultado = new ResultadoGenerico();
+                    if (response.EX_SALIDA != "Datos actualizados correctamente")
+                    {
+                        resultado.Error("", response.EX_SALIDA);
+                    }
+                    return resultado;
+                }
+                else
+                {
+                    SI_MPRFC_MODI_DOC_CHEQUEClient service = new SI_MPRFC_MODI_DOC_CHEQUEClient();
+                    service = new SI_MPRFC_MODI_DOC_CHEQUEClient();
+                    service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+                    service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+
+                    IM_USUARIO = string.IsNullOrEmpty(IM_USUARIO) ? "moaoperaciones" : IM_USUARIO;
+                    Log.Info($"SI_MPRFC_MODI_DOC_CHEQUE Request: {new { IM_CONTRATO, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA, IM_HORA, IM_PEDIDO, IM_PROVEEDOR, IM_REFERENCIA, IM_SOCIEDAD, IM_USUARIO, IM_ZLSCH }}");
+                    string response = service.SI_MPRFC_MODI_DOC_CHEQUE(IM_CONTRATO, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA, IM_HORA, IM_PEDIDO, IM_PROVEEDOR, IM_REFERENCIA, IM_SOCIEDAD, IM_USUARIO, IM_ZLSCH);
+                    Log.Info($"SI_MPRFC_MODI_DOC_CHEQUE Response: {response}");
+
+                    ResultadoGenerico resultado = new ResultadoGenerico();
+                    if (response != "Datos actualizados correctamente")
+                    {
+                        resultado.Error("", response);
+                    }
+                    return resultado;
+                }
             }
             catch (Exception)
             {
