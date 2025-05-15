@@ -60,14 +60,6 @@ namespace SustitucionMOAUtils.Services
         }
 
         /// <summary>
-        /// Realiza ordenamiento del objeto OrdenCompraDto según la columna y el tipo de orden especificados
-        /// </summary>
-        public List<EntradaServicioCabeceraDto> OrdenarEntradasServicio(List<EntradaServicioCabeceraDto> ordenes)
-        {
-            return ordenes.OrderByDescending(es => es.FechaCreacionDateTime).ThenByDescending(es => es.EntradaServicio).ToList();
-        }
-
-        /// <summary>
         /// Pagina los resultados de la lista de ordenes de compra
         /// </summary>
         public List<EntradaServicioCabeceraDto> PaginarResultados(List<EntradaServicioCabeceraDto> resultados, int? pagina, int? elementosPorPagina)
@@ -148,118 +140,6 @@ namespace SustitucionMOAUtils.Services
             }
 
             EntradasServicio = OrdenarEntradasServicio(EntradasServicio);
-
-            return EntradasServicio;
-        }
-
-        /// <summary>
-        /// Consultas SAP cabecera de documento.
-        /// No lista las entradas de servicio que esté en estado "Borrada"
-        /// </summary>
-        /// <param name="parametros"></param>
-        /// <returns></returns>
-        public async Task<List<EntradaServicioCabeceraDto>> ServicioSAP_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario)
-        {
-            // Obtiene Cabeceras de Entradas de Servicio
-            List<EntradaServicioCabeceraDto> EntradasServicioCabecera = await new ObtenerCabecerasEntradaServicioConsumerMOA().ObtenerEntradasServicioCabeceraAsync(parametros.FechaInicio);
-
-            List<EntradaServicioCabeceraDto> EntradasServicio = new List<EntradaServicioCabeceraDto>();
-
-            string correo = usuario.Mail.ToLower();
-
-            //Se filtran por las OC tomando las que empiezan con 412
-            EntradasServicioCabecera = EntradasServicioCabecera.Where(x => x.OrdenCompra.StartsWith("412")).ToList();
-
-            // Filtra por número de documento, si se proporciona el parámetro
-            if (parametros.DocumentoNumero != null)
-                EntradasServicioCabecera = EntradasServicioCabecera.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();
-
-            OrderParamsDto ordenParams = new OrderParamsDto();
-
-            // ES APROBADAS
-            try
-            {
-                foreach (var documento in EntradasServicioCabecera)
-                {
-                    string correoSolp = "-";
-                    string nroDoc = documento.EntradaServicio.ToString();
-                    int nro_es_sap = int.Parse(nroDoc);
-
-                    // Se obtiene detalle de una ES
-                    documento.entradaServicioDetalle = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(nroDoc);
-
-                    if (documento.entradaServicioDetalle != null && documento.entradaServicioDetalle.Count > 0)
-                    {
-                        if (ordenParams.OrdenCompraId != documento.entradaServicioDetalle[0].OrdenCompra || string.IsNullOrEmpty(ordenParams.OrdenCompraId))
-                        {
-                            var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(documento.entradaServicioDetalle[0].OrdenCompra);
-                            ModificarPedidoSAP POSCHEDULE = new ModificarPedidoSAP
-                            {
-                                NRO_SOLP = ocSap.POSCHEDULE.FirstOrDefault().PREQ_NO
-                            };
-
-                            string nroSolp = POSCHEDULE.NRO_SOLP;
-
-                            correoSolp = ObtenerCorreoSolp(nroSolp);
-                        }
-
-                        ordenParams.OrdenCompraId = documento.entradaServicioDetalle[0].OrdenCompra;
-
-                        Proveedor prov = orderService.BuscarProveedor(ordenParams);
-
-                        documento.Proveedor = prov.RazonSocial ?? "-";
-
-                        documento.CUIT = prov.CUIT ?? "-";
-                    }
-
-                    // Se obtiene detalle de la APROBACIÓN de la Entrada de Servicio
-                    List<Aprobaciones> ESTemporales = new List<Aprobaciones>();
-
-                    bool verTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
-                    bool certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
-
-                    if (verTodo)
-                    {
-                        ESTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap);
-                    }
-                    else
-                    {
-                        ESTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap &&
-                            (x.Ingresante_CDS.ToLower() == correo ||
-                            x.Fiscal_SOLPED.ToLower() == correo ||
-                            x.Aprobador_CDS.ToLower() == correo ||
-                            (certExt && x.Proveedor == parametros.Vendedor)));
-                    }
-
-                    if (ESTemporales != null && ESTemporales.Count > 0)
-                    {
-                        List<Aprobaciones> detalleAprobacionesTemporales = ESTemporales.Where(t => t.NRO_ES_SAP == int.Parse(documento.EntradaServicio)).ToList();
-
-                        var detalleEntradadeServicio = MergeDetalle(documento, detalleAprobacionesTemporales, correoSolp);
-
-                        documento.entradaServicioDetalle = detalleEntradadeServicio.entradaServicioDetalle;
-                    }
-                    else
-                    {
-                        documento.Fiscal = correoSolp;
-                        DateTime fecha = DateTime.Parse(documento.FechaCreacion); // FechaCreacion es la fecha de la alta en sap no es la fecha_carga_es de aprobaciones.
-                        string fechaFormateada = fecha.ToString("dd/MM/yyyy");
-                        documento.FechaAprobacion = fechaFormateada;
-                        documento.FechaCreacion = fechaFormateada;
-                    }
-
-                    documento.Estado = "Aprobada";
-
-                    EntradasServicio.Add(documento);
-
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            EntradasServicio = EntradasServicio.Where(x => x.Ingresante.Contains("@")).ToList();
 
             return EntradasServicio;
         }
@@ -470,7 +350,7 @@ namespace SustitucionMOAUtils.Services
                 var solpNro = posicionES.EntrySheetHeader.SolPedNumber;
                 var proveedor = posicionES.EntrySheetHeader.Proveedor;
 
-                var validacionIngresanteResp = ValidarIngresante(posicionES, mailUsuario, solpNro);
+                var validacionIngresanteResp = ValidarIngresante(mailUsuario, solpNro);
                 EntradaServicioCreateRespuestaDto resultadoCreacionES;
                 if (validacionIngresanteResp.Message == "Auto")
                 {
@@ -495,147 +375,6 @@ namespace SustitucionMOAUtils.Services
             solicitudesMailAprobacionES.ForEach(s => emailCertificationService.EnviarMailAprobacion(s));
 
             return respuestasCreacion;
-        }
-
-        /// <summary>
-        /// MMSN-601: Validación de información ingresante c/ SolPed
-        /// </summary>
-        /// <param name="parametros"></param>
-        /// <param name="userMail"></param>
-        /// <returns></returns>
-        public EntradaServicioCreateRespuestaDto ValidarIngresante(EntradaServicioCreateParamsDto parametros, string userMail, string nroSolped)
-        {
-            //MMSN-601 agregar lógica entrada servicio automatica- temporal, nro solped en parametros.Header.Solp
-            //1 - Obtener información asociada a SolPed
-            SolpESDto detalleSolPed = new SolpESDto();
-            try
-            {
-                if (!string.IsNullOrEmpty(nroSolped))
-                {
-                    detalleSolPed = comprasService.TraerSolpPorNumero(nroSolped);
-                }
-                else
-                {
-                    return new EntradaServicioCreateRespuestaDto { Type = "S", Message = "No se encontró la SOLP" };
-                }
-            }
-            catch (Exception e)
-            {
-                return new EntradaServicioCreateRespuestaDto { Type = "S", Message = e.Message };
-            }
-
-            //2 - Comparar datos SolPed para certificar automaticamente o WKF de aprobaciones
-            bool auto = false;
-            bool difSolicitante = false;
-
-            var usuarioIngresante = repositorioEntradaServicio.Obtener<Usuario>(x => x.Mail == userMail);
-            var usuarioReasignacion = repositorioEntradaServicio.Obtener<UsuarioReasignacion>(x => x.Usuario_Id == usuarioIngresante.Id);
-
-            //2a - Comparar Fiscal/Email con usuario FE
-
-            if (usuarioIngresante.Externo != null && usuarioIngresante.Externo == true)
-            {
-                auto = false;
-                difSolicitante = false;
-            }
-            else if ((userMail == detalleSolPed.Email && usuarioReasignacion != null &&
-                DateTime.Now <= usuarioReasignacion.FechaHasta && DateTime.Now >= usuarioReasignacion.FechaDesde)
-                || (userMail == detalleSolPed.Email))
-            {
-                auto = true;
-            }
-            else if (detalleSolPed.SupervisorTrabajo != null && detalleSolPed.SupervisorTrabajo.Count > 0
-                && userMail == detalleSolPed.SupervisorTrabajo[0])
-            {
-                //2b - Si el supervisor del trabajo es el mismo que el usuario ingresante
-                auto = true;
-            }
-            else if (string.IsNullOrEmpty(detalleSolPed.Email) && detalleSolPed.SupervisorTrabajo != null && detalleSolPed.SupervisorTrabajo.Count > 0
-                && string.IsNullOrEmpty(detalleSolPed.SupervisorTrabajo[0]) && detalleSolPed.Posiciones != null
-                && detalleSolPed.Posiciones.Count > 0)
-            {
-                //2c - Si el solicitante de la SolPed es el mismo que el usuario ingresante
-                foreach (var pos in detalleSolPed.Posiciones)
-                {
-                    //TODO: En este punto se deberá validar si es un usuario que coincida con el campo “Usuario SAP” en el ABM de usuarios. Si coincide, sería el fiscal/aprobador
-                    if (!pos.Solicitante.IsNullOrWhiteSpace())
-                    {
-                        if (userMail == pos.Solicitante)
-                        {
-                            auto = true;
-                        }
-                        else
-                        {
-                            //Si no coincide el email con el campo solicitante, buscar el valor de campo solicitante (EN MAYUSCULAS Y SIN ESPACIOS) (todo junto sin espacios).
-                            //Si existe, traer los datos del usuario, y comparar usuario.email con usermail, si son iguales, aprobación automatica.
-                            string solicitante = pos.Solicitante.Replace(" ", "");
-                            var usuario = repositorioEntradaServicio.Obtener<Usuario>(x => x.UsuarioSap.Trim().ToUpper() == solicitante.Trim().ToUpper());
-
-                            if (usuario != null && usuario.Mail == userMail)
-                            {
-                                //Aca es donde se aporueba automaticamente
-                                auto = true;
-                                difSolicitante = false;
-                            }
-                            else if (usuario != null && usuario.Mail != userMail)
-                            {
-                                auto = false;
-                                difSolicitante = false;
-                            }
-                            else if (usuario == null)
-                            {
-                                difSolicitante = true;
-                            }
-                        }
-                    }
-                }
-            }
-            //Aca - Si los 3 datos estan vacios o no vienen -> “No se identifica un aprobador en su orden de compra. Por favor, comunicarse con su contratante”. 
-            if (auto == false)
-            {
-                bool empty = EmptySolPedValues(detalleSolPed);
-                if (empty || difSolicitante)
-                {
-                    EntradaServicioCreateRespuestaDto emptySolPed = new EntradaServicioCreateRespuestaDto();
-                    emptySolPed.Type = "S";
-                    emptySolPed.Message = "No se identifica un aprobador en su orden de compra. Por favor, comunicarse con su contratante";
-                    return emptySolPed;
-                }
-            }
-
-            EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
-            if (auto == true)
-            {
-                //Provisional - Pendiente desarrollo ticket 602 - ES Temporal
-                result.Type = "S";
-                result.Message = "Auto";
-            }
-            else
-            {
-                result.Type = "S";
-                result.Message = "Temporal";
-            }
-
-            return result;
-        }
-
-        public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicioAsync(EntradaServicioCreateParamsDto posicion,
-            string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber, string proveedor = null)
-        {
-            SustitucionMOAWS.Logger.Log.Info("EntradaServicioService.CrearEntradaServicio");
-
-            // 3 - Si alguna de las validaciones es correcta, alta automatica.
-            EntradaServicioCreateRespuestaDto result = await new CrearEntradaDeServicioConsumerMOA().CrearEntradaServicioAsync(posicion);
-
-            ////MMSN-602 - Cargar en tabla aprobaciones si se creo la ES.
-            if (result.Type == "I" && result.Id == "SE")
-            {
-                int ESNumber = GetESNumber(result.Message);
-                Aprobaciones ap = GuardarDatosES(posicion, userMail, ESNumber, true, reporte, solpedNumber, proveedor);
-
-                ActualizarAdjuntosConES(idAdjuntos, ap.NRO_ES_LOCAL);
-            }
-            return result;
         }
 
         /// <summary>
@@ -1116,6 +855,262 @@ namespace SustitucionMOAUtils.Services
             }
 
             solicitudesMailAprobacionES.ForEach(s => emailCertificationService.EnviarMailAprobacion(s));
+        }
+
+        /// <summary>
+        /// Realiza ordenamiento del objeto OrdenCompraDto según la columna y el tipo de orden especificados
+        /// </summary>
+        private List<EntradaServicioCabeceraDto> OrdenarEntradasServicio(List<EntradaServicioCabeceraDto> ordenes)
+        {
+            return ordenes.OrderByDescending(es => es.FechaCreacionDateTime).ThenByDescending(es => es.EntradaServicio).ToList();
+        }
+
+        /// <summary>
+        /// Consultas SAP cabecera de documento.
+        /// No lista las entradas de servicio que esté en estado "Borrada"
+        /// </summary>
+        private async Task<List<EntradaServicioCabeceraDto>> ServicioSAP_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario)
+        {
+            // Obtiene Cabeceras de Entradas de Servicio
+            List<EntradaServicioCabeceraDto> EntradasServicioCabecera = await new ObtenerCabecerasEntradaServicioConsumerMOA().ObtenerEntradasServicioCabeceraAsync(parametros.FechaInicio);
+
+            List<EntradaServicioCabeceraDto> EntradasServicio = new List<EntradaServicioCabeceraDto>();
+
+            string correo = usuario.Mail.ToLower();
+
+            //Se filtran por las OC tomando las que empiezan con 412
+            EntradasServicioCabecera = EntradasServicioCabecera.Where(x => x.OrdenCompra.StartsWith("412")).ToList();
+
+            // Filtra por número de documento, si se proporciona el parámetro
+            if (parametros.DocumentoNumero != null)
+                EntradasServicioCabecera = EntradasServicioCabecera.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();
+
+            OrderParamsDto ordenParams = new OrderParamsDto();
+
+            // ES APROBADAS
+            try
+            {
+                foreach (var documento in EntradasServicioCabecera)
+                {
+                    string correoSolp = "-";
+                    string nroDoc = documento.EntradaServicio.ToString();
+                    int nro_es_sap = int.Parse(nroDoc);
+
+                    // Se obtiene detalle de una ES
+                    documento.entradaServicioDetalle = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(nroDoc);
+
+                    if (documento.entradaServicioDetalle != null && documento.entradaServicioDetalle.Count > 0)
+                    {
+                        if (ordenParams.OrdenCompraId != documento.entradaServicioDetalle[0].OrdenCompra || string.IsNullOrEmpty(ordenParams.OrdenCompraId))
+                        {
+                            var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(documento.entradaServicioDetalle[0].OrdenCompra);
+                            ModificarPedidoSAP POSCHEDULE = new ModificarPedidoSAP
+                            {
+                                NRO_SOLP = ocSap.POSCHEDULE.FirstOrDefault().PREQ_NO
+                            };
+
+                            string nroSolp = POSCHEDULE.NRO_SOLP;
+
+                            correoSolp = ObtenerCorreoSolp(nroSolp);
+                        }
+
+                        ordenParams.OrdenCompraId = documento.entradaServicioDetalle[0].OrdenCompra;
+
+                        Proveedor prov = orderService.BuscarProveedor(ordenParams);
+
+                        documento.Proveedor = prov.RazonSocial ?? "-";
+
+                        documento.CUIT = prov.CUIT ?? "-";
+                    }
+
+                    // Se obtiene detalle de la APROBACIÓN de la Entrada de Servicio
+                    List<Aprobaciones> ESTemporales = new List<Aprobaciones>();
+
+                    bool verTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
+                    bool certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
+
+                    if (verTodo)
+                    {
+                        ESTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap);
+                    }
+                    else
+                    {
+                        ESTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap &&
+                            (x.Ingresante_CDS.ToLower() == correo ||
+                            x.Fiscal_SOLPED.ToLower() == correo ||
+                            x.Aprobador_CDS.ToLower() == correo ||
+                            (certExt && x.Proveedor == parametros.Vendedor)));
+                    }
+
+                    if (ESTemporales != null && ESTemporales.Count > 0)
+                    {
+                        List<Aprobaciones> detalleAprobacionesTemporales = ESTemporales.Where(t => t.NRO_ES_SAP == int.Parse(documento.EntradaServicio)).ToList();
+
+                        var detalleEntradadeServicio = MergeDetalle(documento, detalleAprobacionesTemporales, correoSolp);
+
+                        documento.entradaServicioDetalle = detalleEntradadeServicio.entradaServicioDetalle;
+                    }
+                    else
+                    {
+                        documento.Fiscal = correoSolp;
+                        DateTime fecha = DateTime.Parse(documento.FechaCreacion); // FechaCreacion es la fecha de la alta en sap no es la fecha_carga_es de aprobaciones.
+                        string fechaFormateada = fecha.ToString("dd/MM/yyyy");
+                        documento.FechaAprobacion = fechaFormateada;
+                        documento.FechaCreacion = fechaFormateada;
+                    }
+
+                    documento.Estado = "Aprobada";
+
+                    EntradasServicio.Add(documento);
+
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            EntradasServicio = EntradasServicio.Where(x => x.Ingresante.Contains("@")).ToList();
+
+            return EntradasServicio;
+        }
+
+        /// <summary>
+        /// MMSN-601: Validación de información ingresante c/ SolPed
+        /// </summary>
+        private EntradaServicioCreateRespuestaDto ValidarIngresante(string userMail, string nroSolped)
+        {
+            //MMSN-601 agregar lógica entrada servicio automatica- temporal, nro solped en parametros.Header.Solp
+            //1 - Obtener información asociada a SolPed
+            SolpESDto detalleSolPed = new SolpESDto();
+            try
+            {
+                if (!string.IsNullOrEmpty(nroSolped))
+                {
+                    detalleSolPed = comprasService.TraerSolpPorNumero(nroSolped);
+                }
+                else
+                {
+                    return new EntradaServicioCreateRespuestaDto { Type = "S", Message = "No se encontró la SOLP" };
+                }
+            }
+            catch (Exception e)
+            {
+                return new EntradaServicioCreateRespuestaDto { Type = "S", Message = e.Message };
+            }
+
+            //2 - Comparar datos SolPed para certificar automaticamente o WKF de aprobaciones
+            bool auto = false;
+            bool difSolicitante = false;
+
+            var usuarioIngresante = repositorioEntradaServicio.Obtener<Usuario>(x => x.Mail == userMail);
+            var usuarioReasignacion = repositorioEntradaServicio.Obtener<UsuarioReasignacion>(x => x.Usuario_Id == usuarioIngresante.Id);
+
+            //2a - Comparar Fiscal/Email con usuario FE
+
+            if (usuarioIngresante.Externo != null && usuarioIngresante.Externo == true)
+            {
+                auto = false;
+                difSolicitante = false;
+            }
+            else if ((userMail == detalleSolPed.Email && usuarioReasignacion != null &&
+                DateTime.Now <= usuarioReasignacion.FechaHasta && DateTime.Now >= usuarioReasignacion.FechaDesde)
+                || (userMail == detalleSolPed.Email))
+            {
+                auto = true;
+            }
+            else if (detalleSolPed.SupervisorTrabajo != null && detalleSolPed.SupervisorTrabajo.Count > 0
+                && userMail == detalleSolPed.SupervisorTrabajo[0])
+            {
+                //2b - Si el supervisor del trabajo es el mismo que el usuario ingresante
+                auto = true;
+            }
+            else if (string.IsNullOrEmpty(detalleSolPed.Email) && detalleSolPed.SupervisorTrabajo != null && detalleSolPed.SupervisorTrabajo.Count > 0
+                && string.IsNullOrEmpty(detalleSolPed.SupervisorTrabajo[0]) && detalleSolPed.Posiciones != null
+                && detalleSolPed.Posiciones.Count > 0)
+            {
+                //2c - Si el solicitante de la SolPed es el mismo que el usuario ingresante
+                foreach (var pos in detalleSolPed.Posiciones)
+                {
+                    //TODO: En este punto se deberá validar si es un usuario que coincida con el campo “Usuario SAP” en el ABM de usuarios. Si coincide, sería el fiscal/aprobador
+                    if (!pos.Solicitante.IsNullOrWhiteSpace())
+                    {
+                        if (userMail == pos.Solicitante)
+                        {
+                            auto = true;
+                        }
+                        else
+                        {
+                            //Si no coincide el email con el campo solicitante, buscar el valor de campo solicitante (EN MAYUSCULAS Y SIN ESPACIOS) (todo junto sin espacios).
+                            //Si existe, traer los datos del usuario, y comparar usuario.email con usermail, si son iguales, aprobación automatica.
+                            string solicitante = pos.Solicitante.Replace(" ", "");
+                            var usuario = repositorioEntradaServicio.Obtener<Usuario>(x => x.UsuarioSap.Trim().ToUpper() == solicitante.Trim().ToUpper());
+
+                            if (usuario != null && usuario.Mail == userMail)
+                            {
+                                //Aca es donde se aporueba automaticamente
+                                auto = true;
+                                difSolicitante = false;
+                            }
+                            else if (usuario != null && usuario.Mail != userMail)
+                            {
+                                auto = false;
+                                difSolicitante = false;
+                            }
+                            else if (usuario == null)
+                            {
+                                difSolicitante = true;
+                            }
+                        }
+                    }
+                }
+            }
+            //Aca - Si los 3 datos estan vacios o no vienen -> “No se identifica un aprobador en su orden de compra. Por favor, comunicarse con su contratante”. 
+            if (auto == false)
+            {
+                bool empty = EmptySolPedValues(detalleSolPed);
+                if (empty || difSolicitante)
+                {
+                    EntradaServicioCreateRespuestaDto emptySolPed = new EntradaServicioCreateRespuestaDto();
+                    emptySolPed.Type = "S";
+                    emptySolPed.Message = "No se identifica un aprobador en su orden de compra. Por favor, comunicarse con su contratante";
+                    return emptySolPed;
+                }
+            }
+
+            EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
+            if (auto == true)
+            {
+                //Provisional - Pendiente desarrollo ticket 602 - ES Temporal
+                result.Type = "S";
+                result.Message = "Auto";
+            }
+            else
+            {
+                result.Type = "S";
+                result.Message = "Temporal";
+            }
+
+            return result;
+        }
+
+        private async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicioAsync(EntradaServicioCreateParamsDto posicion,
+            string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber, string proveedor = null)
+        {
+            SustitucionMOAWS.Logger.Log.Info("EntradaServicioService.CrearEntradaServicio");
+
+            // 3 - Si alguna de las validaciones es correcta, alta automatica.
+            EntradaServicioCreateRespuestaDto result = await new CrearEntradaDeServicioConsumerMOA().CrearEntradaServicioAsync(posicion).ConfigureAwait(false);
+
+            ////MMSN-602 - Cargar en tabla aprobaciones si se creo la ES.
+            if (result.Type == "I" && result.Id == "SE")
+            {
+                int ESNumber = GetESNumber(result.Message);
+                Aprobaciones ap = GuardarDatosES(posicion, userMail, ESNumber, true, reporte, solpedNumber, proveedor);
+
+                ActualizarAdjuntosConES(idAdjuntos, ap.NRO_ES_LOCAL);
+            }
+            return result;
         }
 
         /// <summary>

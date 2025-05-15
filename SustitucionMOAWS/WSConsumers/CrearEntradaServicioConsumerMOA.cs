@@ -21,6 +21,7 @@ namespace SustitucionMOAWS.WSConsumers
     public class CrearEntradaDeServicioConsumerMOA : ICrearEntradaDeServicioConsumerMOA
     {
         private readonly SI_MMRFC_BAPI_ENTRYSHEET_CREATEClient service;
+        private readonly static HttpClient httpClient = new HttpClient();
 
         public CrearEntradaDeServicioConsumerMOA()
         {
@@ -60,29 +61,26 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    var requestMessage = CrearRequestMessage();
+                var requestMessage = CrearRequestMessage();
 
-                    var content = CrearHttpContent(parametros);
+                var content = CrearHttpContent(parametros);
 
-                    string contentAsString = await content.ReadAsStringAsync();
-                    Logger.Log.Debug("CrearEntradaDeServicioConsumerMOA content: " + contentAsString);
+                string contentAsString = await content.ReadAsStringAsync();
+                Logger.Log.Debug("CrearEntradaDeServicioConsumerMOA content: " + contentAsString);
 
-                    requestMessage.Content = content;
+                requestMessage.Content = content;
 
-                    await Task.Delay(500);
+                await Task.Delay(500).ConfigureAwait(false);
 
-                    var responseMessage = await client.SendAsync(requestMessage).ConfigureAwait(false);
+                var responseMessage = await httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
-                    var createResponseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var createResponseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                    var respuestaCreacionESDto = ParseReturnInfo(createResponseContent);
+                var respuestaCreacionESDto = ParseReturnInfo(createResponseContent);
 
-                    Logger.Log.Info("CrearEntradaDeServicioConsumerMOA.CrearEntradaServicioAsync: " + respuestaCreacionESDto.ToJson());
+                Logger.Log.Info("CrearEntradaDeServicioConsumerMOA.CrearEntradaServicioAsync: " + respuestaCreacionESDto.ToJson());
 
-                    return respuestaCreacionESDto;
-                }
+                return respuestaCreacionESDto;
             }
             catch (Exception e)
             {
