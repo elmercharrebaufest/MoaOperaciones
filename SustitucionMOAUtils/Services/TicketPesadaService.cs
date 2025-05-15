@@ -5,7 +5,6 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ScatoComandosWebService;
 using System;
@@ -32,7 +31,7 @@ namespace SustitucionMOAUtils.Services
             {
                 resultado = scatoComandosConsumer.ObtenerTicketPesada(consultaTicketPesada.NumeroCartaPorte);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new ValidationCustomException("No se encontró una CCPP con el número ingresado.");
             }
@@ -51,7 +50,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     try
                     {
-                        Task.Run(()=>EnviarMail(consultaTicketPesada, archivoResultado));
+                        Task.Run(() => EnviarMail(consultaTicketPesada, archivoResultado));
                     }
                     catch
                     {
@@ -70,7 +69,7 @@ namespace SustitucionMOAUtils.Services
             {
                 resultado = scatoComandosConsumer.ObtenerTicketPesadaNoGranos(consultaTicketPesadaNoGranos.PatenteCamion, consultaTicketPesadaNoGranos.FechaDesde, consultaTicketPesadaNoGranos.FechaHasta);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new ValidationCustomException("No se encontró una CCPP con el número ingresado.");
             }
@@ -109,49 +108,41 @@ namespace SustitucionMOAUtils.Services
             {
                 zipStream.SetLevel(3);
 
-                if (resultado.TicketPesada != null)
+                if (resultado.TicketPesada != null && resultado.TicketPesada.Length > 0)
                 {
-                    if (resultado.TicketPesada.Length > 0)
+                    string nombreArchivo = $"Ticket Pesada {resultado.CP}.pdf";
+                    AgregarAStream(resultado.TicketPesada, nombreArchivo, zipStream);
+                    listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = resultado.TicketPesada });
+
+                }
+
+                if (resultado.CertificadoCP != null && resultado.CertificadoCP.Length > 0)
+                {
+                    string nombreArchivo = $"Certificado CP {resultado.CP}.pdf";
+                    AgregarAStream(resultado.CertificadoCP, nombreArchivo, zipStream);
+                    listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = resultado.CertificadoCP });
+                }
+
+
+                if (resultado.TicketReciboMunicipal != null && resultado.TicketReciboMunicipal.Length > 0)
+                {
+                    string nombreArchivo = $"Ticket Recibo Municipal {resultado.CP}.pdf";
+                    AgregarAStream(resultado.TicketReciboMunicipal, nombreArchivo, zipStream);
+                    listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = resultado.TicketReciboMunicipal });
+                }
+
+
+                if (resultado.FotoCP != null && resultado.FotoCP.Fotos.Length > 0)
+                {
+                    int i = 1;
+                    foreach (FotoDto foto in resultado.FotoCP.Fotos)
                     {
-                        string nombreArchivo = $"Ticket Pesada {resultado.CP}.pdf";
-                        AgregarAStream(resultado.TicketPesada, nombreArchivo, zipStream);
-                        listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = resultado.TicketPesada });
+                        Stream fotoMemoryStream = new MemoryStream(foto.Foto);
+                        AgregarAStream(foto.Foto, $"Foto CCPP {resultado.CP} - {i}.jpg", zipStream);
+                        listado.Add(new ArchivoDescargaDto { Nombre = $"Foto CCPP {resultado.CP} - {i++}.jpg", Datos = foto.Foto });
                     }
                 }
 
-                if (resultado.CertificadoCP != null)
-                {
-                    if (resultado.CertificadoCP.Length > 0)
-                    {
-                        string nombreArchivo = $"Certificado CP {resultado.CP}.pdf";
-                        AgregarAStream(resultado.CertificadoCP, nombreArchivo, zipStream);
-                        listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = resultado.CertificadoCP });
-                    }
-                }
-
-                if (resultado.TicketReciboMunicipal != null)
-                {
-                    if (resultado.TicketReciboMunicipal.Length > 0)
-                    {
-                        string nombreArchivo = $"Ticket Recibo Municipal {resultado.CP}.pdf";
-                        AgregarAStream(resultado.TicketReciboMunicipal, nombreArchivo, zipStream);
-                        listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = resultado.TicketReciboMunicipal });
-                    }
-                }
-
-                if (resultado.FotoCP != null)
-                {
-                    if (resultado.FotoCP.Fotos.Length > 0)
-                    {
-                        int i = 1;
-                        foreach (FotoDto foto in resultado.FotoCP.Fotos)
-                        {
-                            Stream fotoMemoryStream = new MemoryStream(foto.Foto);
-                            AgregarAStream(foto.Foto, $"Foto CCPP {resultado.CP} - {i}.jpg", zipStream);
-                            listado.Add(new ArchivoDescargaDto { Nombre = $"Foto CCPP {resultado.CP} - { i++}.jpg", Datos = foto.Foto });
-                        }
-                    }
-                }
 
                 zipStream.IsStreamOwner = false;
             }
@@ -178,33 +169,31 @@ namespace SustitucionMOAUtils.Services
             {
                 zipStream.SetLevel(3);
 
-                if (resultado.TicketsNoGranos != null)
+                if (resultado.TicketsNoGranos != null && resultado.TicketsNoGranos.Length > 0)
                 {
-                    if (resultado.TicketsNoGranos.Length > 0)
+                    int i = 1;
+                    foreach (var ticket in resultado.TicketsNoGranos)
                     {
-                        int i = 1;
-                        foreach (var ticket in resultado.TicketsNoGranos)
+                        if (ticket.TicketPesada != null && ticket.TicketPesada.Length > 0)
                         {
-                            if (ticket.TicketPesada != null && ticket.TicketPesada.Length > 0)
-                            {
-                                string nombreArchivo = $"Ticket Pesada {ticket.NumeroOrdenOperaciones} - {i++}.pdf";
-                                AgregarAStream(ticket.TicketPesada, nombreArchivo, zipStream);
-                                listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = ticket.TicketPesada });
-                            }
-                            if (ticket.TicketReciboMunicipal != null && ticket.TicketReciboMunicipal.Length > 0)
-                            {
-                                string nombreArchivo = $"Ticket Recibo Municipal {ticket.NumeroOrdenOperaciones} - {i++}.pdf";
-                                AgregarAStream(ticket.TicketReciboMunicipal, nombreArchivo, zipStream);
-                                listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = ticket.TicketReciboMunicipal });
-                            }
-                            if (ticket.CPEDG != null && ticket.CPEDG.Length > 0)
-                            {
-                                string nombreArchivo = $"Certificado CP {ticket.NumeroOrdenOperaciones} - {i++}.pdf";
-                                AgregarAStream(ticket.CPEDG, nombreArchivo, zipStream);
-                                listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = ticket.CPEDG });
-                            }
+                            string nombreArchivo = $"Ticket Pesada {ticket.NumeroOrdenOperaciones} - {i++}.pdf";
+                            AgregarAStream(ticket.TicketPesada, nombreArchivo, zipStream);
+                            listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = ticket.TicketPesada });
                         }
+                        if (ticket.TicketReciboMunicipal != null && ticket.TicketReciboMunicipal.Length > 0)
+                        {
+                            string nombreArchivo = $"Ticket Recibo Municipal {ticket.NumeroOrdenOperaciones} - {i++}.pdf";
+                            AgregarAStream(ticket.TicketReciboMunicipal, nombreArchivo, zipStream);
+                            listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = ticket.TicketReciboMunicipal });
+                        }
+                        //if (ticket.CPEDG != null && ticket.CPEDG.Length > 0)
+                        //{
+                        //    string nombreArchivo = $"Certificado CP {ticket.NumeroOrdenOperaciones} - {i++}.pdf";
+                        //    AgregarAStream(ticket.CPEDG, nombreArchivo, zipStream);
+                        //    listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = ticket.CPEDG });
+                        //}
                     }
+
                 }
 
                 zipStream.IsStreamOwner = false;
