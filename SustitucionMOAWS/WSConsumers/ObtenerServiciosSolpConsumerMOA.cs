@@ -2,55 +2,106 @@
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA;
+using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using System.Configuration;
+using SustitucionMOAWS.Logger;
 
 namespace SustitucionMOAWS.WSConsumers
 {
     public class ObtenerServiciosSolpConsumerMOA : IObtenerServiciosSolpConsumerMOA
     {
-        SI_MMRFC_OBTENER_SERVICIOSClient service;
+
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
 
         public ObtenerServiciosSolpConsumerMOA()
         {
-            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SERVICIOS&amp;interfaceNamespace=urn%3AOPERACIONES";
 
-            service = new SI_MMRFC_OBTENER_SERVICIOSClient(SAPCredential.CrearSapLongBinding(), SAPCredential.DevolverEndpoint(url));
-            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
         public object request()
         {
             try
             {
-                BAPIASNRAN[] EX_SERVICESELECTION = new BAPIASNRAN[] { };
-                BAPIASKRAN[] EX_SRVSHORTTEXTSELECTION = new BAPIASKRAN[] { };
-                BAPIRET2[] IM_RETURN = new BAPIRET2[] { };
-                ZMPES5710[] IM_SERVICELIST = new ZMPES5710[] { };
+                if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
+                {
+                    var agent = new Z_WS_MOAOP_COMPRAS_DIRECTClient();
+                    agent.ClientCredentials.UserName.UserName = UserSap;
+                    agent.ClientCredentials.UserName.Password = PassSap;
+                    var req = new Z_MMRFC_OBTENER_SERVICIOS()
+                    {
+                        IM_SERVICESELECTION = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASNRAN[] { },
+                        IM_SRVSHORTTEXTSELECTION = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASKRAN[] { }
+                    };
 
-                string error = service.SI_MMRFC_OBTENER_SERVICIOS(EX_SERVICESELECTION, EX_SRVSHORTTEXTSELECTION, out IM_RETURN, out IM_SERVICELIST);
+                    Log.Info($"Sin PI Z_MMRFC_OBTENER_SERVICIOS request: {new { req.IM_SERVICESELECTION, req.IM_SRVSHORTTEXTSELECTION }}");
+                    var response = agent.Z_MMRFC_OBTENER_SERVICIOS(req);
+                    Log.Info($"Sin PI Z_MMRFC_OBTENER_SERVICIOS Response: {response.EX_SERVICELIST}");
+                    return MapSinPI(response);
 
-                return map(error, IM_SERVICELIST, IM_RETURN);
+
+                }
+                else
+                {
+                    SI_MMRFC_OBTENER_SERVICIOSClient service;
+                    var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SERVICIOS&amp;interfaceNamespace=urn%3AOPERACIONES";
+                    service = new SI_MMRFC_OBTENER_SERVICIOSClient(SAPCredential.CrearSapLongBinding(), SAPCredential.DevolverEndpoint(url));
+                    service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+                    service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+
+                    ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN[] EX_SERVICESELECTION = new ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN[] { };
+                    ObtenerServiciosSolpWebServiceMOA.BAPIASKRAN[] EX_SRVSHORTTEXTSELECTION = new ObtenerServiciosSolpWebServiceMOA.BAPIASKRAN[] { };
+                    ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] IM_RETURN = new ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] { };
+                    ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] IM_SERVICELIST = new ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] { };
+
+                    string error = service.SI_MMRFC_OBTENER_SERVICIOS(EX_SERVICESELECTION, EX_SRVSHORTTEXTSELECTION, out IM_RETURN, out IM_SERVICELIST);
+
+                    return map(error, IM_SERVICELIST, IM_RETURN);
+                }
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
+        private object MapSinPI(Z_MMRFC_OBTENER_SERVICIOSResponse response)
+        {
+            ServicioWSMOAResponse result = new ServicioWSMOAResponse();
+            result.Servicios = new List<Servicio> { };
 
-        protected virtual object map(string error, ZMPES5710[] IM_SERVICELIST, BAPIRET2[] IM_RETURN)
+            //if (response.EX_EXITO == "200")
+            //{
+                foreach (WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5710 servicioSolp in response.EX_SERVICELIST)
+                {
+                    result.Servicios.Add(new Servicio()
+                    {
+                        Codigo = servicioSolp.SERVICE,
+                        Descripcion = servicioSolp.SHORT_TEXT,
+                        NroGrupo = servicioSolp.MATL_GROUP,
+                        Serv = servicioSolp.SERV_CAT,
+                        Ser = servicioSolp.SERV_TYPE,
+                        Edit = servicioSolp.EDITION,
+                        Bas = servicioSolp.BASE_UOM,
+                        SSCItem = servicioSolp.SSC_ITEM
+                    });
+                }
+            //}
+
+            //result.error = response.EX_EXITO;
+
+            return result;
+        }
+
+        protected virtual object map(string error, ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] IM_SERVICELIST, ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] IM_RETURN)
         {
             ServicioWSMOAResponse result = new ServicioWSMOAResponse();
             result.Servicios = new List<Servicio> { };
 
             if (error == "200")
             {
-                foreach (ZMPES5710 servicioSolp in IM_SERVICELIST)
+                foreach (ObtenerServiciosSolpWebServiceMOA.ZMPES5710 servicioSolp in IM_SERVICELIST)
                 {
                     result.Servicios.Add(new Servicio()
                     {

@@ -9,36 +9,63 @@ using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using System.Net;
 using SustitucionMOAWS.Interfaces;
+using System.Configuration;
+using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
+using SustitucionMOAWS.Logger;
 
 namespace SustitucionMOAWS.WSConsumers
 {
     public class ObtenerCuentasSolpConsumerMOA : IObtenerCuentasSolpConsumerMOA
     {
         private const string COMP_CODE = "MOA";
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
 
-        SI_MMRFC_OBTENER_CUENTASClient service;
 
         public ObtenerCuentasSolpConsumerMOA()
         {
-            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CUENTAS&amp;interfaceNamespace=urn%3AOPERACIONES";
 
-            service = new SI_MMRFC_OBTENER_CUENTASClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
-            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
         public object request()
         {
             try
             {
-                string IM_COMP_CODE = COMP_CODE;
-                string IM_GL_ACCOUNT = "";
-                ZMPES5760[] EX_GL_ACCOUNT_LIST = new ZMPES5760[] { };
-                BAPIRETURN[] EX_RETURN = new BAPIRETURN[] { };
+                if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
+                {
+                    var agent = new Z_WS_MOAOP_COMPRAS_DIRECTClient();
+                    agent.ClientCredentials.UserName.UserName = UserSap;
+                    agent.ClientCredentials.UserName.Password = PassSap;
 
-                string error = service.SI_MMRFC_OBTENER_CUENTAS(IM_COMP_CODE, IM_GL_ACCOUNT, out EX_GL_ACCOUNT_LIST, out EX_RETURN);
+                    string IM_COMP_CODE = COMP_CODE;
+                    string IM_GL_ACCOUNT = "";
+                    var req = new Z_MMRFC_OBTENER_CUENTAS()
+                    {
+                        IM_COMP_CODE = IM_COMP_CODE,
+                        IM_GL_ACCOUNT = IM_GL_ACCOUNT
+                    };
+                    Log.Info($"Sin PI Z_MMRFC_OBTENER_ORDEN request: {new { IM_COMP_CODE, IM_GL_ACCOUNT}}");
+                    var response = agent.Z_MMRFC_OBTENER_CUENTAS(req);
+                    Log.Info($"Sin PI Z_MMRFC_OBTENER_ORDEN Response: {response.EX_GL_ACCOUNT_LIST}");
+                    return MapSinPI(response);
+                }
+                else
+                {
+                    SI_MMRFC_OBTENER_CUENTASClient service;
+                    var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CUENTAS&amp;interfaceNamespace=urn%3AOPERACIONES";
 
-                return map(error, EX_GL_ACCOUNT_LIST, EX_RETURN);
+                    service = new SI_MMRFC_OBTENER_CUENTASClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
+                    service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+                    service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+
+                    string IM_COMP_CODE = COMP_CODE;
+                    string IM_GL_ACCOUNT = "";
+                    ObtenerCuentasSolpWebServiceMOA.ZMPES5760[] EX_GL_ACCOUNT_LIST = new ObtenerCuentasSolpWebServiceMOA.ZMPES5760[] { };
+                    ObtenerCuentasSolpWebServiceMOA.BAPIRETURN[] EX_RETURN = new ObtenerCuentasSolpWebServiceMOA.BAPIRETURN[] { };
+
+                    string error = service.SI_MMRFC_OBTENER_CUENTAS(IM_COMP_CODE, IM_GL_ACCOUNT, out EX_GL_ACCOUNT_LIST, out EX_RETURN);
+                    return Map(error, EX_GL_ACCOUNT_LIST, EX_RETURN);
+                }
             }
             catch (Exception e)
             {
@@ -46,14 +73,35 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-        protected virtual object map(string error, ZMPES5760[] EX_GL_ACCOUNT_LIST, BAPIRETURN[] EX_RETURN)
+        private object MapSinPI(Z_MMRFC_OBTENER_CUENTASResponse response)
+        {
+            CuentaWSMOAResponse result = new CuentaWSMOAResponse();
+            result.Cuentas = new List<Cuenta> { };
+
+            //if (error == "200")
+            //{
+            foreach (WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5760 cuentaSolp in response.EX_GL_ACCOUNT_LIST)
+            {
+                result.Cuentas.Add(new Cuenta()
+                {
+                    Codigo = cuentaSolp.GL_ACCOUNT,
+                    Descripcion = cuentaSolp.SHORT_TEXT
+                });
+            }
+                //result.error = error;
+            //}
+
+            return result;
+        }
+
+        protected virtual object Map(string error, ObtenerCuentasSolpWebServiceMOA.ZMPES5760[] EX_GL_ACCOUNT_LIST, ObtenerCuentasSolpWebServiceMOA.BAPIRETURN[] EX_RETURN)
         {
             CuentaWSMOAResponse result = new CuentaWSMOAResponse();
             result.Cuentas = new List<Cuenta> { };
 
             if(error == "200")
             {
-                foreach (ZMPES5760 cuentaSolp in EX_GL_ACCOUNT_LIST)
+                foreach (ObtenerCuentasSolpWebServiceMOA.ZMPES5760 cuentaSolp in EX_GL_ACCOUNT_LIST)
                 {
                     result.Cuentas.Add(new Cuenta()
                     {
