@@ -2681,12 +2681,12 @@ namespace SustitucionMOAUtils.Services
                     if (string.IsNullOrEmpty(result.ObservacionesGeneracion) && ValidarCondicionEspecialArchivosYObservaciones(solp))
                     {
                         EnviarMailErrorCondicionEspecial(solp, $"Se generó la SOLP con condiciones especiales. " +
-                            $"Recuerde ingresar la justificacion para completar la SOLP.");
+                            $"Recuerde ingresar la justificación para completar la SOLP.");
                     }
                     if (ValidarIncopatibilidadSeraUsadoEnPliegoMultipleConOtrasCondEsp(solp))
                     {
                         EnviarMailErrorCondicionEspecial(solp, $"Se generó la SOLP con condiciones especiales. " +
-                            $"Recuerde marcar unicamente a usar en Pliego Multiple o alguna condición especial para completar la SOLP");
+                            $"Recuerde marcar únicamente a usar en Pliego Múltiple o alguna condición especial para completar la SOLP");
                     }
                 }
                 else

@@ -560,15 +560,6 @@ export class CotizacionComponent extends ListBaseComponent {
             this.borrarArchivosCargados();
         }
     }
-
-    verificarIncopatibilidadCondEsp(): void {
-        if (!this.model.condEspProveedorAsignado && !this.model.urgencia && !this.model.adicional && !this.model.trabajoHecho && !this.model.conPresupuesto) {
-            this.model.seraUsadoEnPliegoMultiple = false;
-            return
-        }
-        this.borrarArchivosCargados();
-        return;
-    }
   
     borrarArchivosCargados(): void {
         if(this.model.editarCondicionesEspeciales){
@@ -711,6 +702,15 @@ export class CotizacionComponent extends ListBaseComponent {
         if(this.tieneCondEspOriginal()){
             this.floatMsgService.setErrorMsg("Debe completar la condicion especial");
         }
+    }
+
+    puedeSeleccionarPliegoMultiple() : boolean {
+        const hayCondicionEspecialSeleccionada = this.model.trabajoHecho || this.model.conPresupuesto || this.model.adicional || this.model.urgencia || this.model.condEspProveedorAsignado;
+        return !hayCondicionEspecialSeleccionada;
+    }
+
+    puedeSeleccionarCondicionEspecial() : boolean {
+        return !this.model.seraUsadoEnPliegoMultiple;
     }
 
     habilitarUrgencia(habilitar: boolean) {
