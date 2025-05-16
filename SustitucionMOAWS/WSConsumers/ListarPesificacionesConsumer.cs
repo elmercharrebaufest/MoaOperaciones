@@ -10,6 +10,7 @@ using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
 using System.Configuration;
+using static Google.Apis.Requests.BatchRequest;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -33,7 +34,6 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ListarPesificacionesWSMOAResponse Request(string proveedor)
         {
-            Log.Info($"Ingresando al Metodo ListarPesificacionesWSMOAResponse");
             if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
             {
                 var agent = new Z_WS_MOAOP_DIRECTClient();
@@ -43,15 +43,17 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     IM_LIFNR = proveedor
                 };
-                Log.Info($"Sin PI Z_MPMF_MOAOP_LISTAR_PESIF: {new { request.IM_LIFNR }}");
+                Log.Info($"Sin PI Z_MPMF_MOAOP_LISTAR_PESIF request : {new { request.IM_LIFNR }}");
 
                 var response = agent.Z_MPMF_MOAOP_LISTAR_PESIF(request);
-                Log.Info($"Sin PI Z_MPMF_MOAOP_LISTAR_PESIF: {new { request.IM_LIFNR }}");
+                Log.Info($"Sin PI Z_MPMF_MOAOP_LISTAR_PESIF response: " + response);
 
                 return MapSinPI(response);
             }
             else
             {
+                Log.Info($"Con PI SI_MPMF_MOAOP_LISTAR_PESIF" );
+
                 SI_MPMF_MOAOP_LISTAR_PESIFClient service = new SI_MPMF_MOAOP_LISTAR_PESIFClient();
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
