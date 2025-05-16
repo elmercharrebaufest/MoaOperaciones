@@ -6,6 +6,7 @@ using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ListarPesificaciones;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
 using System.Configuration;
@@ -32,6 +33,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ListarPesificacionesWSMOAResponse Request(string proveedor)
         {
+            Log.Info($"Ingresando al Metodo ListarPesificacionesWSMOAResponse");
             if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
             {
                 var agent = new Z_WS_MOAOP_DIRECTClient();
@@ -41,7 +43,11 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     IM_LIFNR = proveedor
                 };
+                Log.Info($"Sin PI Z_MPMF_MOAOP_LISTAR_PESIF: {new { request.IM_LIFNR }}");
+
                 var response = agent.Z_MPMF_MOAOP_LISTAR_PESIF(request);
+                Log.Info($"Sin PI Z_MPMF_MOAOP_LISTAR_PESIF: {new { request.IM_LIFNR }}");
+
                 return MapSinPI(response);
             }
             else
