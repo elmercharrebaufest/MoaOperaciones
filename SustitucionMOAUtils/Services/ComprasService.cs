@@ -23,7 +23,6 @@ using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Util;
-using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Export;
@@ -45,7 +44,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Mail;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading;
 using System.Web;
@@ -2165,30 +2163,36 @@ namespace SustitucionMOAUtils.Services
                     {
                         adjudicacionOC.FechaLiberacionSap = fechaLiberacion;
                     }
-
                     if (adjudicaciones.Count > 0)
                     {
                         repositorio.GuardarCambios();
-                        try
-                        {
-                            EnviarMailOrdenCompra(adjudicaciones.Last(), "");
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Error($"Error al enviar mail ActualizarFechaLiberacionOC. Adjudicacion_Id: {adjudicaciones.Last().Id}", e);
-                        }
                     }
-                    else
-                    {
-                        try
-                        {
-                            EnviarMailOrdenCompraSAP(nroOc);
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Error($"Error al enviar mail EnviarMailOrdenCompraSAP ActualizarFechaLiberacionOC. Nro OC: {nroOc}", e);
-                        }
-                    }
+
+                    //Se deja comentado este codigo hasta que se deshaiblite el envio de mail desde SAP.
+                    //if (adjudicaciones.Count > 0)
+                    //{
+                    //    try
+                    //    {
+                    //        EnviarMailOrdenCompra(adjudicaciones.Last(), "");
+                    //    }
+                    //    catch (Exception e)
+                    //    {
+                    //        Log.Error($"Error al enviar mail ActualizarFechaLiberacionOC. Adjudicacion_Id: {adjudicaciones.Last().Id}", e);
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    try
+                    //    {
+                    //        EnviarMailOrdenCompraSAP(nroOc);
+                    //    }
+                    //    catch (Exception e)
+                    //    {
+                    //        Log.Error($"Error al enviar mail EnviarMailOrdenCompraSAP ActualizarFechaLiberacionOC. Nro OC: {nroOc}", e);
+                    //    }
+                    //}
+
+
                 }
             }
             catch (Exception ex)
@@ -4615,7 +4619,7 @@ namespace SustitucionMOAUtils.Services
 
             solicitanteYComprador.AddRange(mailPliego);
             solicitanteYComprador.AddRange(mailCreador);
-            
+
             var usuariosPO = new List<UsuarioDto>();
             foreach (var item in usuarios)
             {
@@ -7791,11 +7795,11 @@ namespace SustitucionMOAUtils.Services
                 Expression<Func<SolpPosicion, bool>> filtroServicio =
                     pos =>
                         pos.TipoPosicion.Codigo == "SERVICIO" &&
-                        (   string.IsNullOrEmpty(nombrePliego) ||
+                        (string.IsNullOrEmpty(nombrePliego) ||
                             string.IsNullOrEmpty(nombrePliego.Trim()) ||
                             pos.Solp.Pliego.NombreObra.Trim().ToLower().Contains(nombrePliego.Trim().ToLower())
                         ) &&
-                        (   tipoPliego == TipoPliego.All ||
+                        (tipoPliego == TipoPliego.All ||
                             (tipoPliego == TipoPliego.PliegoUnico && !pos.Solp.Pliego.Multiple) ||
                             (tipoPliego == TipoPliego.PliegoMultiple && pos.Solp.Pliego.Multiple));
 #pragma warning restore RCS1155 // Use StringComparison when comparing strings

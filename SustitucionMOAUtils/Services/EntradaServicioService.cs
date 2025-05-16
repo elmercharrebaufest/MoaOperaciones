@@ -13,6 +13,7 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Globalization;
@@ -34,6 +35,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IEmailCertificationService emailCertificationService;
         private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
         private readonly IReporteESService _reporteESService;
+        private readonly string EmailEnvioErrores = ConfigurationManager.AppSettings["EmailEnvioErrores"];
 
         public EntradaServicioService(
             IRepositorioEntradaServicio repositorioEntradaServicio,
@@ -817,14 +819,18 @@ namespace SustitucionMOAUtils.Services
         public void GenerarCertificacionAutomaticaPorLiberacionOC(string nroOC)
         {
             var solps = repositorioEntradaServicio.ObtenerSolpsAutocertificablesDeOC(nroOC);
-            if (!solps.Any()) { return; }
+            if (!solps.Any())
+            {
+                Logger.Log.Debug("No se encontraron solps Autocertificables para la oc:" + nroOC);
+                return;
+            }
 
             var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio);
             var centrosSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Centro");
             var almacenesSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Almacen");
             var solicitudesMailAprobacionES = new List<MailAprobacionESRequest>();
 
-            var detalleOC = ObtenerDetalleOrdenDeCompra(nroOC) ?? throw new Exception("No se pudo obtener el detalle de la OC " + nroOC);
+            var detalleOC = ObtenerDetalleOrdenDeCompra(nroOC) ?? throw new ArgumentNullException("No se pudo obtener el detalle de la OC " + nroOC);
 
             foreach (var posicionOC in detalleOC.Posiciones)
             {
@@ -850,7 +856,7 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Error(ex);
                     emailCertificationService.EnviarMailCertificacionAutomatica(nroOC, solpNro,
                         "No se pudo generar la certificación automática, deberá hacerlo manualmente. Error: " + ex.Message,
-                        new string[] { solpACertificar.UsuarioCreacion.Mail });
+                        new string[] { solpACertificar.UsuarioCreacion.Mail, EmailEnvioErrores });
                 }
             }
 

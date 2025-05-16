@@ -1,4 +1,5 @@
-﻿using SustitucionMOAUtils.Interfaces;
+﻿using Hangfire;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
 using System.Web.Http;
@@ -24,7 +25,9 @@ namespace SustitucionMOAExternalAPI.Controllers
                 Log.ExternalAPIInfo(string.Format("Se informó la liberacion de la OC: {0} en la fecha {1}", nroOc, fechaLiberacion));
                 comprasSvc.ActualizarFechaLiberacionOC(nroOc, fechaLiberacion);
                 Log.ExternalAPIInfo(string.Format("Se envio el mail de la liberacion de la OC: {0} en la fecha {1}", nroOc, fechaLiberacion));
-                entradaServicioService.GenerarCertificacionAutomaticaPorLiberacionOC(nroOc);
+                BackgroundJob.Enqueue(() =>
+                    entradaServicioService.GenerarCertificacionAutomaticaPorLiberacionOC(nroOc)
+                );
             }
             catch (Exception ex)
             {
