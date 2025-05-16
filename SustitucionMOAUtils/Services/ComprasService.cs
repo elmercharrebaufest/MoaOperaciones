@@ -1305,6 +1305,7 @@ namespace SustitucionMOAUtils.Services
                 JornadaLaboralHasta = solp.Pliego.JornadaLaboralHorasHasta,
                 ClaseDocumento = solp.ClaseDocumento != null ? new TablaSapDto(solp.ClaseDocumento) : new TablaSapDto(),
                 ProveedorAsignado_Id = solp.ProveedorAsignado_Id,
+                SeraUsadoEnPliegoMultiple = solp.SeraUsadoEnPliegoMultiple,
                 TrabajoYaHecho = solp.TrabajoYaHecho,
                 ConPresupuesto = solp.ConPresupuesto,
                 CertificacionAutomatica = solp.CertificacionAutomatica,
