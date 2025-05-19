@@ -233,6 +233,7 @@
                                     <td class="columna">{{solp.GrupoDeCompras}}</td>
                                     <td class="columna">{{solp.Centro}}</td>
                                     <td class="columna">{{solp.Tipo}}</td>
+                                    <td class="columna" *ngIf="!solp.TieneCotizacion">-</td>
                                     <td class="columna" *ngIf="solp.TieneCotizacion && !numeroPo">
                                         <span *ngIf="solp.ListaPO && solp.ListaPO.length > 0"
                                             style="cursor: pointer;" pTooltip="Desvincular"
