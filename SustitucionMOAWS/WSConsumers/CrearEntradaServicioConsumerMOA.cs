@@ -61,11 +61,12 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
+                Logger.Log.Debug("CrearEntradaDeServicioConsumerMOA.CrearEntradaServicioAsync");
                 var requestMessage = CrearRequestMessage();
 
                 var content = CrearHttpContent(parametros);
 
-                string contentAsString = await content.ReadAsStringAsync();
+                string contentAsString = await content.ReadAsStringAsync().ConfigureAwait(false);
                 Logger.Log.Debug("CrearEntradaDeServicioConsumerMOA content: " + contentAsString);
 
                 requestMessage.Content = content;
