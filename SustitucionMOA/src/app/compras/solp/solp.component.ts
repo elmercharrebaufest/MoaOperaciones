@@ -690,6 +690,22 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.disabledSave = false;
                         return;
                     }
+                    if(!this.validarQueTodasLasPosicionesTengamAcuerdoMarco()){
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen acuerdo marco" });
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
+                        this.disabledSave = false;
+                        return;
+                    }
+                    if(!this.validarQueTodasLasPosicionesTenganMismoProveedor()){
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen el mismo proveedor" });
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
+                        this.disabledSave = false;
+                        return;
+                    }
                 }
 
                 if (this.solpActual.trabajoHecho != true && this.solpActual.urgencia != true) {
@@ -722,23 +738,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                     if (!this.validarSolicitante()) {
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No se encontró el usuario solicitante" });
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
-                        this.disabledSave = false;
-                        return;
-                    }
-
-                    if(!this.validarQueTodasLasPosicionesTengamAcuerdoMarco()){
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen acuerdo marco" });
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
-                        this.disabledSave = false;
-                        return;
-                    }
-                    if(!this.validarQueTodasLasPosicionesTenganMismoProveedor()){
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen el mismo proveedor" });
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
                         }
