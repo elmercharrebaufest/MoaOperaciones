@@ -196,38 +196,35 @@
                         </div>
                         <div *ngIf="rowData.TipoSolpSap == 2" class="col-md-2">
                             <span>
-                                <img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento"
-                                     style="height:25px; cursor:default" />
+                                <img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento" pTooltip="Mantenimiento" style="cursor:default" />
                             </span>
                         </div>
                         <div *ngIf="rowData.TipoSolpSap == 3" class="col-md-2">
                             <span>
-                                <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP"
+                                <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP" pTooltip="SAP"
                                      style="width: 30px; height: 30px; cursor:default" />
                             </span>
                         </div>
                         <div *ngIf="rowData.TipoSolpSap == 4" class="col-md-2">
                             <span>
-                                <img class="pointer" src="./Content/images/icons/gears.svg" alt="Reposición Automática"
-                                     style="height: 30px; cursor:default" />
+                                <img class="pointer" src="./Content/images/icons/gears.svg" alt="Reposición Automática" pTooltip="Reposición automática" style="cursor:default" />
                             </span>
                         </div>
                         <div class="col-md-2" *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || rowData.SolpConAdjuntos || rowData.PliegoVinculado">
                             <span>
-                                <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
+                                <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar" pTooltip="Descargar"
                                      (click)="generarZipPliego(rowData.Id)" />
                             </span>
                         </div>
                         <div *ngIf="rowData.SeraUsadoEnPliegoMultiple" class="col-md-2">
                             <span>
-                                <img class="pointer" src="./Content/images/icons/book.svg" alt="Solp para PM"
-                                     style="height: 30px; cursor:default" />
+                                <img src="./Content/images/icons/book-open.svg" alt="Pliego múltiple" pTooltip="Pliego múltiple" />
                             </span>
                         </div>
                         <div class="col-md-2" *ngIf="!esAuditor">
                             <span>
-                                <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
-                                     (click)="obtenerChatInterno(rowData)" style="height: 30px;" />
+                                <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat" pTooltip="Chat"
+                                     (click)="obtenerChatInterno(rowData)" />
                                 <div class="punto-rojo" *ngIf="rowData.ChatSinLeer == true"></div>
                             </span>
                         </div>
