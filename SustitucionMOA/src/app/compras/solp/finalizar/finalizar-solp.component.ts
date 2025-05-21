@@ -48,20 +48,14 @@ export class FinalizarSolpComponent implements OnInit {
         this.solpActual.certificacionAutomatica = event.value.value;
     }
 
-    verificarSolpConContratoMarco(): boolean {
-        // Verificar que dento de solpActual y posiciones, tenga un contrato marco
-        if (this.solpActual && this.solpActual.posiciones) {
-            for (let i = 0; i < this.solpActual.posiciones.length; i++) {
-                const pos = this.solpActual.posiciones[i];
-                if (
-                    pos.numeroContratoSuperior &&
-                    pos.numeroContratoSuperior !== ""
-                ) {
-                    return true;
-                }
-            }
+    puedeConfigurarCertificacionAutomatica(): boolean {
+        const esMaterial = this.solpActual.selectTipoPosicion.Codigo === "MATERIALES";
+        if (esMaterial) {
+            return false;
         }
-        return false;
+
+        const tieneContratoMarco = this.solpActual.posiciones.some((val, ind, arr) => { return val.numeroContratoSuperior; });
+        return tieneContratoMarco;
     }
 
     onFinalizar() {
