@@ -26,12 +26,4 @@ export class ChatbotComponent extends BaseComponent implements OnInit {
         this.isChatbotVisible = !this.isChatbotVisible;
         console.log("this.isChatbotVisible ", this.isChatbotVisible);
     }
-
-    checkPermisos() {
-        let tienepermiso = this.securityService.tienePermiso("HANGFIREDASHBOARD");
-        // se usa este permiso para no crear uno nuevo y es el unico que tiene solo adminsitracion.
-        //borrar cuando se pase a produccion todo la logica de permisos para ver le chat.
-        return tienepermiso;
-    }
-
 }
