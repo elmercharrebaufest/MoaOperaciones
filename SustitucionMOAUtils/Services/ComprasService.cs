@@ -860,11 +860,18 @@ namespace SustitucionMOAUtils.Services
             respuestaGuardarSOLP.Errores = new List<string>();
             if (string.IsNullOrEmpty(solpEntity.NroSolp))
             {
-                SolpSAPDto solpSAP = comprasServiceSap.ConvertirSOLPSAP(solpEntity);
-
                 try
                 {
-                    resultadoCrearSolp = comprasServiceSap.CrearSolpSap(solpSAP);
+                    if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
+                    {
+                        SolpSAPSinPIDto solpSAPSinPI = comprasServiceSap.ConvertirSOLPSAPSinPI(solpEntity);
+                        resultadoCrearSolp = comprasServiceSap.CrearSolpSapSinPI(solpSAPSinPI);
+                    }
+                    else
+                    {
+                        SolpSAPDto solpSAP = comprasServiceSap.ConvertirSOLPSAP(solpEntity);
+                        resultadoCrearSolp = comprasServiceSap.CrearSolpSap(solpSAP);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -919,8 +926,20 @@ namespace SustitucionMOAUtils.Services
                 {
                     try
                     {
-                        SolpSAPDto solpSAP = comprasServiceSap.ConvertirSOLPSAP(solpEntity);
-                        resultadoEditarSolp = comprasServiceSap.ModificarSolpSap(solpSAP);
+
+
+                        if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
+                        {
+                            SolpSAPSinPIDto solpSAPSinPI = comprasServiceSap.ConvertirSOLPSAPSinPI(solpEntity);
+                            resultadoEditarSolp = comprasServiceSap.ModificarSolpSapSinPI(solpSAPSinPI);
+
+                        }
+                        else
+                        {  
+                            SolpSAPDto solpSAP = comprasServiceSap.ConvertirSOLPSAP(solpEntity);
+                            resultadoEditarSolp = comprasServiceSap.ModificarSolpSap(solpSAP);
+                        }
+
                     }
                     catch (Exception e)
                     {

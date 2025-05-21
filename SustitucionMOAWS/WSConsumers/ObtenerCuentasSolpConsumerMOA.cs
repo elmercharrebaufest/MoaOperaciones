@@ -12,6 +12,7 @@ using SustitucionMOAWS.Interfaces;
 using System.Configuration;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using SustitucionMOAWS.Logger;
+using SustitucionMOAWS.Util;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -39,14 +40,19 @@ namespace SustitucionMOAWS.WSConsumers
 
                     string IM_COMP_CODE = COMP_CODE;
                     string IM_GL_ACCOUNT = "";
-                    var req = new Z_MMRFC_OBTENER_CUENTAS()
+                    var request = new Z_MMRFC_OBTENER_CUENTAS()
                     {
                         IM_COMP_CODE = IM_COMP_CODE,
                         IM_GL_ACCOUNT = IM_GL_ACCOUNT
                     };
-                    Log.Info($"Sin PI Z_MMRFC_OBTENER_ORDEN request: {new { IM_COMP_CODE, IM_GL_ACCOUNT}}");
-                    var response = agent.Z_MMRFC_OBTENER_CUENTAS(req);
-                    Log.Info($"Sin PI Z_MMRFC_OBTENER_ORDEN Response: {response.EX_GL_ACCOUNT_LIST}");
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN request");
+                    Log.Info(request.ToXml());
+
+                    var response = agent.Z_MMRFC_OBTENER_CUENTAS(request);
+
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN response");
+                    Log.Info(response.ToXml());
+
                     return MapSinPI(response);
                 }
                 else
@@ -78,18 +84,18 @@ namespace SustitucionMOAWS.WSConsumers
             CuentaWSMOAResponse result = new CuentaWSMOAResponse();
             result.Cuentas = new List<Cuenta> { };
 
-            //if (error == "200")
-            //{
-            foreach (WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5760 cuentaSolp in response.EX_GL_ACCOUNT_LIST)
+            if (response.EX_EXITO == "200")
             {
-                result.Cuentas.Add(new Cuenta()
+                foreach (WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5760 cuentaSolp in response.EX_GL_ACCOUNT_LIST)
                 {
-                    Codigo = cuentaSolp.GL_ACCOUNT,
-                    Descripcion = cuentaSolp.SHORT_TEXT
-                });
+                    result.Cuentas.Add(new Cuenta()
+                    {
+                        Codigo = cuentaSolp.GL_ACCOUNT,
+                        Descripcion = cuentaSolp.SHORT_TEXT
+                    });
+                }
+                result.error = response.EX_EXITO;
             }
-                //result.error = error;
-            //}
 
             return result;
         }

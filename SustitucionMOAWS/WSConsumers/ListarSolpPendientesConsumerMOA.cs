@@ -5,6 +5,7 @@ using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.ListarSolpPendienteWebServiceMOA;
 using SustitucionMOAWS.Logger;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MEWQ;
 using System;
 using System.Collections.Generic;
@@ -63,7 +64,7 @@ namespace SustitucionMOAWS.WSConsumers
                     agent.ClientCredentials.UserName.UserName = UserSap;
                     agent.ClientCredentials.UserName.Password = PassSap;
 
-                    var req = new BAPI_REQUISITION_GETITEMS()
+                    var request = new BAPI_REQUISITION_GETITEMS()
                     {
                         ASSIGNED_ITEMS = ASSIGNED_ITEMS,
                         CLOSED_ITEMS = CLOSED_ITEMS,
@@ -86,9 +87,13 @@ namespace SustitucionMOAWS.WSConsumers
                         SHORT_TEXT = SHORT_TEXT,
                         TRACKINGNO = TRACKINGNO,
                     };
-                    Log.Info($"Sin PI Z_MMRFC_OBTENER_MATERIALES request: {new { req.ASSIGNED_ITEMS, req.CLOSED_ITEMS, req.DELETED_ITEMS, req.DELIV_DATE,req.DOC_TYPE,req.MATERIAL,req.MATERIAL_EVG,req.MATERIAL_LONG,req.MAT_GRP,req.ONLY_NON_MATERIAL_ITEMS,req.OPEN_ITEMS,req.PARTIALLY_ORDERED_ITEMS, req.PLANT,req.PREQ_DATE,req.PREQ_NAME,req.PREQ_NO,req.PUR_GROUP,req.REL_DATE,req.SHORT_TEXT,req.TRACKINGNO }}");
-                    var response = agent.BAPI_REQUISITION_GETITEMS(req);
-                    Log.Info($"Sin PI Z_MMRFC_OBTENER_CECO Response: {response.REQUISITION_ITEMS}");
+                    Log.Info($"SAP sin PI BAPI_REQUISITION_GETITEMS request");
+                    Log.Info(request.ToXml());
+
+                    var response = agent.BAPI_REQUISITION_GETITEMS(request);
+                    Log.Info($"SAP sin PI BAPI_REQUISITION_GETITEMS response");
+                    Log.Info(response.ToXml());
+
                     List<WS_GAQ_sin_PI_DIRECT_MEWQ.BAPIEBANC> solpsSAP = response.REQUISITION_ITEMS.ToList();
 
                     solps = solpsSAP.ConvertAll(x => new PosicionPendienteDto

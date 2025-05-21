@@ -6,6 +6,7 @@ using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerFuenteAprovisionamientoWebServiceMOA;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
@@ -41,16 +42,18 @@ namespace SustitucionMOAWS.WSConsumers
                     string IM_PLANT = centro;
                     string IM_VENDOR = "";
 
-                    var req = new Z_MMRFC_OBTENER_FUENTE_APROV()
+                    var request = new Z_MMRFC_OBTENER_FUENTE_APROV()
                     {
                         IM_DELIV_DATE = IM_DELIV_DATE,
                         IM_MATERIAL = IM_MATERIAL,
                         IM_PLANT = IM_PLANT,
                         IM_VENDOR = IM_VENDOR
                     };
-                    Log.Info($"Sin PI Z_MMRFC_OBTENER_MATERIALES request: {new { req.IM_DELIV_DATE, req.IM_MATERIAL, req.IM_PLANT, req.IM_VENDOR}}");
-                    var response = agent.Z_MMRFC_OBTENER_FUENTE_APROV(req);
-                    Log.Info($"Sin PI Z_MMRFC_OBTENER_CECO Response: {response.EX_FUENTE}");
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_FUENTE_APROV request");
+                    Log.Info(request.ToXml());
+                    var response = agent.Z_MMRFC_OBTENER_FUENTE_APROV(request);
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_FUENTE_APROV response");
+                    Log.Info(response.ToXml());
 
                     return MapSinPI(response);
                 }
@@ -106,7 +109,7 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
 
-            //result.error = resultado;
+            result.error = response.EX_EXITO;
 
             return result;
         }

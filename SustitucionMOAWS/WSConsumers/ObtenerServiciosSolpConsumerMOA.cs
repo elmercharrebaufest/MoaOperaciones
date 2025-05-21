@@ -1,12 +1,13 @@
 ﻿using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using SustitucionMOAWS.Logger;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -30,15 +31,17 @@ namespace SustitucionMOAWS.WSConsumers
                     var agent = new Z_WS_MOAOP_COMPRAS_DIRECTClient();
                     agent.ClientCredentials.UserName.UserName = UserSap;
                     agent.ClientCredentials.UserName.Password = PassSap;
-                    var req = new Z_MMRFC_OBTENER_SERVICIOS()
+                    var request = new Z_MMRFC_OBTENER_SERVICIOS()
                     {
                         IM_SERVICESELECTION = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASNRAN[] { },
                         IM_SRVSHORTTEXTSELECTION = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASKRAN[] { }
                     };
 
-                    Log.Info($"Sin PI Z_MMRFC_OBTENER_SERVICIOS request: {new { req.IM_SERVICESELECTION, req.IM_SRVSHORTTEXTSELECTION }}");
-                    var response = agent.Z_MMRFC_OBTENER_SERVICIOS(req);
-                    Log.Info($"Sin PI Z_MMRFC_OBTENER_SERVICIOS Response: {response.EX_SERVICELIST}");
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_SERVICIOS request");
+                    Log.Info(request.ToXml());
+                    var response = agent.Z_MMRFC_OBTENER_SERVICIOS(request);
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_SERVICIOS response");
+                    Log.Info(response.ToXml());
                     return MapSinPI(response);
 
 
@@ -71,8 +74,8 @@ namespace SustitucionMOAWS.WSConsumers
             ServicioWSMOAResponse result = new ServicioWSMOAResponse();
             result.Servicios = new List<Servicio> { };
 
-            //if (response.EX_EXITO == "200")
-            //{
+            if (response.EX_EXITO == "200")
+            {
                 foreach (WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5710 servicioSolp in response.EX_SERVICELIST)
                 {
                     result.Servicios.Add(new Servicio()
@@ -87,9 +90,9 @@ namespace SustitucionMOAWS.WSConsumers
                         SSCItem = servicioSolp.SSC_ITEM
                     });
                 }
-            //}
+            }
 
-            //result.error = response.EX_EXITO;
+            result.error = response.EX_EXITO;
 
             return result;
         }
