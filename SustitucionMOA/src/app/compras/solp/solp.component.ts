@@ -631,9 +631,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
     guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }): boolean {
         if (!this.esOperacionPliegoMultiple) {
             //no hacer comprobación si no se cargan materiales / servicios por ser agrupación de solp ya creadas.
-            if (this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
+            if (this.solpActual.valorTotalPorMoneda && this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
                 this.messageService.add({ severity: 'error', summary: 'No se puede guardar la SOLP', detail: 'El valor total es demasiado grande' });
-                return;
+                return false;
             }
         }
 
@@ -666,7 +666,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.blockUI.stop();
                     }
                     this.disabledSave = false;
-                    return;
+                    return false;
                 }
 
                 if (this.solpActual.tipoSolp != "SIN_PLIEGO" && !this.solpActual.revisadoPor) {
@@ -676,7 +676,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.blockUI.stop();
                     }
                     this.disabledSave = false;
-                    return;
+                    return false;
                 }
 
 
@@ -688,7 +688,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                         this.disabledSave = false;
-                        return;
+                        return false;
                     }
                     if(!this.validarCondicionesDeAcuerdoMarco()){
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen acuerdo marco" });
@@ -696,7 +696,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                         this.disabledSave = false;
-                        return;
+                        return false;
                     }
                     if(!this.validarQueTodasLasPosicionesTenganProveedor()){
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen el mismo proveedor" });
@@ -704,7 +704,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                         this.disabledSave = false;
-                        return;
+                        return false;
                     }
                 }
 
@@ -715,7 +715,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                         this.disabledSave = false;
-                        return;
+                        return false;
                     }
 
                     if (this.validarFechaLimiteConsulta()) {
@@ -724,7 +724,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                         this.disabledSave = false;
-                        return;
+                        return false;
                     }
 
                     if (this.validarFechaLimiteYObra()) {
@@ -733,7 +733,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                         this.disabledSave = false;
-                        return;
+                        return false;
                     }
 
                     if (!this.validarSolicitante()) {
@@ -742,7 +742,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                         this.disabledSave = false;
-                        return;
+                        return false;
                     }
                 }
 

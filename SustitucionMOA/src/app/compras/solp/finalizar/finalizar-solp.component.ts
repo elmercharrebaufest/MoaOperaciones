@@ -49,13 +49,16 @@ export class FinalizarSolpComponent implements OnInit {
     }
 
     puedeConfigurarCertificacionAutomatica(): boolean {
-        const esMaterial = this.solpActual.selectTipoPosicion.Codigo === "MATERIALES";
-        if (esMaterial) {
-            return false;
-        }
+        if (this.solpActual.selectTipoPosicion) {
+            const esMaterial = this.solpActual.selectTipoPosicion.Codigo === "MATERIALES";
+            if (esMaterial) {
+                return false;
+            }
 
-        const tieneContratoMarco = this.solpActual.posiciones.some((val, ind, arr) => { return val.numeroContratoSuperior; });
-        return tieneContratoMarco;
+            const tieneContratoMarco = this.solpActual.posiciones.some((val, ind, arr) => { return val.numeroContratoSuperior; });
+            return tieneContratoMarco;
+        }
+        return false;
     }
 
     onFinalizar() {
