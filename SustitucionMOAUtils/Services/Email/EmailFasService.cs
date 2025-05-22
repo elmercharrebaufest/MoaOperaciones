@@ -53,7 +53,7 @@ namespace SustitucionMOAUtils.Services.Email
             var emailSenderData = new EmailSenderData
             {
                 Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionToAltaTempranaCuitFas, DireccionCCAltaTempranaCuitFas }),
-                Asunto = $"ALTA TEMPRANA CLIENTE - NRO ORDEN: {ordenId}",
+                Asunto = $"ALTA TEMPRANA CLIENTE SCATO - NRO ORDEN: {ordenId}",
                 Cuerpo = $"Se solicita el alta temprana de: \n" + cuerpoDestinatario + cuerpoDestino
             };
             emailService.EnviarMail(emailSenderData);
