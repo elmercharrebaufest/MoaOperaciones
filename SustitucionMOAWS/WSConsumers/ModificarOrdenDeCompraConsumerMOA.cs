@@ -1387,6 +1387,7 @@ namespace SustitucionMOAWS.WSConsumers
     public interface IModificarOrdenDeCompraConsumerMOA
     {
         CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion);
+        WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIRET2[] EditarPedidoRequestSinPI(ModificarPedidoSAPSinPI modificarPedidoSAP);
         ModificarOCWebServiceMOA.BAPIRET2[] EditarPedidoRequest(ModificarPedidoSAP modificarPedidoSAP);
 
     }

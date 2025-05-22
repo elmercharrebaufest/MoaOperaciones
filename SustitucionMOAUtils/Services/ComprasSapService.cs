@@ -15,6 +15,7 @@ using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Reflection;
@@ -982,326 +983,48 @@ namespace SustitucionMOAUtils.Services
 
         public ResultadoGenerico EditarOrdenDeCompra(AdjudicacionDto adjudicacionDto)
         {
-            var adjudicacion = ConvertirAjudicacionDtoEnAdjudicacionSAP(adjudicacionDto);
+
             ResultadoGenerico resultadoEditarOC = new ResultadoGenerico();
-            //adjudicacion = TestCompletarAdjudicacion(adjudicacion);
-            //Consulta de OC en SAP
-            var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(adjudicacion.NumeroOrdenDeCompra);
-            //Convertir OC de SAP a ModificarPedidoSAP
-            ModificarPedidoSAP modificarPedidoSAP = new ModificarPedidoSAP
+
+            if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
             {
-                POACCOUNT = ocSap.POACCOUNT.Select(a => new BAPIMEPOACCOUNT
-                {
-                    PO_ITEM = a.PO_ITEM
-                }).ToList(),
-                POACCOUNTX = ocSap.POACCOUNT.Select(a => new BAPIMEPOACCOUNTX
-                {
-                    PO_ITEM = a.PO_ITEM
-                }).ToList(),
-                POADDRDELIVERY = ocSap.POADDRDELIVERY.Select(a => new BAPIMEPOADDRDELIVERY
-                {
-                    PO_ITEM = a.PO_ITEM,
-                    POSTL_COD1 = a.POSTL_COD1,
-                    CITY = a.CITY,
-                    ADDR_NO = "",
-                    NAME = a.NAME,
-                    TEL1_NUMBR = "",
-                    STREET = a.STREET,
-                    STREET_NO = "",
-                    REGION = a.REGION,
-                    COUNTRY = a.COUNTRY
-                }).ToList(),
-                POCOND = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCOND
-                {
-                    ITM_NUMBER = x.ITM_NUMBER,  //el número de ítem al que corresponda la condición
-                    COND_ST_NO = x.COND_ST_NO,
-                    COND_TYPE = x.COND_TYPE,
-                    COND_VALUE = x.COND_VALUE, //el importe de la condición
-                    COND_VALUESpecified = true,
-                    CURRENCY = x.CURRENCY,
-                    CHANGE_ID = "U",
-                    //COND_COUNT = x.COND_COUNT,
-
-                }).ToList(),
-                POCONDX = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCONDX
-                {
-                    ITM_NUMBER = x.ITM_NUMBER,
-                    ITM_NUMBERX = "X",
-                    COND_ST_NO = "001",
-                    COND_ST_NOX = "X",
-                    COND_TYPE = "X",
-                    COND_VALUE = "X",
-                    CURRENCY = "X",
-                    CHANGE_ID = "X",
-                    CONDITION_NOX = "X",
-                }).ToList(),
-
-                POHEADER = new BAPIMEPOHEADER(),
-                POHEADERX = new BAPIMEPOHEADERX(),
-                POITEM = ocSap.POITEM.Select(x => new BAPIMEPOITEM
-                {
-                    PO_ITEM = x.PO_ITEM,
-                    PCKG_NO = x.PCKG_NO
-                }).ToList(),
-                POITEMX = ocSap.POITEM.Select(x => new BAPIMEPOITEMX
-                {
-                    PO_ITEM = x.PO_ITEM,
-                }).ToList(),
-                POSCHEDULE = ocSap.POSCHEDULE.Select(x => new BAPIMEPOSCHEDULE { PO_ITEM = x.PO_ITEM, SCHED_LINE = x.SCHED_LINE, DELIVERY_DATE = x.DELIVERY_DATE }).ToList(),
-                POSCHEDULEX = ocSap.POSCHEDULE.Select(x => new BAPIMEPOSCHEDULX { PO_ITEM = x.PO_ITEM, SCHED_LINE = x.SCHED_LINE, DELIVERY_DATE = "X" }).ToList(),
-                POSERVICES = ConvertirLista<BAPIESLLC>(ocSap.POSERVICES.ToList()),
-                //POSRVACCESSVALUES = ocSap.POSRVACCESSVALUES.Select(x => new BAPIESKLC
-                //{
-                //    PCKG_NO = x.PCKG_NO,
-                //    LINE_NO = x.LINE_NO,
-                //    PERCENTAGE = x.PERCENTAGE,
-                //    SERNO_LINE = x.SERNO_LINE,
-                //    SERIAL_NO = x.SERIAL_NO,
-                //    QUANTITY = x.QUANTITY,
-                //    NET_VALUE = x.NET_VALUE,
-                //    NET_VALUESpecified = true,
-                //    PERCENTAGESpecified = true,
-                //    QUANTITYSpecified = true,
-                //}).ToList(),
-                POTEXTHEADER = new List<BAPIMEPOTEXTHEADER>(),
-                PURCHASEORDER = adjudicacion.NumeroOrdenDeCompra,
-
-            };
-            foreach (var bAPIESLLC in modificarPedidoSAP.POSERVICES)
-            {
-                bAPIESLLC.GR_PRICESpecified = true;
-                bAPIESLLC.QUANTITYSpecified = true;
-                bAPIESLLC.NET_VALUESpecified = true;
-                bAPIESLLC.PRICE_UNITSpecified = true;
-            }
-
-            //Racional de compras
-            var listaVaciaTexto = new string[] { "" };
-            var textosDiccionario = new Dictionary<string, string[]>() {
-                {"F01", !string.IsNullOrEmpty(adjudicacion.TextoDeCabecera) ?  adjudicacion.TextoDeCabecera.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
-                {"F05", !string.IsNullOrEmpty(adjudicacion.CondicionesDeEntrega)? adjudicacion.CondicionesDeEntrega.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
-                {"F07", !string.IsNullOrEmpty(adjudicacion.CondicionesDePago) ? adjudicacion.CondicionesDePago.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
-                {"F08", !string.IsNullOrEmpty(adjudicacion.Garantias) ? adjudicacion.Garantias.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
-            };
-            foreach (var grupos in textosDiccionario)
-            {
-                bool todosVacios = grupos.Value.All(string.IsNullOrEmpty);
-                if (!todosVacios)
-                {
-                    foreach (var texto in grupos.Value)
-                    {
-                        modificarPedidoSAP.POTEXTHEADER.Add(new BAPIMEPOTEXTHEADER
-                        {
-                            TEXT_ID = grupos.Key,
-                            PO_NUMBER = "",
-                            PO_ITEM = "0",
-                            TEXT_FORM = "*",
-                            TEXT_LINE = texto
-                        });
-                    }
-                }
-
-            }
-
-            //Condición de Pago  - no funcionan para las  ZPE1 y ZDIR por que sap no lo permite
-            List<string> condicionesNoEditables = new List<string>() { "ZPE1", "ZDIR" };
-            if (!condicionesNoEditables.Contains(ocSap.POHEADER.DOC_TYPE))
-            {
-                modificarPedidoSAP.POHEADER.PMNTTRMS = adjudicacion.CondicionDePagoCodigo;
-                modificarPedidoSAP.POHEADER.DSCNT1_TO = adjudicacion.PagoEn1;
-                modificarPedidoSAP.POHEADER.DSCNT1_TOSpecified = true;
-                modificarPedidoSAP.POHEADER.DSCNT2_TO = adjudicacion.PagoEn2;
-                modificarPedidoSAP.POHEADER.DSCNT2_TOSpecified = true;
-                modificarPedidoSAP.POHEADER.DSCNT3_TO = adjudicacion.PagoEn3;
-                modificarPedidoSAP.POHEADER.DSCNT3_TOSpecified = true;
-                modificarPedidoSAP.POHEADER.DSCT_PCT1 = adjudicacion.PagoEn1Porcentaje;
-                modificarPedidoSAP.POHEADER.DSCT_PCT1Specified = true;
-                modificarPedidoSAP.POHEADER.DSCT_PCT2 = adjudicacion.PagoEn2Porcentaje;
-                modificarPedidoSAP.POHEADER.DSCT_PCT2Specified = true;
-                modificarPedidoSAP.POHEADERX.PMNTTRMS = "X";
-                modificarPedidoSAP.POHEADERX.DSCNT1_TO = "X";
-                modificarPedidoSAP.POHEADERX.DSCNT2_TO = "X";
-                modificarPedidoSAP.POHEADERX.DSCNT3_TO = "X";
-                modificarPedidoSAP.POHEADERX.DSCT_PCT1 = "X";
-                modificarPedidoSAP.POHEADERX.DSCT_PCT2 = "X";
+                resultadoEditarOC = ModificarOrdenDeCompraSinPI(adjudicacionDto);
             }
             else
             {
-                if (HayModificacionCondicionesDePago(ocSap.POHEADER, adjudicacion))// TODO: validar si edito alguna condicion de pago.
-                {
-                    resultadoEditarOC.Errores.Add(new ErrorMessage("Condición de Pago no se puede editar para las clase de documento  ZPE1 y ZDIR."));
-                    return resultadoEditarOC;
-                }
+                resultadoEditarOC = ModificarOrdenDeCompra(adjudicacionDto);
             }
 
-
-            //Condición de Importacion
-            if (!string.IsNullOrEmpty(adjudicacion.CondicionDeImportacionComplemento) && adjudicacion.CondicionDeImportacionComplemento.Length > 28)
-            {
-                resultadoEditarOC.Errores.Add(new ErrorMessage("Condicion de importacion muy largo, 28 caracteres maximo."));
-                return resultadoEditarOC;
-            }
-            modificarPedidoSAP.POHEADER.INCOTERMS1 = adjudicacion.CondicionDeImportacionCodigo;
-            modificarPedidoSAP.POHEADER.INCOTERMS2 = adjudicacion.CondicionDeImportacionComplemento;
-            modificarPedidoSAP.POHEADERX.INCOTERMS1 = "X";
-            modificarPedidoSAP.POHEADERX.INCOTERMS2 = "X";
-
-            //Datos utiles
-            bool esMateriales = ocSap.POITEM[0].ITEM_CAT == "0";
-            bool modificoMoneda = ocSap.POHEADER.CURRENCY != adjudicacion.MonedaCodigo;
-
-            //Modificar moneda
-            if (modificoMoneda)
-            {
-                modificarPedidoSAP.POHEADER.CURRENCY = adjudicacion.MonedaCodigo;
-                modificarPedidoSAP.POHEADERX.CURRENCY = "X";
-            }
-
-            foreach (var posAdj in adjudicacion.Posiciones)
-            {
-                string PO_ITEM = posAdj.Indice.ToString().PadLeft(5, '0');
-
-                //Región
-                var direccioSap = modificarPedidoSAP.POADDRDELIVERY.Single(a => a.PO_ITEM == PO_ITEM);
-                direccioSap.REGION = posAdj.RegionCodigo;
-                direccioSap.COUNTRY = posAdj.PaisCodigo;
-
-                //Fechas de entrega(por posición)
-                var fechaEntregaSap = modificarPedidoSAP.POSCHEDULE.Single(a => a.PO_ITEM == PO_ITEM);
-                var fechaEntregaSapX = modificarPedidoSAP.POSCHEDULEX.Single(a => a.PO_ITEM == PO_ITEM);
-                fechaEntregaSap.DELIVERY_DATE = posAdj.FechaEntrega.ToString("dd.MM.yyyy");
-                fechaEntregaSapX.DELIVERY_DATE = "X";
-
-                //Posición
-                var posicionSap = modificarPedidoSAP.POITEM.Single(a => a.PO_ITEM == PO_ITEM);
-                var posicionSapX = modificarPedidoSAP.POITEMX.Single(a => a.PO_ITEM == PO_ITEM);
-                //Impitación
-                var imputacionSap = new BAPIMEPOACCOUNT();
-                var imputacionSapX = new BAPIMEPOACCOUNTX();
-                if (modificarPedidoSAP.POACCOUNT.Count > 0)
-                {
-                    imputacionSap = modificarPedidoSAP.POACCOUNT.FirstOrDefault(a => a.PO_ITEM == PO_ITEM);
-                    imputacionSapX = modificarPedidoSAP.POACCOUNTX.FirstOrDefault(a => a.PO_ITEM == PO_ITEM);
-                }
-                //Condición
-                var condicionSap = modificarPedidoSAP.POCOND.Single(a => a.ITM_NUMBER == "0" + PO_ITEM);
-
-                //Eliminar posición
-                posicionSap.DELETE_IND = posAdj.Eliminado ? "X" : "";
-                posicionSapX.DELETE_IND = "X";
-
-                //Tilde entrega final
-                posicionSap.NO_MORE_GR = posAdj.EntregaFinal ? "X" : "";
-                posicionSapX.NO_MORE_GR = "X";
-
-                if (esMateriales)
-                {
-                    bool modificoImporte = ModificoImporte(ocSap, adjudicacion);
-
-                    //Modificar cantidad
-                    posicionSap.QUANTITY = posAdj.Cantidad;
-                    posicionSap.QUANTITYSpecified = true;
-                    posicionSapX.QUANTITY = "X";
-                    if (modificarPedidoSAP.POACCOUNT.Count > 0)
-                    {
-                        imputacionSap.QUANTITY = posAdj.Cantidad;
-                        imputacionSapX.QUANTITY = "X";
-                    }
-
-                    //Modificar importe
-                    if (modificoImporte)
-                    {
-                        posicionSap.NET_PRICE = posAdj.PrecioUnidadCodigo;
-                        posicionSap.NET_PRICESpecified = true;
-                        posicionSapX.NET_PRICE = "X";
-                        condicionSap.COND_VALUE = posAdj.PrecioUnidadCodigo;
-                        condicionSap.COND_VALUESpecified = true;
-                        condicionSap.CURRENCY = adjudicacion.MonedaCodigo;
-                        //"ZP01" no deja cambiar importes por eso se cambia a "ZP00"
-                        condicionSap.COND_TYPE = condicionSap.COND_TYPE == "ZP01" ? "ZP00" : condicionSap.COND_TYPE;
-                    }
-                }
-                else
-                {
-
-                    if (!posAdj.Eliminado)
-                    {
-                        foreach (var subPosAdj in posAdj.SubPosiciones)
-                        {
-                            //Subposición
-                            string LINE_NO = subPosAdj.Indice.ToString().PadLeft(10, '0');
-                            var subPosicionSap = modificarPedidoSAP.POSERVICES.First(a => a.LINE_NO == LINE_NO);
-                            //var imputacionSubPos = modificarPedidoSAP.POSRVACCESSVALUES.First(a => a.LINE_NO == LINE_NO);//
-
-                            //Eliminar subposición 
-                            subPosicionSap.DELETE_IND = subPosAdj.Eliminado ? "X" : "";
-                            if (subPosAdj.Eliminado) continue;
-                            //Cantidad
-                            subPosicionSap.QUANTITY = subPosAdj.Cantidad;
-                            //imputacionSubPos.QUANTITY = subPosAdj.Cantidad;
-                            //Importe 1/2                            
-                            subPosicionSap.GR_PRICE = subPosAdj.PrecioUnitario;
-                            subPosicionSap.NET_VALUE = subPosAdj.PrecioUnitario * subPosAdj.Cantidad;
-                            //imputacionSubPos.NET_VALUE = subPosAdj.PrecioUnitario * subPosAdj.Cantidad;
-
-                        }
-
-                        //Importe 2/2                        
-                        var totalPosicion = posAdj.SubPosiciones.Where(a => !a.Eliminado).Sum(a => a.Cantidad * a.PrecioUnitario);
-                        condicionSap.COND_VALUE = totalPosicion;
-                        condicionSap.COND_VALUESpecified = true;
-                        condicionSap.CURRENCY = adjudicacion.MonedaCodigo;
-                        condicionSap.COND_TYPE = condicionSap.COND_TYPE == "ZP01" ? "ZP01" : condicionSap.COND_TYPE;
-
-                        posicionSap.NET_PRICE = totalPosicion;
-                        posicionSap.NET_PRICESpecified = true;
-                        posicionSapX.NET_PRICE = "X";
-                        //imputacionSap.NET_VALUE = totalPosicion;
-                        //imputacionSap.NET_VALUESpecified = true;
-                        //imputacionSapX.NET_VALUE = "X";
-
-                    }
-
-                }
-            }
-
-            if (!esMateriales) // para servicios guille nos dijo que no lo enviemos pero para materiales si lo necesitamos enviar.
-            {
-                modificarPedidoSAP.POACCOUNT = new List<BAPIMEPOACCOUNT>();
-                modificarPedidoSAP.POACCOUNTX = new List<BAPIMEPOACCOUNTX>();
-            }
-
-            if (modificoMoneda)
-            {
-                modificarPedidoSAP.POITEM = new List<BAPIMEPOITEM>();
-                modificarPedidoSAP.POITEMX = new List<BAPIMEPOITEMX>();
-
-                modificarPedidoSAP.POACCOUNT = new List<BAPIMEPOACCOUNT>();
-                modificarPedidoSAP.POACCOUNTX = new List<BAPIMEPOACCOUNTX>();
-
-                modificarPedidoSAP.POSERVICES = new List<BAPIESLLC>();
-
-                modificarPedidoSAP.POCOND = new List<BAPIMEPOCOND>();
-                modificarPedidoSAP.POCONDX = new List<BAPIMEPOCONDX>();
-
-                modificarPedidoSAP.POADDRDELIVERY = new List<BAPIMEPOADDRDELIVERY>();
-                modificarPedidoSAP.POSCHEDULE = new List<BAPIMEPOSCHEDULE>();
-                modificarPedidoSAP.POSCHEDULEX = new List<BAPIMEPOSCHEDULX>();
-
-            }
-
-            var resultadoSAP = modificarOrdenDeCompraConsumerMOA.EditarPedidoRequest(modificarPedidoSAP);
-            resultadoSAP.Where(a => a.MESSAGE == "No se han modificado datos").ToList().ForEach(a => a.TYPE = "E");
-
-
-
-
-
-            //if (modificoMoneda && resultadoSAP.All(a => a.TYPE != "E"))
+            //var adjudicacion = ConvertirAjudicacionDtoEnAdjudicacionSAP(adjudicacionDto);
+            //ResultadoGenerico resultadoEditarOC = new ResultadoGenerico();
+            ////adjudicacion = TestCompletarAdjudicacion(adjudicacion);
+            ////Consulta de OC en SAP
+            //var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(adjudicacion.NumeroOrdenDeCompra);
+            ////Convertir OC de SAP a ModificarPedidoSAP
+            //ModificarPedidoSAP modificarPedidoSAP = new ModificarPedidoSAP
             //{
-            //    ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(adjudicacion.NumeroOrdenDeCompra);
-
-            //    modificarPedidoSAP.POCOND = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCOND
+            //    POACCOUNT = ocSap.POACCOUNT.Select(a => new BAPIMEPOACCOUNT
+            //    {
+            //        PO_ITEM = a.PO_ITEM
+            //    }).ToList(),
+            //    POACCOUNTX = ocSap.POACCOUNT.Select(a => new BAPIMEPOACCOUNTX
+            //    {
+            //        PO_ITEM = a.PO_ITEM
+            //    }).ToList(),
+            //    POADDRDELIVERY = ocSap.POADDRDELIVERY.Select(a => new BAPIMEPOADDRDELIVERY
+            //    {
+            //        PO_ITEM = a.PO_ITEM,
+            //        POSTL_COD1 = a.POSTL_COD1,
+            //        CITY = a.CITY,
+            //        ADDR_NO = "",
+            //        NAME = a.NAME,
+            //        TEL1_NUMBR = "",
+            //        STREET = a.STREET,
+            //        STREET_NO = "",
+            //        REGION = a.REGION,
+            //        COUNTRY = a.COUNTRY
+            //    }).ToList(),
+            //    POCOND = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCOND
             //    {
             //        ITM_NUMBER = x.ITM_NUMBER,  //el número de ítem al que corresponda la condición
             //        COND_ST_NO = x.COND_ST_NO,
@@ -1312,8 +1035,8 @@ namespace SustitucionMOAUtils.Services
             //        CHANGE_ID = "U",
             //        //COND_COUNT = x.COND_COUNT,
 
-            //    }).ToList();
-            //    modificarPedidoSAP.POCONDX = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCONDX
+            //    }).ToList(),
+            //    POCONDX = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCONDX
             //    {
             //        ITM_NUMBER = x.ITM_NUMBER,
             //        ITM_NUMBERX = "X",
@@ -1324,42 +1047,270 @@ namespace SustitucionMOAUtils.Services
             //        CURRENCY = "X",
             //        CHANGE_ID = "X",
             //        CONDITION_NOX = "X",
-            //    }).ToList();
+            //    }).ToList(),
 
-            //    foreach (var condicion in modificarPedidoSAP.POCOND)
+            //    POHEADER = new BAPIMEPOHEADER(),
+            //    POHEADERX = new BAPIMEPOHEADERX(),
+            //    POITEM = ocSap.POITEM.Select(x => new BAPIMEPOITEM
             //    {
-            //        var posicion = ocSap.POITEM.Single(a => int.Parse(a.PO_ITEM) == int.Parse(condicion.ITM_NUMBER));
-            //        var servicioCabecera = ocSap.POSERVICES.Single(a => a.PCKG_NO == posicion.PCKG_NO);
-            //        var servicios = ocSap.POSERVICES.Where(a => a.PCKG_NO == servicioCabecera.SUBPCKG_NO).ToList();
-            //        if (esMateriales)
+            //        PO_ITEM = x.PO_ITEM,
+            //        PCKG_NO = x.PCKG_NO
+            //    }).ToList(),
+            //    POITEMX = ocSap.POITEM.Select(x => new BAPIMEPOITEMX
+            //    {
+            //        PO_ITEM = x.PO_ITEM,
+            //    }).ToList(),
+            //    POSCHEDULE = ocSap.POSCHEDULE.Select(x => new BAPIMEPOSCHEDULE { PO_ITEM = x.PO_ITEM, SCHED_LINE = x.SCHED_LINE, DELIVERY_DATE = x.DELIVERY_DATE }).ToList(),
+            //    POSCHEDULEX = ocSap.POSCHEDULE.Select(x => new BAPIMEPOSCHEDULX { PO_ITEM = x.PO_ITEM, SCHED_LINE = x.SCHED_LINE, DELIVERY_DATE = "X" }).ToList(),
+            //    POSERVICES = ConvertirLista<BAPIESLLC>(ocSap.POSERVICES.ToList()),
+            //    //POSRVACCESSVALUES = ocSap.POSRVACCESSVALUES.Select(x => new BAPIESKLC
+            //    //{
+            //    //    PCKG_NO = x.PCKG_NO,
+            //    //    LINE_NO = x.LINE_NO,
+            //    //    PERCENTAGE = x.PERCENTAGE,
+            //    //    SERNO_LINE = x.SERNO_LINE,
+            //    //    SERIAL_NO = x.SERIAL_NO,
+            //    //    QUANTITY = x.QUANTITY,
+            //    //    NET_VALUE = x.NET_VALUE,
+            //    //    NET_VALUESpecified = true,
+            //    //    PERCENTAGESpecified = true,
+            //    //    QUANTITYSpecified = true,
+            //    //}).ToList(),
+            //    POTEXTHEADER = new List<BAPIMEPOTEXTHEADER>(),
+            //    PURCHASEORDER = adjudicacion.NumeroOrdenDeCompra,
+
+            //};
+            //foreach (var bAPIESLLC in modificarPedidoSAP.POSERVICES)
+            //{
+            //    bAPIESLLC.GR_PRICESpecified = true;
+            //    bAPIESLLC.QUANTITYSpecified = true;
+            //    bAPIESLLC.NET_VALUESpecified = true;
+            //    bAPIESLLC.PRICE_UNITSpecified = true;
+            //}
+
+            ////Racional de compras
+            //var listaVaciaTexto = new string[] { "" };
+            //var textosDiccionario = new Dictionary<string, string[]>() {
+            //    {"F01", !string.IsNullOrEmpty(adjudicacion.TextoDeCabecera) ?  adjudicacion.TextoDeCabecera.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+            //    {"F05", !string.IsNullOrEmpty(adjudicacion.CondicionesDeEntrega)? adjudicacion.CondicionesDeEntrega.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+            //    {"F07", !string.IsNullOrEmpty(adjudicacion.CondicionesDePago) ? adjudicacion.CondicionesDePago.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+            //    {"F08", !string.IsNullOrEmpty(adjudicacion.Garantias) ? adjudicacion.Garantias.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+            //};
+            //foreach (var grupos in textosDiccionario)
+            //{
+            //    bool todosVacios = grupos.Value.All(string.IsNullOrEmpty);
+            //    if (!todosVacios)
+            //    {
+            //        foreach (var texto in grupos.Value)
             //        {
-            //            condicion.COND_VALUE = posicion.NET_PRICE;
-            //            condicion.CURRENCY = ocSap.POHEADER.CURRENCY;
-            //        }
-            //        else
-            //        {
-            //            var total = servicios.Sum(a => a.NET_VALUE);
-            //            condicion.COND_VALUE = total;
-            //            condicion.CURRENCY = ocSap.POHEADER.CURRENCY;
+            //            modificarPedidoSAP.POTEXTHEADER.Add(new BAPIMEPOTEXTHEADER
+            //            {
+            //                TEXT_ID = grupos.Key,
+            //                PO_NUMBER = "",
+            //                PO_ITEM = "0",
+            //                TEXT_FORM = "*",
+            //                TEXT_LINE = texto
+            //            });
             //        }
             //    }
 
-            //    resultadoSAP = modificarOrdenDeCompraConsumerMOA.EditarPedidoRequest(modificarPedidoSAP);
-            //    if (resultadoSAP.Any(a => a.TYPE == "E"))
+            //}
+
+            ////Condición de Pago  - no funcionan para las  ZPE1 y ZDIR por que sap no lo permite
+            //List<string> condicionesNoEditables = new List<string>() { "ZPE1", "ZDIR" };
+            //if (!condicionesNoEditables.Contains(ocSap.POHEADER.DOC_TYPE))
+            //{
+            //    modificarPedidoSAP.POHEADER.PMNTTRMS = adjudicacion.CondicionDePagoCodigo;
+            //    modificarPedidoSAP.POHEADER.DSCNT1_TO = adjudicacion.PagoEn1;
+            //    modificarPedidoSAP.POHEADER.DSCNT1_TOSpecified = true;
+            //    modificarPedidoSAP.POHEADER.DSCNT2_TO = adjudicacion.PagoEn2;
+            //    modificarPedidoSAP.POHEADER.DSCNT2_TOSpecified = true;
+            //    modificarPedidoSAP.POHEADER.DSCNT3_TO = adjudicacion.PagoEn3;
+            //    modificarPedidoSAP.POHEADER.DSCNT3_TOSpecified = true;
+            //    modificarPedidoSAP.POHEADER.DSCT_PCT1 = adjudicacion.PagoEn1Porcentaje;
+            //    modificarPedidoSAP.POHEADER.DSCT_PCT1Specified = true;
+            //    modificarPedidoSAP.POHEADER.DSCT_PCT2 = adjudicacion.PagoEn2Porcentaje;
+            //    modificarPedidoSAP.POHEADER.DSCT_PCT2Specified = true;
+            //    modificarPedidoSAP.POHEADERX.PMNTTRMS = "X";
+            //    modificarPedidoSAP.POHEADERX.DSCNT1_TO = "X";
+            //    modificarPedidoSAP.POHEADERX.DSCNT2_TO = "X";
+            //    modificarPedidoSAP.POHEADERX.DSCNT3_TO = "X";
+            //    modificarPedidoSAP.POHEADERX.DSCT_PCT1 = "X";
+            //    modificarPedidoSAP.POHEADERX.DSCT_PCT2 = "X";
+            //}
+            //else
+            //{
+            //    if (HayModificacionCondicionesDePago(ocSap.POHEADER, adjudicacion))// TODO: validar si edito alguna condicion de pago.
             //    {
-            //        BAPIRET2 newBapiRet = new BAPIRET2 { TYPE = "E", MESSAGE = "Se modifico la moneda pero no se pudo modificar la condición. Corregir en SAP." };
-            //        BAPIRET2[] newArray = new BAPIRET2[resultadoSAP.Length + 1];
-            //        Array.Copy(resultadoSAP, newArray, resultadoSAP.Length);
-            //        newArray[newArray.Length - 1] = newBapiRet;
-            //        resultadoSAP = newArray;
+            //        resultadoEditarOC.Errores.Add(new ErrorMessage("Condición de Pago no se puede editar para las clase de documento  ZPE1 y ZDIR."));
+            //        return resultadoEditarOC;
             //    }
             //}
 
 
-            foreach (var item in resultadoSAP.Where(x => x.TYPE == "E"))
-            {
-                resultadoEditarOC.Error(item.TYPE, item.MESSAGE);
-            }
+            ////Condición de Importacion
+            //if (!string.IsNullOrEmpty(adjudicacion.CondicionDeImportacionComplemento) && adjudicacion.CondicionDeImportacionComplemento.Length > 28)
+            //{
+            //    resultadoEditarOC.Errores.Add(new ErrorMessage("Condicion de importacion muy largo, 28 caracteres maximo."));
+            //    return resultadoEditarOC;
+            //}
+            //modificarPedidoSAP.POHEADER.INCOTERMS1 = adjudicacion.CondicionDeImportacionCodigo;
+            //modificarPedidoSAP.POHEADER.INCOTERMS2 = adjudicacion.CondicionDeImportacionComplemento;
+            //modificarPedidoSAP.POHEADERX.INCOTERMS1 = "X";
+            //modificarPedidoSAP.POHEADERX.INCOTERMS2 = "X";
+
+            ////Datos utiles
+            //bool esMateriales = ocSap.POITEM[0].ITEM_CAT == "0";
+            //bool modificoMoneda = ocSap.POHEADER.CURRENCY != adjudicacion.MonedaCodigo;
+
+            ////Modificar moneda
+            //if (modificoMoneda)
+            //{
+            //    modificarPedidoSAP.POHEADER.CURRENCY = adjudicacion.MonedaCodigo;
+            //    modificarPedidoSAP.POHEADERX.CURRENCY = "X";
+            //}
+
+            //foreach (var posAdj in adjudicacion.Posiciones)
+            //{
+            //    string PO_ITEM = posAdj.Indice.ToString().PadLeft(5, '0');
+
+            //    //Región
+            //    var direccioSap = modificarPedidoSAP.POADDRDELIVERY.Single(a => a.PO_ITEM == PO_ITEM);
+            //    direccioSap.REGION = posAdj.RegionCodigo;
+            //    direccioSap.COUNTRY = posAdj.PaisCodigo;
+
+            //    //Fechas de entrega(por posición)
+            //    var fechaEntregaSap = modificarPedidoSAP.POSCHEDULE.Single(a => a.PO_ITEM == PO_ITEM);
+            //    var fechaEntregaSapX = modificarPedidoSAP.POSCHEDULEX.Single(a => a.PO_ITEM == PO_ITEM);
+            //    fechaEntregaSap.DELIVERY_DATE = posAdj.FechaEntrega.ToString("dd.MM.yyyy");
+            //    fechaEntregaSapX.DELIVERY_DATE = "X";
+
+            //    //Posición
+            //    var posicionSap = modificarPedidoSAP.POITEM.Single(a => a.PO_ITEM == PO_ITEM);
+            //    var posicionSapX = modificarPedidoSAP.POITEMX.Single(a => a.PO_ITEM == PO_ITEM);
+            //    //Impitación
+            //    var imputacionSap = new BAPIMEPOACCOUNT();
+            //    var imputacionSapX = new BAPIMEPOACCOUNTX();
+            //    if (modificarPedidoSAP.POACCOUNT.Count > 0)
+            //    {
+            //        imputacionSap = modificarPedidoSAP.POACCOUNT.FirstOrDefault(a => a.PO_ITEM == PO_ITEM);
+            //        imputacionSapX = modificarPedidoSAP.POACCOUNTX.FirstOrDefault(a => a.PO_ITEM == PO_ITEM);
+            //    }
+            //    //Condición
+            //    var condicionSap = modificarPedidoSAP.POCOND.Single(a => a.ITM_NUMBER == "0" + PO_ITEM);
+
+            //    //Eliminar posición
+            //    posicionSap.DELETE_IND = posAdj.Eliminado ? "X" : "";
+            //    posicionSapX.DELETE_IND = "X";
+
+            //    //Tilde entrega final
+            //    posicionSap.NO_MORE_GR = posAdj.EntregaFinal ? "X" : "";
+            //    posicionSapX.NO_MORE_GR = "X";
+
+            //    if (esMateriales)
+            //    {
+            //        bool modificoImporte = ModificoImporte(ocSap, adjudicacion);
+
+            //        //Modificar cantidad
+            //        posicionSap.QUANTITY = posAdj.Cantidad;
+            //        posicionSap.QUANTITYSpecified = true;
+            //        posicionSapX.QUANTITY = "X";
+            //        if (modificarPedidoSAP.POACCOUNT.Count > 0)
+            //        {
+            //            imputacionSap.QUANTITY = posAdj.Cantidad;
+            //            imputacionSapX.QUANTITY = "X";
+            //        }
+
+            //        //Modificar importe
+            //        if (modificoImporte)
+            //        {
+            //            posicionSap.NET_PRICE = posAdj.PrecioUnidadCodigo;
+            //            posicionSap.NET_PRICESpecified = true;
+            //            posicionSapX.NET_PRICE = "X";
+            //            condicionSap.COND_VALUE = posAdj.PrecioUnidadCodigo;
+            //            condicionSap.COND_VALUESpecified = true;
+            //            condicionSap.CURRENCY = adjudicacion.MonedaCodigo;
+            //            //"ZP01" no deja cambiar importes por eso se cambia a "ZP00"
+            //            condicionSap.COND_TYPE = condicionSap.COND_TYPE == "ZP01" ? "ZP00" : condicionSap.COND_TYPE;
+            //        }
+            //    }
+            //    else
+            //    {
+
+            //        if (!posAdj.Eliminado)
+            //        {
+            //            foreach (var subPosAdj in posAdj.SubPosiciones)
+            //            {
+            //                //Subposición
+            //                string LINE_NO = subPosAdj.Indice.ToString().PadLeft(10, '0');
+            //                var subPosicionSap = modificarPedidoSAP.POSERVICES.First(a => a.LINE_NO == LINE_NO);
+            //                //var imputacionSubPos = modificarPedidoSAP.POSRVACCESSVALUES.First(a => a.LINE_NO == LINE_NO);//
+
+            //                //Eliminar subposición 
+            //                subPosicionSap.DELETE_IND = subPosAdj.Eliminado ? "X" : "";
+            //                if (subPosAdj.Eliminado) continue;
+            //                //Cantidad
+            //                subPosicionSap.QUANTITY = subPosAdj.Cantidad;
+            //                //imputacionSubPos.QUANTITY = subPosAdj.Cantidad;
+            //                //Importe 1/2                            
+            //                subPosicionSap.GR_PRICE = subPosAdj.PrecioUnitario;
+            //                subPosicionSap.NET_VALUE = subPosAdj.PrecioUnitario * subPosAdj.Cantidad;
+            //                //imputacionSubPos.NET_VALUE = subPosAdj.PrecioUnitario * subPosAdj.Cantidad;
+
+            //            }
+
+            //            //Importe 2/2                        
+            //            var totalPosicion = posAdj.SubPosiciones.Where(a => !a.Eliminado).Sum(a => a.Cantidad * a.PrecioUnitario);
+            //            condicionSap.COND_VALUE = totalPosicion;
+            //            condicionSap.COND_VALUESpecified = true;
+            //            condicionSap.CURRENCY = adjudicacion.MonedaCodigo;
+            //            condicionSap.COND_TYPE = condicionSap.COND_TYPE == "ZP01" ? "ZP01" : condicionSap.COND_TYPE;
+
+            //            posicionSap.NET_PRICE = totalPosicion;
+            //            posicionSap.NET_PRICESpecified = true;
+            //            posicionSapX.NET_PRICE = "X";
+            //            //imputacionSap.NET_VALUE = totalPosicion;
+            //            //imputacionSap.NET_VALUESpecified = true;
+            //            //imputacionSapX.NET_VALUE = "X";
+
+            //        }
+
+            //    }
+            //}
+
+            //if (!esMateriales) // para servicios guille nos dijo que no lo enviemos pero para materiales si lo necesitamos enviar.
+            //{
+            //    modificarPedidoSAP.POACCOUNT = new List<BAPIMEPOACCOUNT>();
+            //    modificarPedidoSAP.POACCOUNTX = new List<BAPIMEPOACCOUNTX>();
+            //}
+
+            //if (modificoMoneda)
+            //{
+            //    modificarPedidoSAP.POITEM = new List<BAPIMEPOITEM>();
+            //    modificarPedidoSAP.POITEMX = new List<BAPIMEPOITEMX>();
+
+            //    modificarPedidoSAP.POACCOUNT = new List<BAPIMEPOACCOUNT>();
+            //    modificarPedidoSAP.POACCOUNTX = new List<BAPIMEPOACCOUNTX>();
+
+            //    modificarPedidoSAP.POSERVICES = new List<BAPIESLLC>();
+
+            //    modificarPedidoSAP.POCOND = new List<BAPIMEPOCOND>();
+            //    modificarPedidoSAP.POCONDX = new List<BAPIMEPOCONDX>();
+
+            //    modificarPedidoSAP.POADDRDELIVERY = new List<BAPIMEPOADDRDELIVERY>();
+            //    modificarPedidoSAP.POSCHEDULE = new List<BAPIMEPOSCHEDULE>();
+            //    modificarPedidoSAP.POSCHEDULEX = new List<BAPIMEPOSCHEDULX>();
+
+            //}
+
+
+            //var resultadoSAP = modificarOrdenDeCompraConsumerMOA.EditarPedidoRequest(modificarPedidoSAP);
+            //resultadoSAP.Where(a => a.MESSAGE == "No se han modificado datos").ToList().ForEach(a => a.TYPE = "E");
+
+            //foreach (var item in resultadoSAP.Where(x => x.TYPE == "E"))
+            //{
+            //    resultadoEditarOC.Error(item.TYPE, item.MESSAGE);
+            //}
 
             return resultadoEditarOC;
         }
@@ -1383,8 +1334,6 @@ namespace SustitucionMOAUtils.Services
         {
             return obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraAdjudicacion(nroOc);
         }
-
-
 
         //Fuente de aprovisionamiento es donde consultamos cuando ponemos un numero de material y asociamos un contrato
         public List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro)
@@ -1777,7 +1726,16 @@ namespace SustitucionMOAUtils.Services
                 original.DSCT_PCT1 != adjudicacion.PagoEn1Porcentaje ||
                 original.DSCT_PCT2 != adjudicacion.PagoEn2Porcentaje;
         }
-
+        private bool HayModificacionCondicionesDePagoSinPI(SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOHEADER original, AdjudicacionEditarDto adjudicacion)
+        {
+            return
+                original.PMNTTRMS != adjudicacion.CondicionDePagoCodigo ||
+                original.DSCNT1_TO != adjudicacion.PagoEn1 ||
+                original.DSCNT2_TO != adjudicacion.PagoEn2 ||
+                original.DSCNT3_TO != adjudicacion.PagoEn3 ||
+                original.DSCT_PCT1 != adjudicacion.PagoEn1Porcentaje ||
+                original.DSCT_PCT2 != adjudicacion.PagoEn2Porcentaje;
+        }
         private bool ModificoImporte(ResultBAPI_PO_GETDETAIL1 ocSap, AdjudicacionEditarDto adjudicacion)
         {
             foreach (var posAdj in adjudicacion.Posiciones.Where(a => !a.Eliminado))
@@ -1789,6 +1747,791 @@ namespace SustitucionMOAUtils.Services
 
             }
             return false;
+        }
+        private bool ModificoImporteSinPI(ResultBAPI_PO_GETDETAIL1SinPI ocSap, AdjudicacionEditarDto adjudicacion)
+        {
+            foreach (var posAdj in adjudicacion.Posiciones.Where(a => !a.Eliminado))
+            {
+                string PO_ITEM = posAdj.Indice.ToString().PadLeft(5, '0');
+                var posicionSap = ocSap.POITEM.Single(a => a.PO_ITEM == PO_ITEM);
+                var modifico = posAdj.PrecioUnidadCodigo != posicionSap.NET_PRICE;
+                if (modifico) return true;
+
+            }
+            return false;
+        }
+
+        private ResultadoGenerico ModificarOrdenDeCompraSinPI(AdjudicacionDto adjudicacionDto) {
+            var adjudicacion = ConvertirAjudicacionDtoEnAdjudicacionSAP(adjudicacionDto);
+            var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFCSinPI(adjudicacion.NumeroOrdenDeCompra);
+            ResultadoGenerico resultadoEditarOC = new ResultadoGenerico();
+
+            ModificarPedidoSAPSinPI modificarPedidoSAP = new ModificarPedidoSAPSinPI();
+
+            var listPOACCOUNT = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNT>();
+            var listPOADDRDELIVERY = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOADDRDELIVERY>();
+            var listPOCOND = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCOND>();
+            var listPOCONDX = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCONDX>();
+
+            var listPOITEM      = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEM>();
+            var listPOITEMX     = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEMX   >();
+            var listPOSCHEDULE  = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULE>();
+            var listPOSCHEDULEX = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX>();
+            var listPOSERVICES  = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX>();
+
+
+            foreach (var item in ocSap.POACCOUNT)
+            {
+                listPOACCOUNT.Add(new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNT()
+                {
+                    PO_ITEM = item.PO_ITEM
+                });
+            }
+            modificarPedidoSAP.POACCOUNT = listPOACCOUNT.ToList();
+
+            //POACCOUNTX = ocSap.POACCOUNT.Select(a => new BAPIMEPOACCOUNTX
+            //{
+            //    PO_ITEM = a.PO_ITEM
+            //}).ToList(),
+            
+            foreach (var item in ocSap.POADDRDELIVERY)
+            {
+                listPOADDRDELIVERY.Add(new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOADDRDELIVERY()
+                {
+                    PO_ITEM = item.PO_ITEM,
+                    POSTL_COD1 = item.POSTL_COD1,
+                    CITY = item.CITY,
+                    ADDR_NO = "",
+                    NAME = item.NAME,
+                    TEL1_NUMBR = "",
+                    STREET = item.STREET,
+                    STREET_NO = "",
+                    REGION = item.REGION,
+                    COUNTRY = item.COUNTRY
+                });
+            }
+            modificarPedidoSAP.POADDRDELIVERY = listPOADDRDELIVERY.ToList();
+
+
+            //POADDRDELIVERY = ocSap.POADDRDELIVERY.Select(a => new WS_GAQ_sin_PI_DIRECT_2012.BAPIMEPOADDRDELIVERY
+            //    {
+            //        PO_ITEM = a.PO_ITEM,
+            //        POSTL_COD1 = a.POSTL_COD1,
+            //        CITY = a.CITY,
+            //        ADDR_NO = "",
+            //        NAME = a.NAME,
+            //        TEL1_NUMBR = "",
+            //        STREET = a.STREET,
+            //        STREET_NO = "",
+            //        REGION = a.REGION,
+            //        COUNTRY = a.COUNTRY
+            //    }).ToList(),
+            foreach (var item in ocSap.POCOND)
+            {
+                listPOCOND.Add(new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCOND()
+                {
+                    ITM_NUMBER = item.ITM_NUMBER,  //el número de ítem al que corresponda la condición
+                    COND_ST_NO = item.COND_ST_NO,
+                    COND_TYPE = item.COND_TYPE,
+                    COND_VALUE = item.COND_VALUE, //el importe de la condición
+                    //COND_VALUESpecified = true,
+                    CURRENCY = item.CURRENCY,
+                    CHANGE_ID = "U",
+                    //COND_COUNT = x.COND_COUNT,
+                });
+            }
+            modificarPedidoSAP.POCOND = listPOCOND.ToList();
+
+            //POCOND = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCOND
+            //{
+            //    ITM_NUMBER = x.ITM_NUMBER,  //el número de ítem al que corresponda la condición
+            //    COND_ST_NO = x.COND_ST_NO,
+            //    COND_TYPE = x.COND_TYPE,
+            //    COND_VALUE = x.COND_VALUE, //el importe de la condición
+            //    COND_VALUESpecified = true,
+            //    CURRENCY = x.CURRENCY,
+            //    CHANGE_ID = "U",
+            //    //COND_COUNT = x.COND_COUNT,
+
+            //}).ToList()
+            foreach (var item in ocSap.POCOND)
+            {
+                listPOCONDX.Add(new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCONDX()
+                {
+                    ITM_NUMBER = item.ITM_NUMBER,
+                    ITM_NUMBERX = "X",
+                    COND_ST_NO = "001",
+                    COND_ST_NOX = "X",
+                    COND_TYPE = "X",
+                    COND_VALUE = "X",
+                    CURRENCY = "X",
+                    CHANGE_ID = "X",
+                    CONDITION_NOX = "X",
+                });
+            }
+            modificarPedidoSAP.POCONDX = listPOCONDX.ToList();
+
+            //POCONDX = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCONDX
+            //{
+            //    ITM_NUMBER = x.ITM_NUMBER,
+            //    ITM_NUMBERX = "X",
+            //    COND_ST_NO = "001",
+            //    COND_ST_NOX = "X",
+            //    COND_TYPE = "X",
+            //    COND_VALUE = "X",
+            //    CURRENCY = "X",
+            //    CHANGE_ID = "X",
+            //    CONDITION_NOX = "X",
+            //}).ToList(),
+
+            //POHEADER = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOHEADER(),
+            //POHEADERX = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOHEADERX(),
+            modificarPedidoSAP.POHEADER = new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOHEADER();
+            modificarPedidoSAP.POHEADERX = new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOHEADERX();
+
+            /*
+            var listPOITEM = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEM>();
+            var listPOITEMX = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEMX>();
+            var listPOSCHEDULE = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULE>();
+            var listPOSCHEDULEX = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX>();
+            var listPOSERVICES = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX>();
+            */
+            foreach (var item in ocSap.POITEM)
+            {
+                listPOITEM.Add(new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEM()
+                {
+                    PO_ITEM = item.PO_ITEM,
+                    PCKG_NO = item.PCKG_NO
+                });
+            }
+            modificarPedidoSAP.POITEM = listPOITEM.ToList();
+            //POITEM = ocSap.POITEM.Select(x => new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEM
+            //{
+            //    PO_ITEM = x.PO_ITEM,
+            //    PCKG_NO = x.PCKG_NO
+            //}).ToList(),
+
+            foreach (var item in ocSap.POITEM)
+            {
+                listPOITEMX.Add(new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEMX()
+                {
+                    PO_ITEM = item.PO_ITEM
+                });
+            }
+            modificarPedidoSAP.POITEMX = listPOITEMX.ToList();
+
+            //POITEMX = ocSap.POITEM.Select(x => new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEMX
+            //{
+            //    PO_ITEM = x.PO_ITEM,
+            //}).ToList(),
+
+            foreach (var item in ocSap.POSCHEDULE)
+            {
+                listPOSCHEDULE.Add(new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULE()
+                {
+                    PO_ITEM = item.PO_ITEM,
+                    SCHED_LINE = item.SCHED_LINE,
+                    DELIVERY_DATE = item.DELIVERY_DATE
+                });
+            }
+            modificarPedidoSAP.POSCHEDULE = listPOSCHEDULE.ToList();
+
+            foreach (var item in ocSap.POSCHEDULE)
+            {
+                listPOSCHEDULEX.Add(new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX()
+                {
+                    PO_ITEM = item.PO_ITEM,
+                    SCHED_LINE = item.SCHED_LINE,
+                    DELIVERY_DATE = "X"
+                });
+            }
+            modificarPedidoSAP.POSCHEDULEX = listPOSCHEDULEX.ToList();
+            modificarPedidoSAP.POSERVICES = ConvertirLista<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIESLLC>(ocSap.POSERVICES.ToList());
+
+
+            //POSCHEDULE = ocSap.POSCHEDULE.Select(x => new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULE { PO_ITEM = x.PO_ITEM, SCHED_LINE = x.SCHED_LINE, DELIVERY_DATE = x.DELIVERY_DATE }).ToList(),
+            //POSCHEDULEX = ocSap.POSCHEDULE.Select(x => new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX { PO_ITEM = x.PO_ITEM, SCHED_LINE = x.SCHED_LINE, DELIVERY_DATE = "X" }).ToList(),
+            //POSERVICES = ConvertirLista<BAPIESLLC>(ocSap.POSERVICES.ToList()),
+
+            //POSRVACCESSVALUES = ocSap.POSRVACCESSVALUES.Select(x => new BAPIESKLC
+            //{
+            //    PCKG_NO = x.PCKG_NO,
+            //    LINE_NO = x.LINE_NO,
+            //    PERCENTAGE = x.PERCENTAGE,
+            //    SERNO_LINE = x.SERNO_LINE,
+            //    SERIAL_NO = x.SERIAL_NO,
+            //    QUANTITY = x.QUANTITY,
+            //    NET_VALUE = x.NET_VALUE,
+            //    NET_VALUESpecified = true,
+            //    PERCENTAGESpecified = true,
+            //    QUANTITYSpecified = true,
+            //}).ToList(),
+
+            modificarPedidoSAP.POTEXTHEADER = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOTEXTHEADER>();
+            modificarPedidoSAP.PURCHASEORDER = adjudicacion.NumeroOrdenDeCompra;
+
+            
+            //foreach (var bAPIESLLC in modificarPedidoSAP.POSERVICES)
+            //{
+            //    bAPIESLLC.GR_PRICESpecified = true;
+            //    bAPIESLLC.QUANTITYSpecified = true;
+            //    bAPIESLLC.NET_VALUESpecified = true;
+            //    bAPIESLLC.PRICE_UNITSpecified = true;
+            //}
+
+            //Racional de compras
+            var listaVaciaTexto = new string[] { "" };
+            var textosDiccionario = new Dictionary<string, string[]>() {
+                {"F01", !string.IsNullOrEmpty(adjudicacion.TextoDeCabecera) ?  adjudicacion.TextoDeCabecera.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+                {"F05", !string.IsNullOrEmpty(adjudicacion.CondicionesDeEntrega)? adjudicacion.CondicionesDeEntrega.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+                {"F07", !string.IsNullOrEmpty(adjudicacion.CondicionesDePago) ? adjudicacion.CondicionesDePago.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+                {"F08", !string.IsNullOrEmpty(adjudicacion.Garantias) ? adjudicacion.Garantias.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+            };
+            foreach (var grupos in textosDiccionario)
+            {
+                bool todosVacios = grupos.Value.All(string.IsNullOrEmpty);
+                if (!todosVacios)
+                {
+                    foreach (var texto in grupos.Value)
+                    {
+                        modificarPedidoSAP.POTEXTHEADER.Add(new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOTEXTHEADER
+                        {
+                            TEXT_ID = grupos.Key,
+                            PO_NUMBER = "",
+                            PO_ITEM = "0",
+                            TEXT_FORM = "*",
+                            TEXT_LINE = texto
+                        });
+                    }
+                }
+
+            }
+
+            //Condición de Pago  - no funcionan para las  ZPE1 y ZDIR por que sap no lo permite
+            List<string> condicionesNoEditables = new List<string>() { "ZPE1", "ZDIR" };
+            if (!condicionesNoEditables.Contains(ocSap.POHEADER.DOC_TYPE))
+            {
+                modificarPedidoSAP.POHEADER.PMNTTRMS = adjudicacion.CondicionDePagoCodigo;
+                modificarPedidoSAP.POHEADER.DSCNT1_TO = adjudicacion.PagoEn1;
+                //modificarPedidoSAP.POHEADER.DSCNT1_TOSpecified = true;
+                modificarPedidoSAP.POHEADER.DSCNT2_TO = adjudicacion.PagoEn2;
+                //modificarPedidoSAP.POHEADER.DSCNT2_TOSpecified = true;
+                modificarPedidoSAP.POHEADER.DSCNT3_TO = adjudicacion.PagoEn3;
+                //modificarPedidoSAP.POHEADER.DSCNT3_TOSpecified = true;
+                modificarPedidoSAP.POHEADER.DSCT_PCT1 = adjudicacion.PagoEn1Porcentaje;
+                //modificarPedidoSAP.POHEADER.DSCT_PCT1Specified = true;
+                modificarPedidoSAP.POHEADER.DSCT_PCT2 = adjudicacion.PagoEn2Porcentaje;
+                //modificarPedidoSAP.POHEADER.DSCT_PCT2Specified = true;
+                modificarPedidoSAP.POHEADERX.PMNTTRMS = "X";
+                modificarPedidoSAP.POHEADERX.DSCNT1_TO = "X";
+                modificarPedidoSAP.POHEADERX.DSCNT2_TO = "X";
+                modificarPedidoSAP.POHEADERX.DSCNT3_TO = "X";
+                modificarPedidoSAP.POHEADERX.DSCT_PCT1 = "X";
+                modificarPedidoSAP.POHEADERX.DSCT_PCT2 = "X";
+            }
+            else
+            {
+                var header = new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOHEADER();
+
+                header.PMNTTRMS  = ocSap.POHEADER.PMNTTRMS;
+                header.DSCNT1_TO = ocSap.POHEADER.DSCNT1_TO;
+                header.DSCNT2_TO = ocSap.POHEADER.DSCNT2_TO;
+                header.DSCNT3_TO = ocSap.POHEADER.DSCNT3_TO;
+                header.DSCT_PCT1 = ocSap.POHEADER.DSCT_PCT1;
+                header.DSCT_PCT2 = ocSap.POHEADER.DSCT_PCT2;
+
+                if (HayModificacionCondicionesDePagoSinPI(header, adjudicacion))// TODO: validar si edito alguna condicion de pago.
+                {
+                    resultadoEditarOC.Errores.Add(new ErrorMessage("Condición de Pago no se puede editar para las clase de documento  ZPE1 y ZDIR."));
+                    return resultadoEditarOC;
+                }
+            }
+
+
+            //Condición de Importacion
+            if (!string.IsNullOrEmpty(adjudicacion.CondicionDeImportacionComplemento) && adjudicacion.CondicionDeImportacionComplemento.Length > 28)
+            {
+                resultadoEditarOC.Errores.Add(new ErrorMessage("Condicion de importacion muy largo, 28 caracteres maximo."));
+                return resultadoEditarOC;
+            }
+            modificarPedidoSAP.POHEADER.INCOTERMS1 = adjudicacion.CondicionDeImportacionCodigo;
+            modificarPedidoSAP.POHEADER.INCOTERMS2 = adjudicacion.CondicionDeImportacionComplemento;
+            modificarPedidoSAP.POHEADERX.INCOTERMS1 = "X";
+            modificarPedidoSAP.POHEADERX.INCOTERMS2 = "X";
+
+            //Datos utiles
+            bool esMateriales = ocSap.POITEM[0].ITEM_CAT == "0";
+            bool modificoMoneda = ocSap.POHEADER.CURRENCY != adjudicacion.MonedaCodigo;
+
+            //Modificar moneda
+            if (modificoMoneda)
+            {
+                modificarPedidoSAP.POHEADER.CURRENCY = adjudicacion.MonedaCodigo;
+                modificarPedidoSAP.POHEADERX.CURRENCY = "X";
+            }
+
+            foreach (var posAdj in adjudicacion.Posiciones)
+            {
+                string PO_ITEM = posAdj.Indice.ToString().PadLeft(5, '0');
+
+                //Región
+                var direccioSap = modificarPedidoSAP.POADDRDELIVERY.Single(a => a.PO_ITEM == PO_ITEM);
+                direccioSap.REGION = posAdj.RegionCodigo;
+                direccioSap.COUNTRY = posAdj.PaisCodigo;
+
+                //Fechas de entrega(por posición)
+                var fechaEntregaSap = modificarPedidoSAP.POSCHEDULE.Single(a => a.PO_ITEM == PO_ITEM);
+                var fechaEntregaSapX = modificarPedidoSAP.POSCHEDULEX.Single(a => a.PO_ITEM == PO_ITEM);
+                fechaEntregaSap.DELIVERY_DATE = posAdj.FechaEntrega.ToString("dd.MM.yyyy");
+                fechaEntregaSapX.DELIVERY_DATE = "X";
+
+                //Posición
+                var posicionSap = modificarPedidoSAP.POITEM.Single(a => a.PO_ITEM == PO_ITEM);
+                var posicionSapX = modificarPedidoSAP.POITEMX.Single(a => a.PO_ITEM == PO_ITEM);
+                //Impitación
+                var imputacionSap = new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNT();
+                var imputacionSapX = new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNTX();
+                if (modificarPedidoSAP.POACCOUNT.Count > 0)
+                {
+                    imputacionSap = modificarPedidoSAP.POACCOUNT.FirstOrDefault(a => a.PO_ITEM == PO_ITEM);
+                    imputacionSapX = modificarPedidoSAP.POACCOUNTX.FirstOrDefault(a => a.PO_ITEM == PO_ITEM);
+                }
+                //Condición
+                var condicionSap = modificarPedidoSAP.POCOND.Single(a => a.ITM_NUMBER == "0" + PO_ITEM);
+
+                //Eliminar posición
+                posicionSap.DELETE_IND = posAdj.Eliminado ? "X" : "";
+                posicionSapX.DELETE_IND = "X";
+
+                //Tilde entrega final
+                posicionSap.NO_MORE_GR = posAdj.EntregaFinal ? "X" : "";
+                posicionSapX.NO_MORE_GR = "X";
+
+                if (esMateriales)
+                {
+                    bool modificoImporte = ModificoImporteSinPI(ocSap, adjudicacion);
+
+                    //Modificar cantidad
+                    posicionSap.QUANTITY = posAdj.Cantidad;
+                    //posicionSap.QUANTITYSpecified = true;
+                    posicionSapX.QUANTITY = "X";
+                    if (modificarPedidoSAP.POACCOUNT.Count > 0)
+                    {
+                        imputacionSap.QUANTITY = posAdj.Cantidad;
+                        imputacionSapX.QUANTITY = "X";
+                    }
+
+                    //Modificar importe
+                    if (modificoImporte)
+                    {
+                        posicionSap.NET_PRICE = posAdj.PrecioUnidadCodigo;
+                        //posicionSap.NET_PRICESpecified = true;
+                        posicionSapX.NET_PRICE = "X";
+                        condicionSap.COND_VALUE = posAdj.PrecioUnidadCodigo;
+                        //condicionSap.COND_VALUESpecified = true;
+                        condicionSap.CURRENCY = adjudicacion.MonedaCodigo;
+                        //"ZP01" no deja cambiar importes por eso se cambia a "ZP00"
+                        condicionSap.COND_TYPE = condicionSap.COND_TYPE == "ZP01" ? "ZP00" : condicionSap.COND_TYPE;
+                    }
+                }
+                else
+                {
+
+                    if (!posAdj.Eliminado)
+                    {
+                        foreach (var subPosAdj in posAdj.SubPosiciones)
+                        {
+                            //Subposición
+                            string LINE_NO = subPosAdj.Indice.ToString().PadLeft(10, '0');
+                            var subPosicionSap = modificarPedidoSAP.POSERVICES.First(a => a.LINE_NO == LINE_NO);
+                            //var imputacionSubPos = modificarPedidoSAP.POSRVACCESSVALUES.First(a => a.LINE_NO == LINE_NO);//
+
+                            //Eliminar subposición 
+                            subPosicionSap.DELETE_IND = subPosAdj.Eliminado ? "X" : "";
+                            if (subPosAdj.Eliminado) continue;
+                            //Cantidad
+                            subPosicionSap.QUANTITY = subPosAdj.Cantidad;
+                            //imputacionSubPos.QUANTITY = subPosAdj.Cantidad;
+                            //Importe 1/2                            
+                            subPosicionSap.GR_PRICE = subPosAdj.PrecioUnitario;
+                            subPosicionSap.NET_VALUE = subPosAdj.PrecioUnitario * subPosAdj.Cantidad;
+                            //imputacionSubPos.NET_VALUE = subPosAdj.PrecioUnitario * subPosAdj.Cantidad;
+
+                        }
+
+                        //Importe 2/2                        
+                        var totalPosicion = posAdj.SubPosiciones.Where(a => !a.Eliminado).Sum(a => a.Cantidad * a.PrecioUnitario);
+                        condicionSap.COND_VALUE = totalPosicion;
+                        //condicionSap.COND_VALUESpecified = true;
+                        condicionSap.CURRENCY = adjudicacion.MonedaCodigo;
+                        condicionSap.COND_TYPE = condicionSap.COND_TYPE == "ZP01" ? "ZP01" : condicionSap.COND_TYPE;
+
+                        posicionSap.NET_PRICE = totalPosicion;
+                        //posicionSap.NET_PRICESpecified = true;
+                        posicionSapX.NET_PRICE = "X";
+                        //imputacionSap.NET_VALUE = totalPosicion;
+                        //imputacionSap.NET_VALUESpecified = true;
+                        //imputacionSapX.NET_VALUE = "X";
+
+                    }
+
+                }
+            }
+
+            if (!esMateriales) // para servicios guille nos dijo que no lo enviemos pero para materiales si lo necesitamos enviar.
+            {
+                modificarPedidoSAP.POACCOUNT = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNT>();
+                modificarPedidoSAP.POACCOUNTX = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNTX>();
+            }
+
+            if (modificoMoneda)
+            {
+                modificarPedidoSAP.POITEM = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEM>();
+                modificarPedidoSAP.POITEMX = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEMX>();
+
+                modificarPedidoSAP.POACCOUNT = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNT>();
+                modificarPedidoSAP.POACCOUNTX = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNTX>();
+
+                modificarPedidoSAP.POSERVICES = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIESLLC>();
+
+                modificarPedidoSAP.POCOND = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCOND>();
+                modificarPedidoSAP.POCONDX = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCONDX>();
+
+                modificarPedidoSAP.POADDRDELIVERY = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOADDRDELIVERY>();
+                modificarPedidoSAP.POSCHEDULE = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULE>();
+                modificarPedidoSAP.POSCHEDULEX = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX>();
+
+            }
+
+            var resultadoSAP = modificarOrdenDeCompraConsumerMOA.EditarPedidoRequestSinPI(modificarPedidoSAP);
+            resultadoSAP.Where(a => a.MESSAGE == "No se han modificado datos").ToList().ForEach(a => a.TYPE = "E");
+
+            foreach (var item in resultadoSAP.Where(x => x.TYPE == "E"))
+            {
+                resultadoEditarOC.Error(item.TYPE, item.MESSAGE);
+            }
+            
+
+            return resultadoEditarOC;
+        }
+        private ResultadoGenerico ModificarOrdenDeCompra(AdjudicacionDto adjudicacionDto) {
+
+            var adjudicacion = ConvertirAjudicacionDtoEnAdjudicacionSAP(adjudicacionDto);
+            var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(adjudicacion.NumeroOrdenDeCompra);
+            ResultadoGenerico resultadoEditarOC = new ResultadoGenerico();
+
+            ModificarPedidoSAP modificarPedidoSAP = new ModificarPedidoSAP
+            {
+                POACCOUNT = ocSap.POACCOUNT.Select(a => new BAPIMEPOACCOUNT
+                {
+                    PO_ITEM = a.PO_ITEM
+                }).ToList(),
+                POACCOUNTX = ocSap.POACCOUNT.Select(a => new BAPIMEPOACCOUNTX
+                {
+                    PO_ITEM = a.PO_ITEM
+                }).ToList(),
+                POADDRDELIVERY = ocSap.POADDRDELIVERY.Select(a => new BAPIMEPOADDRDELIVERY
+                {
+                    PO_ITEM = a.PO_ITEM,
+                    POSTL_COD1 = a.POSTL_COD1,
+                    CITY = a.CITY,
+                    ADDR_NO = "",
+                    NAME = a.NAME,
+                    TEL1_NUMBR = "",
+                    STREET = a.STREET,
+                    STREET_NO = "",
+                    REGION = a.REGION,
+                    COUNTRY = a.COUNTRY
+                }).ToList(),
+                POCOND = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCOND
+                {
+                    ITM_NUMBER = x.ITM_NUMBER,  //el número de ítem al que corresponda la condición
+                    COND_ST_NO = x.COND_ST_NO,
+                    COND_TYPE = x.COND_TYPE,
+                    COND_VALUE = x.COND_VALUE, //el importe de la condición
+                    COND_VALUESpecified = true,
+                    CURRENCY = x.CURRENCY,
+                    CHANGE_ID = "U",
+                    //COND_COUNT = x.COND_COUNT,
+
+                }).ToList(),
+                POCONDX = ocSap.POCOND.Where(a => a.COND_TYPE != "SKTO").Select(x => new BAPIMEPOCONDX
+                {
+                    ITM_NUMBER = x.ITM_NUMBER,
+                    ITM_NUMBERX = "X",
+                    COND_ST_NO = "001",
+                    COND_ST_NOX = "X",
+                    COND_TYPE = "X",
+                    COND_VALUE = "X",
+                    CURRENCY = "X",
+                    CHANGE_ID = "X",
+                    CONDITION_NOX = "X",
+                }).ToList(),
+
+                POHEADER = new BAPIMEPOHEADER(),
+                POHEADERX = new BAPIMEPOHEADERX(),
+                POITEM = ocSap.POITEM.Select(x => new BAPIMEPOITEM
+                {
+                    PO_ITEM = x.PO_ITEM,
+                    PCKG_NO = x.PCKG_NO
+                }).ToList(),
+                POITEMX = ocSap.POITEM.Select(x => new BAPIMEPOITEMX
+                {
+                    PO_ITEM = x.PO_ITEM,
+                }).ToList(),
+                POSCHEDULE = ocSap.POSCHEDULE.Select(x => new BAPIMEPOSCHEDULE { PO_ITEM = x.PO_ITEM, SCHED_LINE = x.SCHED_LINE, DELIVERY_DATE = x.DELIVERY_DATE }).ToList(),
+                POSCHEDULEX = ocSap.POSCHEDULE.Select(x => new BAPIMEPOSCHEDULX { PO_ITEM = x.PO_ITEM, SCHED_LINE = x.SCHED_LINE, DELIVERY_DATE = "X" }).ToList(),
+                POSERVICES = ConvertirLista<BAPIESLLC>(ocSap.POSERVICES.ToList()),
+                //POSRVACCESSVALUES = ocSap.POSRVACCESSVALUES.Select(x => new BAPIESKLC
+                //{
+                //    PCKG_NO = x.PCKG_NO,
+                //    LINE_NO = x.LINE_NO,
+                //    PERCENTAGE = x.PERCENTAGE,
+                //    SERNO_LINE = x.SERNO_LINE,
+                //    SERIAL_NO = x.SERIAL_NO,
+                //    QUANTITY = x.QUANTITY,
+                //    NET_VALUE = x.NET_VALUE,
+                //    NET_VALUESpecified = true,
+                //    PERCENTAGESpecified = true,
+                //    QUANTITYSpecified = true,
+                //}).ToList(),
+                POTEXTHEADER = new List<BAPIMEPOTEXTHEADER>(),
+                PURCHASEORDER = adjudicacion.NumeroOrdenDeCompra,
+
+            };
+            foreach (var bAPIESLLC in modificarPedidoSAP.POSERVICES)
+            {
+                bAPIESLLC.GR_PRICESpecified = true;
+                bAPIESLLC.QUANTITYSpecified = true;
+                bAPIESLLC.NET_VALUESpecified = true;
+                bAPIESLLC.PRICE_UNITSpecified = true;
+            }
+
+            //Racional de compras
+            var listaVaciaTexto = new string[] { "" };
+            var textosDiccionario = new Dictionary<string, string[]>() {
+                {"F01", !string.IsNullOrEmpty(adjudicacion.TextoDeCabecera) ?  adjudicacion.TextoDeCabecera.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+                {"F05", !string.IsNullOrEmpty(adjudicacion.CondicionesDeEntrega)? adjudicacion.CondicionesDeEntrega.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+                {"F07", !string.IsNullOrEmpty(adjudicacion.CondicionesDePago) ? adjudicacion.CondicionesDePago.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+                {"F08", !string.IsNullOrEmpty(adjudicacion.Garantias) ? adjudicacion.Garantias.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
+            };
+            foreach (var grupos in textosDiccionario)
+            {
+                bool todosVacios = grupos.Value.All(string.IsNullOrEmpty);
+                if (!todosVacios)
+                {
+                    foreach (var texto in grupos.Value)
+                    {
+                        modificarPedidoSAP.POTEXTHEADER.Add(new BAPIMEPOTEXTHEADER
+                        {
+                            TEXT_ID = grupos.Key,
+                            PO_NUMBER = "",
+                            PO_ITEM = "0",
+                            TEXT_FORM = "*",
+                            TEXT_LINE = texto
+                        });
+                    }
+                }
+
+            }
+
+            //Condición de Pago  - no funcionan para las  ZPE1 y ZDIR por que sap no lo permite
+            List<string> condicionesNoEditables = new List<string>() { "ZPE1", "ZDIR" };
+            if (!condicionesNoEditables.Contains(ocSap.POHEADER.DOC_TYPE))
+            {
+                modificarPedidoSAP.POHEADER.PMNTTRMS = adjudicacion.CondicionDePagoCodigo;
+                modificarPedidoSAP.POHEADER.DSCNT1_TO = adjudicacion.PagoEn1;
+                modificarPedidoSAP.POHEADER.DSCNT1_TOSpecified = true;
+                modificarPedidoSAP.POHEADER.DSCNT2_TO = adjudicacion.PagoEn2;
+                modificarPedidoSAP.POHEADER.DSCNT2_TOSpecified = true;
+                modificarPedidoSAP.POHEADER.DSCNT3_TO = adjudicacion.PagoEn3;
+                modificarPedidoSAP.POHEADER.DSCNT3_TOSpecified = true;
+                modificarPedidoSAP.POHEADER.DSCT_PCT1 = adjudicacion.PagoEn1Porcentaje;
+                modificarPedidoSAP.POHEADER.DSCT_PCT1Specified = true;
+                modificarPedidoSAP.POHEADER.DSCT_PCT2 = adjudicacion.PagoEn2Porcentaje;
+                modificarPedidoSAP.POHEADER.DSCT_PCT2Specified = true;
+                modificarPedidoSAP.POHEADERX.PMNTTRMS = "X";
+                modificarPedidoSAP.POHEADERX.DSCNT1_TO = "X";
+                modificarPedidoSAP.POHEADERX.DSCNT2_TO = "X";
+                modificarPedidoSAP.POHEADERX.DSCNT3_TO = "X";
+                modificarPedidoSAP.POHEADERX.DSCT_PCT1 = "X";
+                modificarPedidoSAP.POHEADERX.DSCT_PCT2 = "X";
+            }
+            else
+            {
+                if (HayModificacionCondicionesDePago(ocSap.POHEADER, adjudicacion))// TODO: validar si edito alguna condicion de pago.
+                {
+                    resultadoEditarOC.Errores.Add(new ErrorMessage("Condición de Pago no se puede editar para las clase de documento  ZPE1 y ZDIR."));
+                    return resultadoEditarOC;
+                }
+            }
+
+
+            //Condición de Importacion
+            if (!string.IsNullOrEmpty(adjudicacion.CondicionDeImportacionComplemento) && adjudicacion.CondicionDeImportacionComplemento.Length > 28)
+            {
+                resultadoEditarOC.Errores.Add(new ErrorMessage("Condicion de importacion muy largo, 28 caracteres maximo."));
+                return resultadoEditarOC;
+            }
+            modificarPedidoSAP.POHEADER.INCOTERMS1 = adjudicacion.CondicionDeImportacionCodigo;
+            modificarPedidoSAP.POHEADER.INCOTERMS2 = adjudicacion.CondicionDeImportacionComplemento;
+            modificarPedidoSAP.POHEADERX.INCOTERMS1 = "X";
+            modificarPedidoSAP.POHEADERX.INCOTERMS2 = "X";
+
+            //Datos utiles
+            bool esMateriales = ocSap.POITEM[0].ITEM_CAT == "0";
+            bool modificoMoneda = ocSap.POHEADER.CURRENCY != adjudicacion.MonedaCodigo;
+
+            //Modificar moneda
+            if (modificoMoneda)
+            {
+                modificarPedidoSAP.POHEADER.CURRENCY = adjudicacion.MonedaCodigo;
+                modificarPedidoSAP.POHEADERX.CURRENCY = "X";
+            }
+
+            foreach (var posAdj in adjudicacion.Posiciones)
+            {
+                string PO_ITEM = posAdj.Indice.ToString().PadLeft(5, '0');
+
+                //Región
+                var direccioSap = modificarPedidoSAP.POADDRDELIVERY.Single(a => a.PO_ITEM == PO_ITEM);
+                direccioSap.REGION = posAdj.RegionCodigo;
+                direccioSap.COUNTRY = posAdj.PaisCodigo;
+
+                //Fechas de entrega(por posición)
+                var fechaEntregaSap = modificarPedidoSAP.POSCHEDULE.Single(a => a.PO_ITEM == PO_ITEM);
+                var fechaEntregaSapX = modificarPedidoSAP.POSCHEDULEX.Single(a => a.PO_ITEM == PO_ITEM);
+                fechaEntregaSap.DELIVERY_DATE = posAdj.FechaEntrega.ToString("dd.MM.yyyy");
+                fechaEntregaSapX.DELIVERY_DATE = "X";
+
+                //Posición
+                var posicionSap = modificarPedidoSAP.POITEM.Single(a => a.PO_ITEM == PO_ITEM);
+                var posicionSapX = modificarPedidoSAP.POITEMX.Single(a => a.PO_ITEM == PO_ITEM);
+                //Impitación
+                var imputacionSap = new BAPIMEPOACCOUNT();
+                var imputacionSapX = new BAPIMEPOACCOUNTX();
+                if (modificarPedidoSAP.POACCOUNT.Count > 0)
+                {
+                    imputacionSap = modificarPedidoSAP.POACCOUNT.FirstOrDefault(a => a.PO_ITEM == PO_ITEM);
+                    imputacionSapX = modificarPedidoSAP.POACCOUNTX.FirstOrDefault(a => a.PO_ITEM == PO_ITEM);
+                }
+                //Condición
+                var condicionSap = modificarPedidoSAP.POCOND.Single(a => a.ITM_NUMBER == "0" + PO_ITEM);
+
+                //Eliminar posición
+                posicionSap.DELETE_IND = posAdj.Eliminado ? "X" : "";
+                posicionSapX.DELETE_IND = "X";
+
+                //Tilde entrega final
+                posicionSap.NO_MORE_GR = posAdj.EntregaFinal ? "X" : "";
+                posicionSapX.NO_MORE_GR = "X";
+
+                if (esMateriales)
+                {
+                    bool modificoImporte = ModificoImporte(ocSap, adjudicacion);
+
+                    //Modificar cantidad
+                    posicionSap.QUANTITY = posAdj.Cantidad;
+                    posicionSap.QUANTITYSpecified = true;
+                    posicionSapX.QUANTITY = "X";
+                    if (modificarPedidoSAP.POACCOUNT.Count > 0)
+                    {
+                        imputacionSap.QUANTITY = posAdj.Cantidad;
+                        imputacionSapX.QUANTITY = "X";
+                    }
+
+                    //Modificar importe
+                    if (modificoImporte)
+                    {
+                        posicionSap.NET_PRICE = posAdj.PrecioUnidadCodigo;
+                        posicionSap.NET_PRICESpecified = true;
+                        posicionSapX.NET_PRICE = "X";
+                        condicionSap.COND_VALUE = posAdj.PrecioUnidadCodigo;
+                        condicionSap.COND_VALUESpecified = true;
+                        condicionSap.CURRENCY = adjudicacion.MonedaCodigo;
+                        //"ZP01" no deja cambiar importes por eso se cambia a "ZP00"
+                        condicionSap.COND_TYPE = condicionSap.COND_TYPE == "ZP01" ? "ZP00" : condicionSap.COND_TYPE;
+                    }
+                }
+                else
+                {
+
+                    if (!posAdj.Eliminado)
+                    {
+                        foreach (var subPosAdj in posAdj.SubPosiciones)
+                        {
+                            //Subposición
+                            string LINE_NO = subPosAdj.Indice.ToString().PadLeft(10, '0');
+                            var subPosicionSap = modificarPedidoSAP.POSERVICES.First(a => a.LINE_NO == LINE_NO);
+                            //var imputacionSubPos = modificarPedidoSAP.POSRVACCESSVALUES.First(a => a.LINE_NO == LINE_NO);//
+
+                            //Eliminar subposición 
+                            subPosicionSap.DELETE_IND = subPosAdj.Eliminado ? "X" : "";
+                            if (subPosAdj.Eliminado) continue;
+                            //Cantidad
+                            subPosicionSap.QUANTITY = subPosAdj.Cantidad;
+                            //imputacionSubPos.QUANTITY = subPosAdj.Cantidad;
+                            //Importe 1/2                            
+                            subPosicionSap.GR_PRICE = subPosAdj.PrecioUnitario;
+                            subPosicionSap.NET_VALUE = subPosAdj.PrecioUnitario * subPosAdj.Cantidad;
+                            //imputacionSubPos.NET_VALUE = subPosAdj.PrecioUnitario * subPosAdj.Cantidad;
+
+                        }
+
+                        //Importe 2/2                        
+                        var totalPosicion = posAdj.SubPosiciones.Where(a => !a.Eliminado).Sum(a => a.Cantidad * a.PrecioUnitario);
+                        condicionSap.COND_VALUE = totalPosicion;
+                        condicionSap.COND_VALUESpecified = true;
+                        condicionSap.CURRENCY = adjudicacion.MonedaCodigo;
+                        condicionSap.COND_TYPE = condicionSap.COND_TYPE == "ZP01" ? "ZP01" : condicionSap.COND_TYPE;
+
+                        posicionSap.NET_PRICE = totalPosicion;
+                        posicionSap.NET_PRICESpecified = true;
+                        posicionSapX.NET_PRICE = "X";
+                        //imputacionSap.NET_VALUE = totalPosicion;
+                        //imputacionSap.NET_VALUESpecified = true;
+                        //imputacionSapX.NET_VALUE = "X";
+
+                    }
+
+                }
+            }
+
+            if (!esMateriales) // para servicios guille nos dijo que no lo enviemos pero para materiales si lo necesitamos enviar.
+            {
+                modificarPedidoSAP.POACCOUNT = new List<BAPIMEPOACCOUNT>();
+                modificarPedidoSAP.POACCOUNTX = new List<BAPIMEPOACCOUNTX>();
+            }
+
+            if (modificoMoneda)
+            {
+                modificarPedidoSAP.POITEM = new List<BAPIMEPOITEM>();
+                modificarPedidoSAP.POITEMX = new List<BAPIMEPOITEMX>();
+
+                modificarPedidoSAP.POACCOUNT = new List<BAPIMEPOACCOUNT>();
+                modificarPedidoSAP.POACCOUNTX = new List<BAPIMEPOACCOUNTX>();
+
+                modificarPedidoSAP.POSERVICES = new List<BAPIESLLC>();
+
+                modificarPedidoSAP.POCOND = new List<BAPIMEPOCOND>();
+                modificarPedidoSAP.POCONDX = new List<BAPIMEPOCONDX>();
+
+                modificarPedidoSAP.POADDRDELIVERY = new List<BAPIMEPOADDRDELIVERY>();
+                modificarPedidoSAP.POSCHEDULE = new List<BAPIMEPOSCHEDULE>();
+                modificarPedidoSAP.POSCHEDULEX = new List<BAPIMEPOSCHEDULX>();
+
+            }
+
+            var resultadoSAP = modificarOrdenDeCompraConsumerMOA.EditarPedidoRequest(modificarPedidoSAP);
+            resultadoSAP.Where(a => a.MESSAGE == "No se han modificado datos").ToList().ForEach(a => a.TYPE = "E");
+
+            foreach (var item in resultadoSAP.Where(x => x.TYPE == "E"))
+            {
+                resultadoEditarOC.Error(item.TYPE, item.MESSAGE);
+            }
+
+            return resultadoEditarOC;
+
         }
     }
 }

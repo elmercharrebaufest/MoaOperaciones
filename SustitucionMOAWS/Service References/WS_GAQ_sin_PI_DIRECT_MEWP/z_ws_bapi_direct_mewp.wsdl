@@ -1131,6 +1131,81 @@
           <xsd:element name="HOLD" type="tns:char1" />
         </xsd:sequence>
       </xsd:complexType>
+      <xsd:complexType name="BAPIMGVMATNR">
+        <xsd:sequence>
+          <xsd:element name="MATERIAL_EXT" type="tns:char40" />
+          <xsd:element name="MATERIAL_VERS" type="tns:char10" />
+          <xsd:element name="MATERIAL_GUID" type="tns:char32" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIEKPOC">
+        <xsd:sequence>
+          <xsd:element name="PO_NUMBER" type="tns:char10" />
+          <xsd:element name="PO_ITEM" type="tns:numeric5" />
+          <xsd:element name="ADDRESS" type="tns:char10" />
+          <xsd:element name="MATERIAL" type="tns:char18" />
+          <xsd:element name="PUR_MAT" type="tns:char18" />
+          <xsd:element name="INFO_REC" type="tns:char10" />
+          <xsd:element name="ITEM_CAT" type="tns:char1" />
+          <xsd:element name="ACCTASSCAT" type="tns:char1" />
+          <xsd:element name="AGREEMENT" type="tns:char10" />
+          <xsd:element name="AGMT_ITEM" type="tns:numeric5" />
+          <xsd:element name="STORE_LOC" type="tns:char4" />
+          <xsd:element name="MAT_GRP" type="tns:char9" />
+          <xsd:element name="SHORT_TEXT" type="tns:char40" />
+          <xsd:element name="DISTRIB" type="tns:char1" />
+          <xsd:element name="PART_INV" type="tns:char1" />
+          <xsd:element name="KANBAN_IND" type="tns:char1" />
+          <xsd:element name="PLANT" type="tns:char4" />
+          <xsd:element name="ALLOC_TBL" type="tns:char10" />
+          <xsd:element name="AT_ITEM" type="tns:numeric5" />
+          <xsd:element name="UNIT" type="tns:unit3" />
+          <xsd:element name="NET_PRICE" type="tns:decimal23.4" />
+          <xsd:element name="PRICE_UNIT" type="tns:decimal5.0" />
+          <xsd:element name="CONV_NUM1" type="tns:decimal5.0" />
+          <xsd:element name="CONV_DEN1" type="tns:decimal5.0" />
+          <xsd:element name="ORDERPR_UN" type="tns:unit3" />
+          <xsd:element name="PCKG_NO" type="tns:numeric10" />
+          <xsd:element name="PROMOTION" type="tns:char10" />
+          <xsd:element name="ACKN_REQD" type="tns:char1" />
+          <xsd:element name="TRACKINGNO" type="tns:char10" />
+          <xsd:element name="PLAN_DEL" type="tns:decimal3.0" />
+          <xsd:element name="RET_ITEM" type="tns:char1" />
+          <xsd:element name="AT_RELEV" type="tns:char1" />
+          <xsd:element name="VEND_MAT" type="tns:char22" />
+          <xsd:element name="MANUF_PROF" type="tns:char4" />
+          <xsd:element name="MANU_MAT" type="tns:char40" />
+          <xsd:element name="MFR_NO" type="tns:char10" />
+          <xsd:element name="MFR_NO_EXT" type="tns:char10" />
+          <xsd:element name="PO_PRICE" type="tns:char1" />
+          <xsd:element name="SHIPPING" type="tns:char2" />
+          <xsd:element name="ITEM_CAT_EXT" type="tns:char1" />
+          <xsd:element name="PO_UNIT_ISO" type="tns:char3" />
+          <xsd:element name="ORDERPR_UN_ISO" type="tns:char3" />
+          <xsd:element name="PREQ_NAME" type="tns:char12" />
+          <xsd:element name="DISP_QUAN" type="tns:quantum13.3" />
+          <xsd:element name="QUAL_INSP" type="tns:char1" />
+          <xsd:element name="NO_MORE_GR" type="tns:char1" />
+          <xsd:element name="DELETE_IND" type="tns:char1" />
+          <xsd:element name="NO_ROUNDING" type="tns:char1" />
+          <xsd:element name="TAX_CODE" type="tns:char2" />
+          <xsd:element name="MATERIAL_EXTERNAL" type="tns:char40" />
+          <xsd:element name="MATERIAL_GUID" type="tns:char32" />
+          <xsd:element name="MATERIAL_VERSION" type="tns:char10" />
+          <xsd:element name="PUR_MAT_EXTERNAL" type="tns:char40" />
+          <xsd:element name="PUR_MAT_GUID" type="tns:char32" />
+          <xsd:element name="PUR_MAT_VERSION" type="tns:char10" />
+          <xsd:element name="VAL_TYPE" type="tns:char10" />
+          <xsd:element name="PR_CLOSED" type="tns:char1" />
+          <xsd:element name="ACKNOWL_NO" type="tns:char20" />
+          <xsd:element name="REQ_SEGMENT" type="tns:char16" />
+          <xsd:element name="STK_SEGMENT" type="tns:char16" />
+          <xsd:element name="MATERIAL_LONG" type="tns:char40" />
+          <xsd:element name="PUR_MAT_LONG" type="tns:char40" />
+          <xsd:element name="REQ_SEG_LONG" type="tns:char40" />
+          <xsd:element name="STK_SEG_LONG" type="tns:char40" />
+        </xsd:sequence>
+      </xsd:complexType>
       <xsd:complexType name="TABLE_OF_BAPIEKES">
         <xsd:sequence>
           <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIEKES" />
@@ -1206,6 +1281,16 @@
           <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIESUH" />
         </xsd:sequence>
       </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIEKKOL">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIEKKOL" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIEKPOC">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIEKPOC" />
+        </xsd:sequence>
+      </xsd:complexType>
       <xsd:element name="BAPI_PO_GETDETAIL">
         <xsd:complexType>
           <xsd:sequence>
@@ -1261,6 +1346,48 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
+      <xsd:element name="BAPI_PO_GETITEMS">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="ACCTASSCAT" type="tns:char1" />
+            <xsd:element minOccurs="0" name="CREATED_BY" type="tns:char12" />
+            <xsd:element minOccurs="0" name="DELETED_ITEMS" type="tns:char1" />
+            <xsd:element minOccurs="0" name="DOC_DATE" type="tns:date10" />
+            <xsd:element minOccurs="0" name="DOC_TYPE" type="tns:char4" />
+            <xsd:element minOccurs="0" name="ITEMS_OPEN_FOR_RECEIPT" type="tns:char1" />
+            <xsd:element minOccurs="0" name="ITEM_CAT" type="tns:char1" />
+            <xsd:element minOccurs="0" name="MATERIAL" type="tns:char18" />
+            <xsd:element minOccurs="0" name="MATERIAL_EVG" type="tns:BAPIMGVMATNR" />
+            <xsd:element minOccurs="0" name="MATERIAL_LONG" type="tns:char40" />
+            <xsd:element minOccurs="0" name="MAT_GRP" type="tns:char9" />
+            <xsd:element minOccurs="0" name="PLANT" type="tns:char4" />
+            <xsd:element minOccurs="0" name="PO_HEADERS" type="tns:TABLE_OF_BAPIEKKOL" />
+            <xsd:element name="PO_ITEMS" type="tns:TABLE_OF_BAPIEKPOC" />
+            <xsd:element minOccurs="0" name="PREQ_NAME" type="tns:char12" />
+            <xsd:element minOccurs="0" name="PURCHASEORDER" type="tns:char10" />
+            <xsd:element minOccurs="0" name="PURCH_ORG" type="tns:char4" />
+            <xsd:element minOccurs="0" name="PUR_GROUP" type="tns:char3" />
+            <xsd:element minOccurs="0" name="PUR_MAT" type="tns:char18" />
+            <xsd:element minOccurs="0" name="PUR_MAT_EVG" type="tns:BAPIMGVMATNR" />
+            <xsd:element minOccurs="0" name="PUR_MAT_LONG" type="tns:char40" />
+            <xsd:element minOccurs="0" name="RETURN" type="tns:TABLE_OF_BAPIRETURN" />
+            <xsd:element minOccurs="0" name="SHORT_TEXT" type="tns:char40" />
+            <xsd:element minOccurs="0" name="SUPPL_PLANT" type="tns:char4" />
+            <xsd:element minOccurs="0" name="TRACKINGNO" type="tns:char10" />
+            <xsd:element minOccurs="0" name="VENDOR" type="tns:char10" />
+            <xsd:element minOccurs="0" name="WITH_PO_HEADERS" type="tns:char1" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="BAPI_PO_GETITEMSResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="PO_HEADERS" type="tns:TABLE_OF_BAPIEKKOL" />
+            <xsd:element name="PO_ITEMS" type="tns:TABLE_OF_BAPIEKPOC" />
+            <xsd:element minOccurs="0" name="RETURN" type="tns:TABLE_OF_BAPIRETURN" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="BAPI_PO_GETDETAIL">
@@ -1269,12 +1396,13 @@
   <wsdl:message name="BAPI_PO_GETDETAILResponse">
     <wsdl:part name="parameter" element="tns:BAPI_PO_GETDETAILResponse" />
   </wsdl:message>
+  <wsdl:message name="BAPI_PO_GETITEMS">
+    <wsdl:part name="parameters" element="tns:BAPI_PO_GETITEMS" />
+  </wsdl:message>
+  <wsdl:message name="BAPI_PO_GETITEMSResponse">
+    <wsdl:part name="parameter" element="tns:BAPI_PO_GETITEMSResponse" />
+  </wsdl:message>
   <wsdl:portType name="Z_WS_BAPI_DIRECT_MEWP">
-    <wsdl:documentation>
-      <sapdoc:sapdoc xmlns:sapdoc="urn:sap:esi:documentation">
-        <sapdoc:docitem docURL="http://gviceccqa.molinosagro.ad:8000/sap/bc/esdt/docu/sd_text?sap-client=400&amp;sd_name=Z_WS_BAPI_DIRECT_MEWP" />
-      </sapdoc:sapdoc>
-    </wsdl:documentation>
     <wsp:Policy>
       <wsp:PolicyReference URI="#IF__Z_WS_BAPI_DIRECT_MEWP" />
     </wsp:Policy>
@@ -1284,6 +1412,10 @@
       </wsp:Policy>
       <wsdl:input message="tns:BAPI_PO_GETDETAIL" />
       <wsdl:output message="tns:BAPI_PO_GETDETAILResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="BAPI_PO_GETITEMS">
+      <wsdl:input message="tns:BAPI_PO_GETITEMS" />
+      <wsdl:output message="tns:BAPI_PO_GETITEMSResponse" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="Z_WS_BAPI_DIRECT_MEWP" type="tns:Z_WS_BAPI_DIRECT_MEWP">
@@ -1300,6 +1432,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="BAPI_PO_GETITEMS">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="Z_WS_BAPI_DIRECT_MEWP_soap12" type="tns:Z_WS_BAPI_DIRECT_MEWP">
     <wsp:Policy>
@@ -1308,6 +1449,15 @@
     <wsoap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="BAPI_PO_GETDETAIL">
       <wsoap12:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_BAPI_DIRECT_MEWP:BAPI_PO_GETDETAILRequest" style="document" />
+      <wsdl:input>
+        <wsoap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <wsoap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BAPI_PO_GETITEMS">
+      <wsoap12:operation soapAction="" style="document" />
       <wsdl:input>
         <wsoap12:body use="literal" />
       </wsdl:input>
