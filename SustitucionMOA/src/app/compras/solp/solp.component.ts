@@ -698,7 +698,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.disabledSave = false;
                         return;
                     }
-                    if(!this.validarQueTodasLasPosicionesTenganMismoProveedor()){
+                    if(!this.validarQueTodasLasPosicionesTenganProveedor()){
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen el mismo proveedor" });
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
@@ -1043,13 +1043,39 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    validarQueTodasLasPosicionesTenganMismoProveedor() {
-        if (this.solpActual.posiciones.length > 0) {
-            let proveedor = this.solpActual.posiciones[0].nombreProveedor;
-            return this.solpActual.posiciones.every(x => x.nombreProveedor == proveedor);
-        } else {
-            return false;
+    validarQueTodasLasPosicionesTenganProveedor() {
+        // Filtrar solo posiciones activas (estado == true)
+        const posicionesActivas = this.solpActual.posiciones.filter(x => x.estado === true);
+        
+        if (posicionesActivas.length === 0) {
+            return true; // No hay posiciones activas para validar
         }
+        
+        // Separar posiciones con contrato marco y sin contrato marco
+        const posicionesConContratoMarco = posicionesActivas.filter(
+            x => x.numeroContratoSuperior != null && 
+                x.numeroContratoSuperior !== undefined && 
+                x.numeroContratoSuperior !== ""
+        );
+        
+        const posicionesSinContratoMarco = posicionesActivas.filter(
+            x => x.numeroContratoSuperior === null || 
+                x.numeroContratoSuperior === undefined || 
+                x.numeroContratoSuperior === ""
+        );
+        
+        // Si todas las posiciones activas tienen contrato marco, no se valida que tengan el mismo proveedor
+        if (posicionesConContratoMarco.length === posicionesActivas.length) {
+            return true;
+        }
+        
+        // Si hay posiciones sin contrato marco, ya no validamos si tienen proveedor asignado
+        // Siempre retornamos true para este caso
+        if (posicionesSinContratoMarco.length > 0) {
+            return true;
+        }
+        
+        return true; // Por seguridad, aunque no debería llegarse a este punto
     }
 
     validarCondicionesDeAcuerdoMarco() {
@@ -1060,9 +1086,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         // Filtrar solo posiciones activas (estado == true)
         const posicionesActivas = this.solpActual.posiciones.filter(x => x.estado === true);
-        
+        // Si no hay posiciones activas, no hay nada que validar
         if (posicionesActivas.length === 0) {
-            return false;
+            return true;
         }
 
         // 1. Verificar si todas las posiciones activas tienen contrato marco o todas no tienen
