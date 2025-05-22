@@ -690,7 +690,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.disabledSave = false;
                         return;
                     }
-                    if(!this.validarQueTodasLasPosicionesTengamAcuerdoMarco()){
+                    if(!this.validarCondicionesDeAcuerdoMarco()){
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen acuerdo marco" });
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
@@ -1052,13 +1052,51 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    validarQueTodasLasPosicionesTengamAcuerdoMarco() {
-        if (this.solpActual.posiciones.length > 0) {
-            let acuerdoMarco = this.solpActual.posiciones[0].numeroContratoSuperior;
-            return this.solpActual.posiciones.every(x => x.numeroContratoSuperior == acuerdoMarco);
-        } else {
+    validarCondicionesDeAcuerdoMarco() {
+        // Si no hay posiciones, no hay nada que validar
+        if (this.solpActual.posiciones.length === 0) {
             return false;
         }
+
+        // Filtrar solo posiciones activas (estado == true)
+        const posicionesActivas = this.solpActual.posiciones.filter(x => x.estado === true);
+        
+        if (posicionesActivas.length === 0) {
+            return false;
+        }
+
+        // 1. Verificar si todas las posiciones activas tienen contrato marco o todas no tienen
+        const tienenContratoMarco = posicionesActivas.filter(
+            x => x.numeroContratoSuperior != null && 
+                 x.numeroContratoSuperior !== undefined && 
+                 x.numeroContratoSuperior !== ""
+        );
+        
+        const sinContratoMarco = posicionesActivas.filter(
+            x => x.numeroContratoSuperior === null || 
+                 x.numeroContratoSuperior === undefined || 
+                 x.numeroContratoSuperior === ""
+        );
+        
+        // 2. Si hay posiciones con contrato marco y sin contrato marco al mismo tiempo,
+        // la función debe devolver false (condición no permitida)
+        if (tienenContratoMarco.length > 0 && sinContratoMarco.length > 0) {
+            return false;
+        }
+        
+        // 3. Si todas las posiciones activas tienen contrato marco, es válido
+        // También es válido que posiciones activas tengan diferentes contratos marco
+        if (tienenContratoMarco.length === posicionesActivas.length) {
+            return true;
+        }
+        
+        // 4. Si todas las posiciones activas NO tienen contrato marco, también es válido
+        if (sinContratoMarco.length === posicionesActivas.length) {
+            return true;
+        }
+        
+        // Este punto no debería alcanzarse, pero por seguridad devolvemos false
+        return false;
     }
 
     validarFechaVisitaDeObra() {
