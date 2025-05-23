@@ -5,6 +5,7 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerAdjuntosSOLPEDWebServiceMOA;
 using SustitucionMOAWS.ObtenerMaterialesSolpWebServiceMOA;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_PlantList.Add(new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5820 { SIGN = "I", OPTION = "EQ", LOW = centros });
                         WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5820[] IM_PLANT = IM_PlantList.ToArray();
 
-                        var req = new Z_MMRFC_OBTENER_MATERIALES()
+                        var request = new Z_MMRFC_OBTENER_MATERIALES()
                         {
                             IM_MATERIAL = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5800[] { },
                             IM_MATL_DESC = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5810[] {},
@@ -55,9 +56,11 @@ namespace SustitucionMOAWS.WSConsumers
                             IM_MAX = Convert.ToByte(IM_MAX),
                             IM_PLANT = IM_PLANT
                         };
-                        Log.Info($"Sin PI Z_MMRFC_OBTENER_MATERIALES request: {new { req.IM_MATERIAL, req.IM_MATL_DESC, req.IM_MATL_GROUP, req.IM_MAX, req.IM_PLANT }}");
-                        var response = agent.Z_MMRFC_OBTENER_MATERIALES(req);
-                        Log.Info($"Sin PI Z_MMRFC_OBTENER_CECO Response: {response.EX_MATERIAL}");
+                        Log.Info($"SAP sin PI Z_MMRFC_OBTENER_MATERIALES request");
+                        Log.Info(request.ToXml());
+                        var response = agent.Z_MMRFC_OBTENER_MATERIALES(request);
+                        Log.Info($"SAP sin PI Z_MMRFC_OBTENER_MATERIALES response");
+                        Log.Info(response.ToXml());
 
                         var resultado = MapSinPI(response);
                         result.Materiales.AddRange(resultado.Materiales);
@@ -106,34 +109,34 @@ namespace SustitucionMOAWS.WSConsumers
             MaterialWSMOAResponse result = new MaterialWSMOAResponse();
             result.Materiales = new List<Material> { };
 
-            //if (error == "200")
-            //{
-            foreach (WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5840 materialSolp in response.EX_MATERIAL)
+            if (response.EX_EXITO == "200")
             {
-                result.Materiales.Add(new Material()
+                foreach (WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5840 materialSolp in response.EX_MATERIAL)
                 {
-                    CentroLogistico = materialSolp.PLANT,
-                    NroMaterial = materialSolp.MATERIAL,
-                    NombreDeMaterial = materialSolp.MATL_DESC,
-                    GrupoArticulo = materialSolp.MATL_GROUP,
-                    TipoMaterial = materialSolp.MATL_TYPE,
-                    UnidadDeMedidaBase = materialSolp.BASE_UOM,
-                    UnidadDeMedidaCompras = materialSolp.PURC_UOM,
-                    UnidadDeMedidaSalida = materialSolp.AUSM_UOM,
-                    TipoValoracion = materialSolp.TIPO_VALOR,
-                    ClaseDeValoracion = materialSolp.VAL_TYPE,
-                    PrecioDelMaterial = materialSolp.MATL_PRICE,
-                    GrupoCompras = materialSolp.PUR_GROUP,
-                    PlazoDeEntregaPrevisto = materialSolp.PLND_DELRY,
-                    CuentaDeMayor = materialSolp.GL_ACCOUNT,
-                    //PermiteComprarContraStock = materialSolp.PERMITE_STOCK,
-                    TextoAmpliado = materialSolp.TEXTO_COMPRAS,
+                    result.Materiales.Add(new Material()
+                    {
+                        CentroLogistico = materialSolp.PLANT,
+                        NroMaterial = materialSolp.MATERIAL,
+                        NombreDeMaterial = materialSolp.MATL_DESC,
+                        GrupoArticulo = materialSolp.MATL_GROUP,
+                        TipoMaterial = materialSolp.MATL_TYPE,
+                        UnidadDeMedidaBase = materialSolp.BASE_UOM,
+                        UnidadDeMedidaCompras = materialSolp.PURC_UOM,
+                        UnidadDeMedidaSalida = materialSolp.AUSM_UOM,
+                        TipoValoracion = materialSolp.TIPO_VALOR,
+                        ClaseDeValoracion = materialSolp.VAL_TYPE,
+                        PrecioDelMaterial = materialSolp.MATL_PRICE,
+                        GrupoCompras = materialSolp.PUR_GROUP,
+                        PlazoDeEntregaPrevisto = materialSolp.PLND_DELRY,
+                        CuentaDeMayor = materialSolp.GL_ACCOUNT,
+                        //PermiteComprarContraStock = materialSolp.PERMITE_STOCK,
+                        TextoAmpliado = materialSolp.TEXTO_COMPRAS,
 
-                });
+                    });
+                }
             }
-            //}
 
-            //result.error = error;
+            result.error = response.EX_EXITO;
 
             return result;
         }

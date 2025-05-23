@@ -3,7 +3,9 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerUnidadesDeMedidaAlternativasWebServiceMOA;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
@@ -38,15 +40,19 @@ namespace SustitucionMOAWS.WSConsumers
                     var agent = new Z_WS_MOAOP_COMPRAS_DIRECTClient();
                     agent.ClientCredentials.UserName.UserName = UserSap;
                     agent.ClientCredentials.UserName.Password = PassSap;
-                    var req = new Z_MMRFC_UM_ALTERNATIVAS()
+                    var request = new Z_MMRFC_UM_ALTERNATIVAS()
                     {
                         EX_UM_ALT = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMMTT_UM_ALT[] { },
                         IM_MATERIAL = codigosMaterial.Select(x => new WS_GAQ_sin_PI_DIRECT_COMPRAS.WSELMATNR { SIGN = "I", OPTION = "EQ", LOW = x }).ToArray()
                     };
 
-                    var response = agent.Z_MMRFC_UM_ALTERNATIVAS(req);
-                    var unidadMedidaSap = repositorio.Listar<UnidadMedidaSap>();
+                    Log.Info($"SAP sin PI Z_MMRFC_UM_ALTERNATIVAS request");
+                    Log.Info(request.ToXml());
 
+                    var response = agent.Z_MMRFC_UM_ALTERNATIVAS(request);
+                    var unidadMedidaSap = repositorio.Listar<UnidadMedidaSap>();
+                    Log.Info($"SAP sin PI Z_MMRFC_UM_ALTERNATIVAS response");
+                    Log.Info(response.ToXml());
                     foreach (var umAlt in response.EX_UM_ALT)
                     {
                         var codigoUnidad = unidadMedidaSap.Where(a => a.UM == umAlt.UM).Single().Comercial;

@@ -1,9 +1,12 @@
 ﻿using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAWS.CrearEntradaServicioWebServiceMOA;
 using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.Util;
+using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MLBO;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -20,34 +23,61 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class CrearEntradaDeServicioConsumerMOA : ICrearEntradaDeServicioConsumerMOA
     {
-        private readonly SI_MMRFC_BAPI_ENTRYSHEET_CREATEClient service;
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
 
         public CrearEntradaDeServicioConsumerMOA()
         {
-            service = new SI_MMRFC_BAPI_ENTRYSHEET_CREATEClient();
-            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+
         }
 
         public EntradaServicioCreateRespuestaDto CrearEntradaServicio(EntradaServicioCreateParamsDto parametros)
         {
             try
             {
-                using (var client = new HttpClient())
+                if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
                 {
-                    var requestMessage = CrearRequestMessage();
-                    requestMessage.Content = CrearHttpContent(parametros);
-
-                    var responseMessage = client.SendAsync(requestMessage).ConfigureAwait(false).GetAwaiter().GetResult();
-
-                    var createResponseContent = responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-
-                    Logger.Log.Debug("Respuesta CrearEntradaServicio: " + createResponseContent);
-
-                    var respuestaCreacionESDto = ParseReturnInfo(createResponseContent);
-
+                    var headers = GenerateEntrySheetHeaderXmlSinPI(parametros.EntrySheetHeader);                   
+                    var services = GenerateEntrySheetServicesXmlSinPI(parametros.EntrySheetServices.Items);
+                    var agent = new Z_WS_BAPI_DIRECT_MLBOClient();
+                    agent.ClientCredentials.UserName.UserName = UserSap;
+                    agent.ClientCredentials.UserName.Password = PassSap;
+                    var request = new BAPI_ENTRYSHEET_CREATE()
+                    {
+                        ENTRYSHEETHEADER = headers,
+                        ENTRYSHEETSERVICESTEXTS = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] { },
+                        ENTRYSHEETSRVACCASSVALUES = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKLC[] { },
+                        ENTRYSHEETSERVICES = services.ToArray(),
+                    };
+                    Log.Info($"SAP sin PI BAPI_ENTRYSHEET_CREATE request");
+                    Log.Info(request.ToXml());
+                    var response = agent.BAPI_ENTRYSHEET_CREATE(request);
+                    var respuestaCreacionESDto = ParseReturnInfoSinPI(response);
+                    Log.Info($"SAP sin PI BAPI_ENTRYSHEET_CREATE response");
+                    Log.Info(response.ToXml());
                     return respuestaCreacionESDto;
+
                 }
+                else
+                {
+                    using (var client = new HttpClient())
+                    {
+                        var requestMessage = CrearRequestMessage();
+                        requestMessage.Content = CrearHttpContent(parametros);
+
+                        var responseMessage = client.SendAsync(requestMessage).ConfigureAwait(false).GetAwaiter().GetResult();
+
+                        var createResponseContent = responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+
+                        Logger.Log.Debug("Respuesta CrearEntradaServicio: " + createResponseContent);
+
+                        var respuestaCreacionESDto = ParseReturnInfo(createResponseContent);
+
+                        return respuestaCreacionESDto;
+                    }
+                }
+
+
             }
             catch (Exception e)
             {
@@ -60,29 +90,55 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
-                using (var client = new HttpClient())
+                if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
                 {
-                    var requestMessage = CrearRequestMessage();
-
-                    var content = CrearHttpContent(parametros);
-
-                    string contentAsString = await content.ReadAsStringAsync();
-                    Logger.Log.Debug("CrearEntradaDeServicioConsumerMOA content: " + contentAsString);
-
-                    requestMessage.Content = content;
-
-                    await Task.Delay(500);
-
-                    var responseMessage = await client.SendAsync(requestMessage).ConfigureAwait(false);
-
-                    var createResponseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                    var respuestaCreacionESDto = ParseReturnInfo(createResponseContent);
-
-                    Logger.Log.Info("CrearEntradaDeServicioConsumerMOA.CrearEntradaServicioAsync: " + respuestaCreacionESDto.ToJson());
-
+                    var headers = GenerateEntrySheetHeaderXmlSinPI(parametros.EntrySheetHeader);
+                    var services = GenerateEntrySheetServicesXmlSinPI(parametros.EntrySheetServices.Items);
+                    var agent = new Z_WS_BAPI_DIRECT_MLBOClient();
+                    agent.ClientCredentials.UserName.UserName = UserSap;
+                    agent.ClientCredentials.UserName.Password = PassSap;
+                    var request = new BAPI_ENTRYSHEET_CREATE()
+                    {
+                        ENTRYSHEETHEADER = headers,
+                        ENTRYSHEETSERVICESTEXTS = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] { },
+                        ENTRYSHEETSRVACCASSVALUES = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKLC[] { },
+                        ENTRYSHEETSERVICES = services.ToArray(),
+                    };
+                    Log.Info($"SAP sin PI BAPI_ENTRYSHEET_CREATEAsync request");
+                    Log.Info(request.ToXml());
+                    var response = await agent.BAPI_ENTRYSHEET_CREATEAsync(request);
+                    var respuestaCreacionESDto = ParseReturnInfoSinPI(response.BAPI_ENTRYSHEET_CREATEResponse);
+                    Log.Info($"SAP sin PI BAPI_ENTRYSHEET_CREATEAsync response");
+                    Log.Info(response.ToXml());
                     return respuestaCreacionESDto;
                 }
+                else
+                {
+                    using (var client = new HttpClient())
+                    {
+                        var requestMessage = CrearRequestMessage();
+
+                        var content = CrearHttpContent(parametros);
+
+                        string contentAsString = await content.ReadAsStringAsync();
+                        Logger.Log.Debug("CrearEntradaDeServicioConsumerMOA content: " + contentAsString);
+
+                        requestMessage.Content = content;
+
+                        await Task.Delay(500);
+
+                        var responseMessage = await client.SendAsync(requestMessage).ConfigureAwait(false);
+
+                        var createResponseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                        var respuestaCreacionESDto = ParseReturnInfo(createResponseContent);
+
+                        Logger.Log.Info("CrearEntradaDeServicioConsumerMOA.CrearEntradaServicioAsync: " + respuestaCreacionESDto.ToJson());
+
+                        return respuestaCreacionESDto;
+                    }
+                }
+
             }
             catch (Exception e)
             {
@@ -93,6 +149,11 @@ namespace SustitucionMOAWS.WSConsumers
 
         private HttpRequestMessage CrearRequestMessage()
         {
+            SI_MMRFC_BAPI_ENTRYSHEET_CREATEClient service;
+            service = new SI_MMRFC_BAPI_ENTRYSHEET_CREATEClient();
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+
             var urlServicio = SAPCredential.DevolverEndpoint(System.Configuration.ConfigurationManager.AppSettings["ServicioSAPEntradasServicioCrear"]).ToString();
             var SOAPAction = System.Configuration.ConfigurationManager.AppSettings["SOAPAction"];
 
@@ -152,7 +213,6 @@ namespace SustitucionMOAWS.WSConsumers
                     <ACCEPTANCE>X</ACCEPTANCE>
                 </ENTRYSHEETHEADER>";
         }
-
         private string GenerateEntrySheetServicesXml(List<EntrySheetServiceItemSection> entrySheetServices)
         {
             var xmlBuilder = new StringBuilder();
@@ -191,8 +251,6 @@ namespace SustitucionMOAWS.WSConsumers
 
             return xmlBuilder.ToString();
         }
-
-
         private string GenerateEntrySheetServiceXml(EntrySheetServiceItemSection item)
         {
             return $@"
@@ -211,6 +269,88 @@ namespace SustitucionMOAWS.WSConsumers
                 </item>";
         }
 
+
+        private WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRC GenerateEntrySheetHeaderXmlSinPI(EntrySheetHeaderSection header)
+        {
+            var ENTRYSHEETHEADER = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRC()
+            {
+                PCKG_NO = "0000000001",
+                SHORT_TEXT = header.Descripcion,
+                PO_NUMBER = header.OrdenCompraNumero,
+                PO_ITEM = header.OrdenCompraPosicionNumero,
+                REF_DOC_NO = header.DocumentoReferenciaNumero,
+                DOC_DATE = header.FechaDocumento,
+                POST_DATE = header.FechaContabilizacion,
+                ACCEPTANCE = "X",
+            };
+            return ENTRYSHEETHEADER;
+        }
+        private List<WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLC> GenerateEntrySheetServicesXmlSinPI(List<EntrySheetServiceItemSection> entrySheetServices)
+        {          
+            List<WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLC> resultado = new List<WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLC>();
+
+            var entrySheetServicesCabeceraFija = new EntrySheetServiceItemSection
+            {
+                PackageNumber = "0000000001",
+                LineNumber = "0000000001",
+                OutlineIndicator = "X",
+                SubPackageNumber = "0000000002",
+                Quantity = "1"
+            };
+
+            var contadorDeInstancia = 1;
+
+            foreach (var entrySheetService in entrySheetServices)
+            {
+                // Aquí va la lógica para generar dinámicamente el XML para cada EntrySheetServiceItemSection
+                // Solo si es la primera vez se carga la parte fija que es como la "cabecera" del detalle
+                if (contadorDeInstancia == 1)
+                {
+                    resultado.Add(GenerateEntrySheetServiceXmlSinPI(entrySheetServicesCabeceraFija));
+                    contadorDeInstancia++;
+                }
+                entrySheetService.PackageNumber = "0000000002";
+                entrySheetService.LineNumber = contadorDeInstancia.ToString("D10");
+                entrySheetService.ShortText =
+                    string.IsNullOrWhiteSpace(entrySheetService.ShortText)
+                    ? "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo"
+                    : entrySheetService.ShortText;
+
+                contadorDeInstancia++;
+                resultado.Add(GenerateEntrySheetServiceXmlSinPI(entrySheetService));
+            }
+
+            return resultado;
+        }
+        private WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLC GenerateEntrySheetServiceXmlSinPI(EntrySheetServiceItemSection item)
+        {
+            WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLC bapiesllc = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLC();
+            bapiesllc.PCKG_NO = item.PackageNumber;
+            bapiesllc.LINE_NO = item.LineNumber;
+            bapiesllc.OUTL_IND = item.OutlineIndicator;
+            bapiesllc.SUBPCKG_NO = item.SubPackageNumber;
+            bapiesllc.EXT_LINE = item.ExternalLineNumber;
+            bapiesllc.SERVICE = ((item.Service ?? "0").Trim() == "0" ? "" : item.Service);
+            bapiesllc.QUANTITY = Convert.ToDecimal(item.Quantity.Replace(",", "."));
+            bapiesllc.GR_PRICE = Convert.ToDecimal(item.GrossPrice.ToString().Replace(",", "."));
+            bapiesllc.SHORT_TEXT = item.ShortText;
+            bapiesllc.PLN_PCKG = item.PlannedPackage;
+            bapiesllc.PLN_LINE = item.PlannedLine;
+            return bapiesllc;
+        }
+
+        private EntradaServicioCreateRespuestaDto ParseReturnInfoSinPI(BAPI_ENTRYSHEET_CREATEResponse response)
+        {
+            EntradaServicioCreateRespuestaDto returnInfo = new EntradaServicioCreateRespuestaDto();
+            foreach (var item in response.RETURN)
+            {
+                returnInfo.Type    = item.TYPE;
+                returnInfo.Id      = item.ID;
+                returnInfo.Number  = item.NUMBER;
+                returnInfo.Message = item.MESSAGE;
+            }
+            return returnInfo;
+        }
         static EntradaServicioCreateRespuestaDto ParseReturnInfo(string soapResponse)
         {
             XmlDocument xmlDoc = new XmlDocument();

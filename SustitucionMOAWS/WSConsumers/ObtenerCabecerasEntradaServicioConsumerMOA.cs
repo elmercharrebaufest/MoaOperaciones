@@ -3,11 +3,14 @@ using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerCabecerasEntradaServicioWebServiceMOA;
 using SustitucionMOAWS.ResponseHandler.EntradadeServicios;
 using SustitucionMOAWS.Util;
+using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MLBO;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -29,15 +32,16 @@ namespace SustitucionMOAWS.WSConsumers
     public class ObtenerCabecerasEntradaServicioConsumerMOA : IObtenerCabecerasEntradaServicioConsumerMOA
     {
         // Obtiene cabeceras de entradas de servicios desde unra Fecha dada
-        SI_MMRFC_BAPI_ENTRYSHEET_GETLISTClient service;
         //private const string COMP_CODE = "MOA";
         private readonly IRepositorio repositorio;
 
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
+
+
         public ObtenerCabecerasEntradaServicioConsumerMOA()
         {
-            service = new SI_MMRFC_BAPI_ENTRYSHEET_GETLISTClient();
-            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+
             //this.repositorio = repositorio;
         }
 
@@ -45,24 +49,44 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
-                string _UrlServicio = SAPCredential.DevolverEndpoint(System.Configuration.ConfigurationManager.AppSettings["ServicioSAPEntradasServicioCabecera"]).ToString() ;
-                string _SOAPAction = System.Configuration.ConfigurationManager.AppSettings["SOAPAction"];
+                if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
+                {
+                    var agent = new Z_WS_BAPI_DIRECT_MLBOClient();
+                    agent.ClientCredentials.UserName.UserName = UserSap;
+                    agent.ClientCredentials.UserName.Password = PassSap;
+                    var request = new BAPI_ENTRYSHEET_GETLIST()
+                    {
+                         ENTRYSHEET_DATE = fechaDesde
+                    };
+                    Log.Info($"SAP sin PI BAPI_ENTRYSHEET_GETLIST request");
+                    Log.Info(request.ToXml());
+                    var response = agent.BAPI_ENTRYSHEET_GETLIST(request);
+                    Log.Info($"SAP sin PI BAPI_ENTRYSHEET_GETLIST response");
+                    Log.Info(response.ToXml());
+                    return MapSinPI(response);
+                }
+                else
+                {
+                    SI_MMRFC_BAPI_ENTRYSHEET_GETLISTClient service;
+                    service = new SI_MMRFC_BAPI_ENTRYSHEET_GETLISTClient();
+                    service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+                    service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-                string Authorization = service.ClientCredentials.UserName.UserName+":"+ service.ClientCredentials.UserName.Password;
-                byte[] userNameBytes = System.Text.Encoding.UTF8.GetBytes(Authorization);
-                string authorizationBase64 = System.Convert.ToBase64String(userNameBytes);
+                    string _UrlServicio = SAPCredential.DevolverEndpoint(System.Configuration.ConfigurationManager.AppSettings["ServicioSAPEntradasServicioCabecera"]).ToString();
+                    string _SOAPAction = System.Configuration.ConfigurationManager.AppSettings["SOAPAction"];
 
+                    string Authorization = service.ClientCredentials.UserName.UserName + ":" + service.ClientCredentials.UserName.Password;
+                    byte[] userNameBytes = System.Text.Encoding.UTF8.GetBytes(Authorization);
+                    string authorizationBase64 = System.Convert.ToBase64String(userNameBytes);
 
+                    string _Authorization = "Basic " + authorizationBase64;
+                    HttpClient client = new HttpClient();
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _UrlServicio);
+                    request.Headers.Add("SOAPAction", _SOAPAction);
+                    request.Headers.Add("Authorization", _Authorization);
 
-                //string _Authorization = System.Configuration.ConfigurationManager.AppSettings["Authorization"];
-                string _Authorization = "Basic " + authorizationBase64;
-                HttpClient client = new HttpClient();
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _UrlServicio);
-                request.Headers.Add("SOAPAction", _SOAPAction);
-                request.Headers.Add("Authorization", _Authorization);
-
-                StringContent content = new StringContent(
-                    $@"<?xml version=""1.0"" encoding=""utf-8""?>
+                    StringContent content = new StringContent(
+                        $@"<?xml version=""1.0"" encoding=""utf-8""?>
                        <soap:Envelope xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
                            <soap:Header>
                                <wsse:Security soap:mustUnderstand=""1"" xmlns:wsse=""http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd""/>
@@ -73,39 +97,38 @@ namespace SustitucionMOAWS.WSConsumers
                                </BAPI_ENTRYSHEET_GETLIST>
                            </soap:Body>
                        </soap:Envelope>",
-                    Encoding.UTF8,
-                    "text/xml"
-                );
+                        Encoding.UTF8,
+                        "text/xml"
+                    );
 
+                    content.Headers.ContentType.CharSet = "utf-8"; // Establecer el conjunto de caracteres
 
-                content.Headers.ContentType.CharSet = "utf-8"; // Establecer el conjunto de caracteres
+                    request.Content = content;
+                    var response = await client.SendAsync(request);
 
-                request.Content = content;
-                var response = await client.SendAsync(request);
-
-                if (response.IsSuccessStatusCode)
-
-                {
-                    string xmlString = await response.Content.ReadAsStringAsync();
-
-                    XmlDocument xmlDoc = new XmlDocument();
-                    xmlDoc.LoadXml(xmlString);
-                    var levelObject = xmlDoc.DocumentElement.ChildNodes[1].ChildNodes[0].ChildNodes[0];
-
-                    XmlSerializer serializer = new XmlSerializer(typeof(EntradaServicioCabeceraConsumerDto), "");
-
-                    List<EntradaServicioCabeceraConsumerDto> resultList = new List<EntradaServicioCabeceraConsumerDto>();
-
-                    foreach (XmlNode itemNode in levelObject)
+                    if (response.IsSuccessStatusCode)
                     {
-                        string wrappedXmlString = $"<item>{itemNode.InnerXml}</item>";
-                        using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(wrappedXmlString)))
+                        string xmlString = await response.Content.ReadAsStringAsync();
+
+                        XmlDocument xmlDoc = new XmlDocument();
+                        xmlDoc.LoadXml(xmlString);
+                        var levelObject = xmlDoc.DocumentElement.ChildNodes[1].ChildNodes[0].ChildNodes[0];
+
+                        XmlSerializer serializer = new XmlSerializer(typeof(EntradaServicioCabeceraConsumerDto), "");
+
+                        List<EntradaServicioCabeceraConsumerDto> resultList = new List<EntradaServicioCabeceraConsumerDto>();
+
+                        foreach (XmlNode itemNode in levelObject)
                         {
-                            EntradaServicioCabeceraConsumerDto data = (EntradaServicioCabeceraConsumerDto)serializer.Deserialize(ms);
-                            resultList.Add(data); // Agrega el objeto deserializado a la lista
+                            string wrappedXmlString = $"<item>{itemNode.InnerXml}</item>";
+                            using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(wrappedXmlString)))
+                            {
+                                EntradaServicioCabeceraConsumerDto data = (EntradaServicioCabeceraConsumerDto)serializer.Deserialize(ms);
+                                resultList.Add(data); // Agrega el objeto deserializado a la lista
+                            }
                         }
+                        return Map(resultList);
                     }
-                    return Map(resultList);
                 }
             }
             catch (Exception ex)
@@ -145,6 +168,38 @@ namespace SustitucionMOAWS.WSConsumers
             }
             return result;
         }
+
+        private List<EntradaServicioCabeceraDto> MapSinPI(BAPI_ENTRYSHEET_GETLISTResponse Cabeceras)
+        {
+            List<EntradaServicioCabeceraDto> result = new List<EntradaServicioCabeceraDto>();
+            //IEnumerable<BAPIESSR> cabecerasFiltradas = ENTRYSHEET_HEADER.Where(a => a.ACCEPTANCE != "X");
+
+            //List<ItemEntradaServicioDto> items = new List<ItemEntradaServicioDto>();
+            foreach (var cabecera in Cabeceras.ENTRYSHEET_HEADER)
+            {
+                var cabe = new EntradaServicioCabeceraDto();
+                DateTime fechaCreacion;
+                DateTime.TryParseExact(cabecera.CREATED_ON, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCreacion);
+
+                cabe.EntradaServicio = cabecera.SHEET_NO;
+                cabe.FechaCreacionDateTime = fechaCreacion;
+                cabe.FechaCreacion = cabecera.CREATED_ON;
+                cabe.OrdenCompra = cabecera.PO_NUMBER;
+                //cabe.Proveedor = cabecera.PERSON_EXT; //Nombre del proveedor en la oc
+                cabe.Descripcion = cabecera.SHORT_TEXT;
+                cabe.MontoTotal = cabecera.GROSS_VAL.ToString();
+                cabe.Ingresante = cabecera.CREATED_BY;
+
+                // Momentaneo mientras se encontra la forma de buscar el aprobador o fiscal de la ES de sap
+                cabe.Aprobador = "-";
+                cabe.Fiscal = "-";
+                cabe.DesdeSap = true;
+                cabe.Moneda = cabecera.CURRENCY;
+                result.Add(cabe);
+            }
+            return result;
+        }
+
     }
 
     public interface IObtenerCabecerasEntradaServicioConsumerMOA

@@ -4,6 +4,7 @@ using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerCecoSolpWebServiceMOA;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
@@ -39,14 +40,16 @@ namespace SustitucionMOAWS.WSConsumers
                     string IM_COMP_CODE = COMP_CODE;
                     string IM_COSTCENTER = "";
 
-                    var req = new Z_MMRFC_OBTENER_CECO()
+                    var request = new Z_MMRFC_OBTENER_CECO()
                     {
                         IM_COMP_CODE = IM_COMP_CODE,
                         IM_COSTCENTER = IM_COSTCENTER
                     };
-                    Log.Info($"Sin PI Z_MMRFC_OBTENER_CECO request: {new { req.IM_COMP_CODE, req.IM_COSTCENTER }}");
-                    var response = agent.Z_MMRFC_OBTENER_CECO(req);
-                    Log.Info($"Sin PI Z_MMRFC_OBTENER_CECO Response: {response.EX_COSTCENTER_LIST}");
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN request");
+                    Log.Info(request.ToXml());
+                    var response = agent.Z_MMRFC_OBTENER_CECO(request);
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN response");
+                    Log.Info(response.ToXml());
                     return MapSinPI(response);
                 }
                 else
@@ -76,17 +79,17 @@ namespace SustitucionMOAWS.WSConsumers
         {
             CecoWSMOAResponse result = new CecoWSMOAResponse();
             result.Cecos = new List<Ceco> { };
-            //if (EX_EXITO == "200")
-            //{
-            foreach (WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPI0012_2 ceco in response.EX_COSTCENTER_LIST)
+            if (response.EX_EXITO == "200")
             {
-                result.Cecos.Add(new Ceco()
+                foreach (WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPI0012_2 ceco in response.EX_COSTCENTER_LIST)
                 {
-                    CostCenter = ceco.COSTCENTER,
-                    Descripcion = ceco.COCNTR_TXT
-                });
+                    result.Cecos.Add(new Ceco()
+                    {
+                        CostCenter = ceco.COSTCENTER,
+                        Descripcion = ceco.COCNTR_TXT
+                    });
+                }
             }
-            //}
             return result;
         }
 

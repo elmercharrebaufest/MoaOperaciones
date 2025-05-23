@@ -1,7 +1,9 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerSolpWebServiceMOA;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
@@ -69,7 +71,12 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_SERVICES = IM_SERVICES,
                         IM_USUARIOS = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5640[0],
                     };
+
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_SOLPED request");
+                    Log.Info(request.ToXml());
                     var response = agent.Z_MMRFC_OBTENER_SOLPED(request);
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_SOLPED response");
+                    Log.Info(response.ToXml());
                     return MapSinPI(response);
                 }
                 else

@@ -3,6 +3,7 @@ using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerOrdenSolpWebServiceMOA;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
@@ -38,16 +39,18 @@ namespace SustitucionMOAWS.WSConsumers
                     string IM_NAME = "";
                     string IM_ORDER = idOrder;
                     string IM_TYPE = "";
-                    var req = new Z_MMRFC_OBTENER_ORDEN()
+                    var request = new Z_MMRFC_OBTENER_ORDEN()
                     {
                         IM_NAME = IM_NAME,
                         IM_ORDER = IM_ORDER,
                         IM_TYPE = IM_TYPE,
                         IM_COMP_CODE = COMP_CODE
                     };
-                    Log.Info($"Sin PI Z_MMRFC_OBTENER_ORDEN request: {new { IM_NAME, IM_ORDER, IM_TYPE, COMP_CODE }}");
-                    var response = agent.Z_MMRFC_OBTENER_ORDEN(req);
-                    Log.Info($"Sin PI Z_MMRFC_OBTENER_ORDEN Response: {response.EX_ORDER_LIST}");
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN request");
+                    Log.Info(request.ToXml());
+                    var response = agent.Z_MMRFC_OBTENER_ORDEN(request);
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN response");
+                    Log.Info(response.ToXml());
                     return MapSinPI(response);
                 }
                 else
@@ -78,8 +81,7 @@ namespace SustitucionMOAWS.WSConsumers
             OrdenWSMOAResponse result = new OrdenWSMOAResponse();
             result.Ordenes = new List<Orden> { };
 
-            //if (response.EX_EXITO == "200"){
-            if (response.EX_ORDER_LIST.Length > 0)
+            if (response.EX_EXITO == "200")
             {
                 foreach (var orden in response.EX_ORDER_LIST)
                 {
@@ -93,8 +95,7 @@ namespace SustitucionMOAWS.WSConsumers
                     });
                 }
             }
-            //}
-            //result.Error = response.EX_EXITO;
+            result.Error = response.EX_EXITO;
 
             return result;
         }

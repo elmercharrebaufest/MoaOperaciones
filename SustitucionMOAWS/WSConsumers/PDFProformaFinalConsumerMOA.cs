@@ -1,28 +1,54 @@
-﻿using System;
+﻿using SustitucionMOAModel.Models.WSMapMOA;
+using SustitucionMOAModel.Models.WSMapMOA.PDF;
+using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Logger;
+using SustitucionMOAWS.PDFProformaFinalWebServiceMOA;
+using SustitucionMOAWS.Util;
+using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SustitucionMOAModel.Models.WSMapMOA;
-using SustitucionMOAModel.Models.WSMapMOA.PDF;
-using SustitucionMOAWS.PDFProformaFinalWebServiceMOA;
-using SustitucionMOAWS.CredentialService;
 
 namespace SustitucionMOAWS.WSConsumers
 {
     public class PDFProformaFinalConsumerMOA
     {
-        SI_MPMF_MOAOP_PDF_PROFORMAClient service = new SI_MPMF_MOAOP_PDF_PROFORMAClient();
-
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
         public PDFResponse request(string contrato, string pedido)
         {
             try
             {
-                byte[] pdf = new byte[] { };
-                service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-                service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                pdf = service.SI_MPMF_MOAOP_PDF_PROFORMA(contrato, pedido);
-                return map(pdf);
+                if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
+                {
+                    var agent = new Z_WS_MOAOP_DIRECTClient();
+                    agent.ClientCredentials.UserName.UserName = UserSap;
+                    agent.ClientCredentials.UserName.Password = PassSap;
+                    var request = new Z_MPMF_MOAOP_PDF_PROFORMA()
+                    {
+                        IM_CONTRATO = contrato,
+                        IM_PEDIDO = pedido
+                    };
+                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_PDF_PROFORMA request");
+                    Log.Info(request.ToXml());
+                    var response = agent.Z_MPMF_MOAOP_PDF_PROFORMA(request);
+                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_PDF_PROFORMA response");
+                    Log.Info(response.ToXml());
+
+                    return Map(response.EX_BASE64);
+                }
+                else
+                {
+                    SI_MPMF_MOAOP_PDF_PROFORMAClient service = new SI_MPMF_MOAOP_PDF_PROFORMAClient();
+                    byte[] pdf = new byte[] { };
+                    service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+                    service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+                    pdf = service.SI_MPMF_MOAOP_PDF_PROFORMA(contrato, pedido);
+                    return Map(pdf);
+                }
             }
             catch (Exception e)
             {
@@ -31,7 +57,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
-        private PDFResponse map(byte[] pdf)
+        private PDFResponse Map(byte[] pdf)
         {
             PDFResponse result = new PDFResponse() { };
 

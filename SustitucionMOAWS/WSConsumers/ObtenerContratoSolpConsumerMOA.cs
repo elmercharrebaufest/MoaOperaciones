@@ -1,7 +1,9 @@
 ﻿using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
@@ -59,7 +61,11 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_TEXT_POS = IM_TEXT_POS,
                         IM_VENDOR = IM_VENDOR
                     };
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CONTRATO request");
+                    Log.Info(request.ToXml());
                     var response = agent.Z_MMRFC_OBTENER_CONTRATO(request);
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CONTRATO response");
+                    Log.Info(response.ToXml());
                     return MapSinPI(response);
                 }
                 else

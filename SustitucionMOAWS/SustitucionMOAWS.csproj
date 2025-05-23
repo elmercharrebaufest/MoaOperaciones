@@ -3869,6 +3869,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWP\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWP\configuration.svcinfo" />
+    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWP\configuration91.svcinfo" />
     <None Include="Service References\WS_GAQ_sin_PI_DIRECT_PANOL\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -3899,12 +3905,6 @@
     </None>
     <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWQ\configuration.svcinfo" />
     <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWQ\configuration91.svcinfo" />
-    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWP\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWP\configuration.svcinfo" />
-    <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWP\configuration91.svcinfo" />
     <None Include="Service References\WS_GAQ_sin_PI_DIRECT_MEWI\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
