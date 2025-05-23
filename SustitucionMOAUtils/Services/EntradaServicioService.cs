@@ -818,7 +818,9 @@ namespace SustitucionMOAUtils.Services
 
         public void GenerarCertificacionAutomaticaPorLiberacionOC(string nroOC)
         {
-            var solps = repositorioEntradaServicio.ObtenerSolpsAutocertificablesDeOC(nroOC);
+            var detalleOC = ObtenerDetalleOrdenDeCompra(nroOC) ?? throw new ArgumentNullException("No se pudo obtener el detalle de la OC " + nroOC);
+            var listadoNroSolps = detalleOC.Posiciones.Select(a => a.NumeroSolp).ToList();
+            var solps = repositorioEntradaServicio.ObtenerSolpsAutocertificablesDeOC(listadoNroSolps);
             if (!solps.Any())
             {
                 Logger.Log.Debug("No se encontraron solps Autocertificables para la oc:" + nroOC);
@@ -830,7 +832,6 @@ namespace SustitucionMOAUtils.Services
             var almacenesSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Almacen");
             var solicitudesMailAprobacionES = new List<MailAprobacionESRequest>();
 
-            var detalleOC = ObtenerDetalleOrdenDeCompra(nroOC) ?? throw new ArgumentNullException("No se pudo obtener el detalle de la OC " + nroOC);
 
             foreach (var posicionOC in detalleOC.Posiciones)
             {
