@@ -251,6 +251,10 @@ namespace SustitucionMOAUtils.Services
             {
                 solp = GuardarAdjuntosSolp(solp, adjuntos, pliegoEntity);
             }
+            else
+            {
+                GuardarAdjuntosPliegoMultiple(solp, adjuntos, pliegoEntity);
+            }
 
             repositorio.GuardarCambios();
             return pliegoEntity;
@@ -799,6 +803,28 @@ namespace SustitucionMOAUtils.Services
             GuardarArchivosSolp(files.GetMultiple("fileEspecificaciones"), ruta, pliego, FileKeys.AdjuntoSolp);
             GuardarArchivosSolp(files.GetMultiple("fileCotizaciones"), ruta, pliego, FileKeys.AdjuntoCotizacionesSolp);
             GuardarArchivosSolp(files.GetMultiple("fileCotizacionesCondEsp"), ruta, pliego, FileKeys.AdjuntoCotizacionesSolpCondEsp);
+
+            repositorio.GuardarCambios();
+
+            solp.Adjuntos = pliego.Archivos
+                .Where(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp)
+                .Select(x => new ArchivoDto()
+                {
+                    Id = x.Id,
+                    FileKey = x.FileKey,
+                    Nombre = x.ObtenerNombre(x.Ruta)
+                }).ToList();
+
+            return solp;
+        }
+
+        private SolpDto GuardarAdjuntosPliegoMultiple(SolpDto solp, HttpFileCollectionBase files, Pliego pliego)
+        {
+            var ruta = ObtenerRutaArchivos(pliego.Id, "PliegoMultiple");
+            Directory.CreateDirectory(ruta);
+
+            GuardarArchivosSolp(files.GetMultiple("fileEspecificaciones"), ruta, pliego, FileKeys.AdjuntoSolp);
+            GuardarArchivosSolp(files.GetMultiple("fileCotizaciones"), ruta, pliego, FileKeys.AdjuntoCotizacionesSolp);
 
             repositorio.GuardarCambios();
 
@@ -3883,183 +3909,125 @@ namespace SustitucionMOAUtils.Services
             bool ocultarArchivosPliego =
                 esProveedor
                 && (esMultipleSolp && !solps.Any(s => s.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO"))) /* si es servicio, mostrar aún cuando es múltiple */;
-
+            List<int> idPliegoUsados = new List<int>();
             foreach (Solp solp in solps)
             {
-                if (!ocultarArchivosPliego)
-                {
-                    bool tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
-                        solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
-                        solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
-
-                    if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
-                    {
-                        string middleFileName = solp.NroSolp ?? solp.Pliego?.NombreObra ?? "xxxx";
-                        string pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
-
-                        //invento registro con id de archivo 0 para bajar el pliego
-                        legajo.Add(new LegajoDto
-                        {
-                            ArchivoId = 0,
-                            Observacion = pdfFilename,
-                            PeticionDeOfertaId = peticionDeOfertaId,
-                            SolpId = solp.Id,
-                            Fecha = solp.FechaCreacion,
-                            FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
-                            Usuario = new UsuarioDto { CUIT = solp.UsuarioCreacion?.CUITRegistro ?? "", Mail = solp.UsuarioCreacion?.Mail ?? "", Id = solp.UsuarioCreacion_Id ?? 0 },
-                            Tipo = TipoLegajo.Pliego
-                        });
-                    }
-                }
+                ObtenerLegajoPliegoPdf(peticionDeOfertaId, legajo, ocultarArchivosPliego, solp);
 
                 var tieneCondicionEspecial = solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true;
 
                 // buscar archivos de la solp y considerar condiciones especiales
-                if (solp.Pliego?.Archivos?.Any(x => x.FileKey == FileKeys.AdjuntoSolp
-                                                            || x.FileKey == FileKeys.AdjuntoCotizacionesSolp
-                                                            || (x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp
-                                                                && (!esProveedor || !tieneCondicionEspecial))) == true)
+                if (solp.Pliego != null && !idPliegoUsados.Contains(solp.Pliego.Id))
                 {
-                    foreach (var archivoSubido in solp.Pliego.Archivos)
-                    {
-                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp
-                            || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp
-                            || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp
-                            && (!esProveedor || !tieneCondicionEspecial))))
-                        {
-                            string fileName = Path.GetFileName(archivoSubido.Ruta);
-                            legajo.Add(new LegajoDto
-                            {
-                                ArchivoId = archivoSubido.Id,
-                                Observacion = fileName,
-                                PeticionDeOfertaId = peticionDeOfertaId,
-                                SolpId = solp.Id,
-                                Fecha = solp.FechaCreacion,
-                                FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
-                                Usuario = new UsuarioDto { CUIT = solp.UsuarioCreacion?.CUITRegistro ?? "", Mail = solp.UsuarioCreacion?.Mail ?? "", Id = solp.UsuarioCreacion_Id ?? 0 },
-                                Tipo = TipoLegajo.SolpArchivos
-                            });
-                        }
-                    }
+                    idPliegoUsados.Add(solp.Pliego.Id);
+                    ObtenerLegajoAdjuntosPliego(peticionDeOfertaId, esProveedor, legajo, solp, tieneCondicionEspecial);
+                    ObtenerLegajoTextoCondicionesEspeciales(peticionDeOfertaId, esProveedor, legajo, solp, tieneCondicionEspecial);
                 }
 
-                //mostrar observación de condiciones especielas ingresada en el paso 4 
-                if (solp.Pliego != null && !esProveedor && tieneCondicionEspecial)
-                {
-                    legajo.Add(new LegajoDto
-                    {
-                        ArchivoId = null,
-                        Observacion = "Justificación de condición especial: " + solp.Pliego.ObservacionesCotizacionCondEsp,
-                        PeticionDeOfertaId = peticionDeOfertaId,
-                        SolpId = solp.Id,
-                        Fecha = solp.FechaCreacion,
-                        FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
-                        Usuario = new UsuarioDto { CUIT = solp.UsuarioCreacion?.CUITRegistro ?? "", Mail = solp.UsuarioCreacion?.Mail ?? "", Id = solp.UsuarioCreacion_Id ?? 0 },
-                        Tipo = TipoLegajo.Solp
-                    });
-                }
+                ObtenerLegajoChatInterno(peticionDeOfertaId, esProveedor, legajo, solp);
+                ObtenerLegajoChatExterno(peticionDeOfertaId, esProveedor, legajo, peticion, solp);
+            }
 
-                //Chat interno
-                if (solp.ChatInternoCompras?.Count > 0 && !esProveedor)
-                {
-                    legajo.Add(new LegajoDto
-                    {
-                        ArchivoId = 0,
-                        Observacion = "Chat interno",
-                        PeticionDeOfertaId = peticionDeOfertaId,
-                        SolpId = solp.Id,
-                        Fecha = solp.ChatInternoCompras.First().FechaEnvio,
-                        FechaFormateado = solp.ChatInternoCompras.First().FechaEnvio.ToString("dd/MM/yyyy"),
-                        Usuario = new UsuarioDto { CUIT = solp.ChatInternoCompras.First().Usuario.CUITRegistro, Mail = solp.ChatInternoCompras.First().Usuario.Mail, Id = solp.ChatInternoCompras.First().Usuario_Id },
-                        Tipo = TipoLegajo.ChatInterno
-                    });
-                }
+            ObtenerLegajoSolpsAgrupadas(peticionDeOfertaId, legajo, peticion, solpsAgrupadasStr);
+            ObtenerLegajoAdjuntosPeticionOferta(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor, legajo, peticion);
+            ObtenerLegajoPdfPeticionOfertaMateriales(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor, legajo, usuarioDto, peticion);
 
-                if (peticion.Usuarios != null && !esProveedor)
+            AgregarALegajoPeticionVisualizarPrecio(legajo, peticion, esProveedor);
+
+
+            List<Circular> circulares = ObtenerLegajoCirculares(peticionDeOfertaId, idPeticionDeOfertaUsuario, legajo, peticion);
+
+
+            ObtenerLegajoCierrePlazoOferta(peticionDeOfertaId, legajo, peticion, esProveedor);
+            ObtenerLegajoRevisionTecnicaAnticipada(peticionDeOfertaId, legajo, peticion, esProveedor);
+
+
+            if (!esProveedor)
+            {
+                AgregarALegajoDescargaRevisionTecnica(legajo, peticion);
+                AgregarALegajoHistorialDeMovimientos(legajo, peticion, peticionDeOfertaId);
+
+                if (!esSolicitante)
                 {
-                    foreach (var usuario in peticion.Usuarios.Where(x => x.ChatExterno.Count > 0))
+                    AgregarALegajoDocumentosEnviadosPorProveedores(legajo, peticion, peticionDeOfertaId, usuarioDto);
+                    AgregarALegajoDescargaHistorialDeCotizaciones(legajo, peticion, usuarioDto);
+                }
+            }
+
+            var response = new ObtenerLegajoResponse
+            {
+                LegajoFilas = legajo.OrderByDescending(x => x.Fecha).ToList(),
+                PuedeVerPrecios = PuedenVerseLosImportes(peticion, usuarioDto, circulares)
+            };
+
+            return response;
+        }
+
+        private static void ObtenerLegajoRevisionTecnicaAnticipada(int peticionDeOfertaId, List<LegajoDto> legajo, PeticionDeOferta peticion, bool esProveedor)
+        {
+            if (!esProveedor)
+            {
+                // revision tecnica anticipada
+                if (peticion.RevisionTecnica != null)
+                {
+                    if (peticion.RevisionTecnica.RecotizacionEconomica)
                     {
                         legajo.Add(new LegajoDto
                         {
                             ArchivoId = 0,
-                            Observacion = "Chat externo - Razon social: " + usuario.Usuario.ObtenerRazonSocial() + " - CUIT: " + usuario.PeticionDeOferta.Usuario.CUITRegistro,
+                            Observacion = "Solicitud de re cotización - " + peticion.RevisionTecnica.ObservacionRecotizacion,
                             PeticionDeOfertaId = peticionDeOfertaId,
-                            SolpId = solp.Id,
-                            Fecha = usuario.ChatExterno.First().FechaEnvio,
-                            FechaFormateado = usuario.ChatExterno.First().FechaEnvio.ToString("dd/MM/yyyy"),
-                            Usuario = new UsuarioDto { CUIT = usuario.ChatExterno.First().Usuario.CUITRegistro, Mail = usuario.ChatExterno.First().Usuario.Mail, Id = usuario.ChatExterno.First().Usuario_Id },
-                            Tipo = TipoLegajo.ChatExterno
+                            SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                            Fecha = peticion.RevisionTecnica.Fecha,
+                            FechaFormateado = peticion.RevisionTecnica.Fecha.ToString("dd/MM/yyyy"),
+                            Usuario = new UsuarioDto { CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro, Mail = peticion.RevisionTecnica.Usuario.Mail, Id = peticion.RevisionTecnica.Usuario.Id },
+                            Tipo = TipoLegajo.RevisionTecnica
+                        });
+                    }
+
+                    if (peticion.RevisionTecnica.Finalizada)
+                    {
+                        legajo.Add(new LegajoDto
+                        {
+                            ArchivoId = null,
+                            Observacion = "Finalización revisión técnica",
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                            Fecha = peticion.RevisionTecnica.Fecha,
+                            FechaFormateado = peticion.RevisionTecnica.Fecha.ToString("dd/MM/yyyy"),
+                            Usuario = new UsuarioDto { CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro, Mail = peticion.RevisionTecnica.Usuario.Mail, Id = peticion.RevisionTecnica.Usuario.Id },
+                            Tipo = TipoLegajo.RevisionTecnica
                         });
                     }
                 }
             }
+        }
 
-            // Agrupar po th
-            if (peticion.Agrupada)
+        private void ObtenerLegajoCierrePlazoOferta(int peticionDeOfertaId, List<LegajoDto> legajo, PeticionDeOferta peticion, bool esProveedor)
+        {
+            if (!esProveedor)
             {
-                legajo.Add(new LegajoDto
+                //Cierres plazo de oferta
+                var cierres = repositorio.Listar<PeticionDeOfertaCierre>(a => a.PeticionDeOferta_Id == peticionDeOfertaId);
+                foreach (var cierre in cierres)
                 {
-                    ArchivoId = null,
-                    Observacion = "Solps agrupadas: " + solpsAgrupadasStr,
-                    PeticionDeOfertaId = peticionDeOfertaId,
-                    SolpId = 0,
-                    Fecha = peticion.FechaCreacion,
-                    FechaFormateado = peticion.FechaCreacion.ToString("dd/MM/yyyy"),
-                    Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
-                    Tipo = TipoLegajo.PeticionDeOfertaAgrupada
-                });
-            }
-
-            //buscar archivos de la peticion ( menos lo de legajo cuando es un usuario proveedor)
-            foreach (var item in peticion.Archivos.Where(a => !esProveedor || (esProveedor && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
-            {
-                legajo.Add(new LegajoDto
-                {
-                    ArchivoId = item.Archivo.Id,
-                    Observacion = item.Archivo.ObtenerNombre(item.Archivo.Ruta),
-                    PeticionDeOfertaId = peticionDeOfertaId,
-                    SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
-                    Fecha = item.Fecha,
-                    FechaFormateado = item.Fecha.ToString("dd/MM/yyyy"),
-                    Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
-                    Tipo = idPeticionDeOfertaUsuario == null ? TipoLegajo.Legajo : TipoLegajo.PeticionDeOferta
-                });
-            }
-
-            // pdf petición de oferta materiales
-            if (peticion.Posiciones?.FirstOrDefault()?.SolpPosicion?.TipoPosicion?.Codigo == "MATERIALES")
-            {
-                bool peticionesUsuario(PeticionDeOfertaUsuario u)
-                {
-                    if (!esProveedor) { return true; }
-                    if (idPeticionDeOfertaUsuario == null && usuarioDto == null) { return true; }
-                    if (idPeticionDeOfertaUsuario == u.Id) { return true; }
-                    if (usuarioDto?.CUIT == u.Usuario.CUITRegistro) { return true; }
-                    return false;
-                }
-
-                foreach (var peticionUsuario in peticion.Usuarios.Where(peticionesUsuario))
-                {
-                    var pdfPOUsuario = $"PO - {peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
                     legajo.Add(new LegajoDto
                     {
-                        ArchivoId = peticionUsuario.Id * -1,//lo ponemos en negtivo para difernciarlo de los ids de archivos
-                        Observacion = pdfPOUsuario,
+                        ArchivoId = null,
+                        Observacion = cierre.Observacion,
                         PeticionDeOfertaId = peticionDeOfertaId,
                         SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
-                        Fecha = peticion.FechaCreacion,
-                        FechaFormateado = peticion.FechaCreacion.ToString("dd/MM/yyyy"),
-                        Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
-                        Tipo = TipoLegajo.PeticionDeOferta
+                        Fecha = cierre.Fecha,
+                        FechaFormateado = cierre.Fecha.ToString("dd/MM/yyyy"),
+                        Usuario = new UsuarioDto { CUIT = cierre.Usuario.CUITRegistro, Mail = cierre.Usuario.Mail, Id = cierre.Usuario_Id },
+                        Tipo = TipoLegajo.CierreOferta
                     });
                 }
             }
+        }
 
-            if (!esProveedor)
-            {
-                AgregarALegajoPeticionVisualizarPrecio(legajo, peticion);
-            }
-
+        private List<Circular> ObtenerLegajoCirculares(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, List<LegajoDto> legajo, PeticionDeOferta peticion)
+        {
             //circular
             var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => idPeticionDeOfertaUsuario == null || u.Id == idPeticionDeOfertaUsuario).Select(u => u.Id).ToList();
             var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
@@ -4149,79 +4117,196 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            //Cierres plazo de oferta
-            var cierres = repositorio.Listar<PeticionDeOfertaCierre>(a => a.PeticionDeOferta_Id == peticionDeOfertaId);
-            if (!esProveedor)
+            return circulares;
+        }
+
+        private static void ObtenerLegajoPdfPeticionOfertaMateriales(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor, List<LegajoDto> legajo, UsuarioDto usuarioDto, PeticionDeOferta peticion)
+        {
+            // pdf petición de oferta materiales
+            if (peticion.Posiciones?.FirstOrDefault()?.SolpPosicion?.TipoPosicion?.Codigo == "MATERIALES")
             {
-                foreach (var cierre in cierres)
+                bool peticionesUsuario(PeticionDeOfertaUsuario u)
+                {
+                    if (!esProveedor) { return true; }
+                    if (idPeticionDeOfertaUsuario == null && usuarioDto == null) { return true; }
+                    if (idPeticionDeOfertaUsuario == u.Id) { return true; }
+                    if (usuarioDto?.CUIT == u.Usuario.CUITRegistro) { return true; }
+                    return false;
+                }
+
+                foreach (var peticionUsuario in peticion.Usuarios.Where(peticionesUsuario))
+                {
+                    var pdfPOUsuario = $"PO - {peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
+                    legajo.Add(new LegajoDto
+                    {
+                        ArchivoId = peticionUsuario.Id * -1,//lo ponemos en negtivo para difernciarlo de los ids de archivos
+                        Observacion = pdfPOUsuario,
+                        PeticionDeOfertaId = peticionDeOfertaId,
+                        SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                        Fecha = peticion.FechaCreacion,
+                        FechaFormateado = peticion.FechaCreacion.ToString("dd/MM/yyyy"),
+                        Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
+                        Tipo = TipoLegajo.PeticionDeOferta
+                    });
+                }
+            }
+        }
+
+        private static void ObtenerLegajoAdjuntosPeticionOferta(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor, List<LegajoDto> legajo, PeticionDeOferta peticion)
+        {
+            //buscar archivos de la peticion ( menos lo de legajo cuando es un usuario proveedor)
+            foreach (var item in peticion.Archivos.Where(a => !esProveedor || (esProveedor && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
+            {
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = item.Archivo.Id,
+                    Observacion = item.Archivo.ObtenerNombre(item.Archivo.Ruta),
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                    Fecha = item.Fecha,
+                    FechaFormateado = item.Fecha.ToString("dd/MM/yyyy"),
+                    Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
+                    Tipo = idPeticionDeOfertaUsuario == null ? TipoLegajo.Legajo : TipoLegajo.PeticionDeOferta
+                });
+            }
+        }
+
+        private static void ObtenerLegajoSolpsAgrupadas(int peticionDeOfertaId, List<LegajoDto> legajo, PeticionDeOferta peticion, string solpsAgrupadasStr)
+        {
+            // Agrupar po th
+            if (peticion.Agrupada)
+            {
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = null,
+                    Observacion = "Solps agrupadas: " + solpsAgrupadasStr,
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = 0,
+                    Fecha = peticion.FechaCreacion,
+                    FechaFormateado = peticion.FechaCreacion.ToString("dd/MM/yyyy"),
+                    Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
+                    Tipo = TipoLegajo.PeticionDeOfertaAgrupada
+                });
+            }
+        }
+
+        private static void ObtenerLegajoChatExterno(int peticionDeOfertaId, bool esProveedor, List<LegajoDto> legajo, PeticionDeOferta peticion, Solp solp)
+        {
+            if (peticion.Usuarios != null && !esProveedor)
+            {
+                foreach (var usuario in peticion.Usuarios.Where(x => x.ChatExterno.Count > 0))
                 {
                     legajo.Add(new LegajoDto
                     {
-                        ArchivoId = null,
-                        Observacion = cierre.Observacion,
+                        ArchivoId = 0,
+                        Observacion = "Chat externo - Razon social: " + usuario.Usuario.ObtenerRazonSocial() + " - CUIT: " + usuario.PeticionDeOferta.Usuario.CUITRegistro,
                         PeticionDeOfertaId = peticionDeOfertaId,
-                        SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
-                        Fecha = cierre.Fecha,
-                        FechaFormateado = cierre.Fecha.ToString("dd/MM/yyyy"),
-                        Usuario = new UsuarioDto { CUIT = cierre.Usuario.CUITRegistro, Mail = cierre.Usuario.Mail, Id = cierre.Usuario_Id },
-                        Tipo = TipoLegajo.CierreOferta
+                        SolpId = solp.Id,
+                        Fecha = usuario.ChatExterno.First().FechaEnvio,
+                        FechaFormateado = usuario.ChatExterno.First().FechaEnvio.ToString("dd/MM/yyyy"),
+                        Usuario = new UsuarioDto { CUIT = usuario.ChatExterno.First().Usuario.CUITRegistro, Mail = usuario.ChatExterno.First().Usuario.Mail, Id = usuario.ChatExterno.First().Usuario_Id },
+                        Tipo = TipoLegajo.ChatExterno
                     });
                 }
+            }
+        }
 
-                // revision tecnica anticipada
-                if (peticion.RevisionTecnica != null)
+        private static void ObtenerLegajoChatInterno(int peticionDeOfertaId, bool esProveedor, List<LegajoDto> legajo, Solp solp)
+        {
+            //Chat interno
+            if (solp.ChatInternoCompras?.Count > 0 && !esProveedor)
+            {
+                legajo.Add(new LegajoDto
                 {
-                    if (peticion.RevisionTecnica.RecotizacionEconomica)
-                    {
-                        legajo.Add(new LegajoDto
-                        {
-                            ArchivoId = 0,
-                            Observacion = "Solicitud de re cotización - " + peticion.RevisionTecnica.ObservacionRecotizacion,
-                            PeticionDeOfertaId = peticionDeOfertaId,
-                            SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
-                            Fecha = peticion.RevisionTecnica.Fecha,
-                            FechaFormateado = peticion.RevisionTecnica.Fecha.ToString("dd/MM/yyyy"),
-                            Usuario = new UsuarioDto { CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro, Mail = peticion.RevisionTecnica.Usuario.Mail, Id = peticion.RevisionTecnica.Usuario.Id },
-                            Tipo = TipoLegajo.RevisionTecnica
-                        });
-                    }
+                    ArchivoId = 0,
+                    Observacion = "Chat interno",
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = solp.Id,
+                    Fecha = solp.ChatInternoCompras.First().FechaEnvio,
+                    FechaFormateado = solp.ChatInternoCompras.First().FechaEnvio.ToString("dd/MM/yyyy"),
+                    Usuario = new UsuarioDto { CUIT = solp.ChatInternoCompras.First().Usuario.CUITRegistro, Mail = solp.ChatInternoCompras.First().Usuario.Mail, Id = solp.ChatInternoCompras.First().Usuario_Id },
+                    Tipo = TipoLegajo.ChatInterno
+                });
+            }
+        }
 
-                    if (peticion.RevisionTecnica.Finalizada)
+        private static void ObtenerLegajoTextoCondicionesEspeciales(int peticionDeOfertaId, bool esProveedor, List<LegajoDto> legajo, Solp solp, bool tieneCondicionEspecial)
+        {
+            //mostrar observación de condiciones especielas ingresada en el paso 4 
+            if (solp.Pliego != null && !esProveedor && tieneCondicionEspecial)
+            {
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = null,
+                    Observacion = "Justificación de condición especial: " + solp.Pliego.ObservacionesCotizacionCondEsp,
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = solp.Id,
+                    Fecha = solp.FechaCreacion,
+                    FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
+                    Usuario = new UsuarioDto { CUIT = solp.UsuarioCreacion?.CUITRegistro ?? "", Mail = solp.UsuarioCreacion?.Mail ?? "", Id = solp.UsuarioCreacion_Id ?? 0 },
+                    Tipo = TipoLegajo.Solp
+                });
+            }
+        }
+
+        private static void ObtenerLegajoAdjuntosPliego(int peticionDeOfertaId, bool esProveedor, List<LegajoDto> legajo, Solp solp, bool tieneCondicionEspecial)
+        {
+            if (solp.Pliego?.Archivos?.Any(x => x.FileKey == FileKeys.AdjuntoSolp
+                                                                            || x.FileKey == FileKeys.AdjuntoCotizacionesSolp
+                                                                            || (x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp
+                                                                                && (!esProveedor || !tieneCondicionEspecial))) == true)
+            {
+                foreach (var archivoSubido in solp.Pliego.Archivos)
+                {
+                    if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp
+                        || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp
+                        || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp
+                        && (!esProveedor || !tieneCondicionEspecial))))
                     {
+                        string fileName = Path.GetFileName(archivoSubido.Ruta);
                         legajo.Add(new LegajoDto
                         {
-                            ArchivoId = null,
-                            Observacion = "Finalización revisión técnica",
+                            ArchivoId = archivoSubido.Id,
+                            Observacion = fileName,
                             PeticionDeOfertaId = peticionDeOfertaId,
-                            SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
-                            Fecha = peticion.RevisionTecnica.Fecha,
-                            FechaFormateado = peticion.RevisionTecnica.Fecha.ToString("dd/MM/yyyy"),
-                            Usuario = new UsuarioDto { CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro, Mail = peticion.RevisionTecnica.Usuario.Mail, Id = peticion.RevisionTecnica.Usuario.Id },
-                            Tipo = TipoLegajo.RevisionTecnica
+                            SolpId = solp.Id,
+                            Fecha = solp.FechaCreacion,
+                            FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
+                            Usuario = new UsuarioDto { CUIT = solp.UsuarioCreacion?.CUITRegistro ?? "", Mail = solp.UsuarioCreacion?.Mail ?? "", Id = solp.UsuarioCreacion_Id ?? 0 },
+                            Tipo = TipoLegajo.SolpArchivos
                         });
                     }
                 }
             }
+        }
 
-            if (!esProveedor)
+        private static void ObtenerLegajoPliegoPdf(int peticionDeOfertaId, List<LegajoDto> legajo, bool ocultarArchivosPliego, Solp solp)
+        {
+            if (!ocultarArchivosPliego)
             {
-                AgregarALegajoDescargaRevisionTecnica(legajo, peticion);
-                AgregarALegajoHistorialDeMovimientos(legajo, peticion, peticionDeOfertaId);
+                bool tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
+                    solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
+                    solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
 
-                if (!esSolicitante)
+                if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
                 {
-                    AgregarALegajoDocumentosEnviadosPorProveedores(legajo, peticion, peticionDeOfertaId, usuarioDto);
-                    AgregarALegajoDescargaHistorialDeCotizaciones(legajo, peticion, usuarioDto);
+                    string middleFileName = solp.NroSolp ?? solp.Pliego?.NombreObra ?? "xxxx";
+                    string pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
+
+                    //invento registro con id de archivo 0 para bajar el pliego
+                    legajo.Add(new LegajoDto
+                    {
+                        ArchivoId = 0,
+                        Observacion = pdfFilename,
+                        PeticionDeOfertaId = peticionDeOfertaId,
+                        SolpId = solp.Id,
+                        Fecha = solp.FechaCreacion,
+                        FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
+                        Usuario = new UsuarioDto { CUIT = solp.UsuarioCreacion?.CUITRegistro ?? "", Mail = solp.UsuarioCreacion?.Mail ?? "", Id = solp.UsuarioCreacion_Id ?? 0 },
+                        Tipo = TipoLegajo.Pliego
+                    });
                 }
             }
-
-            var response = new ObtenerLegajoResponse
-            {
-                LegajoFilas = legajo.OrderByDescending(x => x.Fecha).ToList(),
-                PuedeVerPrecios = PuedenVerseLosImportes(peticion, usuarioDto, circulares)
-            };
-
-            return response;
         }
 
         public Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto)
@@ -8740,22 +8825,25 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void AgregarALegajoPeticionVisualizarPrecio(List<LegajoDto> legajo, PeticionDeOferta peticionOferta)
+        private void AgregarALegajoPeticionVisualizarPrecio(List<LegajoDto> legajo, PeticionDeOferta peticionOferta, bool esProveedor)
         {
-            var peticionVisualizarPrecio = repositorio.Obtener<PeticionDeOfertaVisualizacionPrecio>(x => x.PeticionDeOferta_Id == peticionOferta.Id);
-            if (peticionVisualizarPrecio != null)
+            if (!esProveedor)
             {
-                legajo.Add(new LegajoDto
+                var peticionVisualizarPrecio = repositorio.Obtener<PeticionDeOfertaVisualizacionPrecio>(x => x.PeticionDeOferta_Id == peticionOferta.Id);
+                if (peticionVisualizarPrecio != null)
                 {
-                    ArchivoId = peticionVisualizarPrecio.Archivo?.Id,
-                    Observacion = "Justificación de visualización de precios: " + peticionVisualizarPrecio.Observaciones,
-                    PeticionDeOfertaId = peticionOferta.Id,
-                    SolpId = peticionOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
-                    Fecha = peticionVisualizarPrecio.FechaCreacion,
-                    FechaFormateado = peticionVisualizarPrecio.FechaCreacion.ToString("dd/MM/yyyy"),
-                    Usuario = new UsuarioDto { CUIT = peticionVisualizarPrecio.Usuario.CUITRegistro, Mail = peticionVisualizarPrecio.Usuario.Mail, Id = peticionVisualizarPrecio.UsuarioCreador_Id },
-                    Tipo = TipoLegajo.PeticionDeOfertaVisualizacionPrecio
-                });
+                    legajo.Add(new LegajoDto
+                    {
+                        ArchivoId = peticionVisualizarPrecio.Archivo?.Id,
+                        Observacion = "Justificación de visualización de precios: " + peticionVisualizarPrecio.Observaciones,
+                        PeticionDeOfertaId = peticionOferta.Id,
+                        SolpId = peticionOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                        Fecha = peticionVisualizarPrecio.FechaCreacion,
+                        FechaFormateado = peticionVisualizarPrecio.FechaCreacion.ToString("dd/MM/yyyy"),
+                        Usuario = new UsuarioDto { CUIT = peticionVisualizarPrecio.Usuario.CUITRegistro, Mail = peticionVisualizarPrecio.Usuario.Mail, Id = peticionVisualizarPrecio.UsuarioCreador_Id },
+                        Tipo = TipoLegajo.PeticionDeOfertaVisualizacionPrecio
+                    });
+                }
             }
         }
 
