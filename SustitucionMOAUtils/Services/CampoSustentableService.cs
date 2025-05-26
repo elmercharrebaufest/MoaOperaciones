@@ -404,6 +404,7 @@ namespace SustitucionMOAUtils.Services
             };
 
             var pdfBytes = GenerarPDFDeclaracion(datos);
+            pdfBytes = ReemplazarTextoEnPdf(pdfBytes, @"2018/2001/EC \(RED II\)", @"2023/2413/EC \(RED III\)");
 
             byte[] archivoResult;
             using (MemoryStream stream = new MemoryStream())
@@ -1035,7 +1036,7 @@ namespace SustitucionMOAUtils.Services
             under.SetFontAndSize(baseFontBold, fontSize);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Declaración de Conformidad según criterios de sustentabilidad para la producción de Biomasa, de acuerdo con los"
                 , xPosition + xMargenTexto, yPosition - (15f * 2), 0);
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "requisitos de la Directiva 2018/2001/EC (RED II)"
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "requisitos de la Directiva 2023/2413/EC (RED III)"
                 , xPosition + xMargenTexto, yPosition - (15f * 3), 0);
             under.SetFontAndSize(baseFontBold, fontSizeNormal);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "De mi mayor consideración:"
@@ -1119,6 +1120,38 @@ namespace SustitucionMOAUtils.Services
         private DeclaracionCampoSustentable ObtenerDeclaracion(int cosechaId, string CUIT)
         {
             return repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUIT);
+        }
+
+        private byte[] ReemplazarTextoEnPdf(byte[] pdfBytes, string textoOriginal, string textoNuevo)
+        {
+            using (MemoryStream outputStream = new MemoryStream())
+            {
+                var pdfReader = new PdfReader(pdfBytes);
+                var pdfStamper = new PdfStamper(pdfReader, outputStream);
+
+                for (int i = 1; i <= pdfReader.NumberOfPages; i++)
+                {
+                    PdfDictionary pageDict = pdfReader.GetPageN(i);
+                    PdfObject contentObject = pageDict.GetDirectObject(PdfName.CONTENTS);
+
+                    if (contentObject is PRStream contentStream)
+                    {
+                        var contentBytes = PdfReader.GetStreamBytes(contentStream);
+                        var content = Encoding.Default.GetString(contentBytes);
+
+                        if (content.Contains(textoOriginal))
+                        {
+                            content = content.Replace(textoOriginal, textoNuevo);
+                            contentStream.SetData(Encoding.Default.GetBytes(content));
+                        }
+                    }
+                }
+
+                pdfStamper.Close();
+                pdfReader.Close();
+
+                return outputStream.ToArray();
+            }
         }
     }
 }
