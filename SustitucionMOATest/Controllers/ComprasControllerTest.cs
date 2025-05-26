@@ -24,6 +24,7 @@ namespace SustitucionMOATest.Controllers
     {
         private ComprasController target;
         private Mock<IComprasService> comprasServiceMock;
+        private Mock<IFacturaService> facturaServiceMock;
         private Mock<IComprasSapService> comprasSapServiceMock;
         private Mock<IComprasSolicitanteService> comprasSolicitanteServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
@@ -41,6 +42,7 @@ namespace SustitucionMOATest.Controllers
         public void SetUp()
         {
             comprasServiceMock = new Mock<IComprasService>();
+            facturaServiceMock = new Mock<IFacturaService>();
             comprasSapServiceMock = new Mock<IComprasSapService>();
             comprasSolicitanteServiceMock = new Mock<IComprasSolicitanteService>();
             usuarioServiceMock = new Mock<IUsuarioService>();
@@ -64,6 +66,7 @@ namespace SustitucionMOATest.Controllers
             Thread.CurrentPrincipal = principal;
 
             target = new ComprasController(comprasServiceMock.Object,
+                                           facturaServiceMock.Object,
                                            comprasSapServiceMock.Object,
                                            comprasSolicitanteServiceMock.Object,
                                            usuarioServiceMock.Object,
@@ -763,5 +766,21 @@ namespace SustitucionMOATest.Controllers
             comprasServiceMock.Verify(x => x.DesagruparPO(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
+        [Test]
+        public void DesvincularSolpDePOMultiple_Ok()
+        {
+            var solpPosicionId = 1;
+            var idsPOsADesvincular = new string[] { "1001", "1002" };
+            var idsPOsADesvincularInt = new List<int> { 1001, 1002 };
+
+            comprasServiceMock.Setup(x => x.DesvincularSolpDePOMultipleMaterial(solpPosicionId, idsPOsADesvincularInt));
+
+            var result = target.DesvincularSolpDePOMultipleMaterial(solpPosicionId, idsPOsADesvincular);
+
+            Assert.IsNotNull(result);
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Data);
+            comprasServiceMock.Verify(x => x.DesvincularSolpDePOMultipleMaterial(solpPosicionId, idsPOsADesvincularInt), Times.Once);
+        }
     }
 }

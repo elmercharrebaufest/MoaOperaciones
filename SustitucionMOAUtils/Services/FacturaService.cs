@@ -1,9 +1,13 @@
-﻿using SustitucionMOAModel.CustomExceptions;
+﻿using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -280,22 +284,22 @@ namespace SustitucionMOAUtils.Services
                 return result;
             }
 
+            //Verify that only one file must have one oc
+            if (resultadoAnalisis.Where(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name).Select(a => a.Value).Distinct().Count() > 1)
+            {
+                // Get the list of OCs
+                var ocs = resultadoAnalisis.Where(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name).Select(a => a.Value).Distinct().ToList();
+                string texto = "No se puede procesar el documento ya que tiene mas de una orden de compra: ";
+                ocs.ForEach(oc => texto += oc + ", ");
+                texto = texto.Substring(0, texto.Length - 2) + ".";
+
+                result.Add(new ValidationResult(false, texto, typeof(OrdenCompraValidationCommand).Name, "", ""));
+                return result;
+            }
+
             var OrdenDeCompraEncontrada = resultadoAnalisis.Find(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name);
             if (OrdenDeCompraEncontrada != null)
             {
-                //Verify that only one file must have one oc
-                if (resultadoAnalisis.Count(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name) > 1)
-                {
-                    // Get the list of OCs
-                    var ocs = resultadoAnalisis.Where(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name).Select(a => a.Value).ToList();
-                    string texto = "No se puede procesar el documento ya que tiene mas de una orden de compra: ";
-                    ocs.ForEach(oc => texto += oc + ", ");
-                    texto = texto.Substring(0, texto.Length - 2) + ".";
-
-                    result.Add(new ValidationResult(false, texto, typeof(OrdenCompraValidationCommand).Name, "", ""));
-                    return result;
-                }
-
                 var ordenDeCompraSAP = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra(OrdenDeCompraEncontrada.Value);
                 if (ordenDeCompraSAP.Cabecera.CodigoProveedor != codigoProveedor)
                 {
@@ -362,6 +366,72 @@ namespace SustitucionMOAUtils.Services
         public Archivo ObtenerArchivo(int archivoId)
         {
             return repositorio.Obtener<Archivo>(a => a.Id == archivoId);
+        }
+
+        public object ObtenerReporteFacturasCertificaciones(
+            string fechaInicio,
+            string fechaFin,
+            string ordenDeCompra = null,
+            string proveedor = null,
+            int? itemsPorPagina = null,
+            int? pagina = null,
+            string orden = null,
+            string columna = null
+            )
+        {
+            try
+            {
+                // Preparar objeto de paginación si se especifican los parámetros
+                Paginacion paginacion = null;
+                if (pagina.HasValue || itemsPorPagina.HasValue)
+                {
+                    var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
+                    paginacion = new Paginacion(
+                    (!string.IsNullOrEmpty(columna) ? columna : null),
+                    ordenar,
+                        (pagina == null) ? 0 : pagina.Value,
+                        (itemsPorPagina == null || itemsPorPagina == 0) ? 10 : itemsPorPagina.Value
+                    );
+                }
+
+                // Validar las fechas
+                var fechaInicioParsed = DateTime.Parse(fechaInicio);
+                var fechaFinParsed = DateTime.Parse(fechaFin);
+                var pag = new Paginacion("FechaDeRegistro", DirOrden.Desc, 1, 10);
+                var consulta = new ListarCertificacionRegistradaConsulta(paginacion, ordenDeCompra, proveedor, fechaInicioParsed, fechaFinParsed);
+                var resultado = repositorio.ListarConsultaPaginada(consulta);
+                var certificacionesSinAreas = resultado.Select(c => new
+                {
+                    c.Id,
+                    c.Proveedor.RazonSocial,
+                    c.NRO_OC,
+                    c.NRO_Certificacion,
+                    c.Importe,
+                    c.Archivo,
+                    c.FechaDeRegistro,
+                    c.Usuario.Mail,
+                    c.Moneda
+                }).ToList();
+
+                int totalItems = resultado.Items.Count;
+                itemsPorPagina = paginacion?.ItemsPorPagina ?? totalItems;
+                int paginaActual = paginacion?.Pagina ?? 1;
+                int totalPaginas = (int)Math.Ceiling((decimal)totalItems / itemsPorPagina.Value);
+
+                return new
+                {
+                    certificaciones = certificacionesSinAreas,
+                    totalItems = totalItems,
+                    totalPaginas = totalPaginas,
+                    paginaActual = paginaActual
+                };
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error en ObtenerReporteFacturasCertificaciones: {ex.Message}", ex);
+                throw;
+            }
         }
     }
 }

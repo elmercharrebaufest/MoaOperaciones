@@ -7,5 +7,6 @@ namespace SustitucionMOAUtils.Interfaces
     public interface ITicketPesadaService
     {
         List<ArchivoDescargaDto> ObtenerTicket(ConsultaTicketPesada consultaTicketPesada);
+        List<ArchivoDescargaDto> ObtenerTicketNoGranos(ConsultaTicketPesadaNoGranos consultaTicketPesadaNoGranos);
     }
 }

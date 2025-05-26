@@ -631,9 +631,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
     guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }): boolean {
         if (!this.esOperacionPliegoMultiple) {
             //no hacer comprobación si no se cargan materiales / servicios por ser agrupación de solp ya creadas.
-            if (this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
+            if (this.solpActual.valorTotalPorMoneda && this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
                 this.messageService.add({ severity: 'error', summary: 'No se puede guardar la SOLP', detail: 'El valor total es demasiado grande' });
-                return;
+                return false;
             }
         }
 
@@ -666,7 +666,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.blockUI.stop();
                     }
                     this.disabledSave = false;
-                    return;
+                    return false;
                 }
 
                 if (this.solpActual.tipoSolp != "SIN_PLIEGO" && !this.solpActual.revisadoPor) {
@@ -676,7 +676,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.blockUI.stop();
                     }
                     this.disabledSave = false;
-                    return;
+                    return false;
                 }
 
 
@@ -688,7 +688,23 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                         this.disabledSave = false;
-                        return;
+                        return false;
+                    }
+                    if(!this.validarCondicionesDeAcuerdoMarco()){
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen acuerdo marco" });
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
+                        this.disabledSave = false;
+                        return false;
+                    }
+                    if(!this.validarQueTodasLasPosicionesTenganProveedor()){
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen el mismo proveedor" });
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
+                        this.disabledSave = false;
+                        return false;
                     }
                 }
 
@@ -699,7 +715,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                         this.disabledSave = false;
-                        return;
+                        return false;
                     }
 
                     if (this.validarFechaLimiteConsulta()) {
@@ -708,7 +724,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                         this.disabledSave = false;
-                        return;
+                        return false;
                     }
 
                     if (this.validarFechaLimiteYObra()) {
@@ -717,7 +733,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                         this.disabledSave = false;
-                        return;
+                        return false;
                     }
 
                     if (!this.validarSolicitante()) {
@@ -726,7 +742,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.blockUI.stop();
                         }
                         this.disabledSave = false;
-                        return;
+                        return false;
                     }
                 }
 
@@ -1027,17 +1043,100 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
+    validarQueTodasLasPosicionesTenganProveedor() {
+        // Filtrar solo posiciones activas (estado == true)
+        const posicionesActivas = this.solpActual.posiciones.filter(x => x.estado === true);
+        
+        if (posicionesActivas.length === 0) {
+            return true; // No hay posiciones activas para validar
+        }
+        
+        // Separar posiciones con contrato marco y sin contrato marco
+        const posicionesConContratoMarco = posicionesActivas.filter(
+            x => x.numeroContratoSuperior != null && 
+                x.numeroContratoSuperior !== undefined && 
+                x.numeroContratoSuperior !== ""
+        );
+        
+        const posicionesSinContratoMarco = posicionesActivas.filter(
+            x => x.numeroContratoSuperior === null || 
+                x.numeroContratoSuperior === undefined || 
+                x.numeroContratoSuperior === ""
+        );
+        
+        // Si todas las posiciones activas tienen contrato marco, no se valida que tengan el mismo proveedor
+        if (posicionesConContratoMarco.length === posicionesActivas.length) {
+            return true;
+        }
+        
+        // Si hay posiciones sin contrato marco, ya no validamos si tienen proveedor asignado
+        // Siempre retornamos true para este caso
+        if (posicionesSinContratoMarco.length > 0) {
+            return true;
+        }
+        
+        return true; // Por seguridad, aunque no debería llegarse a este punto
+    }
+
+    validarCondicionesDeAcuerdoMarco() {
+        // Si no hay posiciones, no hay nada que validar
+        if (this.solpActual.posiciones.length === 0) {
+            return false;
+        }
+
+        // Filtrar solo posiciones activas (estado == true)
+        const posicionesActivas = this.solpActual.posiciones.filter(x => x.estado === true);
+        // Si no hay posiciones activas, no hay nada que validar
+        if (posicionesActivas.length === 0) {
+            return true;
+        }
+
+        // 1. Verificar si todas las posiciones activas tienen contrato marco o todas no tienen
+        const tienenContratoMarco = posicionesActivas.filter(
+            x => x.numeroContratoSuperior != null && 
+                 x.numeroContratoSuperior !== undefined && 
+                 x.numeroContratoSuperior !== ""
+        );
+        
+        const sinContratoMarco = posicionesActivas.filter(
+            x => x.numeroContratoSuperior === null || 
+                 x.numeroContratoSuperior === undefined || 
+                 x.numeroContratoSuperior === ""
+        );
+        
+        // 2. Si hay posiciones con contrato marco y sin contrato marco al mismo tiempo,
+        // la función debe devolver false (condición no permitida)
+        if (tienenContratoMarco.length > 0 && sinContratoMarco.length > 0) {
+            return false;
+        }
+        
+        // 3. Si todas las posiciones activas tienen contrato marco, es válido
+        // También es válido que posiciones activas tengan diferentes contratos marco
+        if (tienenContratoMarco.length === posicionesActivas.length) {
+            return true;
+        }
+        
+        // 4. Si todas las posiciones activas NO tienen contrato marco, también es válido
+        if (sinContratoMarco.length === posicionesActivas.length) {
+            return true;
+        }
+        
+        // Este punto no debería alcanzarse, pero por seguridad devolvemos false
+        return false;
+    }
+
     validarFechaVisitaDeObra() {
         if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
             return false;
         }
-        var esTipoPosicionServicio = this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
+        var esTipoPosicionServicio = this.solpActual.posicionActual != undefined &&  this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
         var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
+        var pliegoMultiple = this.solpActual.tipoSolp === "PLIEGO_MULTIPLE";
         var validarFechaVisitaDeObra = false;
 
 
 
-        if (esTipoPosicionServicio && !sinPliego) {
+        if ((esTipoPosicionServicio && !sinPliego) || pliegoMultiple) {
             // Encuentra la visita con la fecha más larga
             const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
                 if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
@@ -1076,12 +1175,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
         if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
             return false;
         }
-        var esTipoPosicionServicio = this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
+        var esTipoPosicionServicio = this.solpActual.posicionActual != undefined && this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
         var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
+        var pliegoMultiple = this.solpActual.tipoSolp === "PLIEGO_MULTIPLE";
 
         var validarFechaLimiteYObra = false;
 
-        if (esTipoPosicionServicio && !sinPliego) {
+        if ((esTipoPosicionServicio && !sinPliego) || pliegoMultiple) {
             // Encuentra la visita con la fecha más larga
             const visitaMasLarga = this.solpActual.listaVisitas.reduce((visitaAnterior, visitaActual) => {
                 if (visitaActual.visitaDeObraFecha > visitaAnterior.visitaDeObraFecha) {
@@ -1105,7 +1205,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     validarContratoMarco() {
         var validacionContratoTrabajo = false;
 
-        if ((this.solpActual.trabajoHecho || this.solpActual.conPresupuesto || this.solpActual.adicional || this.solpActual.urgencia || this.solpActual.condEspProveedorAsignado) == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
+        if ((this.solpActual.trabajoHecho || this.solpActual.conPresupuesto || this.solpActual.adicional || this.solpActual.urgencia || this.solpActual.condEspProveedorAsignado || this.solpActual.seraUsadoEnPliegoMultiple) == true && this.solpActual.posiciones.some(x => x.numeroContratoSuperior)) {
             return validacionContratoTrabajo = true;
         }
         return validacionContratoTrabajo;

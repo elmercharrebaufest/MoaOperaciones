@@ -1,0 +1,22 @@
+<div>
+
+    <button class="chatbot-button" (click)="toggleChatbot()">
+        <img src="https://media.licdn.com/dms/image/v2/D4E0BAQGLsc-Vh5MeOQ/company-logo_200_200/company-logo_200_200/0/1719257951026/molinos_agro_logo?e=2147483647&v=beta&t=Ou8UMHcJE7ITpYQJE4h44cjxpnmHfsoKP2SByhoi1bE">
+        Mola
+    </button>
+
+
+
+    <div id="chatbot-modal"
+         class="chatbot-modal"
+         [ngClass]="{'visibleChatBot': isChatbotVisible, 'hiddenChatBot': !isChatbotVisible}">
+        <div class="chatbot-container">
+            <button class="chatbot-close-btn" (click)="toggleChatbot()">X</button>
+            <iframe id="chatbot-iframe"
+                    class="chatbot-iframe"
+                    src="https://copilotstudio.microsoft.com/environments/d770ced1-c602-ed8f-93f9-2da7a10e381d/bots/cr227_agente/webchat?__version__=2">
+            </iframe>
+        </div>
+    </div>
+
+</div>

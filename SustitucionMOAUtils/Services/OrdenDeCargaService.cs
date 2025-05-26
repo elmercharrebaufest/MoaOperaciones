@@ -7,29 +7,28 @@ using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
-using Mod = SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.DataAgro;
-using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAModel.Util;
-using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Validadores.OrdenDeCarga;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using SustitucionMOAWS.WSConsumers;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
-using SustitucionMOAWS.ResponseHandler.OrdenCarga;
-using System.Collections;
-using System.Data.Entity;
-using SustitucionMOARepositorio.Repositorios.Interfaces;
+using Mod = SustitucionMOAModel.Models;
+using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -64,7 +63,7 @@ namespace SustitucionMOAUtils.Services
             IKgDisponiblesFasService kgDisponiblesFasService,
             ICNRTClient cNRTClient,
             IUbicacionGeograficaService ubicacionGeograficaService
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, (IRepositorio)repositorioOrdenDeCarga, cNRTClient, feriadoService, ubicacionGeograficaService)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorioOrdenDeCarga, cNRTClient, feriadoService, ubicacionGeograficaService)
         {
             this.emailFasService = emailFasService;
             this.facturaAnticipadaService = facturaAnticipadaService;
@@ -1131,6 +1130,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new ValidationCustomException(ErrorMsg.Error);
                 }
+
+                RemoverContratosConBloqueo(consumerRes);
+
                 if (consumerRes.Resultados == null || consumerRes.Resultados.Count == 0)
                 {
                     throw new ValidationCustomException("No se encontraron contratos abiertos para los datos ingresados");
@@ -1168,6 +1170,12 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, ex);
             }
+        }
+
+        private static void RemoverContratosConBloqueo(OrdenCargaVisualizarClienteWSMOAResponse consumerRes)
+        {
+            consumerRes.Resultados = consumerRes.Resultados.Where(c => !c.BloqueoEntrega && c.Detalles.Any(d => !d.BloqueoEntrega)).ToList();
+            consumerRes.Resultados.ForEach(c => c.Detalles = c.Detalles.Where(d => !d.BloqueoEntrega).ToList());
         }
 
         public string EnviarOrdenesASAP(List<int> ordenesId, string mailUsuario)

@@ -47,23 +47,36 @@ export class UsuarioService extends BaseService {
         return this._usuarioVerVendedores.asObservable()
     }
 
-    guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any, fDesde: string, fHasta: string, esExterno: any) {
+    guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any) {
         var payload = new FormData();
         payload.append('idRoles', idRoles);
         payload.append('idUsuario', usuarioSeleccionado.Id);
         payload.append('usuarioSap', usuarioSeleccionado.UsuarioSap);
-        payload.append('suplente', usuarioSeleccionado.Suplente);
+
+        return this.http
+            .post<any>('/api/usuario/GuardarRoles', payload, { headers: this.headers })
+            .pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
+
+    guardarSuplente(idUsuario: number, suplente: string, fDesde: string, fHasta: string, esExterno: any) {
+        var payload = new FormData();
+        payload.append('idUsuario', idUsuario.toString());
+        payload.append('suplente', suplente);
         payload.append('fDesde', fDesde);
         payload.append('fHasta', fHasta);
         payload.append('esExterno', esExterno);
 
         return this.http
-            .post<any>('/api/usuario/GuardarRoles', payload, { headers: this.headers })
-                .pipe(
-                    catchError(error => {
-                        return throwError(error);
-                    })
-                );
+            .post<any>('/api/usuario/GuardarSuplente', payload, { headers: this.headers })
+            .pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
     }
 
     public cambiarContrasenia(contraseniaActual: string, contraseniaNueva: string): Observable<any> {

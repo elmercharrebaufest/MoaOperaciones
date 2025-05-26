@@ -78,6 +78,7 @@
     <Compile Include="Dto\Compras\PeticionDeOfertaSolpPosicionDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaUsuarioAdicionalDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaUsuarioDto.cs" />
+    <Compile Include="Dto\Compras\POMultiple\PeticionDeOfertaDesvincularDto.cs" />
     <Compile Include="Dto\Compras\PrecargaSolp\ProcesarPrecargaSolpResponse.cs" />
     <Compile Include="Dto\Compras\PrecargaSolp\SolpPosicionPrecargadaDto.cs" />
     <Compile Include="Dto\Compras\PrecargaSolp\SolpSubposicionPrecargadaDto.cs" />
@@ -385,6 +386,7 @@
     <Compile Include="ModelAttributes\ExcelColumnOrderAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelColumnNameAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelIgnoreAttribute.cs" />
+    <Compile Include="Models\ConsultaTicketPesadaNoGranos.cs" />
     <Compile Include="Models\EcheqRequestModel.cs" />
     <Compile Include="Entities\Configuracion.cs" />
     <Compile Include="Entities\HabilitacionJob.cs" />

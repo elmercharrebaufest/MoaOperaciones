@@ -1,0 +1,48 @@
+<p-dialog
+        [(visible)]="displayDesvincularPoMultiple"
+        modal="modal"
+        [width]="450"
+        [draggable]="false"
+        [closable]="true"
+        appendTo="body"
+        positionTop="30"
+        [contentStyle]="{ 'max-height':'1500px', 'min-height':'400px'}">
+
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Desvincular SOLP de PO múltiple</b>
+    </p-header>
+
+    <div class="col-md-12 row myRow alinearTitulo margenInput">
+        <p>
+            <ngb-alert type="danger" [dismissible]="true" *ngIf="mensajeError">
+                <strong>Error: </strong>{{ mensajeError }}
+            </ngb-alert>
+        </p>
+        <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+            <p-table [value]="peticiones" responsiveLayout="scroll | stack" [scrollable]="true" scrollHeight="300px">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th class="columna" style="border: none !important;"></th>
+                        <th class="columna" style="border: none !important;">PO</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-peticionData>
+                    <tr>
+                        <td class="columna" style="border: none !important;">
+                            <input type="checkbox" [(ngModel)]="peticionData.Seleccionada"
+                                [disabled]="peticionData.CantidadPosiciones < 2 || peticionData.HayCotizacion"
+                                pTooltip="{{ peticionData.CantidadPosiciones < 2 ? 'La PO tiene una única posición/SOLP' : (peticionData.HayCotizacion ? 'Ya fue cotizada' : '') }}" />
+                        </td>
+                        <td class="columna" style="border: none !important;">{{ peticionData.NroPeticion }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <p-footer>
+        <button type="button" class="btn btn-danger botonesComprasColor" (click)="cancelarDesvinculacion()">Cancelar</button>
+        <button type="button" class="btn btn-primary botonesComprasColor" [disabled]="!hayPOSeleccionada()" (click)="guardarDesvinculacion()">Desvincular</button>
+    </p-footer>
+
+</p-dialog>

@@ -41,7 +41,7 @@ namespace SustitucionMOA.Controllers
             this.altaEmpresaNoGranosService = altaEmpresaNoGranosService;
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        [CustomPermisoAuthorize(Roles = Permiso.ABM_USUARIOS + "," + Permiso.EDITAR_SUPLENTE)]
         public ActionResult GetUsuarios()
         {
             return JsonCustom(new { data = new { usuarios = _usuarioService.GetUsuarios() } });
@@ -54,7 +54,7 @@ namespace SustitucionMOA.Controllers
         }
 
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        [CustomPermisoAuthorize(Roles = Permiso.ABM_USUARIOS + "," + Permiso.EDITAR_SUPLENTE)]
         public ActionResult GetRoles()
         {
             return JsonCustom(new { data = new { roles = _usuarioService.GetRoles() } });
@@ -62,14 +62,18 @@ namespace SustitucionMOA.Controllers
 
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
-        public ActionResult GuardarRoles(string idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno)
+        public ActionResult GuardarRoles(string idRoles, int idUsuario, string usuarioSap)
         {
-            bool puedeEditarSuplente = ClaimsPrincipal.Current.FindAll("permisos").Any(x => x.Value == Permiso.EDITAR_SUPLENTE);
             List<int> rolesList = idRoles.Split(',').Select(int.Parse).ToList();
-            return JsonCustom(new { data = _usuarioService.GuardarRoles(rolesList, idUsuario, usuarioSap, suplente, fDesde, fHasta, esExterno, puedeEditarSuplente) });
-
+            return JsonCustom(new { data = _usuarioService.GuardarRoles(rolesList, idUsuario, usuarioSap) });
         }
 
+        [CustomPermisoAuthorize(Roles = Permiso.EDITAR_SUPLENTE)]
+        public ActionResult GuardarSuplente(int idUsuario, string suplente, string fDesde, string fHasta, bool esExterno)
+        {
+            _usuarioService.GuardarSuplente(idUsuario, suplente, fDesde, fHasta, esExterno);
+            return JsonCustom(true);
+        }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
         public ActionResult ObtenerRolesUsuario(int idUsuario)
@@ -78,7 +82,7 @@ namespace SustitucionMOA.Controllers
         }
 
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        [CustomPermisoAuthorize(Roles = Permiso.ABM_USUARIOS + "," + Permiso.EDITAR_SUPLENTE)]
         public ActionResult ObtenerReasignacionUsuario(int idUsuario)
         {
             return JsonCustom(new { data = _usuarioService.GetPeriodoReasignacion(idUsuario) });
@@ -501,7 +505,7 @@ namespace SustitucionMOA.Controllers
 
 
         [HttpGet]
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        [CustomPermisoAuthorize(Roles = Permiso.ABM_USUARIOS + "," + Permiso.EDITAR_SUPLENTE)]
         public ActionResult GetTipoUsuario()
         {
             try

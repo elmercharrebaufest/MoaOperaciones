@@ -151,6 +151,7 @@
                                 <tr>
                                     <td>
                                         <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="posicionCompra.Selected"></p-checkbox>
+                                        <img *ngIf="posicionCompra.SeraUsadoEnPliegoMultiple" src="./Content/images/icons/book-open.svg" pTooltip="Pliego múltiple" style="margin-left: 3px;" />
                                     </td>
                                     <td class="columna">{{posicionCompra.NroSolp}}</td>
                                     <td class="columna">{{posicionCompra.Indice}}</td>
@@ -169,7 +170,14 @@
                                     <td class="columna">{{posicionCompra.FechaOferta | customDateFormat | date :'d/M/yyyy'}}</td>
                                     <!-- posicionCompra.ListaPO -->
                                     <td class="columna" *ngIf="!posicionCompra.TieneCotizacion">-</td>
-                                    <td class="columna" *ngIf="posicionCompra.TieneCotizacion && !numeroPo">{{posicionCompra.ListaPO.join('-')}}</td>
+                                    <td class="columna" *ngIf="posicionCompra.TieneCotizacion && !numeroPo">
+                                        <span *ngIf="posicionCompra.ListaPO && posicionCompra.ListaPO.length > 0"
+                                            style="cursor: pointer;" pTooltip="Desvincular"
+                                            (click)="abrirModalDesvincularMaterial(posicionCompra.Id)">
+                                            <img src="Content/images/buttons/unlink.svg" />
+                                        </span>
+                                        {{posicionCompra.ListaPO.join('-')}}
+                                    </td>
                                     <td class="columna" *ngIf="posicionCompra.TieneCotizacion && numeroPo">
                                         <span *ngFor="let lpoElem of posicionCompra.ListaPO; last as isLast">
                                             <mark *ngIf="lpoElem == numeroPo.toString()">{{lpoElem}}</mark>
@@ -195,12 +203,14 @@
                                     <th class="columna">Grupo de Compras</th>
                                     <th class="columna">Centro</th>
                                     <th class="columna">Tipo (Sin Doc. / C/Doc. Pliego)</th>
+                                    <th class="columna">Nro PO</th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-solp let-columns="columns">
                                 <tr>
                                     <td>
                                         <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="solp.Selected"></p-checkbox>
+                                        <img *ngIf="solp.SeraUsadoEnPliegoMultiple" src="./Content/images/icons/book-open.svg" pTooltip="Pliego múltiple" style="margin-left: 3px;" />
                                         <a href="#" [pRowToggler]="rowData" (click)="solpExpandToggle(solp)">
                                             <i [ngClass]="solp.Expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                         </a>
@@ -213,6 +223,22 @@
                                     <td class="columna">{{solp.GrupoDeCompras}}</td>
                                     <td class="columna">{{solp.Centro}}</td>
                                     <td class="columna">{{solp.Tipo}}</td>
+                                    <td class="columna" *ngIf="!solp.TieneCotizacion">-</td>
+                                    <td class="columna" *ngIf="solp.TieneCotizacion && !numeroPo">
+                                        <span *ngIf="solp.ListaPO && solp.ListaPO.length > 0"
+                                            style="cursor: pointer;" pTooltip="Desvincular"
+                                            (click)="abrirModalDesvincularServicio(solp.Id)">
+                                            <img src="Content/images/buttons/unlink.svg" />
+                                        </span>
+                                        {{solp.ListaPO.join('-')}}
+                                    </td>
+                                    <td class="columna" *ngIf="solp.TieneCotizacion && numeroPo">
+                                        <span *ngFor="let lpoElem of solp.ListaPO; last as isLast">
+                                            <mark *ngIf="lpoElem == numeroPo.toString()">{{lpoElem}}</mark>
+                                            <span *ngIf="lpoElem != numeroPo.toString()">{{lpoElem}}</span>
+                                            <span *ngIf="!isLast">-</span>
+                                        </span>
+                                    </td>
                                 </tr>
                                 <tr *ngIf="solp.Expanded">
                                     <td [attr.colspan]="9">
@@ -304,3 +330,13 @@
         </div>
     </div>
 </p-sidebar>
+
+<app-desvincular-po-multiple
+    [(displayDesvincularPoMultiple)]="mostrarPopupDesvincularPoMultiple"
+    [(listaPO)]="listaPOParaDesvincular"
+    [(peticiones)]="listaPeticionesParaDesvincular"
+    [(idPosicionOSolp)]="solpOPosicionDesvincularId"
+    [(esMaterial)]="desvincularPeticionesEsMaterial"
+    (guardarDesvinculacionEmitter)="onDesvinculacionGuardada()"
+    (cerrarDesvinculacionEmitter)="cerrarModalDesvincularSolp()">
+</app-desvincular-po-multiple>

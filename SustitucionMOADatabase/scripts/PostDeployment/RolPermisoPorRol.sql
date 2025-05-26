@@ -575,6 +575,7 @@ IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on Permiso
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'RECLAMO IMPOSITIVO' and PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'RECLAMO IMPOSITIVO'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA')) END
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'BOLETOS' and PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'BOLETOS'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA')) END
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'PARCIAL CORREDOR' and PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'PARCIAL CORREDOR'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'CARGAR CONSULTA INTERNA')) END
+IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'REPORTE FACTURAS CERTIFICACIONES' and PermisoPorRol.Permiso = 'REPORTE FACTURAS CERTIFICACIONES') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'REPORTE FACTURAS CERTIFICACIONES'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'REPORTE FACTURAS CERTIFICACIONES')) END
 
 IF NOT EXISTS(
 	SELECT 1 FROM
@@ -704,14 +705,16 @@ BEGIN
 END
 
 
-IF NOT EXISTS(
-	SELECT 1 FROM
-		RolPermisoPorRol inner join 
-		PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join 
-		Rol on Rol.Id = RolPermisoPorRol.Rol_Id
-	WHERE Rol.Nombre = 'VER TODOS LOS ESTADOS DE ES' and PermisoPorRol.Permiso = 'EDITAR SUPLENTE')
-BEGIN
-	INSERT INTO RolPermisoPorRol VALUES (
-		(SELECT id FROM rol WHERE rol.Nombre = 'VER TODOS LOS ESTADOS DE ES'),
-		(SELECT id FROM PermisoPorRol WHERE PermisoPorRol.Permiso = 'EDITAR SUPLENTE'))
-END
+-- Asignar permiso 'EDITAR SUPLENTE' a los roles correspondientes
+INSERT INTO RolPermisoPorRol (Rol_Id, PermisoPorRol_Id)
+SELECT R.Id, P.Id
+FROM
+	Rol R left join
+	PermisoPorRol P on 1=1 left join
+	RolPermisoPorRol RP on RP.Rol_Id = R.Id and RP.PermisoPorRol_Id = P.Id
+WHERE
+	RP.Rol_Id is null and RP.PermisoPorRol_Id is null and
+	P.Permiso = 'EDITAR SUPLENTE' and
+	R.Nombre in (
+		'VER TODOS LOS ESTADOS DE ES',
+		'ADMINISTRACION')

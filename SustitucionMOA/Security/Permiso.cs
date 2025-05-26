@@ -149,5 +149,8 @@
         /*CURSOS*/
         public const string ADMINISTRAR_CURSOS = "ADMINISTRAR CURSOS";
         public const string REALIZAR_CURSOS = "REALIZAR CURSOS";
+
+        /*REPORTE FACTURAS CERTIFICACIONES*/
+        public const string REPORTE_FACTURAS_CERTIFICACIONES = "REPORTE FACTURAS CERTIFICACIONES";
     }
 }

@@ -81,6 +81,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
         public decimal PrecioFlete { get; set; }
 
         public List<Detail> Detalles { get; set; }
+        public bool BloqueoEntrega { get; set; }
 
         public Result()
         {
@@ -123,5 +124,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
         public string NombreDestinatario { get; set; }
 
         public decimal KilosEntrega { get; set; }
+        public bool BloqueoEntrega { get; set; }
     }
 }

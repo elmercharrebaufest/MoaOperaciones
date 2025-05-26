@@ -2,13 +2,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Solp } from '../solp';
 
 @Component({
-    selector: 'finalizar-solp',
-    templateUrl: './finalizar-solp.component.html',
-    styleUrls: ['../../compras.component.css']
+    selector: "finalizar-solp",
+    templateUrl: "./finalizar-solp.component.html",
+    styleUrls: ["../../compras.component.css"],
 })
 export class FinalizarSolpComponent implements OnInit {
-
-    @Input('locale') es: any;
+    @Input("locale") es: any;
 
     @Input()
     displayFinalizar: boolean;
@@ -27,23 +26,46 @@ export class FinalizarSolpComponent implements OnInit {
 
     @Output() cancelarFinalizarEmitter = new EventEmitter();
 
-    @Output() finalizarEmitter = new EventEmitter<{ selectUsuarioCompras: any, solpActual: Solp }>();
+    @Output() finalizarEmitter = new EventEmitter<{
+        selectUsuarioCompras: any;
+        solpActual: Solp;
+    }>();
 
-    constructor() { }
+    certificacionAutomaticaOptions = [
+        { name: "No", value: false },
+        { name: "Si", value: true },
+    ];
 
-    ngOnInit() {
-       
-    }
+    constructor() {}
+
+    ngOnInit() {}
 
     onCancelarFinalizar() {
         this.cancelarFinalizarEmitter.next();
     }
 
+    onCertificacionAutomaticaChange(event: any) {
+        this.solpActual.certificacionAutomatica = event.value.value;
+    }
+
+    puedeConfigurarCertificacionAutomatica(): boolean {
+        if (this.solpActual.selectTipoPosicion) {
+            const esMaterial = this.solpActual.selectTipoPosicion.Codigo === "MATERIALES";
+            if (esMaterial) {
+                return false;
+            }
+
+            const tieneContratoMarco = this.solpActual.posiciones.some((val, ind, arr) => { return val.numeroContratoSuperior; });
+            return tieneContratoMarco;
+        }
+        return false;
+    }
+
     onFinalizar() {
-        this.solpActual.MultipleFinalizado=true;
+        this.solpActual.MultipleFinalizado = true;
         const updatedInfo = {
             selectUsuarioCompras: this.solpActual.selectUsuarioCompras,
-            solpActual: this.solpActual
+            solpActual: this.solpActual,
         };
         this.finalizarEmitter.next(updatedInfo);
     }
@@ -51,5 +73,4 @@ export class FinalizarSolpComponent implements OnInit {
     onHideFinalizarDialog() {
         this.cancelarFinalizarEmitter.next();
     }
-
 }

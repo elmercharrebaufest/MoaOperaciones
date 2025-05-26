@@ -322,4 +322,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+	<None Include="scripts\PostDeployment\AddColumnToSol.sql" />
+  </ItemGroup>
 </Project>

@@ -6,17 +6,19 @@ import { FacturaService } from './factura.service';
 import { FacturaRoutingModule } from './factura-routing.module';
 import { FacturaComponent } from './factura.component';
 import { FileUploadModule } from 'primeng/fileupload';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FacturaRoutingModule,
-    SharedModule,
+    imports: [
+        CommonModule,
+        FacturaRoutingModule,
+        SharedModule,
         NgxPaginationModule,
-        FileUploadModule
-  ],
+        FileUploadModule,
+        CheckboxModule
+    ],
     declarations: [
-      FacturaComponent
+        FacturaComponent
     ],
     providers: [
         FacturaService

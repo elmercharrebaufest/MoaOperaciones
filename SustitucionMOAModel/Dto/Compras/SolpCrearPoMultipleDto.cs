@@ -1,6 +1,7 @@
 ﻿// Ignore Spelling: Solp Nro
 using SustitucionMOAModel.Attributes;
 using System;
+using System.Collections.Generic;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -59,5 +60,14 @@ namespace SustitucionMOAModel.Dto
 
         [ExcelIgnore]
         public bool MultipleFinalizado { get; set; }
+
+        [ExcelIgnore]
+        public bool SeraUsadoEnPliegoMultiple { get; set; }
+
+        [ExcelIgnore]
+        public bool TieneCotizacion { get; set; }
+
+        [ExcelIgnore]
+        public IEnumerable<string> ListaPO { get; set; }
     }
 }

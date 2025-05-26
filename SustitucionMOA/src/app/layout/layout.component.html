@@ -598,7 +598,7 @@
                     </div>
                     <div id="collapseU" class="collapse" aria-labelledby="usuarios" role="tabpanel">
                         <div class="panel-body">
-                            <div *ngIf="isAuthorized('ABM USUARIOS')">
+                            <div *ngIf="isAuthorized('ABM USUARIOS') || isAuthorized('EDITAR SUPLENTE')">
                                 <a (click)="goToSeccion('/usuario/list')" href="#">
                                     Listado de usuarios
                                 </a>
@@ -703,6 +703,12 @@
                             <div *ngIf="isAuthorized('ABM SOLP')">
                                 <a (click)="goToSeccion('/compras/dashboardPliegoMultiple')" href="#">
                                     PLIEGO MÚLTIPLE
+                                </a>
+                            </div>
+
+                            <div *ngIf="isAuthorized('REPORTE FACTURAS CERTIFICACIONES')">
+                                <a (click)="goToSeccion('/compras/reporteFacturasCertificaciones')" href="#">
+                                    REPORTE FACTURAS CERTIFICACIONES
                                 </a>
                             </div>
                         </div>

@@ -87,6 +87,17 @@
                 </div>
             </p-panel>
         </div>
+        <!-- Subtitulo que pregunte si será certificación automática -->
+        <div *ngIf="puedeConfigurarCertificacionAutomatica()" class="col-md-12 row myRow alinearTitulo margenInput">
+            <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+                ¿Certificación automática?
+            </div>
+            <div class="col-md-12" style="margin-right: 1em; width: 65%;">
+                <p-dropdown [options]="certificacionAutomaticaOptions" optionLabel="name" optionValue="value"
+                    (onChange)="onCertificacionAutomaticaChange($event)"
+                    [(ngModel)]="solpActual.certificacionAutomatica"></p-dropdown>
+            </div>
+        </div>
     </div>
 
     <p-footer>

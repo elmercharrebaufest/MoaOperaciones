@@ -86,6 +86,7 @@ import { PosicionPlazoComponent } from './dashboard-comprador/ver-ofertas/posici
 import { EditarOrdenDeCompraComponent } from './dashboard-comprador/listado-dashboard-comprador/editar-orden-de-compra/editar-orden-de-compra.component';
 import { CotizacionHistorialComponent } from './dashboard-comprador/ver-ofertas/cotizacion-historial/cotizacion-historial.component';
 import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
+import { DesvincularPoMultiple } from './crear-po-multiple/desvincular-po-multiple/desvincular-po-multiple.component';
 import { VisualizarMovimientoComponent } from './dashboard-comprador/ver-ofertas/visualizar-movimiento/visualizar-movimiento.component';
 import { AgruparPoThComponent } from './agrupar-po-th/agrupar-po-th.component';
 
@@ -112,6 +113,9 @@ import { FileModalComponent } from './dashboard-entrada-de-servicio/file-modal/f
 import { PrecargaSolpArchivoComponent } from './solp/steps/posicion/precarga-solp-archivo/precarga-solp-archivo.component';
 import { DashboardPliegoMultipleComponent } from './dashboard-pliego-multiple/dashboard-pliego-multiple.component';
 import { VincularSolpPliegoMultipleComponent } from './solp/steps/vincular-solp-pliego-multiple/vincular-solp-pliego-multiple.component';
+import { ReporteFacturasCertificacionesComponent } from './reporte-facturas-certificaciones/reporte-facturas-certificaciones.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { FacturaService } from '../factura/factura.service';
 
 @NgModule({
     imports: [
@@ -151,7 +155,8 @@ import { VincularSolpPliegoMultipleComponent } from './solp/steps/vincular-solp-
         NgxMaskModule,
         AccordionModule,
         CardModule,
-        CarouselModule
+        CarouselModule,
+        NgxPaginationModule,
     ],
     declarations: [
         SolpComponent,
@@ -199,6 +204,7 @@ import { VincularSolpPliegoMultipleComponent } from './solp/steps/vincular-solp-
         EditarOrdenDeCompraComponent,
         CotizacionHistorialComponent,
         CrearPoMultipleComponent,
+        DesvincularPoMultiple,
         ListadoDashboardCertificacionDeServiciosComponent,
         ListadoDashboardCertificacionDeServiciosProveedoresComponent,
         FiltroDashboardCertificacionDeServiciosComponent,
@@ -220,14 +226,16 @@ import { VincularSolpPliegoMultipleComponent } from './solp/steps/vincular-solp-
         ActualizarFechaVigenciaComponent,
         PrecargaSolpArchivoComponent,
         DashboardPliegoMultipleComponent,
-        VincularSolpPliegoMultipleComponent
+        VincularSolpPliegoMultipleComponent,
+        ReporteFacturasCertificacionesComponent
     ],
     providers: [
         { provide: LOCALE_ID, useValue: "es-419" },
         ComprasService,
         ValidadorPasoSolpService,
         ConfirmationService,
-        MessageService
+        MessageService,
+        FacturaService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

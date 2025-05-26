@@ -135,6 +135,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     TipoSolpSap = x.TipoSolpSap,
                                                     Adicional = x.Adicional,
                                                     NroOrdenDeCompraAdicional = x.NroOrdenDeCompraAdicional,
+                                                    SeraUsadoEnPliegoMultiple = x.SeraUsadoEnPliegoMultiple,
                                                     TrabajoYaHecho = x.TrabajoYaHecho == true ? true : false,
                                                     ConPresupuesto = x.ConPresupuesto,
                                                     Urgencia = x.Urgencia == true ? true : false,

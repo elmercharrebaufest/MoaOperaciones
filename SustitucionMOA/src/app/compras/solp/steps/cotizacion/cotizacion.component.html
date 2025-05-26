@@ -84,6 +84,18 @@
 
                         <ng-container *ngIf="!model.EsPliegoMultiple">
 
+                            <div style="margin-top: 2em;">
+                                <p-checkbox [ngModelOptions]="{standalone:true}"
+                                            name="seraUsadoEnPliegoMultiple"
+                                            [(ngModel)]="model.seraUsadoEnPliegoMultiple"
+                                            label="Pliego múltiple"
+                                            formControlName="seraUsadoEnPliegoMultiple"
+                                            binary="true"
+                                            [disabled]="!puedeSeleccionarPliegoMultiple()"
+                                            (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
+                                </p-checkbox>
+                            </div>
+
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 2em;">
                                 <label class="labelCompras" for="checkbox"> Condiciones especiales</label>
                                 <div>
@@ -93,6 +105,7 @@
                                                 label="Trabajo ya hecho / Material entregado"
                                                 formControlName="trabajoHecho"
                                                 binary="true"
+                                                [disabled]="!puedeSeleccionarCondicionEspecial()"
                                                 (click)="validarChecks(); limpiarCheck();"
                                                 (ngModelChange)="resetearFecha(); verificarCondicionesEspeciales(); onConditionChange();">
                                     </p-checkbox>
@@ -104,6 +117,7 @@
                                                 label="Con presupuesto"
                                                 formControlName="conPresupuesto"
                                                 binary="true"
+                                                [disabled]="!puedeSeleccionarCondicionEspecial()"
                                                 (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
                                     </p-checkbox>
                                 </div>
@@ -198,6 +212,7 @@
                                             label="Adicional / Mano de obra administrada / Ajuste"
                                             formControlName="adicional"
                                             binary="true"
+                                            [disabled]="!puedeSeleccionarCondicionEspecial()"
                                             (click)="validarChecks(); limpiarCheckAdicional()"
                                             (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
                                 </p-checkbox>
@@ -232,6 +247,7 @@
                                             label="Urgencia"
                                             formControlName="urgencia"
                                             binary="true"
+                                            [disabled]="!puedeSeleccionarCondicionEspecial()"
                                             (click)="validarChecks(); listarLiberadorSap();"
                                             (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
                                 </p-checkbox>
@@ -284,6 +300,7 @@
                                             label="Proveedor Asignado"
                                             formControlName="condEspProveedorAsignado"
                                             binary="true"
+                                            [disabled]="!puedeSeleccionarCondicionEspecial()"
                                             (click)="validarChecks(); limpiarCheckProveedorAsignado()"
                                             (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
                                 </p-checkbox>

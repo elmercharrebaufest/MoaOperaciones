@@ -1,0 +1,108 @@
+<!--Search-->
+<div class="row myRow firstSection mySearch">
+  <div class="col-xs-12 col-md-12 rounded shadow animate">
+    <div class="col-xs-12 col-md-12 search-header">
+      <title-caps>Refinar resultados</title-caps>
+    </div>
+
+    <div id="searchFecha" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+      <p>Fecha de Operacion</p>
+      <filtro-fecha (ClickEvent)="onChangeFecha()" [key]="filtroFechaKey"
+        [periodoDefault]="filtroFechaPeriodoDefault"></filtro-fecha>
+    </div>
+
+    <div id="searchOC" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+      <p>Orden de compra</p>
+      <div class="styled-select">
+        <input type="search" [(ngModel)]="facturasCertificacionFilterModel.ordenDeCompra" 
+               (input)="onChangeOrdenCompra(facturasCertificacionFilterModel.ordenDeCompra)">
+      </div>
+    </div>
+    
+    <!-- Input para código de proveedor -->
+    <div id="searchCodigoProveedor" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+      <p>Proveedor</p>
+      <div class="styled-select">
+        <input type="search" [(ngModel)]="facturasCertificacionFilterModel.proveedor"
+               (input)="onChangeCodigoProveedor(facturasCertificacionFilterModel.proveedor)">
+      </div>
+    </div>
+
+
+  </div>
+</div>
+<!-- End Search-->
+<!-- Tables-->
+<div class="row myRow">
+  <div class="clearfix myTables table-responsive">
+
+    <mensaje></mensaje>
+    <spinner></spinner>
+
+    <table id="tableModal"
+      class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-vigente-table col-xs-12 col-sm-10"
+      role="grid" aria-describedby="tableModal_info" style="margin-bottom: 1em;">
+      <thead>
+        <tr role="row">
+          <th tabindex="0" rowspan="1" colspan="1">
+            Razón Social
+          </th>
+          <th tabindex="0" rowspan="1" colspan="1">
+            Nro OC
+          </th>
+          <th tabindex="0" rowspan="1" colspan="1">
+            Nro Certificación
+          </th>
+          <th tabindex="0" rowspan="1" colspan="1">
+            Importe
+          </th>
+          <th tabindex="0" rowspan="1" colspan="1">
+            Moneda
+          </th>
+          <th tabindex="0" rowspan="1" colspan="1">
+            Usuario
+          </th>
+          <th tabindex="0" rowspan="1" colspan="1">
+            Fecha de Registro
+          </th>
+          <th tabindex="0" rowspan="1" colspan="1">
+            Archivo
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container
+          *ngFor="let certificacion of datosCertificaciones | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
+          role="row" [class.odd]="!odd">
+          <tr>
+            <td>{{certificacion.RazonSocial}}</td>
+            <td>{{certificacion.NRO_OC | uppercase}}</td>
+            <td>{{certificacion.NRO_Certificacion}}</td>
+            <td>${{certificacion.Importe | number:'1.2-2':'es'}}</td>
+            <td>{{certificacion.Moneda}}</td>
+            <td>{{certificacion.Mail}}</td>
+            <td>{{certificacion.FechaDeRegistro.slice(6, -2) | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td>
+              <a href="javascript:void(0)" (click)="descargarDocumentoAdjunto(certificacion.Archivo.Id)" title="Ver factura">
+                {{obtenerNombreDeArchivo(certificacion.Archivo.Ruta)}}
+              </a>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <div class="dataTables_paginate paging_simple_numbers">
+      <a id="tableModal_previous" class="paginate_button previous" (click)="pageChanged(p-1)"
+        [class.disabled]="p === 1"> Anterior </a>
+
+      <span *ngFor="let page of generatePageArray()">
+        <a class="paginate_button" (click)="pageChanged(page)" [class.current]="p === page">{{ page }}</a>
+      </span>
+
+      <a id="tableModal_next" class="paginate_button next" (click)="pageChanged(p+1)"
+        [class.disabled]="p === totalPaginas"> Siguiente </a>
+    </div>
+  </div>
+</div>
+<!-- END tables-->
