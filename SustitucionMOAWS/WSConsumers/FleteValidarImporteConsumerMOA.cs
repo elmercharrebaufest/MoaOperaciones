@@ -1,27 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SustitucionMOAFotmatter;
+﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.FleteValidarImporteWebServiceMOA;
+using SustitucionMOAWS.Logger;
+using SustitucionMOAWS.Util;
+using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
     public class FleteValidarImporteConsumerMOA
     {
-        SI_MPMF_MOAOP_VAL_IMPORTEClient service = new SI_MPMF_MOAOP_VAL_IMPORTEClient();
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
 
         public ErrorWS request(decimal importe, string proforma, string proveedor)
         {
             try
             {
-                service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-                service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                ZMPES4910 error = service.SI_MPMF_MOAOP_VAL_IMPORTE(importe, proforma, proveedor);
-                return map(error);
+                if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
+                {
+                    var agent = new Z_WS_MOAOP_DIRECTClient();
+                    agent.ClientCredentials.UserName.UserName = UserSap;
+                    agent.ClientCredentials.UserName.Password = PassSap;
+                    var request = new Z_MPMF_MOAOP_VAL_IMPORTE()
+                    {
+                        PE_IMPORTE = importe,
+                        PE_PROFORMA = proforma,
+                        PE_PROVEEDOR = proveedor
+                    };
+                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_VAL_IMPORTE request");
+                    Log.Info(request.ToXml());
+                    var response = agent.Z_MPMF_MOAOP_VAL_IMPORTE(request);
+                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_VAL_IMPORTE response");
+                    Log.Info(response.ToXml());
+                    return MapSinPI(response);
+                }
+                else
+                {
+                    SI_MPMF_MOAOP_VAL_IMPORTEClient service = new SI_MPMF_MOAOP_VAL_IMPORTEClient();
+
+                    service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+                    service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+                    FleteValidarImporteWebServiceMOA.ZMPES4910 error = service.SI_MPMF_MOAOP_VAL_IMPORTE(importe, proforma, proveedor);
+                    return Map(error);
+                }
             }
             catch (Exception e)
             {
@@ -29,8 +57,16 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
         }
-
-        protected virtual ErrorWS map(ZMPES4910 error)
+        protected virtual ErrorWS MapSinPI(Z_MPMF_MOAOP_VAL_IMPORTEResponse response)
+        {
+            return new ErrorWS()
+            {
+                codigo = response.MENSAJE.CODIGO,
+                descripcion = response.MENSAJE.DESCRIPCION,
+                tipo = response.MENSAJE.TIPO
+            };
+        }
+        protected virtual ErrorWS Map(FleteValidarImporteWebServiceMOA.ZMPES4910 error)
         {
             return new ErrorWS()
             {
