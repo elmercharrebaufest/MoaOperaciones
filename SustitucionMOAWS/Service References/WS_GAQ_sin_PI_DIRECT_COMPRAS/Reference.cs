@@ -3072,9 +3072,9 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS {
         
         private string hR_DATEField;
         
-        private System.DateTime hR_START_TIMEField;
+        private string hR_START_TIMEField;
         
-        private System.DateTime hR_END_TIMEField;
+        private string hR_END_TIMEField;
         
         private string fORMULAField;
         
@@ -3549,8 +3549,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, DataType="time", Order=37)]
-        public System.DateTime HR_START_TIME {
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=37)]
+        public string HR_START_TIME {
             get {
                 return this.hR_START_TIMEField;
             }
@@ -3561,8 +3561,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, DataType="time", Order=38)]
-        public System.DateTime HR_END_TIME {
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=38)]
+        public string HR_END_TIME {
             get {
                 return this.hR_END_TIMEField;
             }
@@ -11110,7 +11110,7 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS {
         
         private decimal pLND_DELRYField;
         
-        private System.DateTime dELIV_TIMEField;
+        private string dELIV_TIMEField;
         
         private string rEF_REQField;
         
@@ -12115,8 +12115,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, DataType="time", Order=78)]
-        public System.DateTime DELIV_TIME {
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=78)]
+        public string DELIV_TIME {
             get {
                 return this.dELIV_TIMEField;
             }
