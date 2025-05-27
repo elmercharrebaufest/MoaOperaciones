@@ -569,7 +569,7 @@ namespace SustitucionMOAUtils.Services
                 IM_PRITEM.PREQ_DATE = SAPFormatter.PrepararFecha(solpActual.FechaCreacion); //PREQ_DATE   BADAT Fecha de solicitud
                 IM_PRITEM.DELIV_DATE = SAPFormatter.PrepararFecha(posicion.FechaEntregaServicio ?? DateTime.Now); //DELIV_DATE EINDT   Fecha de entrega de posición
                 IM_PRITEM.REL_DATE = null;
-
+                IM_PRITEM.DELIV_TIME = string.Empty;
                 //Estos datos se envian si la posición es de materiales
                 if (posicion.TipoPosicion.Codigo.ToLower() == "materiales")
                 {
@@ -793,7 +793,8 @@ namespace SustitucionMOAUtils.Services
                     IM_SERVICELINE.GROSS_PRICE = subPosicion.PrecioBruto.Value; //GROSS_PRICE SBRTWR Precio bruto Unitario
                     //IM_SERVICELINE.GROSS_PRICESpecified = true;
                     IM_SERVICELINE.CURRENCY = posicion.Moneda.CodigoSap; //CURRENCY WAERS   Clave de moneda
-
+                    IM_SERVICELINE.HR_START_TIME = string.Empty;
+                    IM_SERVICELINE.HR_END_TIME = string.Empty;
                     solpSAP.IM_SERVICELINESList.Add(IM_SERVICELINE);
 
                     solpSAP.IM_SERVICELINESXList.Add(new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPI_SRV_SERVICE_LINEX
