@@ -1003,11 +1003,11 @@ namespace SustitucionMOAUtils.Services
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Esquema de Certificación 2BSvs", 300, 740, 0);
             var baseTexto = 280f;
             cb.SetFontAndSize(baseFont, fontSizeNormal);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "RED III, modificada por la reglamentación 2022/996"
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "RED III"
                 , 55f, baseTexto + (11 * 6) + 0.75f, 0);
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Con esta declaración, el agricultor reconoce que los auditores de los organismos de certificación o de 2BSvs o de un Estado miembro"
                 , 15f, baseTexto, 0);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "pueden venir a verificar in situ si se han cumplido los requisitos pertinentes estipulados en la Directiva (UE) 2018/2001. Las pruebas de"
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "pueden venir a verificar in situ si se han cumplido los requisitos pertinentes estipulados en la Directiva (UE) 2023/2413. Las pruebas de"
                 , 15f, baseTexto - (11 * 1), 0);
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "los requisitos   mencionados estarán disponibles y se facilitarán durante la auditoría y/o previa solicitud."
                 , 15f, baseTexto - (11 * 2), 0);
