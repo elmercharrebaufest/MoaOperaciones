@@ -111,11 +111,12 @@ export class FacturaComponent extends ListBaseComponent {
                                 if (resultado.Certificaciones != null && resultado.Certificaciones.length > 0) {
                                     resultado.Certificaciones.forEach(certificacion => {
                                         this.certificaciones.push({
-                                            NombreDeArchivo: fileName,
-                                            NRO_OC: nroOC,
+                                            NombreDeArchivo: fileName || "",
+                                            NRO_OC: nroOC || "",
                                             NRO_Certificacion: certificacion.NroCertificacion,
                                             Importe: certificacion.Saldo,
                                             Moneda: certificacion.Moneda,
+                                            MontoFormateado: certificacion.MontoFormateado,
                                             Archivo: certificacion.Archivo,
                                             Seleccionada: false
                                         });
@@ -169,9 +170,9 @@ export class FacturaComponent extends ListBaseComponent {
         return partes[partes.length - 1];
     }
 
-    formatPrice(importe: number) {
-        return importe.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
-    }
+    // formatPrice(importe: number) {
+    //     return importe.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+    // }
 
     onCheckCertificacion(certificacionSeleccionada: Certificacion) {
         // Verificar si la certificación ya fue registrada con uno o más archivos

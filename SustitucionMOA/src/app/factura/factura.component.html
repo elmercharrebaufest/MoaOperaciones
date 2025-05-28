@@ -92,7 +92,7 @@
                                         </td>
                                         <td>{{ certificacion.NRO_OC }}</td>
                                         <td>{{ certificacion.NRO_Certificacion }}</td>
-                                        <td>{{ formatPrice(certificacion.Importe) }}</td>
+                                        <td>{{ certificacion.MontoFormateado }}</td>
                                         <td>{{ certificacion.Moneda }}</td>
                                         <td *ngIf="certificacion.Archivo.length !== 0">
                                             <div class="filesColumn">

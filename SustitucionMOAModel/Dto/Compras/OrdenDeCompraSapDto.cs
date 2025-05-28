@@ -70,6 +70,7 @@ namespace SustitucionMOAModel.Dto
         public string NroCertificacion { get; set; }
         public decimal Saldo { get; set; }
         public string Moneda { get; set; }
+        public string MontoFormateado { get; set; }
         public List<Archivo> Archivo { get; set; } = new List<Archivo>();
     }
 

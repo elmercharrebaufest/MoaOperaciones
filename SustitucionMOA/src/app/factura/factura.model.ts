@@ -4,6 +4,7 @@
     NRO_Certificacion: string;
     Importe: number;
     Moneda: string;
+    MontoFormateado: string;
     Archivo: ArchivoAdjunto[];
     Seleccionada: boolean;
 }
