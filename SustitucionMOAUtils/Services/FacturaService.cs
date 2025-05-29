@@ -309,7 +309,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (ordenDeCompraSAP.Cabecera.SaldoDisponible <= 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIO")
                 {
-                    result.Add(new ValidationResult(false, $"La orden de compra {OrdenDeCompraEncontrada.Value} no tiene saldo disponible.", typeof(OrdenCompraValidationCommand).Name, "", OrdenDeCompraEncontrada.Value));
+                    result.Add(new ValidationResult(false, $"La orden de compra {OrdenDeCompraEncontrada.Value} no tiene saldo disponible. Factura no enviada. Deberá certificar y volver a cargarla nuevamente.", typeof(OrdenCompraValidationCommand).Name, "", OrdenDeCompraEncontrada.Value));
                     return result;
                 }
                 // Validar si tiene certificaciones

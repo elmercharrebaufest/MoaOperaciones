@@ -206,7 +206,7 @@ export class FacturaComponent extends ListBaseComponent {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         try {
-            this.blockUI.start('Registrando certificaciones...');
+            this.blockUI.start('Enviando factura...');
             this.actualizarCertificacionesAgregadas();
             // Filtrar archivos por nombre de archivo que esten en el array de certificaciones agregadas
             this.archivos = this.archivos.filter(archivo => this.certificacionesAgregadas.map(certificacion => certificacion.NombreDeArchivo).includes(archivo.name));
@@ -221,7 +221,7 @@ export class FacturaComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.floatMsgService.setMsgsEmpty();
-                        this.floatMsgService.setSuccessMsg("Certificaciones registradas correctamente");
+                        this.floatMsgService.setSuccessMsg("Factura enviada correctamente para su análisis");
                         this.certificacionesAgregadas = [];
                         this.certificaciones = [];
                     }
@@ -230,7 +230,7 @@ export class FacturaComponent extends ListBaseComponent {
                     return false;
                 },
                 error => {
-                    let errormsj = "Ha ocurrido un error, por favor intentelo nuevamente";
+                    let errormsj = "Ha ocurrido un error, por favor inténtelo nuevamente";
                     this.spinnerSmallComponent.hideIt();
                     this.floatMsgService.setErrorMsg(errormsj);
                     this.blockUI.stop();

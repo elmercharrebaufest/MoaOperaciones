@@ -15,7 +15,7 @@
                      role="alert">
                     <div *ngIf="mensajeIrAOC(resultado); else mensajeSimple">
                         <b>{{ resultado.FileName }}</b> - <b>
-                            {{ resultado.Message }} Si desea certificar hace click
+                            {{ resultado.Message }} Si desea certificar haga click
                             <a (click)="irACertificaciones(resultado.Value)" href="#">
                                 acá
                             </a>
