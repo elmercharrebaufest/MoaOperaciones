@@ -373,7 +373,8 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                var proveedores = usuario.Proveedores.ToList();
+                var proveedores = repositorio.Listar<Proveedor>(p => p.CUIT == usuario.CUITRegistro).ToList();
+                //var proveedores = usuario.Proveedores.ToList();
                 Log.Info($"GetVendedoresInternal listadoProveedores 0");
                 Log.Info(listadoProveedores.ToXml());
 
