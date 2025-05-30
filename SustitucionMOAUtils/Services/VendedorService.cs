@@ -373,17 +373,23 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
+                Log.Info($"GetVendedoresInternal proveedores1 00");
+                var proveedores1 = usuario.ObtenerProveedor();
+                Log.Info($"GetVendedoresInternal proveedores1 00");
+                Log.Info(proveedores1.ToXml());
+
                 var proveedores = repositorio.Listar<Proveedor>(p => p.CUIT == usuario.CUITRegistro).ToList();
-                //var proveedores = usuario.Proveedores.ToList();
                 Log.Info($"GetVendedoresInternal listadoProveedores 0");
-                Log.Info(listadoProveedores.ToXml());
+                Log.Info(proveedores.ToXml());
+
+                //var proveedores = usuario.Proveedores.ToList();
 
                 if (filtro != null)
                 {
                     proveedores = proveedores.Where(filtro).ToList();
                 }
-                Log.Info($"GetVendedoresInternal listadoProveedores 0-1");
-                Log.Info(listadoProveedores.ToXml());
+                Log.Info($"GetVendedoresInternal proveedores 0-1");
+                Log.Info(proveedores.ToXml());
 
                 listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto(proveedor, false)).ToList());
                 Log.Info($"GetVendedoresInternal listadoProveedores 2");
