@@ -9,6 +9,8 @@ using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -355,6 +357,9 @@ namespace SustitucionMOAUtils.Services
 
             var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
 
+            Log.Info($"GetVendedoresInternal usuario");
+            Log.Info(usuario.ToXml());
+
             var listadoProveedores = new List<ProveedorDto>();
 
             if (usuario.EsAdmin() || usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
@@ -363,20 +368,29 @@ namespace SustitucionMOAUtils.Services
                         .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
                         .Where(filtro)
                         .Select(proveedor => new ProveedorDto(proveedor, false)).ToList();
+                Log.Info($"GetVendedoresInternal listadoProveedores 1");
+                Log.Info(listadoProveedores.ToXml());
             }
             else
             {
                 var proveedores = usuario.Proveedores.ToList();
-
+                Log.Info($"GetVendedoresInternal listadoProveedores 0");
+                Log.Info(listadoProveedores.ToXml());
 
                 if (filtro != null)
                 {
                     proveedores = proveedores.Where(filtro).ToList();
                 }
+                Log.Info($"GetVendedoresInternal listadoProveedores 0-1");
+                Log.Info(listadoProveedores.ToXml());
 
                 listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto(proveedor, false)).ToList());
+                Log.Info($"GetVendedoresInternal listadoProveedores 2");
+                Log.Info(listadoProveedores.ToXml());
             }
 
+            Log.Info($"GetVendedoresInternal listadoProveedores 3");
+            Log.Info(listadoProveedores.ToXml());
 
             foreach (var item in listadoProveedores.Where(a => a.CUIT == null || a.CUIT == ""))
             {
