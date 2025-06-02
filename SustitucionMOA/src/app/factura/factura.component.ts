@@ -31,23 +31,26 @@ declare var $: any;
 export class FacturaComponent extends ListBaseComponent {
     @BlockUI() blockUI: NgBlockUI;
 
-    @ViewChild(MensajeComponent)
-    protected mensajeComponent: MensajeComponent;
+    // @ViewChild(MensajeComponent)
+    // protected mensajeComponent: MensajeComponent;
 
     @ViewChild(SpinnerSmallComponent)
     public spinnerSmallComponent: SpinnerSmallComponent;
 
-    @ViewChild(SpinnerComponent)
-    protected spinnerComponent: SpinnerComponent;
+    // @ViewChild(SpinnerComponent)
+    // protected spinnerComponent: SpinnerComponent;
 
     @ViewChild('recaptchaComponent')
     protected captcha: ReCaptchaComponent;
     resultados: ValidationResult[];
 
     @ViewChild('fileUpload') fileUpload: FileUpload;
-    constructor(protected service: FacturaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-        this.spinnerSmallComponent = new SpinnerSmallComponent();
+    constructor(protected service: FacturaService, protected navService: NavService,
+        protected sessionDataService: SessionDataService, protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        protected route: ActivatedRoute, protected router: Router) {
+            super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+            this.spinnerSmallComponent = new SpinnerSmallComponent();
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CARGAR FACT PROV"); }
@@ -174,7 +177,7 @@ export class FacturaComponent extends ListBaseComponent {
     //     return importe.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
     // }
 
-    onCheckCertificacion(certificacionSeleccionada: Certificacion) {
+    onCheckCertificacion(certificacionSeleccionada: Certificacion, nombreArchivo: string) {
         // Verificar si la certificación ya fue registrada con uno o más archivos
         if (certificacionSeleccionada.Seleccionada) {
             if (certificacionSeleccionada.Archivo != null && certificacionSeleccionada.Archivo.length > 0) {
@@ -182,8 +185,14 @@ export class FacturaComponent extends ListBaseComponent {
                     `Advertencia: La certificación ${certificacionSeleccionada.NRO_Certificacion} ya está vinculada a otra factura.`
                 );
             }
-        }
 
+            this.agrupadasPorArchivo.filter(apa => apa.nombreArchivo != nombreArchivo).forEach(apa => {
+                const mismaCert = apa.items.find(x => x.Seleccionada && x.NRO_Certificacion == certificacionSeleccionada.NRO_Certificacion);
+                if (mismaCert) {
+                    this.floatMsgService.setInfoMsg(`La certificación ${certificacionSeleccionada.NRO_Certificacion} ya está seleccionada para el documento ${apa.nombreArchivo}`);
+                }
+            });
+        }
     }
 
     alMenosUnaSeleccionadaPorGrupo(): boolean {

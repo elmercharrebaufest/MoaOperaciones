@@ -88,7 +88,7 @@
                                     <tr *ngIf="(verPendientes && certificacion.Archivo.length === 0) || !verPendientes ">
 
                                         <td>
-                                            <input type="checkbox" [(ngModel)]="certificacion.Seleccionada" (change)="onCheckCertificacion(certificacion)">
+                                            <input type="checkbox" [(ngModel)]="certificacion.Seleccionada" (change)="onCheckCertificacion(certificacion, grupo.nombreArchivo)">
                                         </td>
                                         <td>{{ certificacion.NRO_OC }}</td>
                                         <td>{{ certificacion.NRO_Certificacion }}</td>

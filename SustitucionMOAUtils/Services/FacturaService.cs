@@ -315,7 +315,6 @@ namespace SustitucionMOAUtils.Services
                 // Validar si tiene certificaciones
                 if (ordenDeCompraSAP.Certificaciones.Count == 0)
                 {
-
                     result.Add(new ValidationResult(false, "La orden de compra no tiene certificaciones pendientes de facturar", typeof(OrdenCompraValidationCommand).Name, "", ""));
                     return result;
                 }
