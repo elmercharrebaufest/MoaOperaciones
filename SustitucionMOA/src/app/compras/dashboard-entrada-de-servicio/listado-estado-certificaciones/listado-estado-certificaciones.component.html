@@ -38,6 +38,11 @@
                     <input class="filtro-usuario-input" pInputText type="text" (input)="tabla.filter($event.target.value, 'Ingresante', 'contains')" 
                     placeholder="Busqueda por usuario" [disabled]="(recalculando && !isAll)" />
                 </div>
+                <div class="filtro-aprobador" *ngIf="isAll">
+                    <input class="filtro-aprobador-input" pInputText type="text"
+                        (input)="tabla.filter($event.target.value, 'Aprobador', 'contains')" placeholder="Busqueda por aprobador"
+                        [disabled]="(recalculando && !isAll)" />
+                </div>
                 <div class="filtro-estado-certificacion">
                     <p-dropdown [(ngModel)]="estadoCertificacion" id="select-estado-certificacion"
                         (onChange)="filtrarPorEstado($event)" optionLabel="name" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación')"

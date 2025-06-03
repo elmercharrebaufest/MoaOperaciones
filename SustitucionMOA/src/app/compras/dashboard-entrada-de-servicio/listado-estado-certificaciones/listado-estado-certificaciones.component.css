@@ -68,6 +68,13 @@
     font-family: "Roboto Condensed", Arial, sans-serif !important;
 }
 
+.filtro-aprobador-input {
+    margin-left: 0.4em;
+    height: 1.8em;
+    position: relative;
+    font-family: "Roboto Condensed", Arial, sans-serif !important;
+}
+
 .boton-enviar-motivo {
     padding: 10px;
     justify-content: center;
