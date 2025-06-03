@@ -86,6 +86,8 @@ namespace SustitucionMOAWS.WSConsumers
                         REL_DATE = REL_DATE,
                         SHORT_TEXT = SHORT_TEXT,
                         TRACKINGNO = TRACKINGNO,
+                        REQUISITION_ITEMS = new WS_GAQ_sin_PI_DIRECT_MEWQ.BAPIEBANC[] {},
+                        RETURN = new WS_GAQ_sin_PI_DIRECT_MEWQ.BAPIRETURN[] {},
                     };
                     Log.Info($"SAP sin PI BAPI_REQUISITION_GETITEMS request");
                     Log.Info(request.ToXml());
