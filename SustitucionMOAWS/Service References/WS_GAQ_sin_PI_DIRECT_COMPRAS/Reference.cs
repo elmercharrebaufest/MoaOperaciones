@@ -19637,9 +19637,9 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
 
         private string dATEField;
 
-        private System.DateTime bEGINTIMEField;
+        private string bEGINTIMEField;
 
-        private System.DateTime eNDTIMEField;
+        private string eNDTIMEField;
 
         private string eXTPERS_NOField;
 
@@ -20400,8 +20400,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, DataType = "time", Order = 48)]
-        public System.DateTime BEGINTIME
+        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 48)]
+        public string BEGINTIME
         {
             get
             {
@@ -20415,8 +20415,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, DataType = "time", Order = 49)]
-        public System.DateTime ENDTIME
+        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 49)]
+        public string ENDTIME
         {
             get
             {
@@ -21276,7 +21276,7 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
 
         private decimal qUANTITYField;
 
-        private System.DateTime dELIV_TIMEField;
+        private string dELIV_TIMEField;
 
         private string sTAT_DATEField;
 
@@ -21290,19 +21290,19 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
 
         private string mS_DATEField;
 
-        private System.DateTime mS_TIMEField;
+        private string mS_TIMEField;
 
         private string lOAD_DATEField;
 
-        private System.DateTime lOAD_TIMEField;
+        private string lOAD_TIMEField;
 
         private string tP_DATEField;
 
-        private System.DateTime tP_TIMEField;
+        private string tP_TIMEField;
 
         private string gI_DATEField;
 
-        private System.DateTime gI_TIMEField;
+        private string gI_TIMEField;
 
         private string dELETE_INDField;
 
@@ -21310,7 +21310,7 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
 
         private string gR_END_DATEField;
 
-        private System.DateTime gR_END_TIMEField;
+        private string gR_END_TIMEField;
 
         private decimal cOM_QTYField;
 
@@ -21320,7 +21320,7 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
 
         private string hANDOVERDATEField;
 
-        private System.DateTime hANDOVERTIMEField;
+        private string hANDOVERTIMEField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 0)]
@@ -21398,8 +21398,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, DataType = "time", Order = 5)]
-        public System.DateTime DELIV_TIME
+        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 5)]
+        public string DELIV_TIME
         {
             get
             {
@@ -21503,8 +21503,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, DataType = "time", Order = 12)]
-        public System.DateTime MS_TIME
+        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 12)]
+        public string MS_TIME
         {
             get
             {
@@ -21533,8 +21533,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, DataType = "time", Order = 14)]
-        public System.DateTime LOAD_TIME
+        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 14)]
+        public string LOAD_TIME
         {
             get
             {
@@ -21563,8 +21563,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, DataType = "time", Order = 16)]
-        public System.DateTime TP_TIME
+        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 16)]
+        public string TP_TIME
         {
             get
             {
@@ -21593,8 +21593,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, DataType = "time", Order = 18)]
-        public System.DateTime GI_TIME
+        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 18)]
+        public string GI_TIME
         {
             get
             {
@@ -21653,8 +21653,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, DataType = "time", Order = 22)]
-        public System.DateTime GR_END_TIME
+        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 22)]
+        public string GR_END_TIME
         {
             get
             {
@@ -21728,8 +21728,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, DataType = "time", Order = 27)]
-        public System.DateTime HANDOVERTIME
+        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified, Order = 27)]
+        public string HANDOVERTIME
         {
             get
             {

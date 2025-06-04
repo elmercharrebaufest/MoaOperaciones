@@ -693,9 +693,7 @@ namespace SustitucionMOAWS.WSConsumers
             ///STREET y STREET_NO ok. no tenemos el campo separado mandamos todo en street            
             ///SERIAL_NO/serialNumber siempre 1 por que se imputa todo a lo mismo sino son imputaciones multiples, en ese caso analizar como se envia.
 
-            DateTime FECHA_HOY = DateTime.Today.Date;
-            DateTime FECHA_ACTUAL = DateTime.Parse(FECHA_HOY.ToString("yyyy-MM-dd HH:mm"), CultureInfo.InvariantCulture);
-
+            
             var proveedorCodigoDeLaAdjudicacion = adjudicacion.Posiciones.First().CotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor();
             var usuarioCreadorAdjudicacion = adjudicacion.Usuario.UsuarioSap;
             var usuarioOrganizacionDeCompra = adjudicacion.Usuario.OrganizacionDeCompra;
@@ -1027,8 +1025,8 @@ namespace SustitucionMOAWS.WSConsumers
 
                         //subposicionSap.GR_PRICESpecified = true;
 
-                        subposicionSap.BEGINTIME = FECHA_ACTUAL.ToUniversalTime();
-                        subposicionSap.ENDTIME = FECHA_ACTUAL.ToUniversalTime();
+                        subposicionSap.BEGINTIME = string.Empty;
+                        subposicionSap.ENDTIME = string.Empty;
 
                         solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
 
@@ -1125,13 +1123,13 @@ namespace SustitucionMOAWS.WSConsumers
                     DELIVERY_DATE = adjudicacionPosicion.PlazoDeEntrega.ToString("dd.MM.yyyy"),
                     PO_ITEM = $"{poItem:00000}",
                     SCHED_LINE = "1",
-                    DELIV_TIME = FECHA_ACTUAL.ToUniversalTime(),
-                    MS_TIME = FECHA_ACTUAL.ToUniversalTime(),
-                    LOAD_TIME = FECHA_ACTUAL.ToUniversalTime(),
-                    TP_TIME = FECHA_ACTUAL.ToUniversalTime(),
-                    GI_TIME = FECHA_ACTUAL.ToUniversalTime(),
-                    GR_END_TIME = FECHA_ACTUAL.ToUniversalTime(),
-                    HANDOVERTIME = FECHA_ACTUAL.ToUniversalTime(),
+                    DELIV_TIME   = string.Empty,
+                    MS_TIME      = string.Empty,
+                    LOAD_TIME    = string.Empty,
+                    TP_TIME      = string.Empty,
+                    GI_TIME      = string.Empty,
+                    GR_END_TIME  = string.Empty,
+                    HANDOVERTIME = string.Empty,
                 });
 
                 solpPedidoSAP.IM_POSCHEDULEXList.Add(new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX
