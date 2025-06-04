@@ -322,7 +322,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   }
 
   obtenerESSap(proveedor, documentoNumero): void {
-    this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, false).subscribe(
+    this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, false, "").subscribe(
       (result: { error: any, data: any }) => {
         this.recalculandoAprobadas = false;
         if (result.error != null) {

@@ -221,7 +221,8 @@ export class ComprasService extends BaseService {
         ordenAscendente: boolean = this.filtros.ordenAscendente,
         pagina: number = this.filtros.pagina,
         elementosPorPagina: number = this.filtros.itemsPorPagina,
-        verTodo: boolean | false
+        verTodo: boolean | false,
+        ordenCompra: string | undefined
     ): Observable<any> {
 
         let params: HttpParams = new HttpParams();
@@ -234,6 +235,7 @@ export class ComprasService extends BaseService {
         params = params.set('pagina', pagina.toString());
         params = params.set('elementosPorPagina', elementosPorPagina.toString());
         params = params.set('verTodo', verTodo.toString());
+        params = params.set('OrdenCompra', ordenCompra || "");
 
         return this.http
             .get<any[]>('/api/EntradaServicio/GetByProveedorAsync', { params: params, headers: this.headers }).pipe(

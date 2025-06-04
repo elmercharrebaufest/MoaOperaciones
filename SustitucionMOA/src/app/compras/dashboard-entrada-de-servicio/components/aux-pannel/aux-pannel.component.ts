@@ -19,13 +19,15 @@ export class AuxPannelComponent implements OnInit {
     @Input() fechaSeleccionada: string = '1';
     @Input() proveedor: string = '';
     @Input() visible: boolean = false;
+    @Input() visualizarFiltroOC: boolean = true;
     @Output() obtenerESSap: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() getFecha: EventEmitter<string> = new EventEmitter<string>();
+    @Output() getOrdenCompra: EventEmitter<string> = new EventEmitter<string>();
 
     subscripciones: Subscription[] = [];
     proveedorSeleccionado: autoCompleteObject;
     fechaInicio = "";
-
+    ordenCompra: string = "";
 
     filtroFechas: Array<DropdownOption> = [
         new DropdownOption("1", "Últimos dos dias"),
@@ -53,6 +55,11 @@ export class AuxPannelComponent implements OnInit {
 
     setDateByRange(event: string): void {
         this.getFecha.emit(event);
+    }
+
+    setOrdenCompra() : void {
+        console.log("auxpanel setOrdenCompra: " + this.ordenCompra);
+        this.getOrdenCompra.emit(this.ordenCompra);
     }
 
     /**

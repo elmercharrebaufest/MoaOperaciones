@@ -20,6 +20,11 @@
                 <dropdown (select)="setDateByRange($event)" [disabled]="visible" [options]="filtroFechas" class="styled-select" [selectedOption]="fechaSeleccionada"></dropdown>
             </div>
 
+            <div *ngIf="visualizarFiltroOC" class="col-md-6 col-sm-12 col-xs-12">
+                <p>Número de OC:</p>
+                <input pInputText type="text" placeholder="Orden de compra" [(ngModel)]="ordenCompra" (ngModelChange)="setOrdenCompra()" />
+            </div>
+
             <div class="SearchBtn col-md-6 col-sm-12 col-xs-12 vertical-align-middle">
                 <button class="btn btn-buscar" (click)="onBuscar()" [disabled]="visible">Buscar</button>
             </div>

@@ -16,8 +16,14 @@
     </section>
     <!-- HEADER END -->
     <!-- SEARCH PANEL -->
-    <aux-pannel *ngIf="showOrHideAuxPanel()" (obtenerESSap)="onBuscar()"  
-        [proveedor]="proveedor" [visible]="recalculandoAprobadas" (getFecha)="getFecha($event)" [fechaSeleccionada]="fechaSeleccionadaAux"></aux-pannel>
+    <aux-pannel *ngIf="showOrHideAuxPanel()"
+        (obtenerESSap)="onBuscar()"  
+        [proveedor]="proveedor"
+        [visible]="recalculandoAprobadas"
+        (getFecha)="getFecha($event)"
+        [fechaSeleccionada]="fechaSeleccionadaAux"
+        (getOrdenCompra)="getOrdenCompraFiltro($event)">
+    </aux-pannel>
 
     <p-messages [value]="msgs"></p-messages>
 
@@ -29,18 +35,17 @@
             <!-- FILTERS -->
             <div class="filters-row">
                 <i class="pi pi-filter"></i>
-                <div class="filtro-oc">
-                    <input class="filtro-oc-input" pInputText type="text" (input)="
-                            tabla.filter($event.target.value, 'OrdenCompra', 'contains')
-                        " placeholder="Busqueda por OC" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación')" />
+                <div class="filtro-oc" *ngIf="visualizarFiltroTablaPorOC()">
+                    <input class="filtro-oc-input" pInputText type="text" (input)="tabla.filter($event.target.value, 'OrdenCompra', 'contains')"
+                        placeholder="Búsqueda por OC" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación')" />
                 </div>
                 <div class="filtro-usuario" *ngIf="isAll">
                     <input class="filtro-usuario-input" pInputText type="text" (input)="tabla.filter($event.target.value, 'Ingresante', 'contains')" 
-                    placeholder="Busqueda por usuario" [disabled]="(recalculando && !isAll)" />
+                    placeholder="Búsqueda por usuario" [disabled]="(recalculando && !isAll)" />
                 </div>
                 <div class="filtro-aprobador" *ngIf="isAll">
                     <input class="filtro-aprobador-input" pInputText type="text"
-                        (input)="tabla.filter($event.target.value, 'Aprobador', 'contains')" placeholder="Busqueda por aprobador"
+                        (input)="tabla.filter($event.target.value, 'Aprobador', 'contains')" placeholder="Búsqueda por aprobador"
                         [disabled]="(recalculando && !isAll)" />
                 </div>
                 <div class="filtro-estado-certificacion">
