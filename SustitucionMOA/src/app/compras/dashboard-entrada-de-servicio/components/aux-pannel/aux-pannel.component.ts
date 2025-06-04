@@ -58,7 +58,6 @@ export class AuxPannelComponent implements OnInit {
     }
 
     setOrdenCompra() : void {
-        console.log("auxpanel setOrdenCompra: " + this.ordenCompra);
         this.getOrdenCompra.emit(this.ordenCompra);
     }
 
