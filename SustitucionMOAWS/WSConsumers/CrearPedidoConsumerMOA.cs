@@ -12,6 +12,7 @@ using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -692,6 +693,9 @@ namespace SustitucionMOAWS.WSConsumers
             ///STREET y STREET_NO ok. no tenemos el campo separado mandamos todo en street            
             ///SERIAL_NO/serialNumber siempre 1 por que se imputa todo a lo mismo sino son imputaciones multiples, en ese caso analizar como se envia.
 
+            DateTime FECHA_HOY = DateTime.Today.Date;
+            DateTime FECHA_ACTUAL = DateTime.Parse(FECHA_HOY.ToString("yyyy-MM-dd HH:mm"), CultureInfo.InvariantCulture);
+
             var proveedorCodigoDeLaAdjudicacion = adjudicacion.Posiciones.First().CotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor();
             var usuarioCreadorAdjudicacion = adjudicacion.Usuario.UsuarioSap;
             var usuarioOrganizacionDeCompra = adjudicacion.Usuario.OrganizacionDeCompra;
@@ -1023,6 +1027,9 @@ namespace SustitucionMOAWS.WSConsumers
 
                         //subposicionSap.GR_PRICESpecified = true;
 
+                        subposicionSap.BEGINTIME = FECHA_ACTUAL;
+                        subposicionSap.ENDTIME = FECHA_ACTUAL;
+
                         solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
 
 
@@ -1117,7 +1124,14 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     DELIVERY_DATE = adjudicacionPosicion.PlazoDeEntrega.ToString("dd.MM.yyyy"),
                     PO_ITEM = $"{poItem:00000}",
-                    SCHED_LINE = "1"
+                    SCHED_LINE = "1",
+                    DELIV_TIME = FECHA_ACTUAL,
+                    MS_TIME = FECHA_ACTUAL,
+                    LOAD_TIME = FECHA_ACTUAL,
+                    TP_TIME = FECHA_ACTUAL,
+                    GI_TIME = FECHA_ACTUAL,
+                    GR_END_TIME = FECHA_ACTUAL,
+                    HANDOVERTIME = FECHA_ACTUAL
                 });
 
                 solpPedidoSAP.IM_POSCHEDULEXList.Add(new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX
