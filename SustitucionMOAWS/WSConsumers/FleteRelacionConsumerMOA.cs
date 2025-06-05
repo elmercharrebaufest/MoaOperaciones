@@ -2,6 +2,8 @@
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.FletesRelacionWebServiceMOA;
+using SustitucionMOAWS.Logger;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
 using System.Collections.Generic;
@@ -35,7 +37,11 @@ namespace SustitucionMOAWS.WSConsumers
                         PE_PROFORMA = proforma,
                         PE_PROVEEDOR = proveedor
                     };
+                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_RELAC_PL request");
+                    Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_RELAC_PL(request);
+                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_RELAC_PL response");
+                    Log.Info(response.ToXml());
                     return MapSinPI(response);
 
                 }

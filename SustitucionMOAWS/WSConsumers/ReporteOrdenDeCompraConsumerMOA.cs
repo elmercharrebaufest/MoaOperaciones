@@ -2,7 +2,9 @@
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ReporteOCWebServiceMOA;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MEWP;
 using System.Collections.Generic;
 using System.Configuration;
@@ -86,7 +88,12 @@ namespace SustitucionMOAWS.WSConsumers
                     PO_ITEMS = PO_ITEMS,
                     RETURN = RETURN
                 };
+                Log.Info($"SAP sin PI BAPI_PO_GETITEMS request");
+                Log.Info(request.ToXml());
+
                 var response = agent.BAPI_PO_GETITEMS(request);
+                Log.Info($"SAP sin PI BAPI_PO_GETITEMS response");
+                Log.Info(response.ToXml());
                 return MapSinPI(response);
             }
             else

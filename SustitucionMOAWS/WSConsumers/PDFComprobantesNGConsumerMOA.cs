@@ -2,9 +2,11 @@
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.PDFComprobantesNGWebServiceMOA;
 using SustitucionMOAWS.PDFWebServiceMOA;
 using SustitucionMOAWS.ScatoComandosWebService;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
 using System.Collections.Generic;
@@ -36,7 +38,13 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_LIFNR = CodigoProveedorSAP,
                         IM_XBLNR = NumeroLegalDocumento
                     };
+                    Log.Info($"SAP sin PI Z_MPRFC_MOAOP_COMP_NOGRANOSPDF request");
+                    Log.Info(request.ToXml());
+
                     var response = agent.Z_MPRFC_MOAOP_COMP_NOGRANOSPDF(request);
+                    Log.Info($"SAP sin PI Z_MPRFC_MOAOP_COMP_NOGRANOSPDF response");
+                    Log.Info(response.ToXml());
+
                     byte[] bytes = System.Convert.FromBase64String(response.EX_BASE64);
 
                     return Map(bytes);

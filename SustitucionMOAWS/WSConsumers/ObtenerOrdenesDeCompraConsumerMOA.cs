@@ -5,8 +5,10 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerOrdenesDeCompraWebServiceMOA;
 using SustitucionMOAWS.OrdenesDeCompraParaSolpWebServiceMOA;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MEWP;
 using System;
 using System.Collections.Generic;
@@ -84,7 +86,11 @@ namespace SustitucionMOAWS.WSConsumers
                     PO_ITEMS = detalle,
                     RETURN = bapiReturn
                 };
+                Log.Info($"SAP sin PI BAPI_PO_GETITEMS request");
+                Log.Info(request.ToXml());
                 var response = agent.BAPI_PO_GETITEMS(request);
+                Log.Info($"SAP sin PI BAPI_PO_GETITEMS response");
+                Log.Info(response.ToXml());
                 return MapSinPI(response);
             }
             else

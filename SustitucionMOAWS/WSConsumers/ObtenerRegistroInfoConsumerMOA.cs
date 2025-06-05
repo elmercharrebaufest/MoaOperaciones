@@ -4,7 +4,9 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MEWI;
 using System;
 using System.Collections.Generic;
@@ -52,7 +54,13 @@ namespace SustitucionMOAWS.WSConsumers
                         VEND_MATG = string.Empty,
                         VEND_PART = string.Empty,
                     };
+
+                    Log.Info($"SAP sin PI BAPI_INFORECORD_GETLIST request");
+                    Log.Info(request.ToXml());
                     var response = agent.BAPI_INFORECORD_GETLIST(request);
+                    Log.Info($"SAP sin PI BAPI_INFORECORD_GETLIST response");
+                    Log.Info(response.ToXml());
+
                     return MapSinPI(response, centro);
                 }
                 else

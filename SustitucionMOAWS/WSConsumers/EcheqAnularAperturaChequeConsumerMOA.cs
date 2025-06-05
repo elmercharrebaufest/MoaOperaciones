@@ -5,6 +5,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.EcheqAnularAperturaChequeWebServiceMOA;
 using SustitucionMOAWS.Logger;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 
 namespace SustitucionMOAWS.WSConsumers
@@ -29,9 +30,8 @@ namespace SustitucionMOAWS.WSConsumers
                     agent.ClientCredentials.UserName.UserName = UserSap;
                     agent.ClientCredentials.UserName.Password = PassSap;
                     IM_USUARIO = string.IsNullOrEmpty(IM_USUARIO) ? "moaoperaciones" : IM_USUARIO;
-                    Log.Info($"Sin PI Z_MPRFC_ANULAR_APERTURA_CHEQUE Request: {new { IM_CHEQUE, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA_ANULACION, IM_HORA_ANULACION, IM_SOCIEDAD, IM_USUARIO }}");
 
-                    var req = new Z_MPRFC_ANULAR_APERTURA_CHEQUE(){
+                    var request = new Z_MPRFC_ANULAR_APERTURA_CHEQUE(){
                         IM_CHEQUE = IM_CHEQUE,
                         IM_DOCUMENTO = IM_DOCUMENTO,
                         IM_EJERCICIO = IM_EJERCICIO,
@@ -40,9 +40,14 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_SOCIEDAD = IM_SOCIEDAD,
                         IM_USUARIO_ANULACION = IM_USUARIO
                     };
-                    var response = agent.Z_MPRFC_ANULAR_APERTURA_CHEQUE(req);
+                    Log.Info($"SAP sin PI Z_MPRFC_ANULAR_APERTURA_CHEQUE request");
+                    Log.Info(request.ToXml());
 
-                    Log.Info($"Sin PI Z_MPRFC_ANULAR_APERTURA_CHEQUE Response: {response}");
+                    var response = agent.Z_MPRFC_ANULAR_APERTURA_CHEQUE(request);
+
+                    Log.Info($"SAP sin PI Z_MPRFC_ANULAR_APERTURA_CHEQUE response");
+                    Log.Info(response.ToXml());
+
                     ResultadoGenerico resultado = new ResultadoGenerico();
 
                     if (response.EX_MENSAJE != "Datos actualizados correctamente")

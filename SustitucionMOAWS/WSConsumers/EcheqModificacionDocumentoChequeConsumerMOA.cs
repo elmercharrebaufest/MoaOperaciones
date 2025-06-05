@@ -7,6 +7,7 @@ using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.EcheqModificacionDocumentoChequeWebServiceMOA;
 using SustitucionMOAWS.EcheqModificarContratoWebServiceMOA;
 using SustitucionMOAWS.Logger;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using static Google.Apis.Requests.BatchRequest;
 
@@ -32,9 +33,8 @@ namespace SustitucionMOAWS.WSConsumers
                     agent.ClientCredentials.UserName.Password = PassSap;
 
                     IM_USUARIO = string.IsNullOrEmpty(IM_USUARIO) ? "moaoperaciones" : IM_USUARIO;
-                    Log.Info($"Sin PI Z_MPRFC_MODI_DOC_CHEQUE Request: {new { IM_CONTRATO, IM_DOCUMENTO, IM_EJERCICIO, IM_FECHA, IM_HORA, IM_PEDIDO, IM_PROVEEDOR, IM_REFERENCIA, IM_SOCIEDAD, IM_USUARIO, IM_ZLSCH }}");
 
-                    var req = new Z_MPRFC_MODI_DOC_CHEQUE()
+                    var request = new Z_MPRFC_MODI_DOC_CHEQUE()
                     {
                         IM_CONTRATO = IM_CONTRATO,
                         IM_DOCUMENTO = IM_DOCUMENTO,
@@ -48,8 +48,12 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_USUARIO = IM_USUARIO,
                         IM_ZLSCH = IM_ZLSCH
                     };
-                    var response = agent.Z_MPRFC_MODI_DOC_CHEQUE(req);
-                    Log.Info($"Sin PI Z_MPRFC_MODI_DOC_CHEQUE Response: {response.EX_SALIDA}");
+                    Log.Info($"SAP sin PI Z_MPRFC_MODI_DOC_CHEQUE request");
+                    Log.Info(request.ToXml());
+                    var response = agent.Z_MPRFC_MODI_DOC_CHEQUE(request);
+                    Log.Info($"SAP sin PI Z_MPRFC_MODI_DOC_CHEQUE response");
+                    Log.Info(response.ToXml());
+                    
                     ResultadoGenerico resultado = new ResultadoGenerico();
                     if (response.EX_SALIDA != "Datos actualizados correctamente")
                     {
