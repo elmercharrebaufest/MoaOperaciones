@@ -1025,8 +1025,8 @@ namespace SustitucionMOAWS.WSConsumers
 
                         //subposicionSap.GR_PRICESpecified = true;
 
-                        subposicionSap.BEGINTIME = string.Empty;
-                        subposicionSap.ENDTIME = string.Empty;
+                        subposicionSap.BEGINTIME = "000000";
+                        subposicionSap.ENDTIME = "000000";
 
                         solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
 
@@ -1123,13 +1123,13 @@ namespace SustitucionMOAWS.WSConsumers
                     DELIVERY_DATE = adjudicacionPosicion.PlazoDeEntrega.ToString("dd.MM.yyyy"),
                     PO_ITEM = $"{poItem:00000}",
                     SCHED_LINE = "1",
-                    DELIV_TIME   = string.Empty,
-                    MS_TIME      = string.Empty,
-                    LOAD_TIME    = string.Empty,
-                    TP_TIME      = string.Empty,
-                    GI_TIME      = string.Empty,
-                    GR_END_TIME  = string.Empty,
-                    HANDOVERTIME = string.Empty,
+                    DELIV_TIME   = "000000",
+                    MS_TIME      = "000000",
+                    LOAD_TIME    = "000000",
+                    TP_TIME      = "000000",
+                    GI_TIME      = "000000",
+                    GR_END_TIME  = "000000",
+                    HANDOVERTIME = "000000",
                 });
 
                 solpPedidoSAP.IM_POSCHEDULEXList.Add(new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX
