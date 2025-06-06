@@ -9384,7 +9384,7 @@ namespace SustitucionMOAUtils.Services
 
                     var nuevaAdjudicacion = new Adjudicacion
                     {
-                        AdmiteCertificacionesParciales = true,
+                        AdmiteCertificacionesParciales = false,
                         Cotizacion_Id = cotizacionId,
                         FechaCreacion = nuevaOCSap.Cabecera.FechaCreacion,
                         Moneda = moneda,
