@@ -1017,16 +1017,17 @@ namespace SustitucionMOAWS.WSConsumers
                         subposicionSap.UOM_ISO = unidadesMedidaSap.Find(u => u.Comercial == cotizacionSubPosicion.UnidadDeMedida.CodigoSap).UM;
                         subposicionSap.PRICE_UNIT = 1;
                         //subposicionSap.PRICE_UNITSpecified = true;
-                        subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value;
+                        subposicionSap.GR_PRICE = Math.Round(cotizacionSubPosicion.Precio.Value,4);
                         if (adjudicacion.Moneda.Codigo != cotizacionSubPosicion.Moneda.Codigo)
                         {
                             subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value * obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), adjudicacion.Moneda.Codigo, cotizacionSubPosicion.Moneda.Codigo).TipoCambio;
                         }
+                        subposicionSap.GR_PRICE = Math.Round(subposicionSap.GR_PRICE, 4);
 
                         //subposicionSap.GR_PRICESpecified = true;
 
-                        subposicionSap.BEGINTIME = "000000";
-                        subposicionSap.ENDTIME = "000000";
+                        subposicionSap.BEGINTIME = "00:00:00";
+                        subposicionSap.ENDTIME = "00:00:00";
 
                         solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
 
@@ -1123,13 +1124,13 @@ namespace SustitucionMOAWS.WSConsumers
                     DELIVERY_DATE = adjudicacionPosicion.PlazoDeEntrega.ToString("dd.MM.yyyy"),
                     PO_ITEM = $"{poItem:00000}",
                     SCHED_LINE = "1",
-                    DELIV_TIME   = "000000",
-                    MS_TIME      = "000000",
-                    LOAD_TIME    = "000000",
-                    TP_TIME      = "000000",
-                    GI_TIME      = "000000",
-                    GR_END_TIME  = "000000",
-                    HANDOVERTIME = "000000",
+                    DELIV_TIME   = "00:00:00",
+                    MS_TIME      = "00:00:00",
+                    LOAD_TIME    = "00:00:00",
+                    TP_TIME      = "00:00:00",
+                    GI_TIME      = "00:00:00",
+                    GR_END_TIME  = "00:00:00",
+                    HANDOVERTIME = "00:00:00",
                 });
 
                 solpPedidoSAP.IM_POSCHEDULEXList.Add(new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX
