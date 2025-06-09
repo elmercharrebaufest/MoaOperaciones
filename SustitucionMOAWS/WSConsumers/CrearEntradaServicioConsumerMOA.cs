@@ -295,7 +295,7 @@ namespace SustitucionMOAWS.WSConsumers
                 LineNumber = "0000000001",
                 OutlineIndicator = "X",
                 SubPackageNumber = "0000000002",
-                Quantity = "1"
+                Quantity = "1",
             };
 
             var contadorDeInstancia = 1;
@@ -332,10 +332,12 @@ namespace SustitucionMOAWS.WSConsumers
             bapiesllc.EXT_LINE = item.ExternalLineNumber;
             bapiesllc.SERVICE = ((item.Service ?? "0").Trim() == "0" ? "" : item.Service);
             bapiesllc.QUANTITY = Convert.ToDecimal(item.Quantity.Replace(",", "."));
-            bapiesllc.GR_PRICE = Convert.ToDecimal(item.GrossPrice.ToString().Replace(",", "."));
+            bapiesllc.GR_PRICE = Math.Round(Convert.ToDecimal(item.GrossPrice.ToString().Replace(",", ".")), 4);
             bapiesllc.SHORT_TEXT = item.ShortText;
             bapiesllc.PLN_PCKG = item.PlannedPackage;
             bapiesllc.PLN_LINE = item.PlannedLine;
+            bapiesllc.BEGINTIME = "00:00:00";
+            bapiesllc.ENDTIME = "00:00:00";
             return bapiesllc;
         }
 

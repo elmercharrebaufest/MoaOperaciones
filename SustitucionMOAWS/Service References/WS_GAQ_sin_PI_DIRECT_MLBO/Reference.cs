@@ -1204,9 +1204,9 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MLBO {
         
         private string dATEField;
         
-        private System.DateTime bEGINTIMEField;
+        private string bEGINTIMEField;
         
-        private System.DateTime eNDTIMEField;
+        private string eNDTIMEField;
         
         private string eXTPERS_NOField;
         
@@ -1823,8 +1823,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MLBO {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, DataType="time", Order=48)]
-        public System.DateTime BEGINTIME {
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=48)]
+        public string BEGINTIME {
             get {
                 return this.bEGINTIMEField;
             }
@@ -1835,8 +1835,8 @@ namespace SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MLBO {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, DataType="time", Order=49)]
-        public System.DateTime ENDTIME {
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=49)]
+        public string ENDTIME {
             get {
                 return this.eNDTIMEField;
             }
