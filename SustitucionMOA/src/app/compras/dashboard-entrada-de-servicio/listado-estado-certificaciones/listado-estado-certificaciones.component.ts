@@ -29,6 +29,7 @@ export interface autoCompleteObject {
 };
 import { certificacionES } from '../components/modal-aprobacion/modalAprobacion.interface';
 import { TableCustomSort } from '../tableCustomSort.helper';
+import { EntradaServicioCabeceraDto } from '../../../common/models/ordenes-compra/entradaServicioCabecera';
 
 @Component({
     selector: 'app-listado-estado-certificaciones',
@@ -86,10 +87,12 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         new DropdownOption("2", "Última semana"),
         new DropdownOption("3", "Último mes"),
     ];
+    filtroFechaDesde: string;
+    filtroFechaHasta: string;
     fullscreen: boolean = false;
     userId: any = '';
-    tablaPOAprobaciones: any[] = [];
-    tablaPOSap: any[] = [];
+    tablaPOAprobaciones: EntradaServicioCabeceraDto[] = [];
+    tablaPOSap: EntradaServicioCabeceraDto[] = [];
     cols: any[];
     usuario: string;
     vendedor: string;
@@ -254,9 +257,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
     }
 
-    getListarPO(): Promise<void> {
+    getListarPO(fechaDesde: string = "", fechaHasta: string = ""): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            const subscription = this.service.ObtenerESLocales(this.isAll, '').subscribe(
+            const subscription = this.service.ObtenerESLocales(this.isAll, '', fechaDesde, fechaHasta, this.ordenCompraFiltro).subscribe(
                 (result: any) => {
                     if (result.logout === true) {
                         this.sessionDataService.logout();
@@ -292,7 +295,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         return new Promise<void>((resolve, reject) => {
             const subscription = this.service
                 .getByProveedorAsync(
-                    this.fechaInicio,
+                    this.filtroFechaDesde,
+                    this.filtroFechaHasta,
                     proveedor,
                     documentoNumero,
                     this.columnaOrden,
@@ -353,16 +357,21 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.fechaInicio = fechaActual.toISOString().slice(0, 10);
     }
 
+    onFiltroFechaDesdeChanged(fechaDesde: string) {
+        this.filtroFechaDesde = fechaDesde;
+    }
+
+    onFiltroFechaHastaChanged(fechaHasta: string) {
+        this.filtroFechaHasta = fechaHasta;
+    }
+
     getOrdenCompraFiltro(ocIngresada: string) {
         this.ordenCompraFiltro = ocIngresada;
+        this.tabla.filter(ocIngresada, 'OrdenCompra', 'contains');
     }
 
     toggleRow(rowData: any): void {
         this.selectedRow = this.selectedRow === rowData ? null : rowData;
-    }
-
-    visualizarFiltroTablaPorOC(): boolean {
-        return this.estadoSeleccionado != 'Aprobada';
     }
 
     verMotivosRechazos(rowData: any): void {
@@ -910,12 +919,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             elementExpanded.click();
         }
     }
-
-    /**
-     * filtro de busqueda de las entradas de servicio por rango de fechas.
-     */
-    onBuscar() {
-        // MMSN-519: Colapsar fila expandida al activar un filtro.
+    
+    async onBuscar() {
         this.collapseExpandedRow();
         this.recalculandoAprobadas = true;
 
@@ -926,19 +931,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.proveedor = '';
         }
 
+        await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
         this.obtenerESSap(this.proveedor, this.documentoNumero);
-    }
-
-    /**
-     * metodo para mostrar u ocultar el panel auxiliar de filtro por fecha.
-     * @returns boolen
-     */
-    showOrHideAuxPanel(): boolean {
-        const estadoCertificacion: estadoCertificacion = { name: 'Estado: Aprobadas', code: 'Aprobada' };
-        if (this.estadoCertificacion.code === estadoCertificacion.code) {
-            return true;
-        }
-        return false;
     }
 
     /**

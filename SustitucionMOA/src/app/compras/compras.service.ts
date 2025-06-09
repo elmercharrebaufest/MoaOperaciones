@@ -215,6 +215,7 @@ export class ComprasService extends BaseService {
 
     public getByProveedorAsync(
         fechaInicio: any = this.filtros.fechaDesde,
+        fechaFin: string,
         proveedorId: string,
         DocumentoNumero: string,
         columnaOrden: string = this.filtros.columnaNombre,
@@ -228,6 +229,7 @@ export class ComprasService extends BaseService {
         let params: HttpParams = new HttpParams();
 
         params = params.set('fechaInicio', (fechaInicio != null ? fechaInicio : ""));
+        params = params.set('fechaFin', fechaFin);
         params = params.set('vendedor', proveedorId);
         params = params.set('documentoNumero', DocumentoNumero);
         params = params.set('ColumnaOrden', columnaOrden);
@@ -245,10 +247,13 @@ export class ComprasService extends BaseService {
             );
     }
 
-    ObtenerESLocales(verTodo: boolean | false, proveedorId: string | '') {
+    ObtenerESLocales(verTodo: boolean | false, proveedorId: string | '', fechaInicio: string, fechaFin: string, ordenCompra: string | undefined) {
         let params: HttpParams = new HttpParams();
         params = params.set('verTodo', verTodo.toString());
         params = params.set('vendedor', proveedorId);
+        params = params.set('fechaInicio', fechaInicio);
+        params = params.set('fechaFin', fechaFin);
+        params = params.set('OrdenCompra', ordenCompra || "");
 
         return this.http
             .get<any[]>('/api/EntradaServicio/ObtenerESLocales', { params: params, headers: this.headers }).pipe(

@@ -9,19 +9,21 @@
             <i *ngIf="isAuthorized('ABM USUARIOS')" id="btn-reasignacion" [ngClass]="'fa fa-retweet'" title="Ejecutar proceso de derivación automática" (click)="correrReasignacionManual()"></i>
             <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'"
                [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="toggleFullscreen()"></i>
-            <i *ngIf="showOrHideAuxPanel()" id="btn-filtros" class="fa fa-filter" title="Filtros"
+            <i id="btn-filtros" class="fa fa-filter" title="Filtros"
                (click)="togglePanel('search')" [class.i-disabled]="!displayContent"></i>
         </div>
         <br />
     </section>
     <!-- HEADER END -->
     <!-- SEARCH PANEL -->
-    <aux-pannel *ngIf="showOrHideAuxPanel()"
+    <aux-pannel
         (obtenerESSap)="onBuscar()"  
         [proveedor]="proveedor"
         [visible]="recalculandoAprobadas"
         (getFecha)="getFecha($event)"
-        [fechaSeleccionada]="fechaSeleccionadaAux"
+        (onFiltroFechaDesdeChanged)="onFiltroFechaDesdeChanged($event)"
+        (onFiltroFechaHastaChanged)="onFiltroFechaHastaChanged($event)"
+        [periodoSeleccionado]="fechaSeleccionadaAux"
         (getOrdenCompra)="getOrdenCompraFiltro($event)">
     </aux-pannel>
 
@@ -35,10 +37,6 @@
             <!-- FILTERS -->
             <div class="filters-row">
                 <i class="pi pi-filter"></i>
-                <div class="filtro-oc" *ngIf="visualizarFiltroTablaPorOC()">
-                    <input class="filtro-oc-input" pInputText type="text" (input)="tabla.filter($event.target.value, 'OrdenCompra', 'contains')"
-                        placeholder="Búsqueda por OC" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación')" />
-                </div>
                 <div class="filtro-usuario" *ngIf="isAll">
                     <input class="filtro-usuario-input" pInputText type="text" (input)="tabla.filter($event.target.value, 'Ingresante', 'contains')" 
                     placeholder="Búsqueda por usuario" [disabled]="(recalculando && !isAll)" />
