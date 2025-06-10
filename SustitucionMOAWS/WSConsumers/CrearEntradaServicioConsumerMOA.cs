@@ -48,6 +48,9 @@ namespace SustitucionMOAWS.WSConsumers
                         ENTRYSHEETSERVICESTEXTS = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] { },
                         ENTRYSHEETSRVACCASSVALUES = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKLC[] { },
                         ENTRYSHEETSERVICES = services.ToArray(),
+                        RETURN = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRET2[] {},
+                        ENTRYSHEETACCOUNTASSIGNMENT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKNC[] {},
+                        ENTRYSHEETHEADERTEXT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] { },
                     };
                     Log.Info($"SAP sin PI BAPI_ENTRYSHEET_CREATE request");
                     Log.Info(request.ToXml());
@@ -103,6 +106,9 @@ namespace SustitucionMOAWS.WSConsumers
                         ENTRYSHEETSERVICESTEXTS = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] { },
                         ENTRYSHEETSRVACCASSVALUES = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKLC[] { },
                         ENTRYSHEETSERVICES = services.ToArray(),
+                        RETURN = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRET2[] { },
+                        ENTRYSHEETACCOUNTASSIGNMENT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKNC[] { },
+                        ENTRYSHEETHEADERTEXT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] { },
                     };
                     Log.Info($"SAP sin PI BAPI_ENTRYSHEET_CREATEAsync request");
                     Log.Info(request.ToXml());
