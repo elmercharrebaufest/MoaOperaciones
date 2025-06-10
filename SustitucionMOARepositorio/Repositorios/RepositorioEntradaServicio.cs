@@ -15,8 +15,9 @@ namespace SustitucionMOARepositorio.Repositorios
             var solpsQry =
                 from solp in Set<Solp>()
                 where
-                    nroSolps.Contains(solp.NroSolp) &&
-                    solp.CertificacionAutomatica
+                    nroSolps.Contains(solp.NroSolp)
+                    && solp.CertificacionAutomatica
+                    && solp.TipoSolpSap != 2
                 select solp;
 
             return solpsQry.ToList();
