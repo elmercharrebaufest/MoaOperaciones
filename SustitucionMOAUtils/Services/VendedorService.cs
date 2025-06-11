@@ -358,12 +358,14 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
 
             Log.Info($"GetVendedoresInternal usuario");
-            Log.Info(usuario.ToXml());
 
             var listadoProveedores = new List<ProveedorDto>();
 
             if (usuario.EsAdmin() || usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
             {
+                Log.Info($"GetVendedoresInternal usuario");
+                Log.Info($"GetVendedoresInternal usuario.EsAdmin()");
+
                 listadoProveedores = repositorio
                         .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
                         .Where(filtro)
