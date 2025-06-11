@@ -1834,7 +1834,7 @@ namespace SustitucionMOAUtils.Services
                     ITM_NUMBER = item.ITM_NUMBER,  //el número de ítem al que corresponda la condición
                     COND_ST_NO = item.COND_ST_NO,
                     COND_TYPE = item.COND_TYPE,
-                    COND_VALUE = item.COND_VALUE, //el importe de la condición
+                    COND_VALUE = Math.Round(item.COND_VALUE, 4), //el importe de la condición
                     //COND_VALUESpecified = true,
                     CURRENCY = item.CURRENCY,
                     CHANGE_ID = "U",
@@ -1932,7 +1932,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     PO_ITEM = item.PO_ITEM,
                     SCHED_LINE = item.SCHED_LINE,
-                    DELIVERY_DATE = item.DELIVERY_DATE
+                    DELIVERY_DATE = item.DELIVERY_DATE,
                 });
             }
             modificarPedidoSAP.POSCHEDULE = listPOSCHEDULE.ToList();
@@ -2125,10 +2125,10 @@ namespace SustitucionMOAUtils.Services
                     //Modificar importe
                     if (modificoImporte)
                     {
-                        posicionSap.NET_PRICE = posAdj.PrecioUnidadCodigo;
+                        posicionSap.NET_PRICE = Math.Round(posAdj.PrecioUnidadCodigo, 4);
                         //posicionSap.NET_PRICESpecified = true;
                         posicionSapX.NET_PRICE = "X";
-                        condicionSap.COND_VALUE = posAdj.PrecioUnidadCodigo;
+                        condicionSap.COND_VALUE = Math.Round(posAdj.PrecioUnidadCodigo, 4);
                         //condicionSap.COND_VALUESpecified = true;
                         condicionSap.CURRENCY = adjudicacion.MonedaCodigo;
                         //"ZP01" no deja cambiar importes por eso se cambia a "ZP00"
@@ -2154,20 +2154,20 @@ namespace SustitucionMOAUtils.Services
                             subPosicionSap.QUANTITY = subPosAdj.Cantidad;
                             //imputacionSubPos.QUANTITY = subPosAdj.Cantidad;
                             //Importe 1/2                            
-                            subPosicionSap.GR_PRICE = subPosAdj.PrecioUnitario;
-                            subPosicionSap.NET_VALUE = subPosAdj.PrecioUnitario * subPosAdj.Cantidad;
+                            subPosicionSap.GR_PRICE  = Math.Round(subPosAdj.PrecioUnitario,4);
+                            subPosicionSap.NET_VALUE = Math.Round(subPosAdj.PrecioUnitario * subPosAdj.Cantidad, 4);
                             //imputacionSubPos.NET_VALUE = subPosAdj.PrecioUnitario * subPosAdj.Cantidad;
 
                         }
 
                         //Importe 2/2                        
                         var totalPosicion = posAdj.SubPosiciones.Where(a => !a.Eliminado).Sum(a => a.Cantidad * a.PrecioUnitario);
-                        condicionSap.COND_VALUE = totalPosicion;
+                        condicionSap.COND_VALUE = Math.Round(totalPosicion,4);
                         //condicionSap.COND_VALUESpecified = true;
                         condicionSap.CURRENCY = adjudicacion.MonedaCodigo;
                         condicionSap.COND_TYPE = condicionSap.COND_TYPE == "ZP01" ? "ZP01" : condicionSap.COND_TYPE;
 
-                        posicionSap.NET_PRICE = totalPosicion;
+                        posicionSap.NET_PRICE = Math.Round(totalPosicion,4);
                         //posicionSap.NET_PRICESpecified = true;
                         posicionSapX.NET_PRICE = "X";
                         //imputacionSap.NET_VALUE = totalPosicion;
