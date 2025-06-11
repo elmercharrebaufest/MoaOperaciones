@@ -46,8 +46,8 @@ namespace SustitucionMOAWS.WSConsumers
                         MAT_GRP = string.Empty,
                         PLANT = centro,
                         PURCHASINGINFOREC = string.Empty,
-                        PURCHORG_DATA = string.Empty,
-                        PURCHORG_VEND = string.Empty,
+                        PURCHORG_DATA = "X",
+                        PURCHORG_VEND = "X",
                         PUR_GROUP = string.Empty,
                         VENDOR = proveedor,
                         VEND_MAT = string.Empty,
@@ -57,7 +57,7 @@ namespace SustitucionMOAWS.WSConsumers
                         INFORECORD_PURCHORG = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPIEINE[] {},
                         INFORECORD_SEGMENT = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPISEGM[] {},
                         PURCH_ORG = string.Empty,
-                        RETURN = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPIRETURN[] { }
+                        RETURN = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPIRETURN[] { },
                     };
 
                     Log.Info($"SAP sin PI BAPI_INFORECORD_GETLIST request");
