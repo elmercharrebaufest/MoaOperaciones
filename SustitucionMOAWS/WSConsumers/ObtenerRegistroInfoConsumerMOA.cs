@@ -53,6 +53,11 @@ namespace SustitucionMOAWS.WSConsumers
                         VEND_MAT = string.Empty,
                         VEND_MATG = string.Empty,
                         VEND_PART = string.Empty,
+                        INFORECORD_GENERAL = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPIEINA[] {},
+                        INFORECORD_PURCHORG = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPIEINE[] {},
+                        INFORECORD_SEGMENT = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPISEGM[] {},
+                        PURCH_ORG = string.Empty,
+                        RETURN = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPIRETURN[] { }
                     };
 
                     Log.Info($"SAP sin PI BAPI_INFORECORD_GETLIST request");
