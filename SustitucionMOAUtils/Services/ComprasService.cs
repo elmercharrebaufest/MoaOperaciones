@@ -8889,8 +8889,7 @@ namespace SustitucionMOAUtils.Services
                 var cotizacionUsuario = usuario.Cotizaciones.First();
 
                 if (cotizacionUsuario.Archivos.Count > 0 &&
-                    !proveedoresProcesados.Contains(cotizacionUsuario.UsuarioCreador_Id) &&
-                    PuedenVerseLosImportesDeCotizacion(cotizacionUsuario, usuarioDto))
+                    !proveedoresProcesados.Contains(cotizacionUsuario.UsuarioCreador_Id))
                 {
                     proveedoresProcesados.Add(cotizacionUsuario.UsuarioCreador_Id);
 
