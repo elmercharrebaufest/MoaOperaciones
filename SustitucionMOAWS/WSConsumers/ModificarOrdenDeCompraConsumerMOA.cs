@@ -934,7 +934,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     ITM_NUMBER = poItem,  //el número de ítem al que corresponda la condición
                     COND_TYPE = "ZP01",// siempre va el mismo dato
-                    COND_VALUE = IM_POITEM.NET_PRICE, //el importe de la condición
+                    COND_VALUE = Math.Round(IM_POITEM.NET_PRICE,4), //el importe de la condición
                     ///COND_VALUESpecified = true,
                     CURRENCY = adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo,//moneda de la adjudicacion
                     CHANGE_ID = "U",// siempra va el mismo valor
@@ -1038,9 +1038,12 @@ namespace SustitucionMOAWS.WSConsumers
                         /// este valor no se envia cuando es SIN PI
                         ///subposicionSap.PRICE_UNITSpecified = true;
 
-                        subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value;
+                        subposicionSap.GR_PRICE = Math.Round(cotizacionSubPosicion.Precio.Value,4);
                         /// este valor no se envia cuando es SIN PI
                         ///subposicionSap.GR_PRICESpecified = true;
+
+                        subposicionSap.BEGINTIME = "00:00:00";
+                        subposicionSap.ENDTIME = "00:00:00";
 
                         modificarPedidoSAP.POSERVICES.Add(subposicionSap);
 
@@ -1137,7 +1140,14 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     DELIVERY_DATE = adjudicacionPosicion.PlazoDeEntrega.ToString("dd.MM.yyyy"),
                     PO_ITEM = poItem,
-                    SCHED_LINE = "1"
+                    SCHED_LINE = "1",
+                    DELIV_TIME = "00:00:00",
+                    MS_TIME = "00:00:00",
+                    LOAD_TIME = "00:00:00",
+                    TP_TIME = "00:00:00",
+                    GI_TIME = "00:00:00",
+                    GR_END_TIME = "00:00:00",
+                    HANDOVERTIME = "00:00:00",
                 });
 
                 modificarPedidoSAP.POSCHEDULEX.Add(new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX

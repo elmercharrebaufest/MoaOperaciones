@@ -578,7 +578,7 @@ namespace SustitucionMOAUtils.Services
                     //IM_PRITEM.QUANTITYSpecified = true;
                     IM_PRITEM.UNIT = unidadesMedidaSap?.Find(u => u.Item1 == posicion.Unidad.CodigoSap).Item2; //UNIT BAMEI - Cambia el código de la unidad solicitada por su equivalente 'UM' de la tabla UnidadMedidaSap
                     //IM_PRITEM.PREQ_UNIT_ISO = null; //PREQ_UNIT_ISO BAMEI_ISO   Código ISO p.la unidad de medida en la solicitud de pedido
-                    IM_PRITEM.PREQ_PRICE = (Decimal)posicion.PrecioBruto; //PREQ_PRICE  BAPICUREXT Importe de moneda para BAPIs(con 9 decimales)
+                    IM_PRITEM.PREQ_PRICE = Math.Round((Decimal)posicion.PrecioBruto,4); //PREQ_PRICE  BAPICUREXT Importe de moneda para BAPIs(con 9 decimales)
                     //IM_PRITEM.PREQ_PRICESpecified = true;
                     //IM_PRITEM.PRICE_UNIT = null; //PRICE_UNIT EPEIN Cantidad base  
                     //IM_PRITEM.PRICE_UNITSpecified = true;
@@ -790,7 +790,7 @@ namespace SustitucionMOAUtils.Services
                     //IM_SERVICELINE.QUANTITYSpecified = true;
                     IM_SERVICELINE.UOM = unidadesMedidaSap?.Find(u => u.Item1 == subPosicion.Unidad.CodigoSap).Item2; //UOM MEINS - Cambia el código de la unidad solicitada por su equivalente 'UM' de la tabla UnidadMedidaSap
                     //IM_SERVICELINE.UOM_ISO = null; //UOM_ISO MEINS_ISO   Unidad medida base en código ISO
-                    IM_SERVICELINE.GROSS_PRICE = subPosicion.PrecioBruto.Value; //GROSS_PRICE SBRTWR Precio bruto Unitario
+                    IM_SERVICELINE.GROSS_PRICE = Math.Round(subPosicion.PrecioBruto.Value,4); //GROSS_PRICE SBRTWR Precio bruto Unitario
                     //IM_SERVICELINE.GROSS_PRICESpecified = true;
                     IM_SERVICELINE.CURRENCY = posicion.Moneda.CodigoSap; //CURRENCY WAERS   Clave de moneda
                     IM_SERVICELINE.HR_START_TIME = string.Empty;

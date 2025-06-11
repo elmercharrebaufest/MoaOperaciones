@@ -826,7 +826,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.QUANTITY = esPosicionDeMateriales ? nuevaCantidad : 0;
                 //IM_POITEM.QUANTITYSpecified = esPosicionDeMateriales;
                 IM_POITEM.PO_UNIT = unidadDeMedida;
-                IM_POITEM.NET_PRICE = esPosicionDeMateriales ? precioConvertido : adjudicacionPosicion.Monto.Value;
+                IM_POITEM.NET_PRICE = Math.Round((esPosicionDeMateriales ? precioConvertido : adjudicacionPosicion.Monto.Value),4);
                 //IM_POITEM.NET_PRICESpecified = true;
                 IM_POITEM.PRICE_UNIT = 1;
                 //IM_POITEM.PRICE_UNITSpecified = true;
@@ -918,7 +918,7 @@ namespace SustitucionMOAWS.WSConsumers
                     COND_TYPE = creadoAutomatico ? "ZP00" : "ZP01",
                     //ZP00 toma los datos del registro info
                     //ZP01 toma los datos de la adjudicacion
-                    COND_VALUE = IM_POITEM.NET_PRICE, //el importe de la condición
+                    COND_VALUE = Math.Round(IM_POITEM.NET_PRICE,4), //el importe de la condición
                     //COND_VALUESpecified = true,
                     CURRENCY = adjudicacion.Moneda.Codigo /*adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo*/,//moneda de la adjudicacion
                     CHANGE_ID = "U",// siempra va el mismo valor
