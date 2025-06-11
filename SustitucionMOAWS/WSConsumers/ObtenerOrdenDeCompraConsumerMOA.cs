@@ -332,7 +332,11 @@ namespace SustitucionMOAWS.WSConsumers
                 RETURN = RETURN,
                 SERIALNUMBER = SERIALNUMBER,
             };
+            Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 request");
+            Log.Info(request.ToXml());
             var response = agent.BAPI_PO_GETDETAIL1(request);
+            Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 response");
+            Log.Info(response.ToXml());
             return response;
         }
 
@@ -1507,7 +1511,11 @@ namespace SustitucionMOAWS.WSConsumers
                 RETURN = RETURN,
                 SERIALNUMBER = SERIALNUMBER,
             };
+            Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 request");
+            Log.Info(request.ToXml());
             var response = agent.BAPI_PO_GETDETAIL1(request);
+            Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 response");
+            Log.Info(response.ToXml());
             return response;
         }
 
