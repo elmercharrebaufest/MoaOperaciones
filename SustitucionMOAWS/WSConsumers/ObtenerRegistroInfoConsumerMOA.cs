@@ -38,7 +38,7 @@ namespace SustitucionMOAWS.WSConsumers
                     var request = new BAPI_INFORECORD_GETLIST()
                     {
                         DELETED_INFORECORDS = string.Empty,
-                        GENERAL_DATA = string.Empty,
+                        GENERAL_DATA = "X",
                         INFO_TYPE = string.Empty,
                         MATERIAL = material,
                         MATERIAL_EVG = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPIMGVMATNR(),
