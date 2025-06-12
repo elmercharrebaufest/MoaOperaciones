@@ -2650,7 +2650,7 @@ namespace SustitucionMOAUtils.Services
                             PO_NUMBER = "",
                             PO_ITEM = "0",
                             TEXT_FORM = "*",
-                            TEXT_LINE = texto
+                            TEXT_LINE = texto.Substring(1,122)
                         });
                     }
                 }
