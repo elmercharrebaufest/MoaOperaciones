@@ -2637,6 +2637,7 @@ namespace SustitucionMOAUtils.Services
                 {"F07", !string.IsNullOrEmpty(adjudicacion.CondicionesDePago) ? adjudicacion.CondicionesDePago.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
                 {"F08", !string.IsNullOrEmpty(adjudicacion.Garantias) ? adjudicacion.Garantias.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
             };
+            int MAX_LENGTH_TEXT_LINE = 122; 
             foreach (var grupos in textosDiccionario)
             {
                 bool todosVacios = grupos.Value.All(string.IsNullOrEmpty);
@@ -2650,7 +2651,7 @@ namespace SustitucionMOAUtils.Services
                             PO_NUMBER = "",
                             PO_ITEM = "0",
                             TEXT_FORM = "*",
-                            TEXT_LINE = texto.Substring(1,122)
+                            TEXT_LINE = texto.Length > MAX_LENGTH_TEXT_LINE ? texto.Substring(0, MAX_LENGTH_TEXT_LINE) : texto
                         });
                     }
                 }
