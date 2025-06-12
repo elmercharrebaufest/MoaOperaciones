@@ -3549,8 +3549,15 @@ namespace SustitucionMOAUtils.Services
                     if (registros != null)
                     {
                         CrearProveedor(registros.ConvertAll(x => x.Vendedor));
+                        Log.Info($"CrearProveedor -->>> 1");
                         foreach (var posicion in posicionAgrupada)
                         {
+                            Log.Info($"posicionAgrupada -->>> 2");
+
+                            Log.Info($"registros -->>> 3");
+                            Log.Info(registros.ToXml());
+
+
                             foreach (var registroInfo in registros)
                             {
                                 var i = 0;
