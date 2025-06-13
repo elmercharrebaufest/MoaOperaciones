@@ -3562,7 +3562,17 @@ namespace SustitucionMOAUtils.Services
                             {
                                 var i = 0;
                                 var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == registroInfo.Vendedor && x.TipoProveedor.Id == (int)TipoUsuarioEnum.NoGranos);
+
+                                Log.Info($"proveedor -->>> 4");
+                                Log.Info(proveedor.ToXml());
+
+
                                 var usuario = proveedor?.UsuariosAsociados.FirstOrDefault(a => a.Mail == proveedor.Mail && a.CUITRegistro == proveedor.CUIT && a.TipoUsuario.Id == proveedor.TipoProveedor.Id);
+
+
+                                Log.Info($"usuario -->>> 5");
+                                Log.Info(usuario.ToXml());
+
                                 if (proveedor != null && usuario != null)
                                 {
                                     decimal pendienteAdjudicar = 0;
