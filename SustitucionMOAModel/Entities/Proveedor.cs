@@ -31,7 +31,7 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("IdProveedorCorredor")]
         public virtual Proveedor ProveedorCorredor { get; set; }
 
-        public virtual ICollection<Archivo> Archivos { get; set; } = new List<Archivo>();
+        public virtual ICollection<Archivo> Archivos { get; set; }
 
         [InverseProperty("Proveedores")]
         public virtual ICollection<Usuario> UsuariosAsociados { get; set; }
