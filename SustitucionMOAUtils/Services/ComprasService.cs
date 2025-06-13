@@ -3564,14 +3564,14 @@ namespace SustitucionMOAUtils.Services
                                 var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == registroInfo.Vendedor && x.TipoProveedor.Id == (int)TipoUsuarioEnum.NoGranos);
 
                                 Log.Info($"proveedor -->>> 4");
-                                Log.Info(proveedor.ToXml());
+                                Log.Info(proveedor?.Id.ToString());
 
 
                                 var usuario = proveedor?.UsuariosAsociados.FirstOrDefault(a => a.Mail == proveedor.Mail && a.CUITRegistro == proveedor.CUIT && a.TipoUsuario.Id == proveedor.TipoProveedor.Id);
 
 
                                 Log.Info($"usuario -->>> 5");
-                                Log.Info(usuario.ToXml());
+                                Log.Info(usuario?.Id.ToString());
 
                                 if (proveedor != null && usuario != null)
                                 {
