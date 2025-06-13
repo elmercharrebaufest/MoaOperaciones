@@ -12,4 +12,5 @@
         MontoFormateado:string;
         Archivo:any;
     }[];
+    EsMonedaExtranjera: boolean;
 }

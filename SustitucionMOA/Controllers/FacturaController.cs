@@ -53,6 +53,16 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(new { data = data });
         }
 
+        [CustomPermisoAuthorize(Roles = Permiso.CARGAR_FACT_PROV)]
+        public ActionResult GuardarFacturaDiferenciaTasaDeCambio(HttpPostedFileBase archivoFactura)
+        {
+            var mailUsuario = SessionPersister.Mail;
+            var cuitUsuario = SessionPersister.CUIT;
+            var codigoProveedor = SessionPersister.Proveedor;
+            facturaService.GuardarFacturaPorDiferenciaTasaDeCambio(archivoFactura, cuitUsuario, codigoProveedor, mailUsuario);
+            return JsonCustom(new {});
+        }
+
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CARGAR_FACT_PROV)]
         public ActionResult DescargarDocumentoAdjunto(int archivoId)
         {
