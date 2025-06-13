@@ -13,6 +13,7 @@ namespace SustitucionMOAModel.Models
         public string FileName { get; set; }
         public int Archivo_Id { get; set; }
         public List<OrdenDeCompraSAPCertificacion> Certificaciones { get; set; }
+        public bool EsMonedaExtranjera { get; set; } = false;
 
         public ValidationResult()
         {

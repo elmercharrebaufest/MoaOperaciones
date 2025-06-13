@@ -21,5 +21,7 @@ namespace SustitucionMOAUtils.Interfaces
             int? pagina = null,
             string orden = null,
             string columna = null);
+        
+        void GuardarFacturaPorDiferenciaTasaDeCambio(HttpPostedFileBase archivoFactura, string cuit, string codigoProveedor, string mailUsuario);
     }
 }

@@ -48,9 +48,8 @@
                                     site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
                     </div>
                 </div>
+
                 <div *ngIf="certificaciones?.length > 0" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-
-
                     <div class="myRow mySearch" style="margin-bottom: 150px;">
                         <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
                             <div class="col-xs-12 col-md-12 search-header">
@@ -61,12 +60,9 @@
                                     <p-checkbox class="checkboxFechas" binary="true" label="Certificaciones Pendientes de factura" pTooltip="Certificaciones Pendientes de factura" (click)="verCertificacionesPendientes()"></p-checkbox>
                                 </span>
                             </div>
-
-
                         </div>
                     </div>
-
-
+                    <p-checkbox *ngIf="mostrarPorDiferenciaTasaCambio()" label="Por diferencia de tasa de cambio" (click)="onPorDiferenciaTasaCambioChanged()" binary="true"></p-checkbox>
                     <div *ngFor="let grupo of agrupadasPorArchivo">
                         <h2>{{ grupo.nombreArchivo }}</h2>
 
@@ -74,7 +70,10 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th>
-                                        <input type="checkbox" [checked]="todasSeleccionadas(grupo)" (change)="toggleSeleccionGrupo(grupo, $event)">
+                                        <input type="checkbox"
+                                            [checked]="todasSeleccionadas(grupo)"
+                                            (change)="toggleSeleccionGrupo(grupo, $event)"
+                                            [disabled]="esFacturaPorDiferenciaTasaDeCambio">
                                     </th>
                                     <th>Número OC</th>
                                     <th>Número Certificación</th>
@@ -88,7 +87,10 @@
                                     <tr *ngIf="(verPendientes && certificacion.Archivo.length === 0) || !verPendientes ">
 
                                         <td>
-                                            <input type="checkbox" [(ngModel)]="certificacion.Seleccionada" (change)="onCheckCertificacion(certificacion, grupo.nombreArchivo)">
+                                            <input type="checkbox"
+                                                [(ngModel)]="certificacion.Seleccionada"
+                                                (change)="onCheckCertificacion(certificacion, grupo.nombreArchivo)"
+                                                [disabled]="esFacturaPorDiferenciaTasaDeCambio">
                                         </td>
                                         <td>{{ certificacion.NRO_OC }}</td>
                                         <td>{{ certificacion.NRO_Certificacion }}</td>
@@ -142,8 +144,8 @@
                                 class="btn-nuevoPliego"
                                 type="button"
                                 label="Guardar selección"
-                                (click)="registrarCertificaciones()"
-                                [disabled]="alMenosUnaSeleccionadaPorGrupo()">
+                                (click)="guardarSeleccion()"
+                                [disabled]="!permitirGuardarSeleccion()">
                         </button>
                     </div>
                 </div>

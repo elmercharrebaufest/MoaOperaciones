@@ -49,8 +49,8 @@ export class FacturaComponent extends ListBaseComponent {
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router) {
-            super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-            this.spinnerSmallComponent = new SpinnerSmallComponent();
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        this.spinnerSmallComponent = new SpinnerSmallComponent();
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CARGAR FACT PROV"); }
@@ -60,11 +60,13 @@ export class FacturaComponent extends ListBaseComponent {
     archivos = new Array<File>()
     certificaciones: Certificacion[] = [];
     agrupadasPorArchivo: { nombreArchivo: string, items: Certificacion[] }[] = [];
+    esMonedaExtranjera: boolean = false;
 
     certificacionesAgregadas: Certificacion[] = [];
 
     certificacionesRegistradasExistentes = [];
     verPendientes: boolean = false;
+    esFacturaPorDiferenciaTasaDeCambio: boolean = false;
 
     setTabs() {
         this.setMenuSeccionTab("factura", "Factura");
@@ -111,6 +113,7 @@ export class FacturaComponent extends ListBaseComponent {
                             this.resultados.forEach(resultado => {
                                 const fileName = resultado.FileName;
                                 const nroOC = resultado.Value;
+                                this.esMonedaExtranjera = resultado.EsMonedaExtranjera;
                                 if (resultado.Certificaciones != null && resultado.Certificaciones.length > 0) {
                                     resultado.Certificaciones.forEach(certificacion => {
                                         this.certificaciones.push({
@@ -196,7 +199,7 @@ export class FacturaComponent extends ListBaseComponent {
     }
 
     alMenosUnaSeleccionadaPorGrupo(): boolean {
-        return !this.agrupadasPorArchivo.every(grupo =>
+        return this.agrupadasPorArchivo.every(grupo =>
             grupo.items.some(cert => cert.Seleccionada)
         );
     }
@@ -210,6 +213,15 @@ export class FacturaComponent extends ListBaseComponent {
         }
     }
 
+    guardarSeleccion() {
+        if (this.esFacturaPorDiferenciaTasaDeCambio) {
+            this.guardarFacturaDiferenciaTipoCambio();
+        }
+        else {
+            this.registrarCertificaciones();
+        }
+    }
+
     registrarCertificaciones() {
         this.floatMsgService.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
@@ -217,8 +229,9 @@ export class FacturaComponent extends ListBaseComponent {
         try {
             this.blockUI.start('Enviando factura...');
             this.actualizarCertificacionesAgregadas();
-            // Filtrar archivos por nombre de archivo que esten en el array de certificaciones agregadas
+            
             this.archivos = this.archivos.filter(archivo => this.certificacionesAgregadas.map(certificacion => certificacion.NombreDeArchivo).includes(archivo.name));
+
             this.subscription = this.service.registrarCertificaciones(this.certificacionesAgregadas, this.archivos).subscribe(
                 (result: any) => {
                     this.spinnerSmallComponent.hideIt();
@@ -242,6 +255,56 @@ export class FacturaComponent extends ListBaseComponent {
                     let errormsj = "Ha ocurrido un error, por favor inténtelo nuevamente";
                     this.spinnerSmallComponent.hideIt();
                     this.floatMsgService.setErrorMsg(errormsj);
+                    this.blockUI.stop();
+                }
+            );
+        } catch (e) {
+            this.spinnerSmallComponent.hideIt();
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+    }
+
+    guardarFacturaDiferenciaTipoCambio() {
+        if (!this.archivos || this.archivos.length == 0) {
+            this.floatMsgService.setErrorMsg("No hay archivo cargado para enviar");
+            return false;
+        }
+        if (this.archivos.length > 1) {
+            this.floatMsgService.setErrorMsg("Debe cargar una única factura si es por diferencia de tasa de cambio");
+            return false;
+        }
+        this.floatMsgService.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.blockUI.start('Enviando factura...');
+            
+            const archivoAEnviar = this.archivos[0];
+
+            this.subscription = this.service.guardarFacturaDiferenciaTipoDeCambio(archivoAEnviar).subscribe(
+                (result: any) => {
+                    this.spinnerSmallComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.floatMsgService.setMsgsEmpty();
+                        this.floatMsgService.setSuccessMsg("Factura enviada correctamente para su análisis");
+                        this.certificacionesAgregadas = [];
+                        this.certificaciones = [];
+                    }
+                    this.blockUI.stop();
+                    this.vaciarCampos();
+                    return false;
+                },
+                error => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.floatMsgService.setErrorMsg("Ha ocurrido un error, por favor inténtelo nuevamente");
                     this.blockUI.stop();
                 }
             );
@@ -408,4 +471,21 @@ export class FacturaComponent extends ListBaseComponent {
         return grupo.items[0].Moneda + " " + total.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
+    mostrarPorDiferenciaTasaCambio(): boolean {
+        return this.certificaciones &&
+            this.certificaciones.length > 0 &&
+            this.agrupadasPorArchivo.length == 1 &&
+            this.esMonedaExtranjera;
+    }
+    
+    onPorDiferenciaTasaCambioChanged() {
+        this.esFacturaPorDiferenciaTasaDeCambio = !this.esFacturaPorDiferenciaTasaDeCambio;
+        if (this.esFacturaPorDiferenciaTasaDeCambio) {
+            this.desmarcarTodasLasCertificaciones();
+        }
+    }
+
+    permitirGuardarSeleccion(): boolean {
+        return this.esFacturaPorDiferenciaTasaDeCambio || this.alMenosUnaSeleccionadaPorGrupo();
+    }
 }
