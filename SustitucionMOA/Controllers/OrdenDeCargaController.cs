@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class OrdenDeCargaController : BaseController
     {
         readonly IOrdenDeCargaService ordenDeCargaService;
