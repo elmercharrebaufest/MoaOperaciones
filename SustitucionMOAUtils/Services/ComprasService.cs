@@ -3549,31 +3549,14 @@ namespace SustitucionMOAUtils.Services
                     if (registros != null)
                     {
                         CrearProveedor(registros.ConvertAll(x => x.Vendedor));
-                        Log.Info($"CrearProveedor -->>> 1");
                         foreach (var posicion in posicionAgrupada)
                         {
-                            Log.Info($"posicionAgrupada -->>> 2");
-
-                            Log.Info($"registros -->>> 3");
-                            Log.Info(registros.ToXml());
-
-
                             foreach (var registroInfo in registros)
                             {
                                 var i = 0;
                                 var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == registroInfo.Vendedor && x.TipoProveedor.Id == (int)TipoUsuarioEnum.NoGranos);
 
-                                Log.Info($"proveedor -->>> 4");
-                                Log.Info("Mail -->>" + proveedor?.Mail.ToString());
-                                Log.Info("CUIT -->>" + proveedor?.CUIT.ToString());
-                                Log.Info("TipoProveedor -->>" + proveedor?.TipoProveedor.Id.ToString());
-
-
                                 var usuario = proveedor?.UsuariosAsociados.FirstOrDefault(a => a.Mail == proveedor.Mail && a.CUITRegistro == proveedor.CUIT && a.TipoUsuario.Id == proveedor.TipoProveedor.Id);
-
-
-                                Log.Info($"usuario -->>> 5");
-                                Log.Info(usuario?.Id.ToString());
 
                                 if (proveedor != null && usuario != null)
                                 {
