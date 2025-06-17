@@ -265,6 +265,7 @@
     <Build Include="DBO\Tables\CampoCosechaProveedor.sql" />
     <Build Include="DBO\Tables\SolpDatosPreviosPliegoMultiple.sql" />
     <Build Include="DBO\Tables\CertificacionRegistrada.sql" />
+    <Build Include="DBO\Tables\RelacionSolicitanteExternoJefeMoa.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -292,6 +293,7 @@
     <None Include="DatabaseNewPublishQaCompras.xml" />
     <None Include="scripts\Insert Rol EstadoES.sql" />
     <None Include="scripts\PostDeployment\ReemplazosEnDomicilios.sql" />
+    <None Include="scripts\PostDeployment\RelacionSolicitanteExternoJefeMoa.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />
@@ -323,6 +325,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-	<None Include="scripts\PostDeployment\AddColumnToSol.sql" />
+    <None Include="scripts\PostDeployment\AddColumnToSol.sql" />
   </ItemGroup>
 </Project>
