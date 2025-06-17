@@ -54,6 +54,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
+        [Route("/ListarOrdenesCarga")]
         public ActionResult GetListado(string fechaInicio, string fechaFin)
         {
             var mailUsuario = SessionPersister.Mail;
