@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class OrdenDeCargaController : BaseController
     {
         readonly IOrdenDeCargaService ordenDeCargaService;
@@ -54,8 +54,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        [Route("/ListarOrdenesCarga")]
-        public ActionResult GetListado(string fechaInicio, string fechaFin)
+        public ActionResult getListado(string fechaInicio, string fechaFin)
         {
             var mailUsuario = SessionPersister.Mail;
             var idProveedorSeleccionado = SessionPersister.ProveedorId;
