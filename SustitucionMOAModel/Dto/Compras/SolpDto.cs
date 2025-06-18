@@ -131,6 +131,7 @@ namespace SustitucionMOAModel.Dto
 
         public bool EsPliegoMultiple { get; set; }
         public bool MultipleFinalizado { get; set; }
+        public bool AdmiteCertificacionesParciales { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -182,6 +183,7 @@ namespace SustitucionMOAModel.Dto
             TrabajoYaHecho = entity.TrabajoYaHecho;
             LiberadoresSapSolp = new List<LiberadorSapSolpDto>();
             MultipleFinalizado = entity.Pliego.MultipleFinalizado;
+            AdmiteCertificacionesParciales = entity.AdmiteCertificacionesParciales;
         }
     }
 

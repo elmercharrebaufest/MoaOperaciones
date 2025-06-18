@@ -36,6 +36,11 @@ export class FinalizarSolpComponent implements OnInit {
         { name: "Si", value: true },
     ];
 
+    admiteCertificacionesParcialesOptions = [
+        { name: "No", value: false },
+        { name: "Si", value: true },
+    ];
+
     constructor() {}
 
     ngOnInit() {}
@@ -46,6 +51,10 @@ export class FinalizarSolpComponent implements OnInit {
 
     onCertificacionAutomaticaChange(event: any) {
         this.solpActual.certificacionAutomatica = event.value.value;
+    }
+
+    onAdmiteCertificacionesParcialesChange(event: any) {
+        this.solpActual.admiteCertificacionesParciales = event.value.value;
     }
 
     puedeConfigurarCertificacionAutomatica(): boolean {

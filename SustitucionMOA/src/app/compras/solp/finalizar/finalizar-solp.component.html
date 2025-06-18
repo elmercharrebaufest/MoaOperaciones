@@ -98,6 +98,17 @@
                     [(ngModel)]="solpActual.certificacionAutomatica"></p-dropdown>
             </div>
         </div>
+        <!-- Subtitulo que pregunte si admite certificaciones parciales -->
+        <div *ngIf="!solpActual.certificacionAutomatica" class="col-md-12 row myRow alinearTitulo margenInput">
+            <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+                ¿Admite Certificaciones Parciales?
+            </div>
+            <div class="col-md-12" style="margin-right: 1em; width: 65%;">
+                <p-dropdown [options]="admiteCertificacionesParcialesOptions" optionLabel="name" optionValue="value"
+                    (onChange)="onAdmiteCertificacionesParcialesChange($event)"
+                    [(ngModel)]="solpActual.admiteCertificacionesParciales"></p-dropdown>
+            </div>
+        </div>
     </div>
 
     <p-footer>
