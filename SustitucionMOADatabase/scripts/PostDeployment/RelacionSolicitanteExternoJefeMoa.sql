@@ -29,25 +29,25 @@ SELECT @JefeMoaId = Id FROM Usuario WHERE Mail = 'diego.martin@molinosagro.com.a
 -- Verónica Rearte
 SELECT @SolicitanteId = Id FROM Usuario WHERE Mail = 'veronica.rearte@molinosagro.com.ar';
 IF @SolicitanteId IS NOT NULL AND @JefeMoaId IS NOT NULL
-    INSERT INTO RelacionSolicitanteExternoJefeMoa (SolicitanteExterno_Id, JefeMoa_Id)
+    INSERT INTO RelacionSolicitanteExternoJefeMoa (Usuario_Id, JefeMoa_Id)
     VALUES (@SolicitanteId, @JefeMoaId);
 
 -- Fernando Gómez
 SELECT @SolicitanteId = Id FROM Usuario WHERE Mail = 'fernando.gomez@molinosagro.com.ar';
 IF @SolicitanteId IS NOT NULL AND @JefeMoaId IS NOT NULL
-    INSERT INTO RelacionSolicitanteExternoJefeMoa (SolicitanteExterno_Id, JefeMoa_Id)
+    INSERT INTO RelacionSolicitanteExternoJefeMoa (Usuario_Id, JefeMoa_Id)
     VALUES (@SolicitanteId, @JefeMoaId);
 
 -- Damian Corgniali
 SELECT @SolicitanteId = Id FROM Usuario WHERE Mail = 'Damian.Corgniali@molinosagro.com.ar';
 IF @SolicitanteId IS NOT NULL AND @JefeMoaId IS NOT NULL
-    INSERT INTO RelacionSolicitanteExternoJefeMoa (SolicitanteExterno_Id, JefeMoa_Id)
+    INSERT INTO RelacionSolicitanteExternoJefeMoa (Usuario_Id, JefeMoa_Id)
     VALUES (@SolicitanteId, @JefeMoaId);
 
 -- Ricardo Lunarireynoso
 SELECT @SolicitanteId = Id FROM Usuario WHERE Mail = 'Ricardo.Lunarireynoso@molinosagro.com.ar';
 IF @SolicitanteId IS NOT NULL AND @JefeMoaId IS NOT NULL
-    INSERT INTO RelacionSolicitanteExternoJefeMoa (SolicitanteExterno_Id, JefeMoa_Id)
+    INSERT INTO RelacionSolicitanteExternoJefeMoa (Usuario_Id, JefeMoa_Id)
     VALUES (@SolicitanteId, @JefeMoaId);
 
 -- Grupo 2: Jefe Marcelo Torrisi
@@ -58,30 +58,30 @@ SELECT @JefeMoaId = Id FROM Usuario WHERE Mail = 'marcelo.torrisi@molinosagro.co
 -- Julio Bragagnolo
 SELECT @SolicitanteId = Id FROM Usuario WHERE Mail = 'julio.bragagnolo@molinosagro.com.ar';
 IF @SolicitanteId IS NOT NULL AND @JefeMoaId IS NOT NULL
-    INSERT INTO RelacionSolicitanteExternoJefeMoa (SolicitanteExterno_Id, JefeMoa_Id)
+    INSERT INTO RelacionSolicitanteExternoJefeMoa (Usuario_Id, JefeMoa_Id)
     VALUES (@SolicitanteId, @JefeMoaId);
 
 -- Araceli Cerezo
 SELECT @SolicitanteId = Id FROM Usuario WHERE Mail = 'araceli.cerezo@molinosagro.com.ar';
 IF @SolicitanteId IS NOT NULL AND @JefeMoaId IS NOT NULL
-    INSERT INTO RelacionSolicitanteExternoJefeMoa (SolicitanteExterno_Id, JefeMoa_Id)
+    INSERT INTO RelacionSolicitanteExternoJefeMoa (Usuario_Id, JefeMoa_Id)
     VALUES (@SolicitanteId, @JefeMoaId);
 
 -- Mateo Occhi
 SELECT @SolicitanteId = Id FROM Usuario WHERE Mail = 'mateo.occhi@molinosagro.com.ar';
 IF @SolicitanteId IS NOT NULL AND @JefeMoaId IS NOT NULL
-    INSERT INTO RelacionSolicitanteExternoJefeMoa (SolicitanteExterno_Id, JefeMoa_Id)
+    INSERT INTO RelacionSolicitanteExternoJefeMoa (Usuario_Id, JefeMoa_Id)
     VALUES (@SolicitanteId, @JefeMoaId);
 
 -- Hernando Serafin
 SELECT @SolicitanteId = Id FROM Usuario WHERE Mail = 'Hernando.Serafin@molinosagro.com.ar';
 IF @SolicitanteId IS NOT NULL AND @JefeMoaId IS NOT NULL
-    INSERT INTO RelacionSolicitanteExternoJefeMoa (SolicitanteExterno_Id, JefeMoa_Id)
+    INSERT INTO RelacionSolicitanteExternoJefeMoa (Usuario_Id, JefeMoa_Id)
     VALUES (@SolicitanteId, @JefeMoaId);
 
 -- Tomas Fortini
 SELECT @SolicitanteId = Id FROM Usuario WHERE Mail = 'tomas.fortini@molinosagro.com.ar';
 IF @SolicitanteId IS NOT NULL AND @JefeMoaId IS NOT NULL
-    INSERT INTO RelacionSolicitanteExternoJefeMoa (SolicitanteExterno_Id, JefeMoa_Id)
+    INSERT INTO RelacionSolicitanteExternoJefeMoa (Usuario_Id, JefeMoa_Id)
     VALUES (@SolicitanteId, @JefeMoaId);
 
