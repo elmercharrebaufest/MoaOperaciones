@@ -11,7 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId);
 
-        List<UsuarioDto> ListarUsuarioSolicitante();
+        List<UsuarioDto> ListarUsuarioSolicitante(List<RolDropdownDto> roles, int usuarioId);
 
         InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas);
 

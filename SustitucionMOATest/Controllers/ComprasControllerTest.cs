@@ -589,14 +589,38 @@ namespace SustitucionMOATest.Controllers
         [Test]
         public void ListarUsuarioSolicitanteOk()
         {
-            comprasSolicitanteServiceMock.Setup(x => x.ListarUsuarioSolicitante()).Returns(new List<UsuarioDto>
-            { new UsuarioDto { Mail = "bmelgarejo@prueba.com", UsuarioSap = "BRISAM" } });
+            // Arrange
+            int usuarioId = 1;
+            var roles = new List<RolDropdownDto> { new RolDropdownDto { Id = 1, Nombre = "Solicitante" } };
+            var usuarios = new List<UsuarioDto>
+                {
+                    new UsuarioDto { Mail = "bmelgarejo@prueba.com", UsuarioSap = "BRISAM" }
+                };
 
+            // Mock para obtener el usuario actual
+            var usuarioActual = new UsuarioDto { Id = usuarioId };
+            
+            // Modificación: Mock correcto para GetUsuario en vez de GetUsuarioPorId
+            usuarioServiceMock.Setup(x => x.GetUsuario(It.IsAny<string>())).Returns(usuarioActual);
+            usuarioServiceMock.Setup(x => x.GetRolesUsuario(usuarioId)).Returns(roles);
+
+            // Mock para el servicio de solicitantes
+            comprasSolicitanteServiceMock
+                .Setup(x => x.ListarUsuarioSolicitante(roles, usuarioId))
+                .Returns(usuarios);
+
+            // Act
             var result = target.ListarUsuarioSolicitante();
 
+            // Assert
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Data);
+            var data = (List<UsuarioDto>)result.Data;
+            Assert.AreEqual(1, data.Count);
+            Assert.AreEqual("bmelgarejo@prueba.com", data[0].Mail);
+            Assert.AreEqual("BRISAM", data[0].UsuarioSap);
         }
+
 
         [Test]
         public void ListarSolpCondicionEspecialOk()
