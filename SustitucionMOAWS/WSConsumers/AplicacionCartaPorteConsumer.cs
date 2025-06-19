@@ -30,7 +30,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 IM_CORREDOR  = string.IsNullOrEmpty(request.Corredor) ? " " : request.Corredor,
                 IM_MATERIAL  = string.IsNullOrEmpty(request.Material) ? " " : request.Material,
-                IM_PROVEEDOR = request.Proveedor,
+                IM_PROVEEDOR = string.IsNullOrEmpty(request.Proveedor) ? " " : request.Proveedor
             };
 
             Log.Info($"SAP sin PI Z_MPMF_MOAOP_PENDIENTE_APLICAR request");
