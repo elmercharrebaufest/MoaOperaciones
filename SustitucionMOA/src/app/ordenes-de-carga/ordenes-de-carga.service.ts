@@ -79,7 +79,7 @@ export class OrdenesDeCargaService extends OrdenesBaseService {
             .append('fechaFin', fechaFin);
 
         return this.http
-            .get('/api/ordendecarga/getlistado', { params: params })
+            .get<OrdenDeCarga[]>('/api/OrdenDeCarga/GetListado', { params: params })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
