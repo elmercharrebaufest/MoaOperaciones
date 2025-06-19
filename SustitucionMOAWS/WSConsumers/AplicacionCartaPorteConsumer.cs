@@ -28,8 +28,8 @@ namespace SustitucionMOAWS.WSConsumers
 
             var requestPendiente = new Z_MPMF_MOAOP_PENDIENTE_APLICAR()
             {
-                IM_CORREDOR  = request.Corredor,
-                IM_MATERIAL  = request.Material,
+                IM_CORREDOR  = string.IsNullOrEmpty(request.Corredor) ? " " : request.Corredor,
+                IM_MATERIAL  = string.IsNullOrEmpty(request.Material) ? " " : request.Material,
                 IM_PROVEEDOR = request.Proveedor,
             };
 
