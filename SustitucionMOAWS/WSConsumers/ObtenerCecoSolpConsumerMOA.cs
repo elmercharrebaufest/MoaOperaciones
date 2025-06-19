@@ -45,10 +45,10 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_COMP_CODE = IM_COMP_CODE,
                         IM_COSTCENTER = IM_COSTCENTER
                     };
-                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN request");
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CECO request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MMRFC_OBTENER_CECO(request);
-                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN response");
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CECO response");
                     Log.Info(response.ToXml());
                     return MapSinPI(response);
                 }

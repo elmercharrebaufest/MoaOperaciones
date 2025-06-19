@@ -31,10 +31,21 @@ namespace SustitucionMOAWS.WSConsumers
                     var agent = new Z_WS_MOAOP_DIRECTClient();
                     agent.ClientCredentials.UserName.UserName = UserSap;
                     agent.ClientCredentials.UserName.Password = PassSap;
-
+                    string FECHA_DOCUMENTO = FechaDocumento;
+                    if (FECHA_DOCUMENTO.Length < 10)
+                    {
+                        var FECHA_DOCUMENTO_SPLIT = FECHA_DOCUMENTO.Split('-');
+                        if (FECHA_DOCUMENTO_SPLIT.Length == 3)
+                        {
+                            string ANIO = FECHA_DOCUMENTO_SPLIT[0];
+                            string MES = Convert.ToInt32(FECHA_DOCUMENTO_SPLIT[1]) < 10 ? "0" + FECHA_DOCUMENTO_SPLIT[1] : FECHA_DOCUMENTO_SPLIT[1];
+                            string DIA = Convert.ToInt32(FECHA_DOCUMENTO_SPLIT[2]) < 10 ? "0" + FECHA_DOCUMENTO_SPLIT[2] : FECHA_DOCUMENTO_SPLIT[2];
+                            FECHA_DOCUMENTO = string.Format("{0}-{1}-{2}", ANIO, MES, DIA);
+                        }
+                    }
                     var request = new Z_MPRFC_MOAOP_COMP_NOGRANOSPDF()
                     {
-                        IM_BLDAT = FechaDocumento,
+                        IM_BLDAT = FECHA_DOCUMENTO,
                         IM_LIFNR = CodigoProveedorSAP,
                         IM_XBLNR = NumeroLegalDocumento
                     };

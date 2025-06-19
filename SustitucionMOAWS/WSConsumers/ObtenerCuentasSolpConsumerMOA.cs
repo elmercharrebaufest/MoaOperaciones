@@ -45,12 +45,12 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_COMP_CODE = IM_COMP_CODE,
                         IM_GL_ACCOUNT = IM_GL_ACCOUNT
                     };
-                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN request");
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CUENTAS request");
                     Log.Info(request.ToXml());
 
                     var response = agent.Z_MMRFC_OBTENER_CUENTAS(request);
 
-                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN response");
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CUENTAS response");
                     Log.Info(response.ToXml());
 
                     return MapSinPI(response);

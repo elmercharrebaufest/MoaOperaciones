@@ -25,15 +25,19 @@ namespace SustitucionMOAWS.WSConsumers
                     List<WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES5480> lstComprobantes = new List<WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES5480>();
                     foreach (var comprobante in comprobantes)
                     {
+                        string FECHA_COMPROBANTE = comprobante.FECHA;
+                        if (FECHA_COMPROBANTE.Length == 8)
+                            FECHA_COMPROBANTE = string.Format("{0}-{1}-{2}", FECHA_COMPROBANTE.Substring(0, 4), FECHA_COMPROBANTE.Substring(4, 2), FECHA_COMPROBANTE.Substring(6, 2));
+
                         lstComprobantes.Add(new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES5480()
                         {
                             CONTRATO = comprobante.CONTRATO,
                             FIJACION = comprobante.FIJACION,
                             CANTIDAD = comprobante.CANTIDAD,
-                            FECHA = comprobante.FECHA,
+                            FECHA = FECHA_COMPROBANTE,
                             IMPORTE = comprobante.IMPORTE,
                             MONEDA = comprobante.MONEDA,
-                            UNIDAD = comprobante.UNIDAD,
+                            UNIDAD = comprobante.UNIDAD
                         });
                     }
 

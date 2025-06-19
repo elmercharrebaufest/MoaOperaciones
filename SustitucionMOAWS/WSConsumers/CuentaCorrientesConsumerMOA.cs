@@ -39,7 +39,7 @@ namespace SustitucionMOAWS.WSConsumers
                     var request = new Z_MPMF_MOAOP_CUENTA_CORRIENTE()
                     {
                         PE_COMPENSA = compensa,
-                        PE_CONTRATO = proveedor,
+                        PE_CONTRATO = contrato,
                         PE_SOCIEDAD = sociedad,
                         PE_RETENCION = retencion,
                         PE_PROVEEDOR = proveedor,

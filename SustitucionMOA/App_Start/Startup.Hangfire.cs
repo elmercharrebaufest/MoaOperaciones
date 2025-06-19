@@ -53,16 +53,11 @@ namespace SustitucionMOA
                 "ReporteConflictosCamposSustentablesJob",
                 j => j.Execute(),
                 "30 6 * * *", tz);
-/*
+
             RecurringJob.AddOrUpdate<Jobs.IActualizarBaseDeDatosSolpSapJob>(
                 "ActualizarBaseDeDatosSolpSapJob",
                 j => j.Execute(),
                 "0 23 * * *", tz);
-*/
-            RecurringJob.AddOrUpdate<Jobs.IActualizarBaseDeDatosSolpSapJob>(
-                "ActualizarBaseDeDatosSolpSapJob",
-                j => j.Execute(),
-                "*/15 * * * *", tz);
 
             //Actualmente corre a las 12 1 vez al dia. Si se quiere que corra cada 1 hora usar: "0 * * * *"
             RecurringJob.AddOrUpdate<Jobs.IVencimientoOrdenesDeCargaSapJob>(
