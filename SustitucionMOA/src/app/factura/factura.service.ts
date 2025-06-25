@@ -29,6 +29,12 @@ export class FacturaService extends BaseService {
         return this.http.post('/api/factura/RegistrarCertificacion', payload, {headers: this.headersPost});
     }
 
+    public guardarFacturaDiferenciaTipoDeCambio(archivoFactura: File): Observable<any> {
+        let payload = new FormData();
+        payload.append("archivoFactura", archivoFactura);
+        return this.http.post('/api/factura/GuardarFacturaDiferenciaTasaDeCambio', payload, {headers: this.headersPost});
+    }
+
     public descargarDocumentoAdjunto(archivoId:string): Observable<any>
     {
         let payload = new FormData();
