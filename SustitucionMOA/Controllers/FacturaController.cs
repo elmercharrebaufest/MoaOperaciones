@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using System;
@@ -41,26 +42,17 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CARGAR_FACT_PROV)]
-        public ActionResult RegistrarCertificacion(string certificaciones, List<HttpPostedFileBase> files)
+        public ActionResult RegistrarCertificacion(string gruposCertificaciones, List<HttpPostedFileBase> files)
         {
-            //parse the stringify certificaciones to a list of CertificacionDto
-            var certificacionesList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CertificacionDto>>(certificaciones);
+            var gruposCertificacionesList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<GrupoCertificaciones>>(gruposCertificaciones);
             var mail = SessionPersister.Mail;
             var proveedorId = SessionPersister.ProveedorId;
             var cuit = SessionPersister.CUIT;
             var codigo = SessionPersister.Proveedor;
-            var data = facturaService.RegistrarCertificacion(certificacionesList, mail, proveedorId, files, cuit, codigo);
-            return JsonCustom(new { data = data });
-        }
 
-        [CustomPermisoAuthorize(Roles = Permiso.CARGAR_FACT_PROV)]
-        public ActionResult GuardarFacturaDiferenciaTasaDeCambio(HttpPostedFileBase archivoFactura)
-        {
-            var mailUsuario = SessionPersister.Mail;
-            var cuitUsuario = SessionPersister.CUIT;
-            var codigoProveedor = SessionPersister.Proveedor;
-            facturaService.GuardarFacturaPorDiferenciaTasaDeCambio(archivoFactura, cuitUsuario, codigoProveedor, mailUsuario);
-            return JsonCustom(new {});
+            var data = facturaService.RegistrarCertificaciones(gruposCertificacionesList, mail, proveedorId, files, cuit, codigo);
+            
+            return JsonCustom(new { data });
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CARGAR_FACT_PROV)]

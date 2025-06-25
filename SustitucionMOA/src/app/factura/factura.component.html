@@ -62,18 +62,20 @@
                             </div>
                         </div>
                     </div>
-                    <p-checkbox *ngIf="mostrarPorDiferenciaTasaCambio()" label="Por diferencia de tasa de cambio" (click)="onPorDiferenciaTasaCambioChanged()" binary="true"></p-checkbox>
+                    
                     <div *ngFor="let grupo of agrupadasPorArchivo">
                         <h2>{{ grupo.nombreArchivo }}</h2>
-
-                        <table class="table table-striped table-bordered">
+                        <span *ngIf="mostrarPorDiferenciaTasaCambio(grupo)" style="margin: 15px;">
+                            <p-checkbox label="Por diferencia de tasa de cambio" (click)="onPorDiferenciaTasaCambioChanged(grupo)" binary="true"></p-checkbox>
+                        </span>
+                        <table class="table table-striped table-bordered" style="margin-top: 10px;">
                             <thead class="thead-dark">
                                 <tr>
                                     <th>
                                         <input type="checkbox"
                                             [checked]="todasSeleccionadas(grupo)"
                                             (change)="toggleSeleccionGrupo(grupo, $event)"
-                                            [disabled]="esFacturaPorDiferenciaTasaDeCambio">
+                                            [disabled]="grupo.esFacturaPorDiferenciaTasaDeCambio">
                                     </th>
                                     <th>Número OC</th>
                                     <th>Número Certificación</th>
@@ -90,7 +92,7 @@
                                             <input type="checkbox"
                                                 [(ngModel)]="certificacion.Seleccionada"
                                                 (change)="onCheckCertificacion(certificacion, grupo.nombreArchivo)"
-                                                [disabled]="esFacturaPorDiferenciaTasaDeCambio">
+                                                [disabled]="grupo.esFacturaPorDiferenciaTasaDeCambio">
                                         </td>
                                         <td>{{ certificacion.NRO_OC }}</td>
                                         <td>{{ certificacion.NRO_Certificacion }}</td>
@@ -144,7 +146,7 @@
                                 class="btn-nuevoPliego"
                                 type="button"
                                 label="Guardar selección"
-                                (click)="guardarSeleccion()"
+                                (click)="registrarCertificaciones()"
                                 [disabled]="!permitirGuardarSeleccion()">
                         </button>
                     </div>

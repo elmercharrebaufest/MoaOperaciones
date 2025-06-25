@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { BaseService } from './../common/services/BaseService';
+import { GrupoCertificaciones } from './factura.model';
 
 @Injectable()
 export class FacturaService extends BaseService {
@@ -19,19 +20,13 @@ export class FacturaService extends BaseService {
             .post('/api/factura/subirPDF', payload, {headers: this.headersPost});
     }
 
-    public registrarCertificaciones(certificaciones:any, archivos: Array<File>): Observable<any> {
+    public registrarCertificaciones(gruposCertificaciones: GrupoCertificaciones[], archivos: Array<File>): Observable<any> {
         let payload = new FormData();
-        payload.append("certificaciones", JSON.stringify(certificaciones));
+        payload.append("gruposCertificaciones", JSON.stringify(gruposCertificaciones));
         for (const element of archivos) {
             payload.append("files", element);
         }
         return this.http.post('/api/factura/RegistrarCertificacion', payload, {headers: this.headersPost});
-    }
-
-    public guardarFacturaDiferenciaTipoDeCambio(archivoFactura: File): Observable<any> {
-        let payload = new FormData();
-        payload.append("archivoFactura", archivoFactura);
-        return this.http.post('/api/factura/GuardarFacturaDiferenciaTasaDeCambio', payload, {headers: this.headersPost});
     }
 
     public descargarDocumentoAdjunto(archivoId:string): Observable<any>

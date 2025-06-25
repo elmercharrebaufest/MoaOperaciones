@@ -1,6 +1,8 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOARepositorio;
@@ -70,8 +72,6 @@ namespace SustitucionMOATest.Services
             var operacionOCRId = "operationId";
             var elementosLeidos = new List<string> { "element1", "element2" };
             var validationResult = new ValidationResult { IsValid = true, FileName = "test.pdf" };
-
-
 
             repositorioMock.Setup(r => r.Obtener<Usuario>(It.IsAny<System.Linq.Expressions.Expression<System.Func<Usuario, bool>>>())).Returns(usuario);
             azureServiceMock.Setup(a => a.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>())).ReturnsAsync(operacionOCRId);
@@ -177,8 +177,9 @@ namespace SustitucionMOATest.Services
         [Test]
         public void GuardarFacturaPorDiferenciaTasaDeCambio()
         {
+            var nombreArchivo1 = "Fact1234.pdf";
             Mock<HttpPostedFileBase> archivoFactura = new Mock<HttpPostedFileBase>();
-            archivoFactura.Setup(d => d.FileName).Returns("Fact1234.pdf");
+            archivoFactura.Setup(d => d.FileName).Returns(nombreArchivo1);
             var contenidoArchFat = new byte[1024];
             new Random().NextBytes(contenidoArchFat);
             var memoryStreamArchFact = new MemoryStream(contenidoArchFat);
@@ -200,7 +201,18 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(r => r.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
             analisisDocumentoServiceMock.Setup(a => a.AnalizarFacturaCertificacionServicios(It.IsAny<List<string>>(), cuit, It.IsAny<string>())).Returns(new List<ValidationResult> { validationResult });
 
-            target.GuardarFacturaPorDiferenciaTasaDeCambio(archivoFactura.Object, cuit, codigoProveedor, mailUsuario);
+            var gruposCertificaciones = new List<GrupoCertificaciones>
+            {
+                new GrupoCertificaciones
+                {
+                    NombreArchivo = nombreArchivo1,
+                    EsFacturaPorDiferenciaTasaDeCambio = true,
+                    Items = new List<CertificacionDto>()
+                }
+            };
+            var archivos = new List<HttpPostedFileBase> { archivoFactura.Object };
+
+            var certificacionesRegistradas = target.RegistrarCertificaciones(gruposCertificaciones, mailUsuario, 123, archivos, cuit, codigoProveedor);
 
             azureServiceMock.Verify(a => a.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>()), Times.Once);
             azureServiceMock.Verify(a => a.ObtenerResultadoOCRAsync(operacionOCRId), Times.Once);

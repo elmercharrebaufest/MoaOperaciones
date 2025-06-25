@@ -74,6 +74,7 @@
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\CertificacionDto.cs" />
+    <Compile Include="Dto\Compras\Factura\GrupoCertificaciones.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaRevisionTecnicaDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaSolpPosicionDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaUsuarioAdicionalDto.cs" />

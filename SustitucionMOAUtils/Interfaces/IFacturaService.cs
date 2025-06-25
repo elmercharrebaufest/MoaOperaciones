@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using System.Collections.Generic;
@@ -10,7 +11,6 @@ namespace SustitucionMOAUtils.Interfaces
     {
         void EliminarFacturasAntiguas();
         List<ValidationResult> SubirPDF(List<HttpPostedFileBase> files, string cuit, string codigo, string mail);
-        List<CertificacionRegistrada> RegistrarCertificacion(List<CertificacionDto> certificaciones, string mail, int proveedorId, List<HttpPostedFileBase> files, string cuit, string codigo);
         Archivo ObtenerArchivo(int archivoId);
         object ObtenerReporteFacturasCertificaciones(
             string fechaInicio,
@@ -22,6 +22,6 @@ namespace SustitucionMOAUtils.Interfaces
             string orden = null,
             string columna = null);
         
-        void GuardarFacturaPorDiferenciaTasaDeCambio(HttpPostedFileBase archivoFactura, string cuit, string codigoProveedor, string mailUsuario);
+        List<CertificacionRegistrada> RegistrarCertificaciones(List<GrupoCertificaciones> gruposCertificaciones, string mailUsuario, int proveedorId, List<HttpPostedFileBase> archivos, string cuit, string codigoProveedor);
     }
 }
