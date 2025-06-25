@@ -57,7 +57,6 @@ export class FacturaComponent extends ListBaseComponent {
 
     certificacionesRegistradasExistentes = [];
     verPendientes: boolean = false;
-    esFacturaPorDiferenciaTasaDeCambio: boolean = false;
 
     setTabs() {
         this.setMenuSeccionTab("factura", "Factura");
@@ -223,56 +222,6 @@ export class FacturaComponent extends ListBaseComponent {
                     let errormsj = "Ha ocurrido un error, por favor inténtelo nuevamente";
                     this.spinnerSmallComponent.hideIt();
                     this.floatMsgService.setErrorMsg(errormsj);
-                    this.blockUI.stop();
-                }
-            );
-        } catch (e) {
-            this.spinnerSmallComponent.hideIt();
-            this.floatMsgService.setErrorMsg(e);
-            this.blockUI.stop();
-            return false; //<-- Prevent Refresh
-        }
-    }
-
-    guardarFacturaDiferenciaTipoCambio() {
-        if (!this.archivos || this.archivos.length == 0) {
-            this.floatMsgService.setErrorMsg("No hay archivo cargado para enviar");
-            return false;
-        }
-        if (this.archivos.length > 1) {
-            this.floatMsgService.setErrorMsg("Debe cargar una única factura si es por diferencia de tasa de cambio");
-            return false;
-        }
-        this.floatMsgService.setMsgsEmpty();
-        this.spinnerSmallComponent.showIt();
-        this.unsubscribe();
-        try {
-            this.blockUI.start('Enviando factura...');
-            
-            const archivoAEnviar = this.archivos[0];
-
-            this.subscription = this.service.guardarFacturaDiferenciaTipoDeCambio(archivoAEnviar).subscribe(
-                (result: any) => {
-                    this.spinnerSmallComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.floatMsgService.setMsgsEmpty();
-                        this.floatMsgService.setSuccessMsg("Factura enviada correctamente para su análisis");
-                        this.certificacionesAgregadas = [];
-                        this.certificaciones = [];
-                    }
-                    this.blockUI.stop();
-                    this.vaciarCampos();
-                    return false;
-                },
-                error => {
-                    this.spinnerSmallComponent.hideIt();
-                    this.floatMsgService.setErrorMsg("Ha ocurrido un error, por favor inténtelo nuevamente");
                     this.blockUI.stop();
                 }
             );
