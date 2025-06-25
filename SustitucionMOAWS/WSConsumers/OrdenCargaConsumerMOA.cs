@@ -86,8 +86,8 @@ namespace SustitucionMOAWS.WSConsumers
                     IM_CONTRATO    = datosCarga.Contrato,
                     IM_CORREDOR    = datosCarga.Corredor,
                     IM_CUIT        = datosCarga.Cuit,
-                    IM_CUITDESTF   = datosCarga.CuitDestino,
-                    IM_CUITDESTINAT= datosCarga.CuitDestinatario,
+                    IM_CUITDESTF   = string.IsNullOrEmpty(datosCarga.CuitDestino) ? " " : datosCarga.CuitDestino,
+                    IM_CUITDESTINAT = string.IsNullOrEmpty(datosCarga.CuitDestinatario) ? " " : datosCarga.CuitDestinatario,
                     IM_MATERIAL    = datosCarga.Material,
                     IM_PEDIDO      = datosCarga.Pedido,
                     IM_SOLO_SISA   = datosCarga.SoloSisa ? "X" : ""

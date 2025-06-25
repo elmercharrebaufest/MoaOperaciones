@@ -32,8 +32,8 @@ namespace SustitucionMOAWS.WSConsumers
                     agent.ClientCredentials.UserName.UserName = UserSap;
                     agent.ClientCredentials.UserName.Password = PassSap;
 
-                    IM_USUARIO = string.IsNullOrEmpty(IM_USUARIO) ? "moaoperaciones" : IM_USUARIO;
-
+                    IM_USUARIO = string.IsNullOrEmpty(IM_USUARIO) ? "moaoperacion" : IM_USUARIO;
+                    IM_USUARIO = IM_USUARIO.Length > 12 ? IM_USUARIO.Substring(0, 12) : IM_USUARIO;
                     var request = new Z_MPRFC_MODI_DOC_CHEQUE()
                     {
                         IM_CONTRATO = IM_CONTRATO,
