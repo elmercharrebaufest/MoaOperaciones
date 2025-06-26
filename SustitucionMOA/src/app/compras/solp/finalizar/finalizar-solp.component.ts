@@ -1,12 +1,21 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Solp } from '../solp';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    OnChanges,
+    SimpleChanges,
+} from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { Solp } from "../solp";
 
 @Component({
     selector: "finalizar-solp",
     templateUrl: "./finalizar-solp.component.html",
     styleUrls: ["../../compras.component.css"],
 })
-export class FinalizarSolpComponent implements OnInit {
+export class FinalizarSolpComponent implements OnInit, OnChanges {
     @Input("locale") es: any;
 
     @Input()
@@ -32,42 +41,122 @@ export class FinalizarSolpComponent implements OnInit {
     }>();
 
     certificacionAutomaticaOptions = [
-        { name: "No", value: false },
-        { name: "Si", value: true },
+        { name: "No", value: "false" },
+        { name: "Si", value: "true" },
     ];
 
     admiteCertificacionesParcialesOptions = [
-        { name: "No", value: false },
-        { name: "Si", value: true },
+        { name: "No", value: "false" },
+        { name: "Si", value: "true" },
     ];
+    certificacionAutomaticaValue = {
+        name: "No",
+        value: "false",
+    };
+
+    admiteCertificacionesParcialesValue = {
+        name: "No",
+        value: "false",
+    };
+
+    disableCertificacionAutomatica = false;
+    disableAdmiteCertificacionesParciales = false;
 
     constructor() {}
 
-    ngOnInit() {}
+    // State OnChange para ver cuando cambie la solpActual y con esto correr la logica del ngOnInit()
+    ngOnChanges(changes: SimpleChanges) {
+        console.log("ngOnChanges ejecutado con cambios:", changes);
+        if (changes["displayFinalizar"] && changes["displayFinalizar"].currentValue) {
+            console.log("Ejecuta ngOnChanges de FinalizarSolpComponent");
+            this.displayFinalizar = changes["displayFinalizar"].currentValue;
+            // Llamar a ngOnInit para aplicar la lógica de inicialización
+            this.ngOnInit();
+        }
+    }
+
+    ngOnInit() {
+        console.log("Ejecuta ngOnInit de FinalizarSolpComponent");
+        if (this.verificarAcuerdoMarco() && this.verificarSiEsTrabajoHecho()) {
+            console.log("Puede configurar certificación automática.");
+            this.certificacionAutomaticaValue = {
+                name: "Si",
+                value: "true",
+            };
+            this.admiteCertificacionesParcialesValue = {
+                name: "No",
+                value: "false",
+            };
+            this.solpActual.certificacionAutomatica = true;
+            this.solpActual.admiteCertificacionesParciales = false;
+            this.disableCertificacionAutomatica = true;
+            this.disableAdmiteCertificacionesParciales = true;
+        } else {
+            this.certificacionAutomaticaValue = {
+                name: "No",
+                value: "false",
+            };
+            this.admiteCertificacionesParcialesValue = {
+                name: "No",
+                value: "false",
+            };
+            this.solpActual.certificacionAutomatica = false;
+            this.solpActual.admiteCertificacionesParciales = false;
+            this.disableCertificacionAutomatica = false;
+            this.disableAdmiteCertificacionesParciales = false;
+        }
+    }
 
     onCancelarFinalizar() {
         this.cancelarFinalizarEmitter.next();
     }
 
+    puedeConfigurarCertificacionAutomatica(): boolean {
+        if (this.solpActual.selectTipoPosicion) {
+            const esMaterial =
+                this.solpActual.selectTipoPosicion.Codigo === "MATERIALES";
+            if (esMaterial) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
     onCertificacionAutomaticaChange(event: any) {
-        this.solpActual.certificacionAutomatica = event.value.value;
+        const valor = event.value;
+        console.log("Valor de certificación automática:", valor);
+        if (valor.value === "true") {
+            this.solpActual.certificacionAutomatica = true;
+        } else {
+            this.solpActual.certificacionAutomatica = false;
+        }
+        console.log(
+            "Solp actual certificación automática:",
+            this.solpActual.certificacionAutomatica
+        );
     }
 
     onAdmiteCertificacionesParcialesChange(event: any) {
-        this.solpActual.admiteCertificacionesParciales = event.value.value;
+        const valor = event.value;
+        console.log("Valor de certificaciones parciales:", valor);
+        if (valor.value === "true") {
+            this.solpActual.admiteCertificacionesParciales = true;
+        } else {
+            this.solpActual.admiteCertificacionesParciales = false;
+        }
     }
 
-    puedeConfigurarCertificacionAutomatica(): boolean {
-        if (this.solpActual.selectTipoPosicion) {
-            const esMaterial = this.solpActual.selectTipoPosicion.Codigo === "MATERIALES";
-            if (esMaterial) {
-                return false;
-            }
+    verificarAcuerdoMarco() {
+        const acuerdoMarco = this.solpActual.posiciones.some(
+            (x) => x.numeroContratoSuperior
+        );
+        return acuerdoMarco;
+    }
 
-            const tieneContratoMarco = this.solpActual.posiciones.some((val, ind, arr) => { return val.numeroContratoSuperior; });
-            return tieneContratoMarco;
-        }
-        return false;
+    verificarSiEsTrabajoHecho() {
+        const esTrabajoHecho = this.solpActual.trabajoHecho;
+        return esTrabajoHecho;
     }
 
     onFinalizar() {
