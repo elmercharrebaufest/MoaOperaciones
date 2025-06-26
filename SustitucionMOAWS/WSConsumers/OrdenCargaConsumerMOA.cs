@@ -295,7 +295,7 @@ namespace SustitucionMOAWS.WSConsumers
                     IM_TRANSPORTISTA_REAL= cuit_int_flete,
                     IM_USUARIO           = "CACERESN",
                     IM_ZZCODPLANTA       = entregaReq.PlantaCodigo,
-                    IM_DESTINO_MERCADERIA= entregaReq.DestinoMercaderia,
+                    IM_DESTINO_MERCADERIA= string.IsNullOrEmpty(entregaReq.DestinoMercaderia) ? " " : entregaReq.DestinoMercaderia,
                 };
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE request");
                 Log.Info(request.ToXml());
