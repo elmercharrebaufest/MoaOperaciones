@@ -82,15 +82,15 @@ namespace SustitucionMOAWS.WSConsumers
 
                 var request = new Z_MPMF_MOAOP_CONTROL_CARGA()
                 {
-                    IM_CLIENTE     = datosCarga.Cliente,
-                    IM_CONTRATO    = datosCarga.Contrato,
-                    IM_CORREDOR    = datosCarga.Corredor,
-                    IM_CUIT        = datosCarga.Cuit,
+                    IM_CLIENTE     = string.IsNullOrEmpty(datosCarga.Cliente )? " " : datosCarga.Cliente ,
+                    IM_CONTRATO    = string.IsNullOrEmpty(datosCarga.Contrato)? " " : datosCarga.Contrato,
+                    IM_CORREDOR    = string.IsNullOrEmpty(datosCarga.Corredor)? " " : datosCarga.Corredor,
+                    IM_CUIT        = string.IsNullOrEmpty(datosCarga.Cuit    )? " " : datosCarga.Cuit,
                     IM_CUITDESTF   = string.IsNullOrEmpty(datosCarga.CuitDestino) ? " " : datosCarga.CuitDestino,
                     IM_CUITDESTINAT = string.IsNullOrEmpty(datosCarga.CuitDestinatario) ? " " : datosCarga.CuitDestinatario,
-                    IM_MATERIAL    = datosCarga.Material,
-                    IM_PEDIDO      = datosCarga.Pedido,
-                    IM_SOLO_SISA   = datosCarga.SoloSisa ? "X" : ""
+                    IM_MATERIAL    = string.IsNullOrEmpty(datosCarga.Material) ? " " : datosCarga.Material,
+                    IM_PEDIDO      = string.IsNullOrEmpty(datosCarga.Pedido  ) ? " " : datosCarga.Pedido  ,
+                    IM_SOLO_SISA   = datosCarga.SoloSisa ? "X" : " "
                 };
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_CONTROL_CARGA request");
                 Log.Info(request.ToXml());
