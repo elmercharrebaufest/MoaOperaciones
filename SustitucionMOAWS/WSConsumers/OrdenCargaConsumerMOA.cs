@@ -452,7 +452,7 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_TIPO_CONTRATO = tipoContrato
                     };
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_VISUALIZAR_ZFAS request");
-                    Log.Info(request.ToXml());
+                    Log.Info(requestFas.ToXml());
 
                     var response = agent.Z_MPMF_MOAOP_VISUALIZAR_ZFAS(requestFas);
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_VISUALIZAR_ZFAS response");
