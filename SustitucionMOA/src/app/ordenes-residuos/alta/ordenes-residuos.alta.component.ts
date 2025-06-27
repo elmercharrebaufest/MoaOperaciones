@@ -406,6 +406,10 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
             return false;
         }
+        if (this.ordenResiduos.NombreChofer == this.ordenResiduos.ApellidoChofer) {
+            this.mensajeComponent.setInfoMsg("El nombre y apellido del chofer no pueden ser iguales.");
+            return false;
+        }
         if (!this.cuilChoferEsValido || this.ordenResiduos.CUILChofer.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
