@@ -202,6 +202,10 @@ export class OrdenesDeCargaFasonAltaComponent
             this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
             return false;
         }
+        if (this.ordenDeCargaFason.NombreChofer == this.ordenDeCargaFason.ApellidoChofer) {
+            this.mensajeComponent.setInfoMsg("El nombre y apellido del chofer no pueden ser iguales.");
+            return false;
+        }
         if (!this.esFormatoCuilCuitValido(this.ordenDeCargaFason.CUILChofer) || this.mensajesOrdenDeCargaFason.CUILChofer) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
