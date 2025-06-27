@@ -439,6 +439,7 @@ namespace SustitucionMOAWS.WSConsumers
                         }
                     }
                     string tipoContrato = ConvertirATipoContratoFasSAP(request.TipoContrato);
+                    tipoContrato = tipoContrato.Length > 0 ? tipoContrato.Substring(0,1) : tipoContrato;
                     WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
 
                     var requestFas = new Z_MPMF_MOAOP_VISUALIZAR_ZFAS()
@@ -449,7 +450,7 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_FECHA = fechasSAPArray,
                         IM_MATERIAL = request.Material,
                         IM_PENDIENTE = request.Pendiente ? "X" : "",
-                        IM_TIPO_CONTRATO = tipoContrato
+                        IM_TIPO_CONTRATO = tipoContrato,
                     };
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_VISUALIZAR_ZFAS request");
                     Log.Info(requestFas.ToXml());
