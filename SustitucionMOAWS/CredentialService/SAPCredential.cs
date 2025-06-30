@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SustitucionMOACrypting;
+using System;
 using System.Configuration;
-using System.Linq;
 using System.ServiceModel;
-using System.ServiceModel.Security;
-using System.Text;
-using System.Threading.Tasks;
-using SustitucionMOACrypting;
 
 namespace SustitucionMOAWS.CredentialService
 {
     public static class SAPCredential
     {
         private static string UserName = CryptoServiceProvider.Decrypt(ConfigurationManager.AppSettings["UserNameSapEnc"]);
-        private static string Password = CryptoServiceProvider.Decrypt(ConfigurationManager.AppSettings["PasswordSapEnc"]);
+        private static string Password = ConfigurationManager.AppSettings["PasswordSapEnc"];
 
-        public static string getUserName() {
+        public static string getUserName()
+        {
             return UserName;
         }
 
@@ -94,7 +90,7 @@ namespace SustitucionMOAWS.CredentialService
         }
 
         public static EndpointAddress DevolverEndpoint(string url)
-        {            
+        {
             return new EndpointAddress(url.Replace("http://gslopidevqa00.molinosagro.ad:50000/", ConfigurationManager.AppSettings["Url"]).Replace("&amp;", "&").Replace("%3A", ":"));
         }
 
