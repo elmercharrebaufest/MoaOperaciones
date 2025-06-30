@@ -355,7 +355,8 @@ namespace SustitucionMOAUtils.Services
                     NroSolp = solp.NroSolp,
                     THAjustePolinomica = solp.THAjustePolinomica,
                     THProveedorDirecto = solp.THProveedorDirecto,
-                    THServicioPermanente = solp.THServicioPermanente
+                    THServicioPermanente = solp.THServicioPermanente,
+                    AdmiteCertificacionesParciales = solp.AdmiteCertificacionesParciales,
                 };
 
                 solp.TipoSolpSap = (int)TipoSolpSap.Web;
@@ -379,6 +380,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.TipoSolpSap = solp.TipoSolpSap;
                 solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
                 solpEntity.CertificacionAutomatica = solp.CertificacionAutomatica;
+                solpEntity.AdmiteCertificacionesParciales = solp.AdmiteCertificacionesParciales;
                 solpEntity.CondEspProveedorAsignado = solp.CondEspProveedorAsignado;
                 solpEntity.ConPresupuesto = solp.ConPresupuesto;
                 solpEntity.SeraUsadoEnPliegoMultiple = solp.SeraUsadoEnPliegoMultiple;
@@ -2029,12 +2031,14 @@ namespace SustitucionMOAUtils.Services
 
             if (!peticiones.Any())
             {
-                if (solp.TrabajoYaHecho == true || solp.ConPresupuesto)
+                bool tieneAcuerdoMarco = solp.Posiciones.Any(x => !string.IsNullOrEmpty(x.NumeroContratoSuperior));
+
+                if ((solp.TrabajoYaHecho == true || solp.ConPresupuesto) && !tieneAcuerdoMarco)
                 {
                     CrearCotizacionConTrabajoYaHechoOPresupuestado(solp);
                 }
 
-                if ((solp.TrabajoYaHecho != true && !solp.ConPresupuesto && solp.Adicional == true) || solp.CondEspProveedorAsignado == true)
+                if (((solp.TrabajoYaHecho != true && !solp.ConPresupuesto && solp.Adicional == true) || solp.CondEspProveedorAsignado == true) && !tieneAcuerdoMarco)
                 {
                     CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
                 }
