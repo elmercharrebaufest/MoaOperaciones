@@ -389,6 +389,7 @@ export class ComprasService extends BaseService {
             CodigoProveedorSap: solp.codigoProveedorSap,
             Posiciones: null,
             MultipleFinalizado: solp.MultipleFinalizado,
+            AdmiteCertificacionesParciales: solp.admiteCertificacionesParciales,
         };
 
         if (incluirPosiciones) {
