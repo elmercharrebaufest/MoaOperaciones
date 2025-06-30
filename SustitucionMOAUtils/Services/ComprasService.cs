@@ -1335,6 +1335,7 @@ namespace SustitucionMOAUtils.Services
                 TrabajoYaHecho = solp.TrabajoYaHecho,
                 ConPresupuesto = solp.ConPresupuesto,
                 CertificacionAutomatica = solp.CertificacionAutomatica,
+                AdmiteCertificacionesParciales = solp.AdmiteCertificacionesParciales,
                 CondEspProveedorAsignado = solp.CondEspProveedorAsignado,
                 Adicional = solp.Adicional,
                 Urgencia = solp.Urgencia,

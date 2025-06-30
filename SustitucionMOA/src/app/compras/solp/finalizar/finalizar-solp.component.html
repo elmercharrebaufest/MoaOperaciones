@@ -106,7 +106,7 @@
             </div>
 
             <!-- Subtitulo que pregunte si admite certificaciones parciales -->
-            <div *ngIf="!(solpActual.certificacionAutomatica)">
+            <div *ngIf="puedeConfigurarCertificacionesParciales()">
                 <div class="col-md-12 titulosModal" style="margin-right: 1em;margin-top: 1em;">
                     ¿Admite Certificaciones Parciales?
                 </div>
