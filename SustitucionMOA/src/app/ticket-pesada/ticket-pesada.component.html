@@ -9,10 +9,12 @@
   </div>
   <div class="selectorContainer">
     <div>
-      <button class="btn-custom btn-guardar btn-grande" (click)="showGranosForm()">Granos</button>
+      <button class="btn-custom btn-guardar btn-grande" [class.btn-guardar]="granosForm" [class.btn-cerrar]="!granosForm"
+        (click)="showGranosForm()">Granos</button>
     </div>
     <div>
-      <button class="btn-custom btn-guardar btn-grande" (click)="showSubproductosForm()">No Granos</button>
+      <button class="btn-custom btn-grande" [class.btn-guardar]="subproductosForm" [class.btn-cerrar]="!subproductosForm"
+        (click)="showSubproductosForm()">No Granos</button>
     </div>
   </div>
 

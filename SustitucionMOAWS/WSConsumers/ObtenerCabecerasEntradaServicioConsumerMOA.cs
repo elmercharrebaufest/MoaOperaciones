@@ -41,7 +41,7 @@ namespace SustitucionMOAWS.WSConsumers
             //this.repositorio = repositorio;
         }
 
-        public async Task<List<EntradaServicioCabeceraDto>> ObtenerEntradasServicioCabeceraAsync(string fechaDesde)
+        public async Task<List<EntradaServicioCabeceraDto>> ObtenerEntradasServicioCabeceraAsync(string fechaDesde, string ordenCompra)
         {
             try
             {
@@ -61,18 +61,26 @@ namespace SustitucionMOAWS.WSConsumers
                 request.Headers.Add("SOAPAction", _SOAPAction);
                 request.Headers.Add("Authorization", _Authorization);
 
+                // Si filtra por OC, no debe tomar en cuenta la fecha
+                var filtroFechaDesde = string.IsNullOrEmpty(fechaDesde) || !string.IsNullOrEmpty(ordenCompra) ? "" :
+                    $@"<ENTRYSHEET_DATE>{fechaDesde}</ENTRYSHEET_DATE>";
+
+                var filtroOrdenCompra = string.IsNullOrEmpty(ordenCompra) ? "" :
+                    $@"<PO_NUMBER>{ordenCompra}</PO_NUMBER>";
+
                 StringContent content = new StringContent(
                     $@"<?xml version=""1.0"" encoding=""utf-8""?>
-                       <soap:Envelope xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
-                           <soap:Header>
-                               <wsse:Security soap:mustUnderstand=""1"" xmlns:wsse=""http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd""/>
-                           </soap:Header>
-                           <soap:Body>
-                               <BAPI_ENTRYSHEET_GETLIST xmlns=""urn:sap-com:document:sap:rfc:functions"">
-                                   <ENTRYSHEET_DATE>{fechaDesde}</ENTRYSHEET_DATE>  
-                               </BAPI_ENTRYSHEET_GETLIST>
-                           </soap:Body>
-                       </soap:Envelope>",
+                        <soap:Envelope xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
+                            <soap:Header>
+                                <wsse:Security soap:mustUnderstand=""1"" xmlns:wsse=""http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd""/>
+                            </soap:Header>
+                            <soap:Body>
+                                <BAPI_ENTRYSHEET_GETLIST xmlns=""urn:sap-com:document:sap:rfc:functions"">
+                                    {filtroFechaDesde}
+                                    {filtroOrdenCompra}
+                                </BAPI_ENTRYSHEET_GETLIST>
+                            </soap:Body>
+                        </soap:Envelope>",
                     Encoding.UTF8,
                     "text/xml"
                 );

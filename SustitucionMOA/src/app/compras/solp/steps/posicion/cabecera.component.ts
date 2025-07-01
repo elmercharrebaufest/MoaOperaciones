@@ -1348,12 +1348,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     if (this.datosUltimaSolp.CuentaMayorSP != null) {
                         var newPos = this.model.posiciones[0].crearSubPosicion()
                         this.model.posiciones[0].agregarSubPosicion(newPos);
-                        this.model.posiciones[0].listadoSubPosiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayorSP;
+                        //Se comenta precarga de cuenta de mayor por pedido en el ticket MOA-836
+                        //this.model.posiciones[0].listadoSubPosiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayorSP;
                     }
                 } else {
-                    if (this.datosUltimaSolp.CuentaMayor != null) {
-                        this.model.posiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayor;
-                    }
+                    //Se comenta precarga de cuenta de mayor por pedido en el ticket MOA-836
+                    //if (this.datosUltimaSolp.CuentaMayor != null) {
+                    //    this.model.posiciones[0].cuentaMayor = this.datosUltimaSolp.CuentaMayor;
+                    //}
                 }
             }
 

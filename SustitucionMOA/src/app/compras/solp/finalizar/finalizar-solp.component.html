@@ -1,29 +1,26 @@
-<p-dialog [(visible)]="displayFinalizar"
-          modal="modal"
-          [width]="650"
-          [draggable]="false"
-          [closable]="true"
-          (onHide)="onHideFinalizarDialog()"
-          appendTo="body"
-          positionTop="30"
-          [contentStyle]="{ 'max-height':'1500px', 'min-height':'400px'}">
+<p-dialog [(visible)]="displayFinalizar" modal="modal" [width]="650" [draggable]="false" [closable]="true"
+    (onHide)="onHideFinalizarDialog()" appendTo="body" positionTop="30"
+    [contentStyle]="{ 'max-height':'1500px', 'min-height':'400px'}">
     <p-header class="headerModal">
         ¡Último paso!
     </p-header>
     <div class="col-md-12 row myRow alinearTitulo margenInput">
         <div class="col-md-12 titulosModal" style="margin-right: 1em;">
-            Revisado por:     *
+            Revisado por: *
         </div>
         <div class="col-md-5" style="margin-right: 1em; width: 37%;;">
-            <input type="text" pInputText [(ngModel)]="solpActual.revisadoPor" class="styled-select inputComprasFinalizar" placeholder="">
+            <input type="text" pInputText [(ngModel)]="solpActual.revisadoPor"
+                class="styled-select inputComprasFinalizar" placeholder="">
         </div>
     </div>
-    <div *ngIf="solpActual?.selectTipoPosicion?.Codigo == 'SERVICIO'" class="col-md-12 row myRow alinearTitulo margenInput">
+    <div *ngIf="solpActual?.selectTipoPosicion?.Codigo == 'SERVICIO'"
+        class="col-md-12 row myRow alinearTitulo margenInput">
         <div class="col-md-12 titulosModal" style="margin-right: 1em;">
-            Usuario Compras:   *
+            Usuario Compras: *
         </div>
         <div class="col-md-5" style="margin-right: 1em; width: 65%;">
-            <p-dropdown [options]="solpActual.usuarioComprasList" [(ngModel)]="solpActual.selectUsuarioCompras" dataKey="Id" optionLabel="CodigoDescripcion">
+            <p-dropdown [options]="solpActual.usuarioComprasList" [(ngModel)]="solpActual.selectUsuarioCompras"
+                dataKey="Id" optionLabel="CodigoDescripcion">
             </p-dropdown>
         </div>
     </div>
@@ -36,10 +33,12 @@
                 Fecha tentativa de entrega de ofertas:
             </div>
             <div class="col-md-4" style="margin-right: 1em;">
-                <p-calendar [locale]="es" class="styled-select" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy" [(ngModel)]="solpActual.fechaEntrega"></p-calendar>
+                <p-calendar [locale]="es" class="styled-select" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body"
+                    [readonlyInput]="true" [minDate]="hoy" [(ngModel)]="solpActual.fechaEntrega"></p-calendar>
             </div>
             <div class="col-md-3">
-                <p-calendar [locale]="es" [showIcon]="true" class="styled-select" appendTo="body" disabled="false" [(ngModel)]="solpActual.horaEntrega" icon="fa fa-clock-o" [timeOnly]="true" [readonlyInput]="true">
+                <p-calendar [locale]="es" [showIcon]="true" class="styled-select" appendTo="body" disabled="false"
+                    [(ngModel)]="solpActual.horaEntrega" icon="fa fa-clock-o" [timeOnly]="true" [readonlyInput]="true">
                 </p-calendar>
             </div>
         </div>
@@ -49,10 +48,12 @@
                 Fecha límite de consulta:
             </div>
             <div class="col-md-4" style="margin-right: 1em;">
-                <p-calendar [locale]="es" class="styled-select" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy" [(ngModel)]="solpActual.fechaLimiteFecha"></p-calendar>
+                <p-calendar [locale]="es" class="styled-select" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body"
+                    [readonlyInput]="true" [minDate]="hoy" [(ngModel)]="solpActual.fechaLimiteFecha"></p-calendar>
             </div>
             <div class="col-md-3">
-                <p-calendar [locale]="es" [showIcon]="true" class="styled-select" appendTo="body" icon="fa fa-clock-o" [timeOnly]="true" [readonlyInput]="true" [(ngModel)]="solpActual.fechaLimiteHora"></p-calendar>
+                <p-calendar [locale]="es" [showIcon]="true" class="styled-select" appendTo="body" icon="fa fa-clock-o"
+                    [timeOnly]="true" [readonlyInput]="true" [(ngModel)]="solpActual.fechaLimiteHora"></p-calendar>
             </div>
         </div>
 
@@ -62,12 +63,14 @@
                 Fecha de entrega prevista:
             </div>
 
-            <div class="col-md-6" style="font-size: 10px; right: 90px; right: 90px; margin-bottom: 4px; margin-top: 6px;">
+            <div class="col-md-6"
+                style="font-size: 10px; right: 90px; right: 90px; margin-bottom: 4px; margin-top: 6px;">
                 (La fecha indicada corresponde a la posición )
             </div>
             <!-- //mayor fecha de entrega de todas las posiciones. -->
             <div class="col-md-4" *ngIf="solpActual.ultimaPosicion">
-                <p-calendar [locale]="es" class="styled-select" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy" [(ngModel)]="solpActual.ultimaPosicion.fechaEntregaServicio">
+                <p-calendar [locale]="es" class="styled-select" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body"
+                    [readonlyInput]="true" [minDate]="hoy" [(ngModel)]="solpActual.ultimaPosicion.fechaEntregaServicio">
                 </p-calendar>
             </div>
         </div>
@@ -75,14 +78,19 @@
         <div class="col-md-12 row myRow">
             <p-panel *ngIf="solpActual.visitaDeObraMasiva" header="Visita de obra masiva" [toggleable]="true">
                 <div *ngFor="let visita of solpActual.listaVisitas; let indice = index" class="ui-helper-clearfix">
-                    <div class="col-xs-12 col-sm-12 col-md-3 titulosModal" style="margin-left: 19px; font-size: 15px; margin-top: 8px;">
+                    <div class="col-xs-12 col-sm-12 col-md-3 titulosModal"
+                        style="margin-left: 19px; font-size: 15px; margin-top: 8px;">
                         Visita #{{indice + 1}}
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-4">
-                        <p-calendar [(ngModel)]="visita.visitaDeObraFecha" class="styled-select" [style]="{'width': '85%'}" [locale]="es" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>
+                        <p-calendar [(ngModel)]="visita.visitaDeObraFecha" class="styled-select"
+                            [style]="{'width': '85%'}" [locale]="es" [showIcon]="true" dateFormat="dd-M-yy"
+                            appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-3 margenInput">
-                        <p-calendar class="styled-select" [(ngModel)]="visita.visitaDeObraHora" [style]="{'width': '75%'}" [locale]="es" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true" appendTo="body"></p-calendar>
+                        <p-calendar class="styled-select" [(ngModel)]="visita.visitaDeObraHora"
+                            [style]="{'width': '75%'}" [locale]="es" [showIcon]="true" icon="fa fa-clock-o"
+                            [timeOnly]="true" appendTo="body"></p-calendar>
                     </div>
                 </div>
             </p-panel>
@@ -94,14 +102,28 @@
             </div>
             <div class="col-md-12" style="margin-right: 1em; width: 65%;">
                 <p-dropdown [options]="certificacionAutomaticaOptions" optionLabel="name" optionValue="value"
-                    (onChange)="onCertificacionAutomaticaChange($event)"
-                    [(ngModel)]="solpActual.certificacionAutomatica"></p-dropdown>
+                    (onChange)="onCertificacionAutomaticaChange($event)" [(ngModel)]="certificacionAutomaticaValue" [disabled]="disableCertificacionAutomatica"></p-dropdown>
+            </div>
+
+            <!-- Subtitulo que pregunte si admite certificaciones parciales -->
+            <div *ngIf="puedeConfigurarCertificacionesParciales()">
+                <div class="col-md-12 titulosModal" style="margin-right: 1em;margin-top: 1em;">
+                    ¿Admite Certificaciones Parciales?
+                </div>
+                <div class="col-md-12" style="margin-right: 1em; width: 65%;">
+                    <p-dropdown [options]="admiteCertificacionesParcialesOptions" optionLabel="name" optionValue="value"
+                        (onChange)="onAdmiteCertificacionesParcialesChange($event)"
+                        [(ngModel)]="admiteCertificacionesParcialesValue"
+                        [disabled]="disableAdmiteCertificacionesParciales">
+                    </p-dropdown>
+                </div>
             </div>
         </div>
     </div>
 
     <p-footer>
-        <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCancelarFinalizar()">CANCELAR</button>
+        <button type="button" class="btn btn-danger botonesComprasColor"
+            (click)="onCancelarFinalizar()">CANCELAR</button>
         <button type="button" class="btn btn-success botonesComprasColor" (click)="onFinalizar()">FINALIZAR</button>
     </p-footer>
 </p-dialog>

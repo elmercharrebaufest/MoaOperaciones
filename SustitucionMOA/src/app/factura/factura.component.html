@@ -15,7 +15,7 @@
                      role="alert">
                     <div *ngIf="mensajeIrAOC(resultado); else mensajeSimple">
                         <b>{{ resultado.FileName }}</b> - <b>
-                            {{ resultado.Message }} Si desea certificar hace click
+                            {{ resultado.Message }} Si desea certificar haga click
                             <a (click)="irACertificaciones(resultado.Value)" href="#">
                                 acá
                             </a>
@@ -48,9 +48,8 @@
                                     site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
                     </div>
                 </div>
+
                 <div *ngIf="certificaciones?.length > 0" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-
-
                     <div class="myRow mySearch" style="margin-bottom: 150px;">
                         <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
                             <div class="col-xs-12 col-md-12 search-header">
@@ -61,20 +60,22 @@
                                     <p-checkbox class="checkboxFechas" binary="true" label="Certificaciones Pendientes de factura" pTooltip="Certificaciones Pendientes de factura" (click)="verCertificacionesPendientes()"></p-checkbox>
                                 </span>
                             </div>
-
-
                         </div>
                     </div>
-
-
+                    
                     <div *ngFor="let grupo of agrupadasPorArchivo">
                         <h2>{{ grupo.nombreArchivo }}</h2>
-
-                        <table class="table table-striped table-bordered">
+                        <span *ngIf="mostrarPorDiferenciaTasaCambio(grupo)" style="margin: 15px;">
+                            <p-checkbox label="Por diferencia de tasa de cambio" (click)="onPorDiferenciaTasaCambioChanged(grupo)" binary="true"></p-checkbox>
+                        </span>
+                        <table class="table table-striped table-bordered" style="margin-top: 10px;">
                             <thead class="thead-dark">
                                 <tr>
                                     <th>
-                                        <input type="checkbox" [checked]="todasSeleccionadas(grupo)" (change)="toggleSeleccionGrupo(grupo, $event)">
+                                        <input type="checkbox"
+                                            [checked]="todasSeleccionadas(grupo)"
+                                            (change)="toggleSeleccionGrupo(grupo, $event)"
+                                            [disabled]="grupo.esFacturaPorDiferenciaTasaDeCambio">
                                     </th>
                                     <th>Número OC</th>
                                     <th>Número Certificación</th>
@@ -88,11 +89,14 @@
                                     <tr *ngIf="(verPendientes && certificacion.Archivo.length === 0) || !verPendientes ">
 
                                         <td>
-                                            <input type="checkbox" [(ngModel)]="certificacion.Seleccionada" (change)="onCheckCertificacion(certificacion)">
+                                            <input type="checkbox"
+                                                [(ngModel)]="certificacion.Seleccionada"
+                                                (change)="onCheckCertificacion(certificacion, grupo.nombreArchivo)"
+                                                [disabled]="grupo.esFacturaPorDiferenciaTasaDeCambio">
                                         </td>
                                         <td>{{ certificacion.NRO_OC }}</td>
                                         <td>{{ certificacion.NRO_Certificacion }}</td>
-                                        <td>{{ formatPrice(certificacion.Importe) }}</td>
+                                        <td>{{ certificacion.MontoFormateado }}</td>
                                         <td>{{ certificacion.Moneda }}</td>
                                         <td *ngIf="certificacion.Archivo.length !== 0">
                                             <div class="filesColumn">
@@ -143,7 +147,7 @@
                                 type="button"
                                 label="Guardar selección"
                                 (click)="registrarCertificaciones()"
-                                [disabled]="alMenosUnaSeleccionadaPorGrupo()">
+                                [disabled]="!permitirGuardarSeleccion()">
                         </button>
                     </div>
                 </div>

@@ -191,14 +191,30 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        public List<UsuarioDto> ListarUsuarioSolicitante()
+        public List<UsuarioDto> ListarUsuarioSolicitante(List<RolDropdownDto> roles, int usuarioId)
         {
-            var usuarios = repositorio.Listar<Usuario, UsuarioDto>(usuario => new UsuarioDto
+            // Verificar si la lista contiene el rol de "SOlICITANTE EXTERNO"
+            bool esSolicitanteExterno = roles.Any(r => r.Nombre == "SOLICITANTE EXTERNO");
+            if (!esSolicitanteExterno)
             {
-                Mail = usuario.Mail,
-                UsuarioSap = usuario.UsuarioSap
-            }, usuario => usuario.Roles.Any(r => r.PermisosAsociados.Select(x => x.Permiso).Contains("ABM SOLP")));
-            return usuarios;
+                var usuarios = repositorio.Listar<Usuario, UsuarioDto>(usuario => new UsuarioDto
+                {
+                    Mail = usuario.Mail,
+                    UsuarioSap = usuario.UsuarioSap
+                }, usuario => usuario.Roles.Any(r => r.PermisosAsociados.Select(x => x.Permiso).Contains("ABM SOLP")));
+                return usuarios;
+            }
+            else {
+                // Ya que es solicitante externo, debo consultar la tabla "RelacionSolicitanteExternoJefeMoa" para darle la lista del jefe de MOA correspondiente
+                int jefeMoaId = repositorio.Listar<RelacionSolicitanteExternoJefeMoa>(r => r.Usuario_Id == usuarioId)
+                    .Select(r => r.JefeMoa_Id).FirstOrDefault();
+                var usuarios = repositorio.Listar<Usuario, UsuarioDto>(usuario => new UsuarioDto
+                {
+                    Mail = usuario.Mail,
+                    UsuarioSap = usuario.UsuarioSap
+                }, usuario => usuario.Id == jefeMoaId);
+                return usuarios;
+            }
         }
 
         public InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas)

@@ -92,6 +92,7 @@ export class Solp extends CommonResponse {
     public thServicioPermanente: boolean;
     public thAjustePolinomica: boolean;
     public thProveedorDirecto: boolean;
+    public admiteCertificacionesParciales: boolean = false;
 
     //inicio Cabecera == paso 5
     public selectClaseDocumento: any;
@@ -286,6 +287,7 @@ export class Solp extends CommonResponse {
             this.trabajoHecho = solp.TrabajoYaHecho;
             this.conPresupuesto = solp.ConPresupuesto;
             this.certificacionAutomatica = solp.CertificacionAutomatica;
+            this.admiteCertificacionesParciales = solp.AdmiteCertificacionesParciales;
             this.adicional = solp.Adicional;
             this.urgencia = solp.Urgencia;
             this.condEspProveedorAsignado = solp.CondEspProveedorAsignado;

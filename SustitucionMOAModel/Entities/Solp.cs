@@ -79,5 +79,6 @@ namespace SustitucionMOAModel.Entities
         public bool DebeGenerarPoAutomatica => (TrabajoYaHecho ?? false) || (Adicional ?? false) || (CondEspProveedorAsignado ?? false);
 
         public bool CertificacionAutomatica { get; set; }
+        public bool AdmiteCertificacionesParciales { get; set; }
     }
 }

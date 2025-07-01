@@ -48,7 +48,7 @@ export class RYDMantenimientoExportadorComponent extends RYDMantenimientoBaseCom
     almacenSAP: string = "";
     guardarNuevo: Array<Exportador> = new Array<Exportador>();
 
-    protected subscriptions: Array<Subscription> = [];
+    subscriptions = new Subscription();
 
     checkPermisos() {
         this.securityService.tienePermisoRedirect("ABM EXPORTADORES");

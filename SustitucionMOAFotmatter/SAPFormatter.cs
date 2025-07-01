@@ -148,11 +148,11 @@ namespace SustitucionMOAFotmatter
         public static string FormatearMonto(decimal monto, string moneda)
         {
             if (monto == 0)
-                return string.Format("{0}{1}", FormatearMoneda(moneda), "0,00");
+                return string.Format("{0} {1}", FormatearMoneda(moneda), "0,00");
             else
             {
                 string formatoDecimal = (moneda.ToUpper() == "USD" || moneda.ToUpper() == "USDM") ? "N3" : "N2";
-                return string.Format("{0}{1}", FormatearMoneda(moneda), monto.ToString(formatoDecimal, new CultureInfo("is-IS")));
+                return string.Format("{0} {1}", FormatearMoneda(moneda), monto.ToString(formatoDecimal, new CultureInfo("is-IS")));
             }
         }
 

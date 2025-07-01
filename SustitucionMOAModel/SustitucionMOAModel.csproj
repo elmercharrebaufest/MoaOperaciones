@@ -74,6 +74,7 @@
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\CertificacionDto.cs" />
+    <Compile Include="Dto\Compras\Factura\GrupoCertificaciones.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaRevisionTecnicaDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaSolpPosicionDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaUsuarioAdicionalDto.cs" />
@@ -174,6 +175,7 @@
     <Compile Include="Entities\ConfiguracionUsuario.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />
     <Compile Include="Entities\RegionSap.cs" />
+    <Compile Include="Entities\RelacionSolicitanteExternoJefeMoa.cs" />
     <Compile Include="Entities\ResultadoAnalisisOcr.cs" />
     <Compile Include="Entities\ResultadoOCR.cs" />
     <Compile Include="Entities\SolpDatosPreviosPliegoMultiple.cs" />

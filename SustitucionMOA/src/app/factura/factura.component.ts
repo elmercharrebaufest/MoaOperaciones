@@ -17,7 +17,7 @@ import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ValidationResult } from '../common/models/validationResult';
 import { FileUpload } from 'primeng/fileupload';
-import { Certificacion } from './factura.model';
+import { Certificacion, GrupoCertificaciones } from './factura.model';
 
 
 declare var $: any;
@@ -31,21 +31,18 @@ declare var $: any;
 export class FacturaComponent extends ListBaseComponent {
     @BlockUI() blockUI: NgBlockUI;
 
-    @ViewChild(MensajeComponent)
-    protected mensajeComponent: MensajeComponent;
-
     @ViewChild(SpinnerSmallComponent)
     public spinnerSmallComponent: SpinnerSmallComponent;
-
-    @ViewChild(SpinnerComponent)
-    protected spinnerComponent: SpinnerComponent;
 
     @ViewChild('recaptchaComponent')
     protected captcha: ReCaptchaComponent;
     resultados: ValidationResult[];
 
     @ViewChild('fileUpload') fileUpload: FileUpload;
-    constructor(protected service: FacturaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    constructor(protected service: FacturaService, protected navService: NavService,
+        protected sessionDataService: SessionDataService, protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.spinnerSmallComponent = new SpinnerSmallComponent();
     }
@@ -56,9 +53,7 @@ export class FacturaComponent extends ListBaseComponent {
     captchaOk: any = null;
     archivos = new Array<File>()
     certificaciones: Certificacion[] = [];
-    agrupadasPorArchivo: { nombreArchivo: string, items: Certificacion[] }[] = [];
-
-    certificacionesAgregadas: Certificacion[] = [];
+    agrupadasPorArchivo: GrupoCertificaciones[] = [];
 
     certificacionesRegistradasExistentes = [];
     verPendientes: boolean = false;
@@ -89,7 +84,6 @@ export class FacturaComponent extends ListBaseComponent {
         try {
             this.resultados = [];
             this.certificaciones = [];
-            this.certificacionesAgregadas = [];
             this.certificacionesRegistradasExistentes = [];
             this.blockUI.start('Analizando documentos...');
 
@@ -108,21 +102,24 @@ export class FacturaComponent extends ListBaseComponent {
                             this.resultados.forEach(resultado => {
                                 const fileName = resultado.FileName;
                                 const nroOC = resultado.Value;
+                                const esMonedaExtranjera = resultado.EsMonedaExtranjera;
                                 if (resultado.Certificaciones != null && resultado.Certificaciones.length > 0) {
                                     resultado.Certificaciones.forEach(certificacion => {
                                         this.certificaciones.push({
-                                            NombreDeArchivo: fileName,
-                                            NRO_OC: nroOC,
+                                            NombreDeArchivo: fileName || "",
+                                            NRO_OC: nroOC || "",
                                             NRO_Certificacion: certificacion.NroCertificacion,
                                             Importe: certificacion.Saldo,
                                             Moneda: certificacion.Moneda,
+                                            MontoFormateado: certificacion.MontoFormateado,
                                             Archivo: certificacion.Archivo,
+                                            EsMonedaExtranjera: esMonedaExtranjera,
                                             Seleccionada: false
                                         });
                                     });
 
                                     // Agrupar justo después de cargar
-                                    const agrupadas = new Map<string, any[]>();
+                                    const agrupadas = new Map<string, Certificacion[]>();
 
                                     for (const cert of this.certificaciones) {
                                         if (!agrupadas.has(cert.NombreDeArchivo)) {
@@ -133,7 +130,9 @@ export class FacturaComponent extends ListBaseComponent {
 
                                     this.agrupadasPorArchivo = Array.from(agrupadas.entries()).map(([nombreArchivo, items]) => ({
                                         nombreArchivo,
-                                        items
+                                        items,
+                                        esMonedaExtranjera: items && items.length > 0 ? items[0].EsMonedaExtranjera : false,
+                                        esFacturaPorDiferenciaTasaDeCambio: false
                                     }));
 
                                 }
@@ -169,11 +168,7 @@ export class FacturaComponent extends ListBaseComponent {
         return partes[partes.length - 1];
     }
 
-    formatPrice(importe: number) {
-        return importe.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
-    }
-
-    onCheckCertificacion(certificacionSeleccionada: Certificacion) {
+    onCheckCertificacion(certificacionSeleccionada: Certificacion, nombreArchivo: string) {
         // Verificar si la certificación ya fue registrada con uno o más archivos
         if (certificacionSeleccionada.Seleccionada) {
             if (certificacionSeleccionada.Archivo != null && certificacionSeleccionada.Archivo.length > 0) {
@@ -181,22 +176,13 @@ export class FacturaComponent extends ListBaseComponent {
                     `Advertencia: La certificación ${certificacionSeleccionada.NRO_Certificacion} ya está vinculada a otra factura.`
                 );
             }
-        }
 
-    }
-
-    alMenosUnaSeleccionadaPorGrupo(): boolean {
-        return !this.agrupadasPorArchivo.every(grupo =>
-            grupo.items.some(cert => cert.Seleccionada)
-        );
-    }
-
-    actualizarCertificacionesAgregadas(): void {
-        this.certificacionesAgregadas = [];
-
-        for (const grupo of this.agrupadasPorArchivo) {
-            const seleccionadas = grupo.items.filter(cert => cert.Seleccionada);
-            this.certificacionesAgregadas.push(...seleccionadas);
+            this.agrupadasPorArchivo.filter(apa => apa.nombreArchivo != nombreArchivo).forEach(apa => {
+                const mismaCert = apa.items.find(x => x.Seleccionada && x.NRO_Certificacion == certificacionSeleccionada.NRO_Certificacion);
+                if (mismaCert) {
+                    this.floatMsgService.setInfoMsg(`La certificación ${certificacionSeleccionada.NRO_Certificacion} ya está seleccionada para el documento ${apa.nombreArchivo}`);
+                }
+            });
         }
     }
 
@@ -205,11 +191,16 @@ export class FacturaComponent extends ListBaseComponent {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         try {
-            this.blockUI.start('Registrando certificaciones...');
-            this.actualizarCertificacionesAgregadas();
-            // Filtrar archivos por nombre de archivo que esten en el array de certificaciones agregadas
-            this.archivos = this.archivos.filter(archivo => this.certificacionesAgregadas.map(certificacion => certificacion.NombreDeArchivo).includes(archivo.name));
-            this.subscription = this.service.registrarCertificaciones(this.certificacionesAgregadas, this.archivos).subscribe(
+            this.blockUI.start('Enviando factura...');
+
+            let grupos: GrupoCertificaciones[] = this.agrupadasPorArchivo.map(grp => ({
+                nombreArchivo: grp.nombreArchivo,
+                esMonedaExtranjera: grp.esMonedaExtranjera,
+                esFacturaPorDiferenciaTasaDeCambio: grp.esFacturaPorDiferenciaTasaDeCambio,
+                items: grp.esFacturaPorDiferenciaTasaDeCambio ? [] : grp.items.filter(cert => cert.Seleccionada)
+            }));
+            
+            this.subscription = this.service.registrarCertificaciones(grupos, this.archivos).subscribe(
                 (result: any) => {
                     this.spinnerSmallComponent.hideIt();
                     if (result.logout == true) {
@@ -220,8 +211,7 @@ export class FacturaComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.floatMsgService.setMsgsEmpty();
-                        this.floatMsgService.setSuccessMsg("Certificaciones registradas correctamente");
-                        this.certificacionesAgregadas = [];
+                        this.floatMsgService.setSuccessMsg("Factura enviada correctamente para su análisis");
                         this.certificaciones = [];
                     }
                     this.blockUI.stop();
@@ -229,7 +219,7 @@ export class FacturaComponent extends ListBaseComponent {
                     return false;
                 },
                 error => {
-                    let errormsj = "Ha ocurrido un error, por favor intentelo nuevamente";
+                    let errormsj = "Ha ocurrido un error, por favor inténtelo nuevamente";
                     this.spinnerSmallComponent.hideIt();
                     this.floatMsgService.setErrorMsg(errormsj);
                     this.blockUI.stop();
@@ -303,7 +293,6 @@ export class FacturaComponent extends ListBaseComponent {
         this.fileUpload.clear();
         this.archivos = new Array<File>();
         this.certificaciones = [];
-        this.certificacionesAgregadas = [];
         this.certificacionesRegistradasExistentes = [];
         this.resultados = [];
     }
@@ -350,7 +339,6 @@ export class FacturaComponent extends ListBaseComponent {
 
     removeFile(event: any) {
         this.certificaciones = [];
-        this.certificacionesAgregadas = [];
         this.certificacionesRegistradasExistentes = [];
         this.resultados = [];
     }
@@ -398,4 +386,23 @@ export class FacturaComponent extends ListBaseComponent {
         return grupo.items[0].Moneda + " " + total.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
+    mostrarPorDiferenciaTasaCambio(grupo: GrupoCertificaciones): boolean {
+        return grupo.esMonedaExtranjera &&
+            grupo.items &&
+            grupo.items.length > 0;
+    }
+    
+    onPorDiferenciaTasaCambioChanged(grupo: GrupoCertificaciones) {
+        grupo.esFacturaPorDiferenciaTasaDeCambio = !grupo.esFacturaPorDiferenciaTasaDeCambio;
+        grupo.items.forEach(cert => {
+            cert.Seleccionada = false;
+        });
+    }
+
+    permitirGuardarSeleccion(): boolean {
+        return this.agrupadasPorArchivo.every(grupo =>
+            (grupo.esFacturaPorDiferenciaTasaDeCambio && grupo.items && grupo.items.every(x => !x.Seleccionada)) ||
+            (!grupo.esFacturaPorDiferenciaTasaDeCambio && grupo.items.some(cert => cert.Seleccionada))
+        );
+    }
 }

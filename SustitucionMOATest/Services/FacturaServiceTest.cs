@@ -1,9 +1,12 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
@@ -69,8 +72,6 @@ namespace SustitucionMOATest.Services
             var operacionOCRId = "operationId";
             var elementosLeidos = new List<string> { "element1", "element2" };
             var validationResult = new ValidationResult { IsValid = true, FileName = "test.pdf" };
-
-
 
             repositorioMock.Setup(r => r.Obtener<Usuario>(It.IsAny<System.Linq.Expressions.Expression<System.Func<Usuario, bool>>>())).Returns(usuario);
             azureServiceMock.Setup(a => a.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>())).ReturnsAsync(operacionOCRId);
@@ -173,5 +174,52 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(r => r.GuardarCambios(), Times.Once);
         }
 
+        [Test]
+        public void GuardarFacturaPorDiferenciaTasaDeCambio()
+        {
+            var nombreArchivo1 = "Fact1234.pdf";
+            Mock<HttpPostedFileBase> archivoFactura = new Mock<HttpPostedFileBase>();
+            archivoFactura.Setup(d => d.FileName).Returns(nombreArchivo1);
+            var contenidoArchFat = new byte[1024];
+            new Random().NextBytes(contenidoArchFat);
+            var memoryStreamArchFact = new MemoryStream(contenidoArchFat);
+
+            archivoFactura.Setup(d => d.InputStream).Returns(memoryStreamArchFact);
+            archivoFactura.Setup(d => d.ContentLength).Returns(new Random().Next(1024, 1024));
+            archivoFactura.Setup(d => d.SaveAs(It.IsAny<string>()));
+
+            var cuit = "123456789";
+            var codigoProveedor = "ABC123";
+            var mailUsuario = "test@example.com";
+            var usuario = new Usuario { Id = 1, Mail = mailUsuario };
+            var operacionOCRId = "operationId";
+            var elementosLeidos = new List<string> { "elemento 1", "elemento 2" };
+            var validationResult = new ValidationResult { IsValid = true, FileName = "Fact1234.pdf" };
+
+            azureServiceMock.Setup(a => a.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>())).ReturnsAsync(operacionOCRId);
+            azureServiceMock.Setup(a => a.ObtenerResultadoOCRAsync(operacionOCRId)).ReturnsAsync(elementosLeidos);
+            repositorioMock.Setup(r => r.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
+            analisisDocumentoServiceMock.Setup(a => a.AnalizarFacturaCertificacionServicios(It.IsAny<List<string>>(), cuit, It.IsAny<string>())).Returns(new List<ValidationResult> { validationResult });
+
+            var gruposCertificaciones = new List<GrupoCertificaciones>
+            {
+                new GrupoCertificaciones
+                {
+                    NombreArchivo = nombreArchivo1,
+                    EsFacturaPorDiferenciaTasaDeCambio = true,
+                    Items = new List<CertificacionDto>()
+                }
+            };
+            var archivos = new List<HttpPostedFileBase> { archivoFactura.Object };
+
+            var certificacionesRegistradas = target.RegistrarCertificaciones(gruposCertificaciones, mailUsuario, 123, archivos, cuit, codigoProveedor);
+
+            azureServiceMock.Verify(a => a.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>()), Times.Once);
+            azureServiceMock.Verify(a => a.ObtenerResultadoOCRAsync(operacionOCRId), Times.Once);
+            repositorioMock.Verify(r => r.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            analisisDocumentoServiceMock.Verify(a => a.AnalizarFacturaCertificacionServicios(It.IsAny<List<string>>(), cuit, It.IsAny<string>()), Times.Once);
+            archivoFactura.Verify(d => d.SaveAs(It.IsAny<string>()), Times.Once);
+            emailServiceMock.Verify(e => e.EnviarMail(It.IsAny<EmailSenderData>()), Times.Once);
+        }
     }
 }

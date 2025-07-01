@@ -9,6 +9,8 @@
         NroCertificacion: string;
         Saldo:number;
         Moneda:string;
+        MontoFormateado:string;
         Archivo:any;
     }[];
+    EsMonedaExtranjera: boolean;
 }

@@ -838,7 +838,10 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public JsonResult ListarUsuarioSolicitante()
         {
-            var result = comprasSolicitanteService.ListarUsuarioSolicitante();
+            // Obtener el rol del usuario y saber si es solicitante externo
+            var usuario = ObtenerUsuarioActual();
+            List<RolDropdownDto> roles = usuarioService.GetRolesUsuario(usuario.Id); // o por email
+            var result = comprasSolicitanteService.ListarUsuarioSolicitante(roles, usuario.Id);
             return JsonCustom(result);
         }
 
