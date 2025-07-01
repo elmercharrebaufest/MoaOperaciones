@@ -404,6 +404,7 @@ namespace SustitucionMOAUtils.Services
             };
 
             var pdfBytes = GenerarPDFDeclaracion(datos);
+            pdfBytes = ReemplazarTextoEnPdf(pdfBytes, @"2018/2001/EC \(RED II\)", @"2023/2413/EC \(RED III\)");
 
             byte[] archivoResult;
             using (MemoryStream stream = new MemoryStream())
@@ -1002,11 +1003,11 @@ namespace SustitucionMOAUtils.Services
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Esquema de Certificación 2BSvs", 300, 740, 0);
             var baseTexto = 280f;
             cb.SetFontAndSize(baseFont, fontSizeNormal);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "RED II, modificada por la reglamentación 2022/996"
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "RED III"
                 , 55f, baseTexto + (11 * 6) + 0.75f, 0);
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Con esta declaración, el agricultor reconoce que los auditores de los organismos de certificación o de 2BSvs o de un Estado miembro"
                 , 15f, baseTexto, 0);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "pueden venir a verificar in situ si se han cumplido los requisitos pertinentes estipulados en la Directiva (UE) 2018/2001. Las pruebas de"
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "pueden venir a verificar in situ si se han cumplido los requisitos pertinentes estipulados en la Directiva (UE) 2023/2413. Las pruebas de"
                 , 15f, baseTexto - (11 * 1), 0);
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "los requisitos   mencionados estarán disponibles y se facilitarán durante la auditoría y/o previa solicitud."
                 , 15f, baseTexto - (11 * 2), 0);
@@ -1035,7 +1036,7 @@ namespace SustitucionMOAUtils.Services
             under.SetFontAndSize(baseFontBold, fontSize);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Declaración de Conformidad según criterios de sustentabilidad para la producción de Biomasa, de acuerdo con los"
                 , xPosition + xMargenTexto, yPosition - (15f * 2), 0);
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "requisitos de la Directiva 2018/2001/EC (RED II)"
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "requisitos de la Directiva 2023/2413/EC (RED III)"
                 , xPosition + xMargenTexto, yPosition - (15f * 3), 0);
             under.SetFontAndSize(baseFontBold, fontSizeNormal);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "De mi mayor consideración:"
@@ -1119,6 +1120,38 @@ namespace SustitucionMOAUtils.Services
         private DeclaracionCampoSustentable ObtenerDeclaracion(int cosechaId, string CUIT)
         {
             return repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUIT);
+        }
+
+        private byte[] ReemplazarTextoEnPdf(byte[] pdfBytes, string textoOriginal, string textoNuevo)
+        {
+            using (MemoryStream outputStream = new MemoryStream())
+            {
+                var pdfReader = new PdfReader(pdfBytes);
+                var pdfStamper = new PdfStamper(pdfReader, outputStream);
+
+                for (int i = 1; i <= pdfReader.NumberOfPages; i++)
+                {
+                    PdfDictionary pageDict = pdfReader.GetPageN(i);
+                    PdfObject contentObject = pageDict.GetDirectObject(PdfName.CONTENTS);
+
+                    if (contentObject is PRStream contentStream)
+                    {
+                        var contentBytes = PdfReader.GetStreamBytes(contentStream);
+                        var content = Encoding.Default.GetString(contentBytes);
+
+                        if (content.Contains(textoOriginal))
+                        {
+                            content = content.Replace(textoOriginal, textoNuevo);
+                            contentStream.SetData(Encoding.Default.GetBytes(content));
+                        }
+                    }
+                }
+
+                pdfStamper.Close();
+                pdfReader.Close();
+
+                return outputStream.ToArray();
+            }
         }
     }
 }

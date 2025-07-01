@@ -1174,7 +1174,11 @@ namespace SustitucionMOAUtils.Services
 
         private static void RemoverContratosConBloqueo(OrdenCargaVisualizarClienteWSMOAResponse consumerRes)
         {
-            consumerRes.Resultados = consumerRes.Resultados.Where(c => !c.BloqueoEntrega && c.Detalles.Any(d => !d.BloqueoEntrega)).ToList();
+            consumerRes.Resultados = consumerRes.Resultados
+                .Where(c =>
+                    !c.BloqueoEntrega &&
+                    (!c.Detalles.Any() || c.Detalles.Any(d => !d.BloqueoEntrega)))
+                .ToList();
             consumerRes.Resultados.ForEach(c => c.Detalles = c.Detalles.Where(d => !d.BloqueoEntrega).ToList());
         }
 
