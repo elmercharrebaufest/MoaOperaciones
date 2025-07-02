@@ -6,6 +6,24 @@
 						match="/configuration/appSettings/add[@key='PasswordSap']
                            /@value" />
   </parameter>
+
+  <parameter name="SAPsinPI Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='SAPsinPI']
+                           /@value" />
+  </parameter>
+
+  <parameter name="SapUserS4 Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='SapUserS4']
+                           /@value" />
+  </parameter>
+
+  <parameter name="SapPassS4 Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='SapPassS4']
+                           /@value" />
+  </parameter>
   
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"

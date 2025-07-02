@@ -9,7 +9,10 @@
   <setParameter name="BasicHttpBinding_IServicioSuscriptor Service Endpoint Address" value="http://gsloaccesos01.molinosagro.ad:8080/Pedidos_QA/Servicios/ServicioSuscriptor.svc" />
   <setParameter name="EmailMantenimiento Config" value="plataformacompras@baufest.com" />
   <setParameter name="EmailAsuntoPrefijo Config" value="[QA]" />
-  <setParameter name="PasswordSap Config" value="JJB4bZok9i28exDKsPlaTA==" />
+  <setParameter name="PasswordSap Config" value="prueba" />
+  <setParameter name="SAPsinPI Config" value="1" />
+  <setParameter name="SapUserS4 Config" value="GWEBSRV_GOL" />
+  <setParameter name="SapPassS4 Config" value="Initial.123456" />
   <setParameter name="AzureADTenantId Config" value="moagroQA.onmicrosoft.com" />
   <setParameter name="AzureADAppId Config" value="7c93e4a8-7eb3-4a72-9d32-0776b363013f" />
   <setParameter name="AzureADAppSecret Config" value="slg8Q~uFRSH_1IMPekXmcZzix3bwXX62Tpqf8dyM" />
