@@ -389,7 +389,7 @@ export class CotizacionComponent extends ListBaseComponent {
             this.model.thProveedorDirecto = false;
             this.model.thServicioPermanente = true;
         }
-        this.model.certificacionAutomatica = this.model.trabajoHecho;
+        this.model.certificacionAutomatica = this.model.trabajoHecho || false;
     }
 
     limpiarCheckProveedorAsignado() {
