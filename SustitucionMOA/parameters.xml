@@ -7,11 +7,29 @@
                            /@value" />
   </parameter>
   
-  <parameter name="PasswordSapEnc Config">
+  <parameter name="PasswordSap Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='PasswordSapEnc']
+						match="/configuration/appSettings/add[@key='PasswordSap']
                            /@value" />
 	</parameter>
+
+  <parameter name="SAPsinPI Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='SAPsinPI']
+                           /@value" />
+  </parameter>
+
+  <parameter name="SapUserS4 Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='SapUserS4']
+                           /@value" />
+  </parameter>
+
+  <parameter name="SapPassS4 Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='SapPassS4']
+                           /@value" />
+  </parameter>
 
 	<parameter name="RutaArchivosProveedores Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
@@ -290,9 +308,9 @@
                            /@value" />
   </parameter>
 
-	<parameter name="PasswordSapEnc Config">
+	<parameter name="PasswordSap Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/appSettings/add[@key='PasswordSapEnc']
+							match="/configuration/appSettings/add[@key='PasswordSap']
                            /@value" />
 	</parameter>
 

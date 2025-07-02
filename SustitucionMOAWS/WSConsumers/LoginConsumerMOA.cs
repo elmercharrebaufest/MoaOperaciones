@@ -13,8 +13,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class LoginConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
 
         public LoginWSMOAResponse request(string username, string password)
         {

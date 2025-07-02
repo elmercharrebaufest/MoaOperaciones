@@ -16,8 +16,8 @@ namespace SustitucionMOAWS.WSConsumers
     public class BorrarEntradaServicioConsumerMOA : IBorrarEntradaServicioConsumerMOA
     {
 
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
 
         //private const string COMP_CODE = "MOA";
         //private readonly IRepositorio repositorio;

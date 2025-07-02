@@ -23,8 +23,8 @@ namespace SustitucionMOAWS.WSConsumers
     /// </summary>
     public class ObtenerOrdenDeCompraConsumerMOA : IObtenerOrdenDeCompraConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
 
         BAPI_PO_GETDETAIL1PortTypeClient service;
         private const string COMP_CODE = "MOA";

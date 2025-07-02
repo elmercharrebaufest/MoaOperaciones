@@ -19,8 +19,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class ContratosConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
 
         public object request(string proveedor, List<FechaWS> fechas)
         {

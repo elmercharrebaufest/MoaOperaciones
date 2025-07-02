@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <parameters>
-  <parameter name="PasswordSapEnc Config">
+  <parameter name="PasswordSap Config">
     <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='PasswordSapEnc']
+						match="/configuration/appSettings/add[@key='PasswordSap']
                            /@value" />
   </parameter>
   

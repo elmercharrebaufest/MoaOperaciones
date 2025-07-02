@@ -1,5 +1,4 @@
-﻿using SustitucionMOACrypting;
-using System;
+﻿using System;
 using System.Configuration;
 using System.ServiceModel;
 
@@ -7,8 +6,8 @@ namespace SustitucionMOAWS.CredentialService
 {
     public static class SAPCredential
     {
-        private static string UserName = CryptoServiceProvider.Decrypt(ConfigurationManager.AppSettings["UserNameSapEnc"]);
-        private static string Password = ConfigurationManager.AppSettings["PasswordSapEnc"];
+        private static string UserName = ConfigurationManager.AppSettings["UserNameSap"];
+        private static string Password = ConfigurationManager.AppSettings["PasswordSap"];
 
         public static string getUserName()
         {

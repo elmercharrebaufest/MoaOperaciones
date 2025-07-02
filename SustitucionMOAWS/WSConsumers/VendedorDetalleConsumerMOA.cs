@@ -16,8 +16,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class VendedorDetalleConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
 
         public VendedorDetalleWSMOAResponse request(string vendedor, string proveedor)
         {

@@ -8,7 +8,7 @@
     <setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
     <setParameter name="BasicHttpBinding_IServicioSuscriptor Service Endpoint Address" value="http://gsloaccesos01.molinosagro.ad:8081/Servicios/ServicioSuscriptor.svc" />
 
-    <setParameter name="PasswordSapEnc Config" value="/ZeEum06O947GGBswhXnAw==" />
+    <setParameter name="PasswordSap Config" value="/ZeEum06O947GGBswhXnAw==" />
 
     <setParameter name="SI_MMRFC_OBTENER_CUENTAS Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CUENTAS&amp;interfaceNamespace=urn%3AOPERACIONES" />
     <setParameter name="SI_MMRFC_OBTENER_SERVICIOS Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SERVICIOS&amp;interfaceNamespace=urn%3AOPERACIONES" />

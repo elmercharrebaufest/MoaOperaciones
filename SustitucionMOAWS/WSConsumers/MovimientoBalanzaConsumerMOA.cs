@@ -11,8 +11,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class MovimientoBalanzaConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
 
         public MovimientoBalanzaMOAResponse request(string fechaMov, string fechaCont, string centro, string almacenOrigen, string almacenSap, string materialSap, decimal cantidad)
         {

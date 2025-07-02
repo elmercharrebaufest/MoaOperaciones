@@ -8,8 +8,11 @@
   <setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
   <setParameter name="UrlMisConsultas Config" value="https://qabaufest.moaoperaciones.com.ar/web/consulta/mis-consultas" />
 
-  <setParameter name="PasswordSapEnc Config" value="JJB4bZok9i28exDKsPlaTA==" />
-
+  <setParameter name="PasswordSap Config" value="prueba" />
+  <setParameter name="SAPsinPI Config" value="1" />
+  <setParameter name="SapUserS4 Config" value="GWEBSRV_GOL" />
+  <setParameter name="SapPassS4 Config" value="Initial.123456" />
+  
   <setParameter name="EsLocal Config" value="false" />
 
   <setParameter name="DataAgroURL Config" value="http://test.dataagro.com.ar" />

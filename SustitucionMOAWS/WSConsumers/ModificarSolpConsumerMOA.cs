@@ -19,8 +19,8 @@ namespace SustitucionMOAWS.WSConsumers
     {
         private readonly IRepositorio repositorio;
         private readonly string rutaArchivosXmls = ConfigurationManager.AppSettings["RutaArchivosCompras"];
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
 
         public ModificarSolpConsumerMOA(IRepositorio repositorio)
         {

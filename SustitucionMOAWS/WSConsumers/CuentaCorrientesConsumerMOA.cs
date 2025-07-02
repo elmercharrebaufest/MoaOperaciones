@@ -17,8 +17,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public abstract class CuentaCorrientesConsumerMOABase<T>
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
         private readonly SI_MPMF_MOAOP_CUENTA_CORRIENTEClient service = new SI_MPMF_MOAOP_CUENTA_CORRIENTEClient();
 
         public T Request(string compensa, string proveedor, string sociedad, FechaWS fecha, string contrato, string pago, string retencion)

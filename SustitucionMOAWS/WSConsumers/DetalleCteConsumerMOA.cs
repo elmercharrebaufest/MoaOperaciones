@@ -16,8 +16,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public abstract class DetalleCteConsumerMOABase<T>
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUser"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPass"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
         protected const string conceptoPagoACuenta = "PAGO A CUENTA";
         protected const string conceptoFaltaLiquidacionParcial = "FALTA REGISTRAR LA LIQUIDACIÓN PARCIAL";
         protected const string conceptoFaltanDatosDeCalidad = "FALTAN DATOS CALIDAD";
