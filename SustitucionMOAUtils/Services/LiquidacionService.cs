@@ -741,7 +741,7 @@ namespace SustitucionMOAUtils.Services
                 Id = x.Id,
                 Proveedor_Id = x.Proveedor_Id,
                 COE = x.COE,
-                FechaComprobante = Convert.ToDateTime(x.FechaComprobante).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                FechaComprobante = !string.IsNullOrEmpty(x.FechaComprobante) ? Convert.ToDateTime(x.FechaComprobante).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : null,
                 FechaInformada = Convert.ToDateTime(x.FechaInformada).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
             }).ToList();
 
