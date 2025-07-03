@@ -37,7 +37,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IListarPesificacionesConsumer pesificacionesConsumer;
         private readonly string[] formatosDeArchivoValidos = new string[] { ".pdf", ".png", ".jpg" };
         private const string FECHA_REGEX = @"([0-2]?[0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}";
-        private const string COE_REGEX = @"C.*O.*E.*:";
+        private const string COE_REGEX = @"C[\. ]*O[\. ]*E[\. ]*:";
 
         public LiquidacionService(
             IRepositorio repositorio,
