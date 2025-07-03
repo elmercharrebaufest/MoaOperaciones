@@ -2,8 +2,8 @@
 <parameters>
   <setParameter name="IIS Web Application Name" value="MOAHueneiOperaciones" />
 
-  <setParameter name="CONTEXTO-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad;User Id=MOAOPQAUSR;Password=Ymei3658Ledq3;initial catalog=MoaOperacionesQACompras;Pooling=False" />
-  <setParameter name="HfContexto-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad;User Id=MOAOPQAUSR;Password=Ymei3658Ledq3;Initial Catalog=MoaOperacionesHangfireQACompras;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
+  <setParameter name="CONTEXTO-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad;User Id=MOAOPQAUSR;Password=Ymei3658Ledq3;initial catalog=MoaOperacionesQAHuenei;Pooling=False" />
+  <setParameter name="HfContexto-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad;User Id=MOAOPQAUSR;Password=Ymei3658Ledq3;Initial Catalog=MoaOperacionesHangfireQAHuenei;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
 
   <setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
   <setParameter name="UrlMisConsultas Config" value="https://qabaufest.moaoperaciones.com.ar/web/consulta/mis-consultas" />
