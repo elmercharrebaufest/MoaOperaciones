@@ -460,15 +460,14 @@
                                         <td>{{liquidacion.comprobante}}</td>
                                         <td><a class="animate"
                                                 (click)="goToSeccionParamDos('/contrato/detalle-fijacion/', data.contrato, liquidacion.pedido)"
-                                                href="#">{{liquidacion.totalString != '0,00' ? liquidacion.pedido :
-                                                ''}}</a></td>
-                                        <td *ngIf="liquidacion.cantidadString != '0'">{{liquidacion.cantidadString}}
+                                                href="#">{{liquidacion.total != 0 ? liquidacion.pedido : ''}}</a></td>
+                                        <td *ngIf="liquidacion.cantidad != 0">{{liquidacion.cantidadString}}
                                         </td>
-                                        <td *ngIf="liquidacion.cantidadString == '0'"></td>
-                                        <td *ngIf="liquidacion.precioString != '0,00'">{{liquidacion.precioString}}</td>
-                                        <td *ngIf="liquidacion.precioString == '0,00'"></td>
-                                        <td *ngIf="liquidacion.totalString != '0,00'">{{liquidacion.totalString}}</td>
-                                        <td *ngIf="liquidacion.totalString == '0,00'"><a
+                                        <td *ngIf="liquidacion.cantidad == 0"></td>
+                                        <td *ngIf="liquidacion.precio != 0">{{liquidacion.precioString}}</td>
+                                        <td *ngIf="liquidacion.precio == 0"></td>
+                                        <td *ngIf="liquidacion.total != 0">{{liquidacion.totalString}}</td>
+                                        <td *ngIf="liquidacion.total == 0"><a
                                                 (click)="goToSeccionParam('liquidacion/proforma', liquidacion.pedido)"
                                                 href="#">Ver Proforma</a></td>
                                     </ng-container>
