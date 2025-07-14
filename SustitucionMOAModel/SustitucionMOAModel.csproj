@@ -74,10 +74,12 @@
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\CertificacionDto.cs" />
+    <Compile Include="Dto\Compras\Factura\GrupoCertificaciones.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaRevisionTecnicaDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaSolpPosicionDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaUsuarioAdicionalDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaUsuarioDto.cs" />
+    <Compile Include="Dto\Compras\POMultiple\PeticionDeOfertaDesvincularDto.cs" />
     <Compile Include="Dto\Compras\PrecargaSolp\ProcesarPrecargaSolpResponse.cs" />
     <Compile Include="Dto\Compras\PrecargaSolp\SolpPosicionPrecargadaDto.cs" />
     <Compile Include="Dto\Compras\PrecargaSolp\SolpSubposicionPrecargadaDto.cs" />
@@ -173,6 +175,7 @@
     <Compile Include="Entities\ConfiguracionUsuario.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />
     <Compile Include="Entities\RegionSap.cs" />
+    <Compile Include="Entities\RelacionSolicitanteExternoJefeMoa.cs" />
     <Compile Include="Entities\ResultadoAnalisisOcr.cs" />
     <Compile Include="Entities\ResultadoOCR.cs" />
     <Compile Include="Entities\SolpDatosPreviosPliegoMultiple.cs" />
@@ -385,6 +388,7 @@
     <Compile Include="ModelAttributes\ExcelColumnOrderAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelColumnNameAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelIgnoreAttribute.cs" />
+    <Compile Include="Models\ConsultaTicketPesadaNoGranos.cs" />
     <Compile Include="Models\EcheqRequestModel.cs" />
     <Compile Include="Entities\Configuracion.cs" />
     <Compile Include="Entities\HabilitacionJob.cs" />

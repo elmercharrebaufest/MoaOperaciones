@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.POMultiple;
 using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -193,5 +194,9 @@ namespace SustitucionMOAUtils.Interfaces
         ProcesarPrecargaSolpResponse ProcesarArchivoPrecargaSolp(HttpPostedFileBase archivo, int tipoSolpId);
         void GuardarCertificacionesParciales(List<AdjudicacionDto> adjudicaciones);
         AdjudicacionDto ObtenerAdjudicacion(string nroOC);
+        List<PeticionDeOfertaDesvincularDto> ObtenerPeticionesDeOfertaParaDesvincularMaterial(int solpPosicionId);
+        List<PeticionDeOfertaDesvincularDto> ObtenerPeticionesDeOfertaParaDesvincularServicio(int solpId);
+        void DesvincularSolpDePOMultipleMaterial(int solpPosicionId, List<int> idsPOsADesvincular);
+        void DesvincularSolpDePOMultipleServicio(int solpId, List<int> idsPOsADesvincular);
     }
 }

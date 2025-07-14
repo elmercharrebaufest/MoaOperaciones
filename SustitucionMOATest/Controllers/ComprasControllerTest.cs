@@ -24,6 +24,7 @@ namespace SustitucionMOATest.Controllers
     {
         private ComprasController target;
         private Mock<IComprasService> comprasServiceMock;
+        private Mock<IFacturaService> facturaServiceMock;
         private Mock<IComprasSapService> comprasSapServiceMock;
         private Mock<IComprasSolicitanteService> comprasSolicitanteServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
@@ -41,6 +42,7 @@ namespace SustitucionMOATest.Controllers
         public void SetUp()
         {
             comprasServiceMock = new Mock<IComprasService>();
+            facturaServiceMock = new Mock<IFacturaService>();
             comprasSapServiceMock = new Mock<IComprasSapService>();
             comprasSolicitanteServiceMock = new Mock<IComprasSolicitanteService>();
             usuarioServiceMock = new Mock<IUsuarioService>();
@@ -64,6 +66,7 @@ namespace SustitucionMOATest.Controllers
             Thread.CurrentPrincipal = principal;
 
             target = new ComprasController(comprasServiceMock.Object,
+                                           facturaServiceMock.Object,
                                            comprasSapServiceMock.Object,
                                            comprasSolicitanteServiceMock.Object,
                                            usuarioServiceMock.Object,
@@ -586,14 +589,38 @@ namespace SustitucionMOATest.Controllers
         [Test]
         public void ListarUsuarioSolicitanteOk()
         {
-            comprasSolicitanteServiceMock.Setup(x => x.ListarUsuarioSolicitante()).Returns(new List<UsuarioDto>
-            { new UsuarioDto { Mail = "bmelgarejo@prueba.com", UsuarioSap = "BRISAM" } });
+            // Arrange
+            int usuarioId = 1;
+            var roles = new List<RolDropdownDto> { new RolDropdownDto { Id = 1, Nombre = "Solicitante" } };
+            var usuarios = new List<UsuarioDto>
+                {
+                    new UsuarioDto { Mail = "bmelgarejo@prueba.com", UsuarioSap = "BRISAM" }
+                };
 
+            // Mock para obtener el usuario actual
+            var usuarioActual = new UsuarioDto { Id = usuarioId };
+            
+            // Modificación: Mock correcto para GetUsuario en vez de GetUsuarioPorId
+            usuarioServiceMock.Setup(x => x.GetUsuario(It.IsAny<string>())).Returns(usuarioActual);
+            usuarioServiceMock.Setup(x => x.GetRolesUsuario(usuarioId)).Returns(roles);
+
+            // Mock para el servicio de solicitantes
+            comprasSolicitanteServiceMock
+                .Setup(x => x.ListarUsuarioSolicitante(roles, usuarioId))
+                .Returns(usuarios);
+
+            // Act
             var result = target.ListarUsuarioSolicitante();
 
+            // Assert
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Data);
+            var data = (List<UsuarioDto>)result.Data;
+            Assert.AreEqual(1, data.Count);
+            Assert.AreEqual("bmelgarejo@prueba.com", data[0].Mail);
+            Assert.AreEqual("BRISAM", data[0].UsuarioSap);
         }
+
 
         [Test]
         public void ListarSolpCondicionEspecialOk()
@@ -763,5 +790,21 @@ namespace SustitucionMOATest.Controllers
             comprasServiceMock.Verify(x => x.DesagruparPO(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
+        [Test]
+        public void DesvincularSolpDePOMultiple_Ok()
+        {
+            var solpPosicionId = 1;
+            var idsPOsADesvincular = new string[] { "1001", "1002" };
+            var idsPOsADesvincularInt = new List<int> { 1001, 1002 };
+
+            comprasServiceMock.Setup(x => x.DesvincularSolpDePOMultipleMaterial(solpPosicionId, idsPOsADesvincularInt));
+
+            var result = target.DesvincularSolpDePOMultipleMaterial(solpPosicionId, idsPOsADesvincular);
+
+            Assert.IsNotNull(result);
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Data);
+            comprasServiceMock.Verify(x => x.DesvincularSolpDePOMultipleMaterial(solpPosicionId, idsPOsADesvincularInt), Times.Once);
+        }
     }
 }

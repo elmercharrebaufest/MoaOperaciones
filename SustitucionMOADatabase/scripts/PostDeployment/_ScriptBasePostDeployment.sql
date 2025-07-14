@@ -43,3 +43,4 @@ Post-Deployment Script Template
 :r ..\Notificaciones\NotificacionPrioridad.sql
 :r ..\Comunicacion\ComunicacionTipo.sql
 :r ..\Comunicacion\TipoRetencion.sql
+:r .\RelacionSolicitanteExternoJefeMoa.sql

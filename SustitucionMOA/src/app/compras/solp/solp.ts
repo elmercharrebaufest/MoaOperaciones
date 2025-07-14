@@ -67,6 +67,7 @@ export class Solp extends CommonResponse {
     public terminoJornadaLaboral: Date;
     public observacionesCotizacion: string;
     public observacionesCotizacionCondEsp: string;
+    public seraUsadoEnPliegoMultiple: boolean;
     public trabajoHecho: boolean;
     public conPresupuesto: boolean;
     public certificacionAutomatica: boolean;
@@ -91,6 +92,7 @@ export class Solp extends CommonResponse {
     public thServicioPermanente: boolean;
     public thAjustePolinomica: boolean;
     public thProveedorDirecto: boolean;
+    public admiteCertificacionesParciales: boolean = false;
 
     //inicio Cabecera == paso 5
     public selectClaseDocumento: any;
@@ -281,9 +283,11 @@ export class Solp extends CommonResponse {
             this.proveedorAsignado_Id = solp.ProveedorAsignado_Id;
             this.proveedorAsignado = solp.ProveedorAsignado;
             this.codigoProveedorSap = solp.CodigoProveedorSap;
+            this.seraUsadoEnPliegoMultiple = solp.SeraUsadoEnPliegoMultiple;
             this.trabajoHecho = solp.TrabajoYaHecho;
             this.conPresupuesto = solp.ConPresupuesto;
             this.certificacionAutomatica = solp.CertificacionAutomatica;
+            this.admiteCertificacionesParciales = solp.AdmiteCertificacionesParciales;
             this.adicional = solp.Adicional;
             this.urgencia = solp.Urgencia;
             this.condEspProveedorAsignado = solp.CondEspProveedorAsignado;

@@ -114,6 +114,7 @@ export class CotizacionComponent extends ListBaseComponent {
             dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias]),
             trabajoHecho: new FormControl('', Validators.required),
             conPresupuesto: new FormControl('', Validators.required),
+            seraUsadoEnPliegoMultiple: new FormControl('', Validators.required),
             certificacionAutomatica: new FormControl('', Validators.required),
             proveedorSeleccionado: new FormControl('', Validators.required),
             adicional: new FormControl('', Validators.required),
@@ -388,7 +389,7 @@ export class CotizacionComponent extends ListBaseComponent {
             this.model.thProveedorDirecto = false;
             this.model.thServicioPermanente = true;
         }
-        this.model.certificacionAutomatica = this.model.trabajoHecho;
+        this.model.certificacionAutomatica = this.model.trabajoHecho || false;
     }
 
     limpiarCheckProveedorAsignado() {
@@ -701,6 +702,15 @@ export class CotizacionComponent extends ListBaseComponent {
         if(this.tieneCondEspOriginal()){
             this.floatMsgService.setErrorMsg("Debe completar la condicion especial");
         }
+    }
+
+    puedeSeleccionarPliegoMultiple() : boolean {
+        const hayCondicionEspecialSeleccionada = this.model.trabajoHecho || this.model.conPresupuesto || this.model.adicional || this.model.urgencia || this.model.condEspProveedorAsignado;
+        return !hayCondicionEspecialSeleccionada;
+    }
+
+    puedeSeleccionarCondicionEspecial() : boolean {
+        return !this.model.seraUsadoEnPliegoMultiple;
     }
 
     habilitarUrgencia(habilitar: boolean) {

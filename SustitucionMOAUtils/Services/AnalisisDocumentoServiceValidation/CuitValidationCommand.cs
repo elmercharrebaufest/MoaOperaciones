@@ -46,7 +46,7 @@ namespace SustitucionMOAUtils.Services.AnalisisDocumentoServiceValidation
 
             if (!resultados.Any())
             {
-                resultados.Add(new ValidationResult(false, $"CUIT esperado: {_expectedCuit} no encontrado en el documento.", this.GetType().Name));
+                resultados.Add(new ValidationResult(false, $"CUIT esperado: {_expectedCuit} no encontrado en el documento. Factura no enviada.", this.GetType().Name));
             }
 
             return resultados;

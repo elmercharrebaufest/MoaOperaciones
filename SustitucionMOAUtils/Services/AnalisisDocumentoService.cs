@@ -7,6 +7,8 @@ namespace SustitucionMOAUtils.Services
 {
     public class AnalisisDocumentoService : IAnalisisDocumentoService
     {
+        private const string _cuitMoa = "30715118773";
+
         public AnalisisDocumentoService()
         {
         }
@@ -14,7 +16,7 @@ namespace SustitucionMOAUtils.Services
         public List<ValidationResult> AnalizarFacturaCertificacionServicios(List<string> documento, string cuitProveedor, string fileName)
         {
             var handler = new AnalisisDocumentoServiceValidationHandler();
-            handler.AddValidation(new CuitValidationCommand("30715118773"));
+            handler.AddValidation(new CuitValidationCommand(_cuitMoa));
             handler.AddValidation(new CuitValidationCommand(cuitProveedor));
             handler.AddValidation(new NumeroFacturaValidationCommand());
             handler.AddValidation(new CodigoFacturaValidationCommand());

@@ -705,6 +705,12 @@
                                     PLIEGO MÚLTIPLE
                                 </a>
                             </div>
+
+                            <div *ngIf="isAuthorized('REPORTE FACTURAS CERTIFICACIONES')">
+                                <a (click)="goToSeccion('/compras/reporteFacturasCertificaciones')" href="#">
+                                    REPORTE FACTURAS CERTIFICACIONES
+                                </a>
+                            </div>
                         </div>
                     </div>
 

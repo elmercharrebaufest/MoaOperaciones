@@ -5,19 +5,51 @@
     </div>
     <div class="aux-panel-body">
         <div class="search-filters row">
-            <!-- <div class="filtro-nro-orden col-md-3">
-                <p>Número de OC:</p>
-                <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Orden de compra" />
-            </div>
-
-            <div class="filtro-proveedor col-md-3">
-                <p>Proveedor:</p>
-                <p-autoComplete class="filtro-proveedor" [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedorList" (completeMethod)="autocompleteProveedor($event)" field="valor" placeholder="Proveedor" [minLength]="4" autoZIndex="true" emptyMessage="No hay resultados para mostrar"></p-autoComplete>
-            </div> -->
 
             <div class="filtro-fechas col-md-6 col-sm-12 col-xs-12">
                 <p>Ver:</p>
-                <dropdown (select)="setDateByRange($event)" [disabled]="visible" [options]="filtroFechas" class="styled-select" [selectedOption]="fechaSeleccionada"></dropdown>
+                <dropdown (select)="setDateByRange($event)" [disabled]="visible" [options]="filtroFechas" class="styled-select"
+                    [selectedOption]="periodoSeleccionado" (ngModelChange)="setFechasSegunPeriodo()">
+                </dropdown>
+
+                <div *ngIf="periodoSeleccionado == '4'">
+                    <div class="col-xs-12 col-sm-6 col-md-12 entrefechas_1 searchVerSelect">
+                        Desde:
+                        <form action="" class="form-horizontal styled-select form_datetime_form1" role="form">
+                            <fieldset>
+                                <div>
+                                    <div class="input-group date form_datetime1" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input1">
+                                        <input type="text" value="{{filtroFechaDesde}}" id="noCursor" readonly />
+                                        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                                    </div>
+                                    <input type="hidden" #dtp_input1 id="dtp_input1" class="dtp_input1" value="{{filtroFechaDesde}}" />
+                                    <br />
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 col-md-12 entrefechas_1 entrefechas_2 searchVerSelect">
+                        Hasta:
+                        <form action="" class="form-horizontal styled-select form_datetime_form2" role="form">
+                            <fieldset>
+                                <div>
+                                    <div class="input-group date form_datetime2" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input2">
+                                        <input type="text" value="{{filtroFechaHasta}}" id="noCursor" readonly />
+                                        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                                    </div>
+                                    <input type="hidden" #dtp_input2 id="dtp_input2" class="dtp_input2" value="{{filtroFechaHasta}}" />
+                                    <br />
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <p>Número de OC:</p>
+                <input pInputText type="text" placeholder="Orden de compra" [(ngModel)]="ordenCompra" (ngModelChange)="setOrdenCompra()" />
             </div>
 
             <div class="SearchBtn col-md-6 col-sm-12 col-xs-12 vertical-align-middle">

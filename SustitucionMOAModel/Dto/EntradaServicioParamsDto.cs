@@ -9,6 +9,7 @@ namespace SustitucionMOAModel.Dto
     public class EntradaServicioParamsDto
     {
         public string FechaInicio { get; set; }
+        public string FechaFin { get; set; }
         public string Vendedor { get; set; }
         public string DocumentoNumero { get; set; }
         public string ColumnaOrden { get; set; }
@@ -17,5 +18,6 @@ namespace SustitucionMOAModel.Dto
         public int elementosPorPagina { get; set; }
         public bool VerTodo { get; set; }
         public string FechaContabilizacion { get; set; }
+        public string OrdenCompra { get; set; }
     }
 }

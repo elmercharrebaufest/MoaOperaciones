@@ -1,42 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Entidades" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Entidades" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" />
-  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd8" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" />
-  <xs:import schemaLocation="http://localhost/Scato.ServiciosWeb/ServicioComandos.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" />
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio" />
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd9" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" />
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:complexType name="Calle">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Automatica" type="xs:boolean" />
-      <xs:element minOccurs="0" name="Bloqueada" type="xs:boolean" />
-      <xs:element minOccurs="0" name="CantidadDeCamiones" type="xs:int" />
-      <xs:element minOccurs="0" name="CaracteristicaDeCalidad" nillable="true" type="tns:CaracteristicaDeCalidad" />
-      <xs:element minOccurs="0" name="CentroId" type="xs:int" />
-      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Deshabilitada" type="xs:boolean" />
-      <xs:element minOccurs="0" name="FechaLLamada" nillable="true" type="xs:dateTime" />
-      <xs:element minOccurs="0" name="HidraulicaAsignada" type="xs:int" />
-      <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element minOccurs="0" name="Material" nillable="true" type="tns:Material" />
-      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="RangoCaracteristicaCalidadMaximo" nillable="true" type="xs:decimal" />
-      <xs:element minOccurs="0" name="RangoCaracteristicaCalidadMinimo" nillable="true" type="xs:decimal" />
-      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCalidad" type="q1:TipoCalidad" />
-      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCalle" type="q2:TipoCalle" />
-    </xs:sequence>
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio" base="q1:IdentificableBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ActivoAutomatico" type="xs:boolean" />
+          <xs:element minOccurs="0" name="Automatica" type="xs:boolean" />
+          <xs:element minOccurs="0" name="AutomatismoTipoLlamado" nillable="true" type="tns:AutomatismoTipoLlamado" />
+          <xs:element minOccurs="0" name="AutomatismoTipoLlamadoId" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="Bloqueada" type="xs:boolean" />
+          <xs:element minOccurs="0" name="CalleCalado" nillable="true" type="tns:Calle" />
+          <xs:element minOccurs="0" name="CantidadDeCamiones" type="xs:int" />
+          <xs:element minOccurs="0" name="CaracteristicaDeCalidad" nillable="true" type="tns:CaracteristicaDeCalidad" />
+          <xs:element minOccurs="0" name="CentroId" type="xs:int" />
+          <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Deshabilitada" type="xs:boolean" />
+          <xs:element minOccurs="0" name="FechaLLamada" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="HidraulicaAsignada" type="xs:int" />
+          <xs:element minOccurs="0" name="Id" type="xs:int" />
+          <xs:element minOccurs="0" name="Material" nillable="true" type="tns:Material" />
+          <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Posicion" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="RangoCaracteristicaCalidadMaximo" nillable="true" type="xs:decimal" />
+          <xs:element minOccurs="0" name="RangoCaracteristicaCalidadMinimo" nillable="true" type="xs:decimal" />
+          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCalidad" type="q2:TipoCalidad" />
+          <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCalle" type="q3:TipoCalle" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
   <xs:element name="Calle" nillable="true" type="tns:Calle" />
+  <xs:complexType name="AutomatismoTipoLlamado">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="AutomatismoTipoLlamado" nillable="true" type="tns:AutomatismoTipoLlamado" />
   <xs:complexType name="CaracteristicaDeCalidad">
     <xs:sequence>
-      <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Analisis" type="q3:TipoAnalisis" />
+      <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Analisis" type="q4:TipoAnalisis" />
       <xs:element minOccurs="0" name="CaladoMaximo" type="xs:decimal" />
       <xs:element minOccurs="0" name="CaladoMinimo" type="xs:decimal" />
+      <xs:element minOccurs="0" name="CaladoPorDefecto" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="CaracteristicaDeCalidadMaestro" nillable="true" type="tns:CaracteristicaDeCalidadMaestro" />
       <xs:element minOccurs="0" name="CargaEnCalado" type="xs:boolean" />
       <xs:element minOccurs="0" name="CodigoSAP" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ConfiguracionesDeTabla" nillable="true" type="tns:ArrayOfConfiguracionDeTabla" />
       <xs:element minOccurs="0" name="DescripcionCorta" nillable="true" type="xs:string" />
-      <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="DescuentoEnPorcentaje" type="q4:FormulaDescuento" />
+      <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="DescuentoEnPorcentaje" type="q5:FormulaDescuento" />
       <xs:element minOccurs="0" name="Descuentos" nillable="true" type="tns:ArrayOfDescuento" />
-      <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Dispositivo" type="q5:TipoDispositivo" />
+      <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Dispositivo" type="q6:TipoDispositivo" />
       <xs:element minOccurs="0" name="Ensayo" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="EnviaASap" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsAutomatizable" type="xs:boolean" />
@@ -49,6 +69,7 @@
       <xs:element minOccurs="0" name="EsInsectosVivos" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsMermaVolatil" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsModificable" type="xs:boolean" />
+      <xs:element minOccurs="0" name="EsPesoHectolitrico" nillable="true" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsProteina" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsTenorAzucarino" type="xs:boolean" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
@@ -62,7 +83,7 @@
       <xs:element minOccurs="0" name="Obligatorio" type="xs:boolean" />
       <xs:element minOccurs="0" name="PrioridadEnCalado" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="SiSuperaValorCamara" nillable="true" type="xs:decimal" />
-      <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="SituacionEnvioACamara" type="q6:EnvioACamara" />
+      <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="SituacionEnvioACamara" type="q7:EnvioACamara" />
       <xs:element minOccurs="0" name="ToleranciaSinAnalisis" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="ToleranciaSinMensaje" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="UnidadDeMedida" nillable="true" type="xs:string" />
@@ -105,6 +126,7 @@
   <xs:complexType name="Centro">
     <xs:sequence>
       <xs:element minOccurs="0" name="AsignaBalanzaEnComando" type="xs:boolean" />
+      <xs:element minOccurs="0" name="AvanzaCpe" type="xs:boolean" />
       <xs:element minOccurs="0" name="CamaraDefault" nillable="true" type="tns:Camara" />
       <xs:element minOccurs="0" name="CantEtiquetasMicromuestras" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="CasillerosPorHumedad" type="xs:boolean" />
@@ -122,8 +144,12 @@
       <xs:element minOccurs="0" name="DescargaCartaPortePorCtg" type="xs:boolean" />
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Direccion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Domicilio" nillable="true" type="tns:Domicilio" />
       <xs:element minOccurs="0" name="EncolaBajaCtgAutomatico" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ErrorCacheoAfipCPE" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="EsVirtual" type="xs:boolean" />
+      <xs:element minOccurs="0" name="FechaEjecucionCacheoCPE" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FotosPath" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="HorarioDesde" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="HorarioHasta" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
@@ -132,11 +158,14 @@
       <xs:element minOccurs="0" name="IngresosBrutos" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="LeerCPDeFoto" type="xs:boolean" />
       <xs:element minOccurs="0" name="LibroOnccaPorDescripcionCorta" type="xs:boolean" />
+      <xs:element minOccurs="0" name="LimiteCamionesCalado" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="LimiteMinimoDePeso" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Localidad" nillable="true" type="tns:Localidad" />
       <xs:element minOccurs="0" name="MailBarreras" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MailVencimientoCAI" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MinutosEsperaCircular" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="MinutosEsperaPrecalado" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="MinutosInactividadCalado" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="ModificaAlmacenEnPesada" type="xs:boolean" />
       <xs:element minOccurs="0" name="ModificaPinchazosPorCalada" type="xs:boolean" />
       <xs:element minOccurs="0" name="NotificarCamioneroCircular" type="xs:boolean" />
@@ -145,6 +174,7 @@
       <xs:element minOccurs="0" name="NumeroLoteInicial" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="NumeroOrigenCamaraBsAs" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Planta" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="PlantaDG" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Provincia" nillable="true" type="tns:Provincia" />
       <xs:element minOccurs="0" name="RazonSocial" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ReingresaPatenteAlPesar" type="xs:boolean" />
@@ -160,6 +190,7 @@
       <xs:element minOccurs="0" name="UsaConfirmacionDescarga" type="xs:boolean" />
       <xs:element minOccurs="0" name="UsaNumeroMuestraTerceros" type="xs:boolean" />
       <xs:element minOccurs="0" name="UsuariosAsociados" nillable="true" type="tns:ArrayOfUsuario" />
+      <xs:element minOccurs="0" name="ValidarAutomaticamenteCTGDG" type="xs:boolean" />
       <xs:element minOccurs="0" name="ValidarCupo" type="xs:boolean" />
       <xs:element minOccurs="0" name="ValidarLimiteDeCreditoVentaEnSAP" type="xs:boolean" />
       <xs:element minOccurs="0" name="ValidarLimiteMinimoDePeso" type="xs:boolean" />
@@ -174,11 +205,20 @@
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DescripcionCorta" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Email" nillable="true" type="xs:string" />
-      <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="FormatoDeArchivo" nillable="true" type="q7:CamaraFormatoDeArchivo" />
+      <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="FormatoDeArchivo" nillable="true" type="q8:CamaraFormatoDeArchivo" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Camara" nillable="true" type="tns:Camara" />
+  <xs:complexType name="Domicilio">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Orden" type="xs:int" />
+      <xs:element minOccurs="0" name="Tipo" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Domicilio" nillable="true" type="tns:Domicilio" />
   <xs:complexType name="Localidad">
     <xs:sequence>
       <xs:element minOccurs="0" name="CodigoAfip" nillable="true" type="xs:string" />
@@ -271,11 +311,11 @@
   <xs:complexType name="Permiso">
     <xs:sequence>
       <xs:element minOccurs="0" name="ActividadWorkflow" nillable="true" type="xs:string" />
-      <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" minOccurs="0" name="Codigo" type="q8:PermisosScato" />
+      <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" minOccurs="0" name="Codigo" type="q9:PermisosScato" />
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="RolesAsociados" nillable="true" type="tns:ArrayOfRol" />
-      <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoPermiso" type="q9:TipoPermiso" />
+      <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoPermiso" type="q10:TipoPermiso" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Permiso" nillable="true" type="tns:Permiso" />
@@ -284,16 +324,20 @@
       <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
       <xs:element minOccurs="0" name="AlmacenOrigen" nillable="true" type="tns:Almacen" />
       <xs:element minOccurs="0" name="Almacenes" nillable="true" type="tns:ArrayOfAlmacen" />
-      <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Clase" nillable="true" type="q10:ClaseBin" />
+      <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Clase" nillable="true" type="q11:ClaseBin" />
       <xs:element minOccurs="0" name="CodigoEspecie" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="CodigoGranoPadre" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="CodigoONCCA" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CodigoSAP" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ColorFondo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ColorTexto" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Commodity" type="xs:boolean" />
       <xs:element minOccurs="0" name="Contrato" type="xs:boolean" />
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DescripcionCorta" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="EsAsignableCalle" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsCosecha" type="xs:boolean" />
+      <xs:element minOccurs="0" name="EsDerivadoGranario" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsGrano" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsInsumo" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsUva" type="xs:boolean" />
@@ -304,9 +348,11 @@
       <xs:element minOccurs="0" name="Oleico" type="xs:boolean" />
       <xs:element minOccurs="0" name="Peso" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="PesoTeoricoSap" nillable="true" type="xs:decimal" />
+      <xs:element minOccurs="0" name="PuntosDeCarga" nillable="true" type="tns:ArrayOfPuntoDeCarga" />
       <xs:element minOccurs="0" name="RequiereAnexoInase" type="xs:boolean" />
       <xs:element minOccurs="0" name="RequiereNumeroTropa" type="xs:boolean" />
       <xs:element minOccurs="0" name="TipoDeGrano" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="TipoEmbalaje" nillable="true" type="tns:TipoEmbalaje" />
       <xs:element minOccurs="0" name="UnidadDeMedidad" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="UsaBinPallet" type="xs:boolean" />
       <xs:element minOccurs="0" name="Variedad" nillable="true" type="tns:Variedad" />
@@ -316,17 +362,24 @@
   </xs:complexType>
   <xs:element name="Material" nillable="true" type="tns:Material" />
   <xs:complexType name="Almacen">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Centro" nillable="true" type="tns:Centro" />
-      <xs:element minOccurs="0" name="CodigoONCCA" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="CodigoSAP" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="DescripcionCorta" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="EsSojaSustentable" type="xs:boolean" />
-      <xs:element minOccurs="0" name="EsTanqueVino" type="xs:boolean" />
-      <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element minOccurs="0" name="Materiales" nillable="true" type="tns:ArrayOfMaterial" />
-    </xs:sequence>
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q12="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio" base="q12:IdentificableBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Centro" nillable="true" type="tns:Centro" />
+          <xs:element minOccurs="0" name="CodigoONCCA" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="CodigoSAP" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="DescripcionCorta" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="EPA" type="xs:boolean" />
+          <xs:element minOccurs="0" name="EsSojaSustentable" type="xs:boolean" />
+          <xs:element minOccurs="0" name="EsTanqueVino" type="xs:boolean" />
+          <xs:element minOccurs="0" name="EstadoAutomatismo" nillable="true" type="xs:boolean" />
+          <xs:element minOccurs="0" name="Id" type="xs:int" />
+          <xs:element minOccurs="0" name="Materiales" nillable="true" type="tns:ArrayOfMaterial" />
+          <xs:element minOccurs="0" name="TipoVariedadPorMateriales" nillable="true" type="tns:ArrayOfTipoVariedadPorMaterial" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
   <xs:element name="Almacen" nillable="true" type="tns:Almacen" />
   <xs:complexType name="ArrayOfMaterial">
@@ -335,12 +388,495 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfMaterial" nillable="true" type="tns:ArrayOfMaterial" />
+  <xs:complexType name="ArrayOfTipoVariedadPorMaterial">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TipoVariedadPorMaterial" nillable="true" type="tns:TipoVariedadPorMaterial" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTipoVariedadPorMaterial" nillable="true" type="tns:ArrayOfTipoVariedadPorMaterial" />
+  <xs:complexType name="TipoVariedadPorMaterial">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:AuditoriaBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Almacenes" nillable="true" type="tns:ArrayOfAlmacen" />
+          <xs:element minOccurs="0" name="ColorFondo" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ColorTexto" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Id" type="xs:int" />
+          <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
+          <xs:element minOccurs="0" name="TipoVariedad" nillable="true" type="tns:TipoVariedad" />
+          <xs:element minOccurs="0" name="TipoVariedadId" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TipoVariedadPorMaterial" nillable="true" type="tns:TipoVariedadPorMaterial" />
+  <xs:complexType name="AuditoriaBase">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Borrado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="CreadoPor" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FechaCreacion" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaModificacion" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="ModificadoPor" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="AuditoriaBase" nillable="true" type="tns:AuditoriaBase" />
   <xs:complexType name="ArrayOfAlmacen">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="Almacen" nillable="true" type="tns:Almacen" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfAlmacen" nillable="true" type="tns:ArrayOfAlmacen" />
+  <xs:complexType name="TipoVariedad">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:AuditoriaBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="AutomatismoGranos" nillable="true" type="tns:ArrayOfAutomatismoGrano" />
+          <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Id" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="TipoVariedad" nillable="true" type="tns:TipoVariedad" />
+  <xs:complexType name="ArrayOfAutomatismoGrano">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="AutomatismoGrano" nillable="true" type="tns:AutomatismoGrano" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAutomatismoGrano" nillable="true" type="tns:ArrayOfAutomatismoGrano" />
+  <xs:complexType name="AutomatismoGrano">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q13="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio" base="q13:IdentificableBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+          <xs:element minOccurs="0" name="Almacen" nillable="true" type="tns:Almacen" />
+          <xs:element minOccurs="0" name="AlmacenId" type="xs:int" />
+          <xs:element minOccurs="0" name="AplicaFiltroCalidad" type="xs:boolean" />
+          <xs:element minOccurs="0" name="Calidad" nillable="true" type="tns:CaracteristicaDeCalidad" />
+          <xs:element minOccurs="0" name="CalidadId" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="CallePreBalanza" nillable="true" type="tns:Calle" />
+          <xs:element minOccurs="0" name="CallePreBalanzaId" type="xs:int" />
+          <xs:element minOccurs="0" name="CallePreHidraulica" nillable="true" type="tns:Calle" />
+          <xs:element minOccurs="0" name="CallePreHidraulicaId" type="xs:int" />
+          <xs:element minOccurs="0" name="CamionEscalable" type="xs:boolean" />
+          <xs:element minOccurs="0" name="Hidraulicas" nillable="true" type="tns:ArrayOfPuestosDeCargaDescarga" />
+          <xs:element minOccurs="0" name="Id" type="xs:int" />
+          <xs:element minOccurs="0" name="Material" nillable="true" type="tns:Material" />
+          <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
+          <xs:element minOccurs="0" name="Maximo" nillable="true" type="xs:decimal" />
+          <xs:element minOccurs="0" name="Minimo" nillable="true" type="xs:decimal" />
+          <xs:element minOccurs="0" name="TipoVariedades" nillable="true" type="tns:ArrayOfTipoVariedad" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="AutomatismoGrano" nillable="true" type="tns:AutomatismoGrano" />
+  <xs:complexType name="ArrayOfPuestosDeCargaDescarga">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PuestosDeCargaDescarga" nillable="true" type="tns:PuestosDeCargaDescarga" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPuestosDeCargaDescarga" nillable="true" type="tns:ArrayOfPuestosDeCargaDescarga" />
+  <xs:complexType name="PuestosDeCargaDescarga">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q14="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio" base="q14:IdentificableBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ActivoAutomatico" type="xs:boolean" />
+          <xs:element minOccurs="0" name="AsignacionesDeRecorrido" nillable="true" type="tns:ArrayOfAsignacionDeRecorrido" />
+          <xs:element minOccurs="0" name="AutomatismoGranos" nillable="true" type="tns:ArrayOfAutomatismoGrano" />
+          <xs:element minOccurs="0" name="Centro" nillable="true" type="tns:Centro" />
+          <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="CodigoSensorBajada" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="EsEscalable" type="xs:boolean" />
+          <xs:element minOccurs="0" name="EsEspecial" nillable="true" type="xs:boolean" />
+          <xs:element minOccurs="0" name="EsSojaEPA" type="xs:boolean" />
+          <xs:element minOccurs="0" name="EsSojaSustentable" type="xs:boolean" />
+          <xs:element minOccurs="0" name="Id" type="xs:int" />
+          <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="PuestoDeTrabajo" nillable="true" type="tns:PuestoDeTrabajo" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PuestosDeCargaDescarga" nillable="true" type="tns:PuestosDeCargaDescarga" />
+  <xs:complexType name="ArrayOfAsignacionDeRecorrido">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="AsignacionDeRecorrido" nillable="true" type="tns:AsignacionDeRecorrido" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAsignacionDeRecorrido" nillable="true" type="tns:ArrayOfAsignacionDeRecorrido" />
+  <xs:complexType name="AsignacionDeRecorrido">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AlmacenDestino" nillable="true" type="tns:Almacen" />
+      <xs:element minOccurs="0" name="BalanzaBruto" nillable="true" type="tns:Balanza" />
+      <xs:element minOccurs="0" name="BalanzaTara" nillable="true" type="tns:Balanza" />
+      <xs:element minOccurs="0" name="Calidad" nillable="true" type="tns:CalidadMaterial" />
+      <xs:element minOccurs="0" name="Calle" nillable="true" type="tns:Calle" />
+      <xs:element minOccurs="0" name="Centro" nillable="true" type="tns:Centro" />
+      <xs:element minOccurs="0" name="FechaDesde" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaHasta" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="MaterialPorCentro" nillable="true" type="tns:MaterialPorCentro" />
+      <xs:element minOccurs="0" name="PuestosDeCargaDescargas" nillable="true" type="tns:ArrayOfPuestosDeCargaDescarga" />
+      <xs:element minOccurs="0" name="Workflow" nillable="true" type="tns:Workflow" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="AsignacionDeRecorrido" nillable="true" type="tns:AsignacionDeRecorrido" />
+  <xs:complexType name="Balanza">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Centro" nillable="true" type="tns:Centro" />
+      <xs:element minOccurs="0" name="CentroEmisor" type="xs:int" />
+      <xs:element minOccurs="0" name="CertificadoDeHabilitacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CodigoCabezal" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CodigoLatitud" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CodigoLongitud" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CodigoLot" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Color" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ContingenciaExcedentesHabilitada" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Desactivado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="EsExportacion" type="xs:boolean" />
+      <xs:element minOccurs="0" name="EstaEnCero" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="MaximoValorCereo" type="xs:int" />
+      <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Modalidad" type="q15:Modalidad" />
+      <xs:element minOccurs="0" name="Modelo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NombreCorto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NroSerie" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PuestoDeTrabajo" nillable="true" type="xs:string" />
+      <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAcceso" type="q16:TipoAcceso" />
+      <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoBalanza" type="q17:TipoBalanza" />
+      <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q18:TipoVehiculo" />
+      <xs:element minOccurs="0" name="ToleranciaExcedida" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="ToleranciaIndianapolis" type="xs:int" />
+      <xs:element minOccurs="0" name="ToleranciaOrigen" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="ToleranciaRechazo" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="ToleranciaxMil" nillable="true" type="xs:decimal" />
+      <xs:element minOccurs="0" name="VencimientoDeCertificado" nillable="true" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Balanza" nillable="true" type="tns:Balanza" />
+  <xs:complexType name="CalidadMaterial">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="MaterialPorCentro" nillable="true" type="tns:MaterialPorCentro" />
+      <xs:element minOccurs="0" name="TieneAnalisis" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ValorDesde" type="xs:decimal" />
+      <xs:element minOccurs="0" name="ValorHasta" type="xs:decimal" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CalidadMaterial" nillable="true" type="tns:CalidadMaterial" />
+  <xs:complexType name="MaterialPorCentro">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AlmacenPredeterminado" nillable="true" type="tns:Almacen" />
+      <xs:element minOccurs="0" name="AnalisisInterno" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="Camara" nillable="true" type="tns:Camara" />
+      <xs:element minOccurs="0" name="Centro" nillable="true" type="tns:Centro" />
+      <xs:element minOccurs="0" name="CorrespondeDescarga" type="xs:boolean" />
+      <xs:element minOccurs="0" name="DescripcionWebMobile" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EpaStockPorCorte" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="IgnoraContingencia" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ImprimeReciboMunicipal" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Material" nillable="true" type="tns:Material" />
+      <xs:element minOccurs="0" name="MaterialDeTerceros" type="xs:boolean" />
+      <xs:element minOccurs="0" name="MostrarEnWebMobile" type="xs:boolean" />
+      <xs:element minOccurs="0" name="NoValidaCG" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Orden" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="PorcentajeMuestraAuditoria" nillable="true" type="xs:decimal" />
+      <xs:element minOccurs="0" name="RequiereTecnologia" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MaterialPorCentro" nillable="true" type="tns:MaterialPorCentro" />
+  <xs:complexType name="Workflow">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Centro" nillable="true" type="tns:Centro" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Definiciones" nillable="true" type="tns:ArrayOfWorkflowDefinicion" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="PendienteNoGranos" type="xs:boolean" />
+      <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q19:TipoDeWorkflow" />
+      <xs:element minOccurs="0" name="TiposComercialesAsociados" nillable="true" type="tns:ArrayOfTipoComercial" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Workflow" nillable="true" type="tns:Workflow" />
+  <xs:complexType name="ArrayOfWorkflowDefinicion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="WorkflowDefinicion" nillable="true" type="tns:WorkflowDefinicion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfWorkflowDefinicion" nillable="true" type="tns:ArrayOfWorkflowDefinicion" />
+  <xs:complexType name="WorkflowDefinicion">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activa" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ActividadInicial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Comentario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Definicion" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="FechaActivacion" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaCreacion" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="NombreUsuario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Workflow" nillable="true" type="tns:Workflow" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="WorkflowDefinicion" nillable="true" type="tns:WorkflowDefinicion" />
+  <xs:complexType name="ArrayOfTipoComercial">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TipoComercial" nillable="true" type="tns:TipoComercial" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTipoComercial" nillable="true" type="tns:ArrayOfTipoComercial" />
+  <xs:complexType name="TipoComercial">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CodigoSap" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EsParaUva" type="q20:TipoUva" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="NoRechazaEnCalado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="PesoEsperado" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="PesoMaximoDocumentoIngreso" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="Sentido" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ToleranciaDifPesoE" type="xs:int" />
+      <xs:element minOccurs="0" name="TransportistaEsProveedor" type="xs:boolean" />
+      <xs:element minOccurs="0" name="UsaBinPallet" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ValidaPatente" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ValidaStockEPA" type="xs:boolean" />
+      <xs:element minOccurs="0" name="WorkflowsAsociados" nillable="true" type="tns:ArrayOfWorkflow" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TipoComercial" nillable="true" type="tns:TipoComercial" />
+  <xs:complexType name="ArrayOfWorkflow">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Workflow" nillable="true" type="tns:Workflow" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfWorkflow" nillable="true" type="tns:ArrayOfWorkflow" />
+  <xs:complexType name="PuestoDeTrabajo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ActivarRegistroInactividad" type="xs:boolean" />
+      <xs:element minOccurs="0" name="AnalisisObligatoriosAsociados" nillable="true" type="tns:ArrayOfAnalisisObligatorio" />
+      <xs:element minOccurs="0" name="Automatico" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Automatizado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="AutomatizadoFull" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Balanza" nillable="true" type="tns:Balanza" />
+      <xs:element minOccurs="0" name="CartelLed" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Centro" nillable="true" type="tns:Centro" />
+      <xs:element minOccurs="0" name="CierreEntrada" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CierreSupervisor" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Concentrador" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ConfigSensores" nillable="true" type="tns:ConfigSensores" />
+      <xs:element minOccurs="0" name="EncolaLecturas" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Entrada" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EntradaSupervisor" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Estados" nillable="true" type="tns:ArrayOfEstadoConexion" />
+      <xs:element minOccurs="0" name="Firmware" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FotoAlMarcarTarjeta" type="xs:boolean" />
+      <xs:element minOccurs="0" name="GrupoBarreraCodigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="ImprimeCartaPorte" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ImprimeTarjetaDeAcceso" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IntercomunicadorCodigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="InvisibleEnListaDeTareas" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Lector" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="LectorQr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Lecturas" nillable="true" type="tns:ArrayOfLecturaDeTarjeta" />
+      <xs:element minOccurs="0" name="NoAsignaCalleEnGaritaEntrada" type="xs:boolean" />
+      <xs:element minOccurs="0" name="NombrePc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NombrePuesto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="OrdenBalanza" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="PausaAutoFull" type="xs:boolean" />
+      <xs:element minOccurs="0" name="PidePatente" type="xs:boolean" />
+      <xs:element minOccurs="0" name="RequiereComentarioGestionarBarrera" type="xs:boolean" />
+      <xs:element minOccurs="0" name="SemaforoAmarillo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SemaforoRojo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SemaforoVerde" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SensorQuiebre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SinAfip" type="xs:boolean" />
+      <xs:element minOccurs="0" name="SinCupo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="SinFotoCartaPorte" type="xs:boolean" />
+      <xs:element minOccurs="0" name="TarjetasSupervisorAsociadas" nillable="true" type="tns:ArrayOfTarjetaSupervisor" />
+      <xs:element minOccurs="0" name="VideoCamara" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="VideoCamaraDirectorio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="VideoCamaras" nillable="true" type="tns:ArrayOfVideoCamara" />
+      <xs:element minOccurs="0" name="VisualizacionBarrera" nillable="true" type="tns:VisualizacionBarrera" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PuestoDeTrabajo" nillable="true" type="tns:PuestoDeTrabajo" />
+  <xs:complexType name="ArrayOfAnalisisObligatorio">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="AnalisisObligatorio" nillable="true" type="tns:AnalisisObligatorio" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAnalisisObligatorio" nillable="true" type="tns:ArrayOfAnalisisObligatorio" />
+  <xs:complexType name="AnalisisObligatorio">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AlertarAnalisisIntervalo" type="xs:int" />
+      <xs:element minOccurs="0" name="Centro" nillable="true" type="tns:Centro" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="IntervaloDeAnalisis" type="xs:int" />
+      <xs:element minOccurs="0" name="Material" nillable="true" type="tns:Material" />
+      <xs:element minOccurs="0" name="PuestosDeTrabajoAsociados" nillable="true" type="tns:ArrayOfPuestoDeTrabajo" />
+      <xs:element minOccurs="0" name="UltimoAnalisis" nillable="true" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="AnalisisObligatorio" nillable="true" type="tns:AnalisisObligatorio" />
+  <xs:complexType name="ArrayOfPuestoDeTrabajo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PuestoDeTrabajo" nillable="true" type="tns:PuestoDeTrabajo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPuestoDeTrabajo" nillable="true" type="tns:ArrayOfPuestoDeTrabajo" />
+  <xs:complexType name="ConfigSensores">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Centro" nillable="true" type="tns:Centro" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="SensorBarreraEntradaAbajo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SensorBarreraEntradaArriba" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SensorBarreraSalidaAbajo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SensorBarreraSalidaArriba" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SensorPosicionIngreso" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SensorPosicionSalida" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConfigSensores" nillable="true" type="tns:ConfigSensores" />
+  <xs:complexType name="ArrayOfEstadoConexion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="EstadoConexion" nillable="true" type="tns:EstadoConexion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfEstadoConexion" nillable="true" type="tns:ArrayOfEstadoConexion" />
+  <xs:complexType name="EstadoConexion">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Estado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Mensaje" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PuestoDeTrabajo" nillable="true" type="tns:PuestoDeTrabajo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="EstadoConexion" nillable="true" type="tns:EstadoConexion" />
+  <xs:complexType name="ArrayOfLecturaDeTarjeta">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="LecturaDeTarjeta" nillable="true" type="tns:LecturaDeTarjeta" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfLecturaDeTarjeta" nillable="true" type="tns:ArrayOfLecturaDeTarjeta" />
+  <xs:complexType name="LecturaDeTarjeta">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Lectura" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="OcrActivo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PatenteLeida" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PuestoDeTrabajo" nillable="true" type="tns:PuestoDeTrabajo" />
+      <xs:element minOccurs="0" name="ReconocimientoExitoso" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="LecturaDeTarjeta" nillable="true" type="tns:LecturaDeTarjeta" />
+  <xs:complexType name="ArrayOfTarjetaSupervisor">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TarjetaSupervisor" nillable="true" type="tns:TarjetaSupervisor" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTarjetaSupervisor" nillable="true" type="tns:ArrayOfTarjetaSupervisor" />
+  <xs:complexType name="TarjetaSupervisor">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Centro" nillable="true" type="tns:Centro" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Numero" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PuestosDeTrabajoAsociados" nillable="true" type="tns:ArrayOfPuestoDeTrabajo" />
+      <xs:element minOccurs="0" name="Salida" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TarjetaSupervisor" nillable="true" type="tns:TarjetaSupervisor" />
+  <xs:complexType name="ArrayOfVideoCamara">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="VideoCamara" nillable="true" type="tns:VideoCamara" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfVideoCamara" nillable="true" type="tns:ArrayOfVideoCamara" />
+  <xs:complexType name="VideoCamara">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ActividadPorDispositivo" nillable="true" type="tns:ActividadPorDispositivo" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Directorio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Posicion" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="PuestoDeTrabajo" nillable="true" type="tns:PuestoDeTrabajo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="VideoCamara" nillable="true" type="tns:VideoCamara" />
+  <xs:complexType name="ActividadPorDispositivo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Actividad" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Entrada" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="PuestoDeTrabajo" nillable="true" type="tns:PuestoDeTrabajo" />
+      <xs:element minOccurs="0" name="Salida" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="VideoCamaras" nillable="true" type="tns:ArrayOfVideoCamara" />
+      <xs:element minOccurs="0" name="Workflow" nillable="true" type="tns:Workflow" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ActividadPorDispositivo" nillable="true" type="tns:ActividadPorDispositivo" />
+  <xs:complexType name="VisualizacionBarrera">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CentroId" type="xs:int" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Deshabilitada" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Rol" nillable="true" type="tns:Rol" />
+      <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio" minOccurs="0" name="SensoresBarreras" nillable="true" type="q21:ArrayOfSensorBarrera" />
+      <xs:element minOccurs="0" name="Visible" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="VisualizacionBarrera" nillable="true" type="tns:VisualizacionBarrera" />
+  <xs:complexType name="ArrayOfTipoVariedad">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TipoVariedad" nillable="true" type="tns:TipoVariedad" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTipoVariedad" nillable="true" type="tns:ArrayOfTipoVariedad" />
+  <xs:complexType name="ArrayOfPuntoDeCarga">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PuntoDeCarga" nillable="true" type="tns:PuntoDeCarga" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPuntoDeCarga" nillable="true" type="tns:ArrayOfPuntoDeCarga" />
+  <xs:complexType name="PuntoDeCarga">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q22="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio" base="q22:IdentificableBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Borrado" type="xs:boolean" />
+          <xs:element minOccurs="0" name="CantidadMaximaDeCamiones" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="ConviveEnAlmacen" type="xs:boolean" />
+          <xs:element minOccurs="0" name="CreadoPor" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="EstadoAutomatismo" nillable="true" type="xs:boolean" />
+          <xs:element minOccurs="0" name="FechaCreacion" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="FechaModificacion" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="Id" type="xs:int" />
+          <xs:element minOccurs="0" name="Materiales" nillable="true" type="tns:ArrayOfMaterial" />
+          <xs:element minOccurs="0" name="ModificadoPor" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PuntoDeCarga" nillable="true" type="tns:PuntoDeCarga" />
+  <xs:complexType name="TipoEmbalaje">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TipoEmbalaje" nillable="true" type="tns:TipoEmbalaje" />
   <xs:complexType name="Variedad">
     <xs:sequence>
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
@@ -366,28 +902,6 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Descuento" nillable="true" type="tns:Descuento" />
-  <xs:complexType name="MaterialPorCentro">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="AlmacenPredeterminado" nillable="true" type="tns:Almacen" />
-      <xs:element minOccurs="0" name="AnalisisInterno" nillable="true" type="xs:int" />
-      <xs:element minOccurs="0" name="Camara" nillable="true" type="tns:Camara" />
-      <xs:element minOccurs="0" name="Centro" nillable="true" type="tns:Centro" />
-      <xs:element minOccurs="0" name="CorrespondeDescarga" type="xs:boolean" />
-      <xs:element minOccurs="0" name="DescripcionWebMobile" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="EpaStockPorCorte" nillable="true" type="xs:int" />
-      <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element minOccurs="0" name="IgnoraContingencia" type="xs:boolean" />
-      <xs:element minOccurs="0" name="ImprimeReciboMunicipal" type="xs:boolean" />
-      <xs:element minOccurs="0" name="Material" nillable="true" type="tns:Material" />
-      <xs:element minOccurs="0" name="MaterialDeTerceros" type="xs:boolean" />
-      <xs:element minOccurs="0" name="MostrarEnWebMobile" type="xs:boolean" />
-      <xs:element minOccurs="0" name="NoValidaCG" type="xs:boolean" />
-      <xs:element minOccurs="0" name="Orden" nillable="true" type="xs:int" />
-      <xs:element minOccurs="0" name="PorcentajeMuestraAuditoria" nillable="true" type="xs:decimal" />
-      <xs:element minOccurs="0" name="RequiereTecnologia" type="xs:boolean" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="MaterialPorCentro" nillable="true" type="tns:MaterialPorCentro" />
   <xs:complexType name="EgresoSinFleteFasonesTransmisionASap">
     <xs:complexContent mixed="false">
       <xs:extension base="tns:TransmisionASap">
@@ -414,9 +928,9 @@
   <xs:element name="EgresoSinFleteFasonesTransmisionASap" nillable="true" type="tns:EgresoSinFleteFasonesTransmisionASap" />
   <xs:complexType name="TransmisionASap">
     <xs:sequence>
-      <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Estado" type="q11:EstadoTransmisionASap" />
+      <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Estado" type="q23:EstadoTransmisionASap" />
       <xs:element minOccurs="0" name="Fecha" type="xs:dateTime" />
-      <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="FuncionSap" type="q12:FuncionSAP" />
+      <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="FuncionSap" type="q24:FuncionSAP" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="InstanciaWorkflow" type="ser:guid" />
       <xs:element minOccurs="0" name="MensajeError" nillable="true" type="xs:string" />
@@ -878,8 +1392,11 @@
       <xs:extension base="tns:TransmisionASap">
         <xs:sequence>
           <xs:element minOccurs="0" name="Almacen" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="CPEDG" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="CTG" nillable="true" type="xs:string" />
           <xs:element minOccurs="0" name="Centro" nillable="true" type="xs:string" />
           <xs:element minOccurs="0" name="Cliente" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="DestinoMercaderia" nillable="true" type="xs:string" />
           <xs:element minOccurs="0" name="FechaIngreso" nillable="true" type="xs:string" />
           <xs:element minOccurs="0" name="Km" nillable="true" type="xs:decimal" />
           <xs:element minOccurs="0" name="Localidad" nillable="true" type="xs:string" />

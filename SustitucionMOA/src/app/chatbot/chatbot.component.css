@@ -15,8 +15,6 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-
-
     .chatbot-button img {
         width: 24px;
         height: 24px;
@@ -26,12 +24,10 @@
         padding: 3px;
     }
 
-
-
 .chatbot-modal {
     display: none;
     position: fixed;
-    top: 20px;
+    bottom: 80px;
     right: 20px;
     width: 400px;
     height: 600px;
@@ -40,8 +36,6 @@
     justify-content: center;
     align-items: center;
 }
-
-
 
 .chatbot-container {
     position: relative;
@@ -55,15 +49,11 @@
     flex-direction: column;
 }
 
-
-
 .chatbot-iframe {
     border: none;
     flex: 1;
     width: 100%;
 }
-
-
 
 .chatbot-close-btn {
     position: absolute;

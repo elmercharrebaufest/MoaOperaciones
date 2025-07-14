@@ -19,141 +19,145 @@ import { DropdownOption } from '../../../common/view-child/dropdown/dropdown.com
 import * as XLSX from 'xlsx';
 
 export interface estadoCertificacion {
-  name: string,
-  code: string
+    name: string,
+    code: string
 }
 
 export interface autoCompleteObject {
-  valor: string;
-  CodigoProveedor: string;
+    valor: string;
+    CodigoProveedor: string;
 };
 import { certificacionES } from '../components/modal-aprobacion/modalAprobacion.interface';
 import { TableCustomSort } from '../tableCustomSort.helper';
+import { EntradaServicioCabeceraDto } from '../../../common/models/ordenes-compra/entradaServicioCabecera';
 
 @Component({
-  selector: 'app-listado-estado-certificaciones',
-  templateUrl: './listado-estado-certificaciones.component.html',
-  styleUrls: ['./listado-estado-certificaciones.component.css']
+    selector: 'app-listado-estado-certificaciones',
+    templateUrl: './listado-estado-certificaciones.component.html',
+    styleUrls: ['./listado-estado-certificaciones.component.css']
 })
 export class ListadoEstadoCertificacionesComponent extends ListBaseComponent implements OnInit, OnDestroy {
-  //#region Variables 
-  @ViewChild("tabla") protected tabla: Table;
-  @ViewChild('paginator') paginator: Paginator;
-  @ViewChild(SpinnerComponent) protected spinnerComponent: SpinnerComponent;
-  @BlockUI() blockUI: NgBlockUI;
-  @HostListener('window:resize', ['$event'])
-  innerWidth: number;
-  onResize(event) {
-    this.innerWidth = window.innerWidth;
-  }
-
-  subscripciones: Subscription[] = [];
-  entradaServicioSeleccionada: certificacionES[] = [];
-  mostrarModalAprobaciones: boolean = false;
-  protected locale: any;
-  private destroy$: Subject<void> = new Subject<void>();
-  nroSolp: string = "";
-  ordenAscendente: boolean = false;
-  columnaOrden: string = "FechaCreacion";
-  fechaInicio = "";
-  length = 0;
-  pageSize: number = 10;
-  pageIndex: number = 1;
-  subscripcionPO: Subscription
-  documentoNumero: string = "";
-  expandedRows: any[] = [];
-  posicionRow: any[] = [];
-  isTableExpanded = false;
-  isTableItemsExpanded = false;
-  isEntradaDeServicioExpanded = false;
-  selectedItemIndex: number | null = null;
-  checkSelected = false;
-  itemIdSelected: Set<string> = new Set();
-  itemSelected: certificacionES[] = [];
-  selectedItemId: number | null = null;
-  selectedPosicionId: number | null = null;
-  ordenCompraIdsMostradas: Set<number> = new Set<number>();
-  ordenCompraId: string = "";
-  proveedorSeleccionado: autoCompleteObject;
-  selectedRow: any;
-  estadoCertificacion: estadoCertificacion = { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' };
-  formularioMotivosRechazo: FormGroup | undefined;
-  formularioSuplente: FormGroup | undefined;
-  mostrarMotivosRechazos: boolean = false;
-  proveedorList: any[] = new Array();
-  filtroFechas: Array<DropdownOption> = [
-    new DropdownOption("1", "Últimos dos dias"),
-    new DropdownOption("2", "Última semana"),
-    new DropdownOption("3", "Último mes"),
-  ];
-  fullscreen: boolean = false;
-  userId: any = '';
-  tablaPOAprobaciones: any[] = [];
-  tablaPOSap: any[] = [];
-  cols: any[];
-  usuario: string;
-  vendedor: string;
-  allItems: any[];
-  proveedor: string = sessionStorage.getItem("proveedor");
-  msgs: Message[] = [];
-  havePermission: boolean = false;
-  observaciones: string = '';
-  isAll: boolean = false; // Permiso para ver todos los registros en la tabla aprobaciones.
-  fechaSeleccionadaAux: string = "1";
-  recalculando: boolean = false;
-  recalculandoAprobadas: boolean = false;
-
-  motivos = [
-    { name: 'Servicio no ejecutado/concluido', code: '1' },
-    { name: 'Error en las cantidades certificadas, porcentajes erróneos', code: '2' },
-    { name: 'Servicio realizado con resultado distinto al contratado', code: '3' },
-    { name: 'Falta de presentación de documentación', code: '4' }
-  ];
-  suplentes: any = [];
-  listadoEstadoCertificacion: estadoCertificacion[] = [
-    { name: 'Estado: Aprobadas', code: 'Aprobada' },
-    { name: 'Estado: Pendientes de aprobación', code: 'Pendiente Aprobación' },
-    { name: 'Estado: Rechazadas', code: 'Rechazado' },
-    { name: 'Estado: Anuladas', code: 'Anulada' }
-  ];
-  listadoAreas: any = [];
-  defaultTablesConfig = [
-    {
-      name: 'Certificaciones',
-      columns: [
-        { id: 'cID_ES', header: 'ID_ES', field: 'ID_ES', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'date', sortable: true, required: false, visible: false },
-        { id: 'cFechaRechazo', header: 'Fecha Rechazo', field: 'FechaRechazo', type: 'date', sortable: true, required: false, visible: false },
-        { id: 'cFecha', header: 'Fecha Creación', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: false },
-        { id: 'cOrdenCompra', header: 'Número OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
-        { id: 'cCuit', header: 'CUIT', field: 'CUIT', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cProveedor', header: 'Proveedor', field: 'Proveedor', type: 'string', sortable: true, required: true, visible: true },
-        { id: 'cDescripción', header: 'Descripción', field: 'Descripción', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cMontoTotal', header: 'Monto total', field: 'MontoTotal', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: true, required: false, visible: true },
-        { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: true, required: false, visible: true },
-        { id: 'cAnulador', header: 'Anulado Por', field: 'AnuladoPor', type: 'string', sortable: true, required: false, visible: false },
-        { id: 'cMotivoRechazo', header: 'Motivo Rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
-        { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
-
-      ]
-    },
-    {
-      name: 'ESDetalle',
-      columns: [
-        { id: 'DPosicion', header: 'N° Posición', field: 'Posicion', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'DItem', header: 'N° Ítem', field: 'Item', type: 'string', sortable: false, required: false, visible: true },       
-        { id: 'DMaterial', header: 'N° Servicio', field: 'Material', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'DTxtBrev', header: 'Descripción', field: 'TxtBrev', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'DCtdPedido', header: 'Cant.', field: 'CtdPedido', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'DU', header: 'UM', field: 'U', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'DT', header: 'Precio Unitario', field: 'T', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'DNumeroRemito', header: 'Nro. Remito', field: 'NumeroRemito', type: 'string', sortable: false, required: false, visible: true }
-      ]
+    //#region Variables 
+    @ViewChild("tabla") protected tabla: Table;
+    @ViewChild('paginator') paginator: Paginator;
+    @ViewChild(SpinnerComponent) protected spinnerComponent: SpinnerComponent;
+    @BlockUI() blockUI: NgBlockUI;
+    @HostListener('window:resize', ['$event'])
+    innerWidth: number;
+    onResize(event) {
+        this.innerWidth = window.innerWidth;
     }
-  ];
+
+    subscripciones: Subscription[] = [];
+    entradaServicioSeleccionada: certificacionES[] = [];
+    mostrarModalAprobaciones: boolean = false;
+    protected locale: any;
+    private destroy$: Subject<void> = new Subject<void>();
+    nroSolp: string = "";
+    ordenAscendente: boolean = false;
+    columnaOrden: string = "FechaCreacion";
+    fechaInicio = "";
+    length = 0;
+    pageSize: number = 10;
+    pageIndex: number = 1;
+    subscripcionPO: Subscription
+    documentoNumero: string = "";
+    expandedRows: any[] = [];
+    posicionRow: any[] = [];
+    isTableExpanded = false;
+    isTableItemsExpanded = false;
+    isEntradaDeServicioExpanded = false;
+    selectedItemIndex: number | null = null;
+    checkSelected = false;
+    itemIdSelected: Set<string> = new Set();
+    itemSelected: certificacionES[] = [];
+    selectedItemId: number | null = null;
+    selectedPosicionId: number | null = null;
+    ordenCompraIdsMostradas: Set<number> = new Set<number>();
+    ordenCompraId: string = "";
+    proveedorSeleccionado: autoCompleteObject;
+    selectedRow: any;
+    estadoCertificacion: estadoCertificacion = { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' };
+    formularioMotivosRechazo: FormGroup | undefined;
+    formularioSuplente: FormGroup | undefined;
+    mostrarMotivosRechazos: boolean = false;
+    proveedorList: any[] = new Array();
+    filtroFechas: Array<DropdownOption> = [
+        new DropdownOption("1", "Últimos dos dias"),
+        new DropdownOption("2", "Última semana"),
+        new DropdownOption("3", "Último mes"),
+    ];
+    filtroFechaDesde: string;
+    filtroFechaHasta: string;
+    fullscreen: boolean = false;
+    userId: any = '';
+    tablaPOAprobaciones: EntradaServicioCabeceraDto[] = [];
+    tablaPOSap: EntradaServicioCabeceraDto[] = [];
+    cols: any[];
+    usuario: string;
+    vendedor: string;
+    allItems: any[];
+    proveedor: string = sessionStorage.getItem("proveedor");
+    msgs: Message[] = [];
+    havePermission: boolean = false;
+    observaciones: string = '';
+    isAll: boolean = false; // Permiso para ver todos los registros en la tabla aprobaciones.
+    fechaSeleccionadaAux: string = "1";
+    recalculando: boolean = false;
+    recalculandoAprobadas: boolean = false;
+    ordenCompraFiltro: string = "";
+
+    motivos = [
+        { name: 'Servicio no ejecutado/concluido', code: '1' },
+        { name: 'Error en las cantidades certificadas, porcentajes erróneos', code: '2' },
+        { name: 'Servicio realizado con resultado distinto al contratado', code: '3' },
+        { name: 'Falta de presentación de documentación', code: '4' }
+    ];
+    suplentes: any = [];
+    listadoEstadoCertificacion: estadoCertificacion[] = [
+        { name: 'Estado: Aprobadas', code: 'Aprobada' },
+        { name: 'Estado: Pendientes de aprobación', code: 'Pendiente Aprobación' },
+        { name: 'Estado: Rechazadas', code: 'Rechazado' },
+        { name: 'Estado: Anuladas', code: 'Anulada' }
+    ];
+    listadoAreas: any = [];
+    defaultTablesConfig = [
+        {
+            name: 'Certificaciones',
+            columns: [
+                { id: 'cID_ES', header: 'ID_ES', field: 'ID_ES', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'date', sortable: true, required: false, visible: false },
+                { id: 'cFechaRechazo', header: 'Fecha Rechazo', field: 'FechaRechazo', type: 'date', sortable: true, required: false, visible: false },
+                { id: 'cFecha', header: 'Fecha Creación', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: false },
+                { id: 'cOrdenCompra', header: 'Número OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
+                { id: 'cCuit', header: 'CUIT', field: 'CUIT', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'cProveedor', header: 'Proveedor', field: 'Proveedor', type: 'string', sortable: true, required: true, visible: true },
+                { id: 'cDescripción', header: 'Descripción', field: 'Descripción', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'cMontoTotal', header: 'Monto total', field: 'MontoTotal', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: true, required: false, visible: true },
+                { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: true, required: false, visible: true },
+                { id: 'cAnulador', header: 'Anulado Por', field: 'AnuladoPor', type: 'string', sortable: true, required: false, visible: false },
+                { id: 'cMotivoRechazo', header: 'Motivo Rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
+                { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
+
+            ]
+        },
+        {
+            name: 'ESDetalle',
+            columns: [
+                { id: 'DPosicion', header: 'N° Posición', field: 'Posicion', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'DItem', header: 'N° Ítem', field: 'Item', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'DMaterial', header: 'N° Servicio', field: 'Material', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'DTxtBrev', header: 'Descripción', field: 'TxtBrev', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'DCtdPedido', header: 'Cant.', field: 'CtdPedido', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'DU', header: 'UM', field: 'U', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'DT', header: 'Precio Unitario', field: 'T', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'DNumeroRemito', header: 'Nro. Remito', field: 'NumeroRemito', type: 'string', sortable: false, required: false, visible: true }
+            ]
+        }
+    ];
 
 
     public get columnaVisible_FechaAprobacion(): boolean {
@@ -172,469 +176,498 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
 
 
-  constructor(protected service: ComprasService, protected navService: NavService,
-    protected sessionDataService: SessionDataService, protected securityService: SecurityService,
-    protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-    protected route: ActivatedRoute, protected router: Router,
-    private location: Location,
-    private cdr: ChangeDetectorRef,
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService) {
-    super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-    this.usuario = sessionStorage.getItem("username");
-    var fechaActual = new Date();
-    fechaActual.setDate(fechaActual.getDate() - 2)
-    this.fechaInicio = fechaActual.toISOString().slice(0, 10);
-  }
+    constructor(protected service: ComprasService, protected navService: NavService,
+        protected sessionDataService: SessionDataService, protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        protected route: ActivatedRoute, protected router: Router,
+        private location: Location,
+        private cdr: ChangeDetectorRef,
+        private confirmationService: ConfirmationService,
+        private messageService: MessageService) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        this.usuario = sessionStorage.getItem("username");
+        var fechaActual = new Date();
+        fechaActual.setDate(fechaActual.getDate() - 2)
+        this.fechaInicio = fechaActual.toISOString().slice(0, 10);
+    }
 
     sortFunction(event: SortEvent, tableName: string): void {
         TableCustomSort.sortFunction(event, tableName, this.defaultTablesConfig);
     }
 
-  public ngOnDestroy(): void {
-    this.subscripciones.forEach(sub => sub.unsubscribe());
-  }
-
-  async ngOnInit() {
-    this.getFecha('1');
-    this.formsCreate();
-    this.innerWidth = window.innerWidth;
-    this.navService.setSeccionActive("Estado certificaciones");
-    this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
-
-    let permisos = sessionStorage.getItem("permisos");
-
-    if (permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES")) {
-      this.havePermission = true;
+    public ngOnDestroy(): void {
+        this.subscripciones.forEach(sub => sub.unsubscribe());
     }
-    this.recalculando = true;
-    this.recalculandoAprobadas = true;
-    await this.getListarPO(); // No mover.
-    this.obtenerESSap(this.proveedor, this.documentoNumero);
-  }
 
-  formsCreate(): void {
-    this.formularioMotivosRechazo = new FormGroup({
-      motivo: new FormControl({ name: null, code: null }, Validators.required),
-      destinatario: new FormControl(null),
-      detalleCertificacionRechazada: new FormControl(null),
-      resumenLineas: new FormControl(null),
-      motivoRechazo: new FormControl(null),
-      fechaRechazo: new FormControl(null),
-      proveedor: new FormControl(null),
-      numeroCertificacion: new FormControl(null),
-      fechaCertificacion: new FormControl(null),
-      descripcion: new FormControl(null),
-      importe: new FormControl(null),
-      montoTotal: new FormControl(null),
-      detalleServicio: new FormControl(null),
-      observaciones: new FormControl(null),
-      moneda: new FormControl(null)
-    });
+    async ngOnInit() {
+        this.getFecha('1');
+        this.formsCreate();
+        this.innerWidth = window.innerWidth;
+        this.navService.setSeccionActive("Estado certificaciones");
+        this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
 
-    this.formularioSuplente = new FormGroup({
-      suplente: new FormControl(null),
-      nro_es_local: new FormControl(null)
-    });
-  }
+        let permisos = sessionStorage.getItem("permisos");
 
-  toggleTable(data: any) {
-    const index = this.posicionRow.indexOf(data);
-    if (index === -1) {
-      this.posicionRow.push(data);
-      this.isTableExpanded = !this.isTableExpanded;
-    } else {
-      this.posicionRow.splice(index, 1);
-      this.isTableExpanded = false;
-    }
-  }
-
-  toggleEntradaServicio() {
-    this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
-  }
-
-  getListarPO(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      const subscription = this.service.ObtenerESLocales(this.isAll, '').subscribe(
-        (result: any) => {
-          if (result.logout === true) {
-            this.sessionDataService.logout();
-            reject('Logout required');
-          } else if (result.error !== undefined && result.error !== "") {
-          } else if (result.info !== undefined) {
-            // Manejo de mensajes informativos, si es necesario
-          } else {
-            this.agregarTipoMonedaEnDetalle(result.data);
-            this.tablaPOAprobaciones = result.data;
-            this.userId = this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
-          }
-          if (this.estadoCertificacion.code === 'Pendiente Aprobación') {
-            this.tabla.filter("Pendiente Aprobación", "Estado", "contains");
-          }
-          this.recalculando = false;
-          resolve();
-        },
-        error => {
-          this.floatMsgService.setErrorMsg(error.message);
-          this.recalculando = false;
-          reject(error);
+        if (permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES")) {
+            this.havePermission = true;
         }
-      );
-
-      this.subscripciones.push(subscription);
-      this.clearMessage();
-    });
-  }
-
-
-  obtenerESSap(proveedor, documentoNumero): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      const subscription = this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
-        (result: { error: any, data: any }) => {
-          this.recalculandoAprobadas = false;
-          if (result.error != null) {
-            this.floatMsgService.setErrorMsg(result.error);
-            return;
-          }
-          this.tablaPOSap = result.data;
-          resolve();
-        }, error => {
-          this.floatMsgService.setErrorMsg(error.message);
-          this.recalculandoAprobadas = false;
-          reject(error);
-        })
-      this.subscripciones.push(subscription);
-    });
-  }
-
-  clearMessage() {
-    setTimeout(() => {
-      this.messageService.clear();
-    }, 10000)
-  }
-
-  displayContent() {
-    return !this.spinnerComponent.visible;
-  }
-
-  setDateByRange(event: string): void {
-    this.getFecha(event);
-  }
-
-  getFecha(rango: string) {
-    var fechaActual = new Date();
-    switch (rango) {
-      case '1':
-        fechaActual.setDate(fechaActual.getDate() - 2);
-        break;
-      case '2':
-        fechaActual.setDate(fechaActual.getDate() - 7);
-        break;
-      case '3':
-        fechaActual.setMonth(fechaActual.getMonth() - 1);
-        break;
-      default:
-        fechaActual.setMonth(fechaActual.getMonth() - 1);
-        break;
+        this.recalculando = true;
+        this.recalculandoAprobadas = true;
+        await this.getListarPO(); // No mover.
+        this.obtenerESSap(this.proveedor, this.documentoNumero);
     }
-    this.fechaSeleccionadaAux = rango;
-    this.fechaInicio = fechaActual.toISOString().slice(0, 10);
-  }
 
-  toggleRow(rowData: any): void {
-    this.selectedRow = this.selectedRow === rowData ? null : rowData;
-  }
-
-  verMotivosRechazos(rowData: any): void {
-    this.formularioMotivosRechazo.controls['destinatario'].patchValue(rowData.Ingresante);
-    this.formularioMotivosRechazo.controls['proveedor'].patchValue(rowData.Proveedor);
-    this.formularioMotivosRechazo.controls['descripcion'].patchValue(rowData.Descripcion);
-    this.formularioMotivosRechazo.controls['montoTotal'].patchValue(rowData.MontoTotal);
-    this.formularioMotivosRechazo.controls['detalleServicio'].patchValue(rowData.entradaServicioDetalle);
-    this.formularioMotivosRechazo.controls['numeroCertificacion'].patchValue(rowData.NumeroCertificacion);
-    this.formularioMotivosRechazo.controls['fechaCertificacion'].patchValue(rowData.FechaCreacion);
-    this.formularioMotivosRechazo.controls['moneda'].patchValue(rowData.Moneda);
-    this.mostrarMotivosRechazos = true;
-  }
-
-  async filtrarPorEstado(event: any): Promise<void> {
-    this.estadoSeleccionado = event.value.code;
-
-    switch (event.value.code) {
-      case 'Aprobada':
-        this.defaultTablesConfig[0].columns.forEach(col => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaRechazo' || col.field === 'AnuladoPor' ? false : true;
+    formsCreate(): void {
+        this.formularioMotivosRechazo = new FormGroup({
+            motivo: new FormControl({ name: null, code: null }, Validators.required),
+            destinatario: new FormControl(null),
+            detalleCertificacionRechazada: new FormControl(null),
+            resumenLineas: new FormControl(null),
+            motivoRechazo: new FormControl(null),
+            fechaRechazo: new FormControl(null),
+            proveedor: new FormControl(null),
+            numeroCertificacion: new FormControl(null),
+            fechaCertificacion: new FormControl(null),
+            descripcion: new FormControl(null),
+            importe: new FormControl(null),
+            montoTotal: new FormControl(null),
+            detalleServicio: new FormControl(null),
+            observaciones: new FormControl(null),
+            moneda: new FormControl(null)
         });
-        break;
-      case 'Pendiente Aprobación':
-        if (this.tablaPOAprobaciones.length < 1) {
-          this.recalculando = true;
-          this.getListarPO();
-        }
-        this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
-        break;
-      case 'Rechazado':
-        if (this.tablaPOAprobaciones.length < 1) {
-          this.recalculando = true;
-          this.getListarPO();
-        }
-        this.defaultTablesConfig[0].columns.forEach(col => {
-          col.visible = col.field === 'Aprobador' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' || col.field === 'AnuladoPor' ? false : true;
+
+        this.formularioSuplente = new FormGroup({
+            suplente: new FormControl(null),
+            nro_es_local: new FormControl(null)
         });
-        break;
-      case 'Anulada':
-        if (this.tablaPOAprobaciones.length < 1) {
-          this.recalculando = true;
-          this.getListarPO();
+    }
+
+    toggleTable(data: any) {
+        const index = this.posicionRow.indexOf(data);
+        if (index === -1) {
+            this.posicionRow.push(data);
+            this.isTableExpanded = !this.isTableExpanded;
+        } else {
+            this.posicionRow.splice(index, 1);
+            this.isTableExpanded = false;
         }
-        this.defaultTablesConfig[0].columns.forEach(col => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobación' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' ? false : true;
+    }
+
+    toggleEntradaServicio() {
+        this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
+    }
+
+    getListarPO(fechaDesde: string = "", fechaHasta: string = ""): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            const subscription = this.service.ObtenerESLocales(this.isAll, '', fechaDesde, fechaHasta, this.ordenCompraFiltro).subscribe(
+                (result: any) => {
+                    if (result.logout === true) {
+                        this.sessionDataService.logout();
+                        reject('Logout required');
+                    } else if (result.error !== undefined && result.error !== "") {
+                    } else if (result.info !== undefined) {
+                        // Manejo de mensajes informativos, si es necesario
+                    } else {
+                        this.agregarTipoMonedaEnDetalle(result.data);
+                        this.tablaPOAprobaciones = result.data;
+                        this.userId = this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
+                    }
+                    if (this.estadoCertificacion.code === 'Pendiente Aprobación') {
+                        this.tabla.filter("Pendiente Aprobación", "Estado", "contains");
+                    }
+                    this.recalculando = false;
+                    resolve();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.recalculando = false;
+                    reject(error);
+                }
+            );
+
+            this.subscripciones.push(subscription);
+            this.clearMessage();
         });
-        break;
-    }
-    this.tabla.filter(event.value.code, 'Estado', 'contains');
-    this.showAllESRows();
-  }
-
-  showAllESRows(): void {
-    this.tablaPOAprobaciones.forEach(es => {
-      const element = document.getElementById(es.EntradaServicio);
-      if (element) {
-        element.style.display = 'table-row';
-      }
-    });
-  }
-
-  filtrarPorArea(event: any): void {
-    let filtrarAreas = [];
-    event.value.forEach((area: any) => {
-      filtrarAreas.push(area);
-    });
-    this.tabla.filter(filtrarAreas, 'UsuarioArea', 'contains');
-  }
-
-  verSuplentes(suplente: string, nro_es_local: string): void {
-    const data = {
-      Suplente: suplente,
-      NroEsLocal: nro_es_local
-    }
-    let confirmMessage;
-
-    if (suplente) {
-      confirmMessage = {
-        acceptLabel: 'Si',
-        message: `Está derivando la certificación Nº ` + nro_es_local + ` al siguiente aprobador ` + suplente + `. <b>¿Desea continuar?</b>`,
-        accept: () => {
-          this.messageService.clear();
-          this.blockUI.start('Cargando...');
-          this.reasignar(data);
-        },
-        reject: () => { }
-      }
-    } else {
-      confirmMessage = {
-        message: 'No posee suplente asignado',
-        acceptLabel: 'Ok',
-        rejectVisible: false
-      }
     }
 
-    this.confirmationService.confirm(confirmMessage);
-  }
 
-  reasignar(data): void {
-    this.subscripciones.push(
-      this.service.reasignarSuplente(data).subscribe(
-        (resp: any) => {
-          const msj = { severity: 'success', summary: 'Reasignación exitosa!', detail: 'Se reasigno al nuevo aprobador.' };
-          if (resp.error) {
-            msj.severity = 'error';
-            msj.summary = resp.error
-            msj.detail = '';
-          }
-          this.messageService.add(msj);
-          if (!resp.error) {
-            this.updateApprover(data.NroEsLocal, resp.data);
-          }
-          this.blockUI.stop();
-          this.clearMessage();
-        }, error => {
-          this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: error });
-          this.blockUI.stop();
-          this.clearMessage();
+    obtenerESSap(proveedor, documentoNumero): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            const subscription = this.service
+                .getByProveedorAsync(
+                    this.filtroFechaDesde,
+                    this.filtroFechaHasta,
+                    proveedor,
+                    documentoNumero,
+                    this.columnaOrden,
+                    this.ordenAscendente,
+                    this.pageIndex,
+                    this.pageSize,
+                    this.isAll,
+                    this.ordenCompraFiltro)
+                .subscribe(
+                    (result: { error: any, data: any }) => {
+                        this.recalculandoAprobadas = false;
+                        if (result.error != null) {
+                            this.floatMsgService.setErrorMsg(result.error);
+                            return;
+                        }
+                        this.tablaPOSap = result.data;
+                        resolve();
+                    }, error => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                        this.recalculandoAprobadas = false;
+                        reject(error);
+                    })
+            this.subscripciones.push(subscription);
+        });
+    }
+
+    clearMessage() {
+        setTimeout(() => {
+            this.messageService.clear();
+        }, 10000)
+    }
+
+    displayContent() {
+        return !this.spinnerComponent.visible;
+    }
+
+    setDateByRange(event: string): void {
+        this.getFecha(event);
+    }
+
+    getFecha(rango: string) {
+        var fechaActual = new Date();
+        switch (rango) {
+            case '1':
+                fechaActual.setDate(fechaActual.getDate() - 2);
+                break;
+            case '2':
+                fechaActual.setDate(fechaActual.getDate() - 7);
+                break;
+            case '3':
+                fechaActual.setMonth(fechaActual.getMonth() - 1);
+                break;
+            default:
+                fechaActual.setMonth(fechaActual.getMonth() - 1);
+                break;
         }
-      )
-    );
-  }
-
-  enviarMotivo() {
-    this.messageService.clear();
-    this.blockUI.start('Cargando...');
-    const data = {
-      Destinatario: this.formularioMotivosRechazo.get('destinatario').value,
-      MotivoRechazo: this.formularioMotivosRechazo.get('observaciones').value != null ? this.formularioMotivosRechazo.get('motivo').value.name + '. Observación:' + this.formularioMotivosRechazo.get('observaciones').value : this.formularioMotivosRechazo.get('motivo').value.name,
-      Proveedor: this.formularioMotivosRechazo.get('proveedor').value,
-      NumeroCertificacion: this.formularioMotivosRechazo.get('numeroCertificacion').value,
-      FechaCertificacion: this.formularioMotivosRechazo.get('fechaCertificacion').value,
-      Descripcion: this.formularioMotivosRechazo.get('descripcion').value,
-      MontoTotal: this.formularioMotivosRechazo.get('montoTotal').value,
-      DetalleServicio: this.formularioMotivosRechazo.get('detalleServicio').value.map((item: any) => ({
-        Descripcion: item.Descripcion,
-        Cantidad: item.Cantidad,
-        UM: item.UM,
-        Porcentaje: item.PorcentajeCertificar,
-        Monto: this.formularioMotivosRechazo.get('moneda').value === 'ARP' ? '$ ' + item.MontoCertificar : this.formularioMotivosRechazo.get('moneda').value + ' '+item.MontoCertificar
-      })),
-      Moneda: this.formularioMotivosRechazo.get('moneda').value
+        this.fechaSeleccionadaAux = rango;
+        this.fechaInicio = fechaActual.toISOString().slice(0, 10);
     }
-    this.subscripciones.push(
-      this.service.enviarMotivoRechazoES(data).subscribe(
-        (resp: any) => {
-          if (resp.data.status == "OK") {
-            this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
-          }
-          else {
-            this.messageService.add({ severity: 'error', summary: '', detail: resp.data.status });
-          }
 
-          this.resetRejectForm();
-          this.mostrarMotivosRechazos = false;
-          this.updateStateFromPending(data.NumeroCertificacion, 'Rechazar', { es: resp.data.result[0], dateReject: resp.data.Fecha_rechazo_string });
-          this.blockUI.stop();
-          this.clearMessage();
-        }, error => {
-          this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
-          this.blockUI.stop();
-          this.clearMessage();
+    onFiltroFechaDesdeChanged(fechaDesde: string) {
+        this.filtroFechaDesde = fechaDesde;
+    }
+
+    onFiltroFechaHastaChanged(fechaHasta: string) {
+        this.filtroFechaHasta = fechaHasta;
+    }
+
+    getOrdenCompraFiltro(ocIngresada: string) {
+        this.ordenCompraFiltro = ocIngresada;
+        this.tabla.filter(ocIngresada, 'OrdenCompra', 'contains');
+    }
+
+    toggleRow(rowData: any): void {
+        this.selectedRow = this.selectedRow === rowData ? null : rowData;
+    }
+
+    verMotivosRechazos(rowData: any): void {
+        const formMotivosRechazo = this.formularioMotivosRechazo;
+        if (formMotivosRechazo) {
+            formMotivosRechazo.controls['destinatario'].patchValue(rowData.Ingresante);
+            formMotivosRechazo.controls['proveedor'].patchValue(rowData.Proveedor);
+            formMotivosRechazo.controls['descripcion'].patchValue(rowData.Descripcion);
+            formMotivosRechazo.controls['montoTotal'].patchValue(rowData.MontoTotal);
+            formMotivosRechazo.controls['detalleServicio'].patchValue(rowData.entradaServicioDetalle);
+            formMotivosRechazo.controls['numeroCertificacion'].patchValue(rowData.NumeroCertificacion);
+            formMotivosRechazo.controls['fechaCertificacion'].patchValue(rowData.FechaCreacion);
+            formMotivosRechazo.controls['moneda'].patchValue(rowData.Moneda);
         }
-      )
-    );
-  }
+        this.mostrarMotivosRechazos = true;
+    }
 
-  ocultandoModal(): void {
-    this.resetRejectForm();
-  }
+    async filtrarPorEstado(event: any): Promise<void> {
+        this.estadoSeleccionado = event.value.code;
 
-  resetRejectForm() {
-    this.formularioMotivosRechazo.reset({
-      motivo: { name: null, code: null },
-      destinatario: null,
-      detalleCertificacionRechazada: null,
-      resumenLineas: null,
-      motivoRechazo: null,
-      fechaRechazo: null,
-      proveedor: null,
-      numeroCertificacion: null,
-      fechaCertificacion: null,
-      descripcion: null,
-      importe: null,
-      montoTotal: null,
-      detalleServicio: null,
-      observaciones: null,
-      moneda: null
-    });
-    this.formularioMotivosRechazo.markAsPristine();
-    this.formularioMotivosRechazo.markAsUntouched();
-    this.formularioMotivosRechazo.updateValueAndValidity();
-  }
-
-  mostrarResumenDeAprobacion(entradaServicio: any): void {
-    this.entradaServicioSeleccionada = [
-      {
-        NroPosicion: entradaServicio.NroPosicion,
-        Descripcion: entradaServicio.Descripcion,
-        MontoTotalACertificar: Number(entradaServicio.MontoTotal.replace(",", ".")),
-        NumeroCertificacion: entradaServicio.NumeroCertificacion,
-        Items: entradaServicio.entradaServicioDetalle.map((item: any) => ({
-          Cantidad: item.Cantidad,
-          CantidadACertificar: Number(item.CantidadCertificar.replace(",", ".")),
-          CantidadReal: item.Cantidad,
-          Importe: item.Monto,
-          Descripcion: item.TextoBreveServicio,
-          Moneda: entradaServicio.Moneda,
-          MontoACertificar: item.MontoCertificar,
-          NumeroLinea: item.NumeroLinea,
-          Porcentaje: Number(item.PorcentajeCertificar),
-          PorcentajeACertificar: Number(item.PorcentajeCertificar),
-          ServicioNumero: item.CodigoServicio,
-          UM: item.UM
-        }))
-      }
-    ];
-    this.mostrarModalAprobaciones = true;
-  }
-
-  cerrarModalResumen(): void {
-    this.mostrarModalAprobaciones = false;
-  }
-
-  enviarAprobacion(numeroCertificacion: string): void {
-    const moneda: string = this.entradaServicioSeleccionada[0].Items[0].Moneda;
-    this.messageService.clear();
-    this.confirmationService.confirm({
-      message: '¿Esta seguro que desea aprobar esta Entrada de Servicio?',
-      header: 'Confirmar Aprobación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: "Sí",
-      rejectLabel: "No",
-      accept: () => {
-        this.blockUI.start('Cargando...');
-        this.cerrarModalResumen();
-        this.subscripciones.push(
-          this.service.enviarAprobacionES(numeroCertificacion, moneda).subscribe(
-            (resp) => {
-              let mensajeError: string = "";
-              if (!resp.data) {
-                mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
-                this.messageService.add({ severity: 'error', summary: 'Error', detail: mensajeError });
-              }
-              switch (resp.data.Type) {
-                case "I": {
-                  this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
-                  this.updateStateFromPending(numeroCertificacion, 'Aprobar');
-                  this.recalculandoAprobadas = true;
-                  this.getFecha("1");
-                  this.obtenerESSap(this.proveedor, this.documentoNumero);
-                  break;
+        switch (event.value.code) {
+            case 'Aprobada':
+                this.tabla.reset();
+                this.defaultTablesConfig[0].columns.forEach(col => {
+                    col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaRechazo' || col.field === 'AnuladoPor' ? false : true;
+                });
+                break;
+            case 'Pendiente Aprobación':
+                if (this.tablaPOAprobaciones.length < 1) {
+                    this.recalculando = true;
+                    this.getListarPO();
                 }
-                case "S":
-                case "Desync":
-                  this.messageService.add({ severity: 'info', summary: '', detail: resp.data.Message });
-                  break;
-                case "E": {
-                  mensajeError = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
-                    resp.data.Message.startsWith("Contabilice en ") ?
-                    "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
-                  this.messageService.add({ severity: 'warning', summary: '', detail: mensajeError });
-                  break;
+                this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
+                break;
+            case 'Rechazado':
+                if (this.tablaPOAprobaciones.length < 1) {
+                    this.recalculando = true;
+                    this.getListarPO();
                 }
-                default: {
-                  this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
-                  break;
+                this.defaultTablesConfig[0].columns.forEach(col => {
+                    col.visible = col.field === 'Aprobador' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' || col.field === 'AnuladoPor' ? false : true;
+                });
+                break;
+            case 'Anulada':
+                if (this.tablaPOAprobaciones.length < 1) {
+                    this.recalculando = true;
+                    this.getListarPO();
                 }
-              }
-              this.mostrarModalAprobaciones = false;
-              this.blockUI.stop();
-              this.clearMessage();
-            }, error => {
-              this.mostrarModalAprobaciones = false;
-              this.blockUI.stop();
-              this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
-              this.clearMessage();
+                this.defaultTablesConfig[0].columns.forEach(col => {
+                    col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobación' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' ? false : true;
+                });
+                break;
+        }
+        this.tabla.filter(event.value.code, 'Estado', 'contains');
+        this.showAllESRows();
+    }
+
+    showAllESRows(): void {
+        this.tablaPOAprobaciones.forEach(es => {
+            const element = document.getElementById(es.EntradaServicio);
+            if (element) {
+                element.style.display = 'table-row';
             }
-          )
+        });
+    }
+
+    filtrarPorArea(event: any): void {
+        let filtrarAreas = [];
+        event.value.forEach((area: any) => {
+            filtrarAreas.push(area);
+        });
+        this.tabla.filter(filtrarAreas, 'UsuarioArea', 'contains');
+    }
+
+    verSuplentes(suplente: string, nro_es_local: string): void {
+        const data = {
+            Suplente: suplente,
+            NroEsLocal: nro_es_local
+        }
+        let confirmMessage;
+
+        if (suplente) {
+            confirmMessage = {
+                acceptLabel: 'Si',
+                message: `Está derivando la certificación Nº ` + nro_es_local + ` al siguiente aprobador ` + suplente + `. <b>¿Desea continuar?</b>`,
+                accept: () => {
+                    this.messageService.clear();
+                    this.blockUI.start('Cargando...');
+                    this.reasignar(data);
+                },
+                reject: () => { }
+            }
+        } else {
+            confirmMessage = {
+                message: 'No posee suplente asignado',
+                acceptLabel: 'Ok',
+                rejectVisible: false
+            }
+        }
+
+        this.confirmationService.confirm(confirmMessage);
+    }
+
+    reasignar(data): void {
+        this.subscripciones.push(
+            this.service.reasignarSuplente(data).subscribe(
+                (resp: any) => {
+                    const msj = { severity: 'success', summary: 'Reasignación exitosa!', detail: 'Se reasigno al nuevo aprobador.' };
+                    if (resp.error) {
+                        msj.severity = 'error';
+                        msj.summary = resp.error
+                        msj.detail = '';
+                    }
+                    this.messageService.add(msj);
+                    if (!resp.error) {
+                        this.updateApprover(data.NroEsLocal, resp.data);
+                    }
+                    this.blockUI.stop();
+                    this.clearMessage();
+                }, error => {
+                    this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: error });
+                    this.blockUI.stop();
+                    this.clearMessage();
+                }
+            )
         );
-      }
-    });
-  }
+    }
 
-  async SeeAll() {
-      await this.SeeCommon(true);
-  }
+    enviarMotivo() {
+        this.messageService.clear();
+        this.blockUI.start('Cargando...');
+        const data = {
+            Destinatario: this.formularioMotivosRechazo.get('destinatario').value,
+            MotivoRechazo: this.formularioMotivosRechazo.get('observaciones').value != null ? this.formularioMotivosRechazo.get('motivo').value.name + '. Observación:' + this.formularioMotivosRechazo.get('observaciones').value : this.formularioMotivosRechazo.get('motivo').value.name,
+            Proveedor: this.formularioMotivosRechazo.get('proveedor').value,
+            NumeroCertificacion: this.formularioMotivosRechazo.get('numeroCertificacion').value,
+            FechaCertificacion: this.formularioMotivosRechazo.get('fechaCertificacion').value,
+            Descripcion: this.formularioMotivosRechazo.get('descripcion').value,
+            MontoTotal: this.formularioMotivosRechazo.get('montoTotal').value,
+            DetalleServicio: this.formularioMotivosRechazo.get('detalleServicio').value.map((item: any) => ({
+                Descripcion: item.Descripcion,
+                Cantidad: item.Cantidad,
+                UM: item.UM,
+                Porcentaje: item.PorcentajeCertificar,
+                Monto: this.formularioMotivosRechazo.get('moneda').value === 'ARP' ? '$ ' + item.MontoCertificar : this.formularioMotivosRechazo.get('moneda').value + ' ' + item.MontoCertificar
+            })),
+            Moneda: this.formularioMotivosRechazo.get('moneda').value
+        }
+        this.subscripciones.push(
+            this.service.enviarMotivoRechazoES(data).subscribe(
+                (resp: any) => {
+                    if (resp.data.status == "OK") {
+                        this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
+                    }
+                    else {
+                        this.messageService.add({ severity: 'error', summary: '', detail: resp.data.status });
+                    }
 
-  async SeeForProvider() {
-      await this.SeeCommon(false);
-  }
+                    this.resetRejectForm();
+                    this.mostrarMotivosRechazos = false;
+                    this.updateStateFromPending(data.NumeroCertificacion, 'Rechazar', { es: resp.data.result[0], dateReject: resp.data.Fecha_rechazo_string });
+                    this.blockUI.stop();
+                    this.clearMessage();
+                }, error => {
+                    this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
+                    this.blockUI.stop();
+                    this.clearMessage();
+                }
+            )
+        );
+    }
+
+    ocultandoModal(): void {
+        this.resetRejectForm();
+    }
+
+    resetRejectForm() {
+        this.formularioMotivosRechazo.reset({
+            motivo: { name: null, code: null },
+            destinatario: null,
+            detalleCertificacionRechazada: null,
+            resumenLineas: null,
+            motivoRechazo: null,
+            fechaRechazo: null,
+            proveedor: null,
+            numeroCertificacion: null,
+            fechaCertificacion: null,
+            descripcion: null,
+            importe: null,
+            montoTotal: null,
+            detalleServicio: null,
+            observaciones: null,
+            moneda: null
+        });
+        this.formularioMotivosRechazo.markAsPristine();
+        this.formularioMotivosRechazo.markAsUntouched();
+        this.formularioMotivosRechazo.updateValueAndValidity();
+    }
+
+    mostrarResumenDeAprobacion(entradaServicio: any): void {
+        this.entradaServicioSeleccionada = [
+            {
+                NroPosicion: entradaServicio.NroPosicion,
+                Descripcion: entradaServicio.Descripcion,
+                MontoTotalACertificar: Number(entradaServicio.MontoTotal.replace(",", ".")),
+                NumeroCertificacion: entradaServicio.NumeroCertificacion,
+                Items: entradaServicio.entradaServicioDetalle.map((item: any) => ({
+                    Cantidad: item.Cantidad,
+                    CantidadACertificar: Number(item.CantidadCertificar.replace(",", ".")),
+                    CantidadReal: item.Cantidad,
+                    Importe: item.Monto,
+                    Descripcion: item.TextoBreveServicio,
+                    Moneda: entradaServicio.Moneda,
+                    MontoACertificar: item.MontoCertificar,
+                    NumeroLinea: item.NumeroLinea,
+                    Porcentaje: Number(item.PorcentajeCertificar),
+                    PorcentajeACertificar: Number(item.PorcentajeCertificar),
+                    ServicioNumero: item.CodigoServicio,
+                    UM: item.UM
+                }))
+            }
+        ];
+        this.mostrarModalAprobaciones = true;
+    }
+
+    cerrarModalResumen(): void {
+        this.mostrarModalAprobaciones = false;
+    }
+
+    enviarAprobacion(numeroCertificacion: string): void {
+        const moneda: string = this.entradaServicioSeleccionada[0].Items[0].Moneda;
+        this.messageService.clear();
+        this.confirmationService.confirm({
+            message: '¿Esta seguro que desea aprobar esta Entrada de Servicio?',
+            header: 'Confirmar Aprobación',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: "Sí",
+            rejectLabel: "No",
+            accept: () => {
+                this.blockUI.start('Cargando...');
+                this.cerrarModalResumen();
+                this.subscripciones.push(
+                    this.service.enviarAprobacionES(numeroCertificacion, moneda).subscribe(
+                        (resp) => {
+                            let mensajeError: string = "";
+                            if (!resp.data) {
+                                mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
+                                this.messageService.add({ severity: 'error', summary: 'Error', detail: mensajeError });
+                            }
+                            switch (resp.data.Type) {
+                                case "I": {
+                                    this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
+                                    this.updateStateFromPending(numeroCertificacion, 'Aprobar');
+                                    this.recalculandoAprobadas = true;
+                                    this.getFecha("1");
+                                    this.obtenerESSap(this.proveedor, this.documentoNumero);
+                                    break;
+                                }
+                                case "S":
+                                case "Desync":
+                                    this.messageService.add({ severity: 'info', summary: '', detail: resp.data.Message });
+                                    break;
+                                case "E": {
+                                    mensajeError = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
+                                        resp.data.Message.startsWith("Contabilice en ") ?
+                                        "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
+                                    this.messageService.add({ severity: 'warning', summary: '', detail: mensajeError });
+                                    break;
+                                }
+                                default: {
+                                    this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
+                                    break;
+                                }
+                            }
+                            this.mostrarModalAprobaciones = false;
+                            this.blockUI.stop();
+                            this.clearMessage();
+                        }, error => {
+                            this.mostrarModalAprobaciones = false;
+                            this.blockUI.stop();
+                            this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
+                            this.clearMessage();
+                        }
+                    )
+                );
+            }
+        });
+    }
+
+    async SeeAll() {
+        await this.SeeCommon(true);
+    }
+
+    async SeeForProvider() {
+        await this.SeeCommon(false);
+    }
 
     private async SeeCommon(isAll: boolean) {
         this.blockUI.start('Cargando...');
@@ -821,252 +854,237 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         return userRole;
     }
 
-  equalsIgnoreCase(str1: string, str2: string): boolean {
-    let areEqual = false;
-    if (str1 && str2) {
-      const normalized1 = this.eliminarAcentos(str1);
-      const normalized2 = this.eliminarAcentos(str2);
-      areEqual = normalized1.toLocaleLowerCase() === normalized2.toLocaleLowerCase();
-    }
-    return areEqual;
-  }
-
-  eliminarAcentos(string) {
-    const conAcento = 'áàãâäéèêëíìîïóòõôöúùûüçÁÀÃÂÄÉÈÊËÍÌÎÏÓÒÕÖÔÚÙÛÜÇ';
-    const sinAcento = 'aaaaaeeeeiiiiooooouuuucAAAAAEEEEIIIIOOOOOUUUUC';
-    const normalizedStr = string
-      .split('')
-      .map(char => {
-        const charIdx = conAcento.indexOf(char)
-        if (charIdx !== -1) {
-          return sinAcento[charIdx]
+    equalsIgnoreCase(str1: string, str2: string): boolean {
+        let areEqual = false;
+        if (str1 && str2) {
+            const normalized1 = this.eliminarAcentos(str1);
+            const normalized2 = this.eliminarAcentos(str2);
+            areEqual = normalized1.toLocaleLowerCase() === normalized2.toLocaleLowerCase();
         }
-        return char
-      })
-      .join('')
-    return normalizedStr;
-  }
-
-  /**
-   * Hacer la pantalla fullscreen.
-   */
-  toggleFullscreen() {
-    this.fullscreen = !this.fullscreen;
-    if (this.fullscreen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
+        return areEqual;
     }
-  }
 
-  /**
-     * Muestra/Oculta un panel según nombre de clase
-     * que lo identifica.
-     * Sólo un panel puede estar activo a la vez.
-     * @param className
+    eliminarAcentos(string) {
+        const conAcento = 'áàãâäéèêëíìîïóòõôöúùûüçÁÀÃÂÄÉÈÊËÍÌÎÏÓÒÕÖÔÚÙÛÜÇ';
+        const sinAcento = 'aaaaaeeeeiiiiooooouuuucAAAAAEEEEIIIIOOOOOUUUUC';
+        const normalizedStr = string
+            .split('')
+            .map(char => {
+                const charIdx = conAcento.indexOf(char)
+                if (charIdx !== -1) {
+                    return sinAcento[charIdx]
+                }
+                return char
+            })
+            .join('')
+        return normalizedStr;
+    }
+
+    /**
+     * Hacer la pantalla fullscreen.
      */
-  togglePanel(className: string): void {
-    let panels = document.getElementsByClassName('aux-panel') as HTMLCollectionOf<HTMLElement>;
-    Array.from(panels).forEach(panel => {
-      if (panel.id === className && panel.classList.contains('hidden')) {
-        panel.classList.remove('hidden');
-      }
-      else {
-        panel.classList.add('hidden');
-      }
-    });
-  }
+    toggleFullscreen() {
+        this.fullscreen = !this.fullscreen;
+        if (this.fullscreen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }
 
-  /**
-     * Colapsa la fila expandida.
+    /**
+       * Muestra/Oculta un panel según nombre de clase
+       * que lo identifica.
+       * Sólo un panel puede estar activo a la vez.
+       * @param className
+       */
+    togglePanel(className: string): void {
+        let panels = document.getElementsByClassName('aux-panel') as HTMLCollectionOf<HTMLElement>;
+        Array.from(panels).forEach(panel => {
+            if (panel.id === className && panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+            }
+            else {
+                panel.classList.add('hidden');
+            }
+        });
+    }
+
+    /**
+       * Colapsa la fila expandida.
+       */
+    collapseExpandedRow() {
+        let elementExpanded = document.querySelector('.pi-chevron-down') as HTMLElement;
+        if (elementExpanded != null) {
+            elementExpanded.click();
+        }
+    }
+    
+    async onBuscar() {
+        this.collapseExpandedRow();
+        this.recalculandoAprobadas = true;
+
+        if (this.proveedorSeleccionado !== undefined) {
+            this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
+        }
+        else {
+            this.proveedor = '';
+        }
+
+        await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
+        this.obtenerESSap(this.proveedor, this.documentoNumero);
+    }
+
+    /**
+     * Metodo para actualizar el aprobador en la lista de la tabla al ejecutar la accion de reasignar.
+     * @param es Nro entrada de servicio
      */
-  collapseExpandedRow() {
-    let elementExpanded = document.querySelector('.pi-chevron-down') as HTMLElement;
-    if (elementExpanded != null) {
-      elementExpanded.click();
-    }
-  }
-
-  /**
-   * filtro de busqueda de las entradas de servicio por rango de fechas.
-   */
-  onBuscar() {
-    // MMSN-519: Colapsar fila expandida al activar un filtro.
-    this.collapseExpandedRow();
-    this.recalculandoAprobadas = true;
-
-    if (this.proveedorSeleccionado !== undefined) {
-      this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
-    }
-    else {
-      this.proveedor = '';
+    updateApprover(es: string, esUpdated: any): void {
+        this.tablaPOAprobaciones.filter(e => e.EntradaServicio === es)
+            .forEach(x => {
+                x.Suplente = esUpdated.newSubstitute;
+                x.Aprobador = esUpdated.newApprover;
+            })
     }
 
-    this.obtenerESSap(this.proveedor, this.documentoNumero);
-  }
+    /**
+     * Metodo para actualizar la tabla luego de ejecutar una acción sin llamar al servicio que lista los registros.
+     * @param es Nro entrada de servicio
+     * @param action accion ejecutada
+     * @param esRejected entrada de servicio rechaza solo para los casos de rechazo.
+     */
+    updateStateFromPending(es: string, action: string, esRejected?: any): void {
+        if (action === 'Aprobar') {
+            const indices = this.tablaPOAprobaciones
+                .map((ap, index) => ap.EntradaServicio === es ? index : -1)
+                .filter(index => index !== -1);
 
-  /**
-   * metodo para mostrar u ocultar el panel auxiliar de filtro por fecha.
-   * @returns boolen
-   */
-  showOrHideAuxPanel(): boolean {
-    const estadoCertificacion: estadoCertificacion = { name: 'Estado: Aprobadas', code: 'Aprobada' };
-    if (this.estadoCertificacion.code === estadoCertificacion.code) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Metodo para actualizar el aprobador en la lista de la tabla al ejecutar la accion de reasignar.
-   * @param es Nro entrada de servicio
-   */
-  updateApprover(es: string, esUpdated: any): void {
-    this.tablaPOAprobaciones.filter(e => e.EntradaServicio === es)
-      .forEach(x => {
-        x.Suplente = esUpdated.newSubstitute;
-        x.Aprobador = esUpdated.newApprover;
-      })
-  }
-
-  /**
-   * Metodo para actualizar la tabla luego de ejecutar una acción sin llamar al servicio que lista los registros.
-   * @param es Nro entrada de servicio
-   * @param action accion ejecutada
-   * @param esRejected entrada de servicio rechaza solo para los casos de rechazo.
-   */
-  updateStateFromPending(es: string, action: string, esRejected?: any): void {
-    if (action === 'Aprobar') {
-      const indices = this.tablaPOAprobaciones
-        .map((ap, index) => ap.EntradaServicio === es ? index : -1)
-        .filter(index => index !== -1);
-
-      // Eliminar los elementos desde el final hacia el inicio para evitar problemas de reindexación
-      indices.reverse().forEach(index => {
-        this.tablaPOAprobaciones.splice(index, 1);
-      });
-    } else {
-      this.tablaPOAprobaciones.filter(ap => ap.EntradaServicio === es).forEach(x => {
-        x.Estado = esRejected.es.Estado_certificacion;
-        x.MotivoRechazo = esRejected.es.Motivo_rechazo;
-        x.FechaRechazo = esRejected.dateReject;
-      });
-    }
-    document.getElementById(es).style.display = 'none';
-  }
-
-  agregarTipoMonedaEnDetalle(certificaciones: any[]): void {
-    if (certificaciones === undefined || certificaciones === null) {
-      return;
+            // Eliminar los elementos desde el final hacia el inicio para evitar problemas de reindexación
+            indices.reverse().forEach(index => {
+                this.tablaPOAprobaciones.splice(index, 1);
+            });
+        } else {
+            this.tablaPOAprobaciones.filter(ap => ap.EntradaServicio === es).forEach(x => {
+                x.Estado = esRejected.es.Estado_certificacion;
+                x.MotivoRechazo = esRejected.es.Motivo_rechazo;
+                x.FechaRechazo = esRejected.dateReject;
+            });
+        }
+        document.getElementById(es).style.display = 'none';
     }
 
-    certificaciones.forEach(certificacion => {
-      if (certificacion.entradaServicioDetalle) {
-        certificacion.entradaServicioDetalle.forEach(detalle => {
-          detalle.Moneda = certificacion.Moneda;
+    agregarTipoMonedaEnDetalle(certificaciones: any[]): void {
+        if (certificaciones === undefined || certificaciones === null) {
+            return;
+        }
+
+        certificaciones.forEach(certificacion => {
+            if (certificacion.entradaServicioDetalle) {
+                certificacion.entradaServicioDetalle.forEach(detalle => {
+                    detalle.Moneda = certificacion.Moneda;
+                });
+            }
         });
-      }
-    });
-  }
+    }
 
 
-  fileTypes: { [key: string]: string } = {
-    ".pdf": 'application/pdf',
-    ".csv": "text/csv",
-    ".msg": "application/vnd.ms-outlook"
-  };
+    fileTypes: { [key: string]: string } = {
+        ".pdf": 'application/pdf',
+        ".csv": "text/csv",
+        ".msg": "application/vnd.ms-outlook"
+    };
 
-  loadingRows = new Map<number, boolean>();
+    loadingRows = new Map<number, boolean>();
 
-  descargarArchivos(rowData: any, index: number) {
+    descargarArchivos(rowData: any, index: number) {
 
-    this.loadingRows[index] = true;
-    this.cdr.detectChanges();
+        this.loadingRows[index] = true;
+        this.cdr.detectChanges();
 
-    this.service.GetAdjuntosByES(rowData.EntradaServicio.toString()).subscribe(result => {
-      if (result.data.length > 0) {
+        this.service.GetAdjuntosByES(rowData.EntradaServicio.toString()).subscribe(result => {
+            if (result.data.length > 0) {
 
-        result.data.forEach((archivo) => {
-          this.descargarArchivo(archivo.Adjuntos, archivo.NombreArchivo, archivo.Extension);
-        });
-      }
-      else {
+                result.data.forEach((archivo) => {
+                    this.descargarArchivo(archivo.Adjuntos, archivo.NombreArchivo, archivo.Extension);
+                });
+            }
+            else {
 
-        this.confirmationService.confirm({
-          message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
-          rejectVisible: false
+                this.confirmationService.confirm({
+                    message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
+                    rejectVisible: false
+                });
+
+            }
+
+            this.loadingRows[index] = false;
+            this.cdr.detectChanges();
         });
 
-      }
-
-      this.loadingRows[index] = false;
-      this.cdr.detectChanges();
-    });
-
-  }
-
-  descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
-    const typeExtension = this.fileTypes[extension.toLowerCase()] || "application/octet-stream";
-    var byteArray = new Uint8Array(archivo);
-    var blob = new Blob([byteArray], { type: typeExtension });
-
-    if (window.navigator.msSaveOrOpenBlob) {
-      // IE11
-      window.navigator.msSaveOrOpenBlob(blob, nombreArchivo);
-    } else {
-      var url = window.URL.createObjectURL(blob);
-      var link = document.createElement("a");
-      link.href = url;
-      link.download = nombreArchivo;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
     }
-  }
 
-  getPorcentajeAnterior(cantidadAnterior: number, cantidad: string): string {
-    const porcentajeAnterior: number = (cantidadAnterior * 100) / parseFloat(cantidad);
-    return `${parseFloat(porcentajeAnterior.toFixed(2))}%`;
-  }
+    descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
+        const typeExtension = this.fileTypes[extension.toLowerCase()] || "application/octet-stream";
+        var byteArray = new Uint8Array(archivo);
+        var blob = new Blob([byteArray], { type: typeExtension });
 
-  getMontoAnterior(cantidadAnterior: number, monto: number, moneda: string): string {
-    const montoAnterior: number = cantidadAnterior * monto;
-    const coin: string = moneda === 'ARP' ? '$ ' : moneda+' ';
-    const montoFormatted: string = montoAnterior.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-
-    return `${coin}${montoFormatted}`;
-  }
-
-  getPorcentajeAcumulado(cantidadAnterior: number, cantidad: string, porcentajeCertificar: string): string {
-    const porcentajeAcumulado: number = ( (cantidadAnterior * 100) / parseFloat(cantidad)) + (parseFloat(porcentajeCertificar) * 1);
-    return `${parseFloat(porcentajeAcumulado.toFixed(2))}%`;
-  }
-
-  getMontoAcumulado(cantidadAnterior: number, monto: number, cantidadAcertificar: string, moneda: string): string {
-    const montoAcumulado: number = (cantidadAnterior * monto) + (parseFloat(cantidadAcertificar) * monto);
-    const coin: string = moneda === 'ARP' ? '$ ' : moneda+' ';
-    const montoFormatted: string = montoAcumulado.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-
-    return `${coin}${montoFormatted}`;
-  }
-
-  refreshDataTable(){
-    if(this.estadoCertificacion.code === 'Aprobada' && !this.recalculandoAprobadas){
-      this.recalculandoAprobadas = true;
-      this.obtenerESSap(this.proveedor, this.documentoNumero);
-    } 
-    if((this.estadoCertificacion.code === 'Aprobada' || this.estadoCertificacion.code === 'Pendiente Aprobación' || this.estadoCertificacion.code === 'Rechazado' || this.estadoCertificacion.code === 'Anulada') && !this.recalculandoAprobadas) {
-      this.recalculando = true;
-      this.getListarPO(); // No mover.
+        if (window.navigator.msSaveOrOpenBlob) {
+            // IE11
+            window.navigator.msSaveOrOpenBlob(blob, nombreArchivo);
+        } else {
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            link.href = url;
+            link.download = nombreArchivo;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+        }
     }
-  }
+
+    getPorcentajeAnterior(cantidadAnterior: number, cantidad: string): string {
+        const porcentajeAnterior: number = (cantidadAnterior * 100) / parseFloat(cantidad);
+        return `${parseFloat(porcentajeAnterior.toFixed(2))}%`;
+    }
+
+    getMontoAnterior(cantidadAnterior: number, monto: number, moneda: string): string {
+        const montoAnterior: number = cantidadAnterior * monto;
+        const coin: string = moneda === 'ARP' ? '$ ' : moneda + ' ';
+        const montoFormatted: string = montoAnterior.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        return `${coin}${montoFormatted}`;
+    }
+
+    getPorcentajeAcumulado(cantidadAnterior: number, cantidad: string, porcentajeCertificar: string): string {
+        const porcentajeAcumulado: number = ((cantidadAnterior * 100) / parseFloat(cantidad)) + (parseFloat(porcentajeCertificar) * 1);
+        return `${parseFloat(porcentajeAcumulado.toFixed(2))}%`;
+    }
+
+    getMontoAcumulado(cantidadAnterior: number, monto: number, cantidadAcertificar: string, moneda: string): string {
+        const montoAcumulado: number = (cantidadAnterior * monto) + (parseFloat(cantidadAcertificar) * monto);
+        const coin: string = moneda === 'ARP' ? '$ ' : moneda + ' ';
+        const montoFormatted: string = montoAcumulado.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        return `${coin}${montoFormatted}`;
+    }
+
+    refreshDataTable() {
+        if (this.estadoCertificacion.code === 'Aprobada' && !this.recalculandoAprobadas) {
+            this.recalculandoAprobadas = true;
+            this.obtenerESSap(this.proveedor, this.documentoNumero);
+        }
+        if ((this.estadoCertificacion.code === 'Aprobada' || this.estadoCertificacion.code === 'Pendiente Aprobación' || this.estadoCertificacion.code === 'Rechazado' || this.estadoCertificacion.code === 'Anulada') && !this.recalculandoAprobadas) {
+            this.recalculando = true;
+            this.getListarPO(); // No mover.
+        }
+    }
 
 
     isAuthorized(permiso: string) {
@@ -1109,170 +1127,170 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
 
     EXCEL_TYPE: string = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    EXCEL_EXTENSION : string = '.xlsx';    
+    EXCEL_EXTENSION: string = '.xlsx';
 
     obtenerEncabezados(estado: string): string[] {
-      const columnas = this.defaultTablesConfig[0].columns;
-      let columnasExcluir: string[] = [];
-      columnasExcluir = ['cAcciones', 'esAdjuntos', 'cEstado'];
+        const columnas = this.defaultTablesConfig[0].columns;
+        let columnasExcluir: string[] = [];
+        columnasExcluir = ['cAcciones', 'esAdjuntos', 'cEstado'];
 
-      if (estado === 'Rechazado') {
-        columnasExcluir = [...columnasExcluir, 'cAprobador', 'cAnulador', 'cFechaAprobacion'];
-      } else if (estado === 'Aprobada') {
-        columnasExcluir = [...columnasExcluir, 'cMotivoRechazo', 'cAnulador', 'cFechaRechazo'];
-      } else if (estado === 'Anulada') {
-        columnasExcluir = [...columnasExcluir, 'cAprobador', 'cMotivoRechazo', 'cFecha', 'cFechaAprobacion', 'cFechaRechazo'];
-      } else if(estado === 'Pendiente Aprobación') {
-        columnasExcluir = [...columnasExcluir, 'cMotivoRechazo', 'cAnulador', 'cFechaAprobacion', 'cFechaRechazo'];
-      }
+        if (estado === 'Rechazado') {
+            columnasExcluir = [...columnasExcluir, 'cAprobador', 'cAnulador', 'cFechaAprobacion'];
+        } else if (estado === 'Aprobada') {
+            columnasExcluir = [...columnasExcluir, 'cMotivoRechazo', 'cAnulador', 'cFechaRechazo'];
+        } else if (estado === 'Anulada') {
+            columnasExcluir = [...columnasExcluir, 'cAprobador', 'cMotivoRechazo', 'cFecha', 'cFechaAprobacion', 'cFechaRechazo'];
+        } else if (estado === 'Pendiente Aprobación') {
+            columnasExcluir = [...columnasExcluir, 'cMotivoRechazo', 'cAnulador', 'cFechaAprobacion', 'cFechaRechazo'];
+        }
 
-      return columnas
-        .filter(col => !columnasExcluir.includes(col.id))
-        .map(col => col.header);
+        return columnas
+            .filter(col => !columnasExcluir.includes(col.id))
+            .map(col => col.header);
     }
 
     exportarTablaAExcel() {
-      const datos = [...this.tablaPOAprobaciones, ...this.tablaPOSap]
-      const datosPorEstado = this.agruparDatosPorEstado(datos);
-      this.exportarDatosAExcelFile(datosPorEstado);
+        const datos = [...this.tablaPOAprobaciones, ...this.tablaPOSap]
+        const datosPorEstado = this.agruparDatosPorEstado(datos);
+        this.exportarDatosAExcelFile(datosPorEstado);
     }
 
-  agruparDatosPorEstado(datos: any[]): { [key: string]: any[][] } {
-    const datosPorEstado: { [key: string]: any[][] } = {};
+    agruparDatosPorEstado(datos: any[]): { [key: string]: any[][] } {
+        const datosPorEstado: { [key: string]: any[][] } = {};
 
-    datos.forEach(item => {
-      const estado = item.Estado || 'Sin_Estado';
-      if (!datosPorEstado[estado]) {
-        datosPorEstado[estado] = [];
-      }
-      let filaDatos: any[] = [];
+        datos.forEach(item => {
+            const estado = item.Estado || 'Sin_Estado';
+            if (!datosPorEstado[estado]) {
+                datosPorEstado[estado] = [];
+            }
+            let filaDatos: any[] = [];
 
-      let montoTotal = item.Moneda === 'ARP' ? '$ ' + (parseFloat(item.MontoTotal).toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })) : item.Moneda + ' ' + (parseFloat(item.MontoTotal).toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }));
+            let montoTotal = item.Moneda === 'ARP' ? '$ ' + (parseFloat(item.MontoTotal).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })) : item.Moneda + ' ' + (parseFloat(item.MontoTotal).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }));
 
-      if (item.Estado === 'Pendiente Aprobación') {
-          filaDatos = [
-            item.EntradaServicio,
-            item.FechaCreacion,
-            item.OrdenCompra ,
-            item.CUIT ,
-            item.Proveedor ,
-            item.Descripcion ,
-            montoTotal,
-            item.Ingresante ,
-            item.Aprobador,
-          ];
-      }
+            if (item.Estado === 'Pendiente Aprobación') {
+                filaDatos = [
+                    item.EntradaServicio,
+                    item.FechaCreacion,
+                    item.OrdenCompra,
+                    item.CUIT,
+                    item.Proveedor,
+                    item.Descripcion,
+                    montoTotal,
+                    item.Ingresante,
+                    item.Aprobador,
+                ];
+            }
 
-      if (item.Estado === 'Rechazado') {
-        filaDatos = [
-          item.EntradaServicio,
-          item.FechaRechazo,
-          item.FechaCreacion,
-          item.OrdenCompra ,
-          item.CUIT ,
-          item.Proveedor ,
-          item.Descripcion ,
-          montoTotal,
-          item.Ingresante ,
-          item.MotivoRechazo,
-        ];
-      }
+            if (item.Estado === 'Rechazado') {
+                filaDatos = [
+                    item.EntradaServicio,
+                    item.FechaRechazo,
+                    item.FechaCreacion,
+                    item.OrdenCompra,
+                    item.CUIT,
+                    item.Proveedor,
+                    item.Descripcion,
+                    montoTotal,
+                    item.Ingresante,
+                    item.MotivoRechazo,
+                ];
+            }
 
-      if (item.Estado === 'Anulada') {
-        filaDatos = [
-          item.EntradaServicio,
-          item.OrdenCompra ,
-          item.CUIT ,
-          item.Proveedor ,
-          item.Descripcion ,
-          montoTotal,
-          item.Ingresante ,
-          item.AnuladaPor,      
-        ];
-      }
+            if (item.Estado === 'Anulada') {
+                filaDatos = [
+                    item.EntradaServicio,
+                    item.OrdenCompra,
+                    item.CUIT,
+                    item.Proveedor,
+                    item.Descripcion,
+                    montoTotal,
+                    item.Ingresante,
+                    item.AnuladaPor,
+                ];
+            }
 
-      if (item.Estado === 'Aprobada') {
-        filaDatos = [
-          item.EntradaServicio,
-          item.FechaAprobacion,
-          item.FechaCreacion,
-          item.OrdenCompra,
-          item.CUIT ,
-          item.Proveedor ,
-          item.Descripcion ,
-          montoTotal,
-          item.Ingresante ,
-          item.Aprobador,      
-        ];
-      }
-      
+            if (item.Estado === 'Aprobada') {
+                filaDatos = [
+                    item.EntradaServicio,
+                    item.FechaAprobacion,
+                    item.FechaCreacion,
+                    item.OrdenCompra,
+                    item.CUIT,
+                    item.Proveedor,
+                    item.Descripcion,
+                    montoTotal,
+                    item.Ingresante,
+                    item.Aprobador,
+                ];
+            }
 
-      datosPorEstado[estado].push(filaDatos);
-    });
 
-    return datosPorEstado;
-  }
+            datosPorEstado[estado].push(filaDatos);
+        });
 
-  exportarDatosAExcelFile(datosPorEstado: { [key: string]: any[][] }) {
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+        return datosPorEstado;
+    }
 
-    // Crear una hoja para cada estado
-    Object.keys(datosPorEstado).forEach(estado => {
-      const encabezados = this.obtenerEncabezados(estado);
-      const datos = [encabezados, ...datosPorEstado[estado]];
+    exportarDatosAExcelFile(datosPorEstado: { [key: string]: any[][] }) {
+        const wb: XLSX.WorkBook = XLSX.utils.book_new();
 
-      const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(datos);
+        // Crear una hoja para cada estado
+        Object.keys(datosPorEstado).forEach(estado => {
+            const encabezados = this.obtenerEncabezados(estado);
+            const datos = [encabezados, ...datosPorEstado[estado]];
 
-      // Aplicar estilo al encabezado (primera fila)
-      const range = XLSX.utils.decode_range(ws['!ref']!);
-      const headerColor = { rgb: "D3D3D3" };
+            const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(datos);
 
-      datos[0].forEach((_, colIndex) => {
-        const cellAddress = XLSX.utils.encode_cell({ r: 0, c: colIndex });
-        if (!ws[cellAddress]) ws[cellAddress] = {};
-        ws[cellAddress].s = {
-          fill: {
-            patternType: "solid",
-            fgColor: headerColor
-          },
-          font: {
-            bold: true
-          },
-          alignment: {
-            horizontal: "center",
-            vertical: "center"
-          }
-        };
-      });
+            // Aplicar estilo al encabezado (primera fila)
+            const range = XLSX.utils.decode_range(ws['!ref']!);
+            const headerColor = { rgb: "D3D3D3" };
 
-      const colWidths = datos[0].map((_, colIndex) => 
-        Math.max(
-            ...datos.map(row => (row[colIndex] !== null && row[colIndex] !== undefined ? row[colIndex].toString().length : 0))
-        )
-      );
-      
-      ws["!cols"] = colWidths.map(width => ({ wch: width }));
+            datos[0].forEach((_, colIndex) => {
+                const cellAddress = XLSX.utils.encode_cell({ r: 0, c: colIndex });
+                if (!ws[cellAddress]) ws[cellAddress] = {};
+                ws[cellAddress].s = {
+                    fill: {
+                        patternType: "solid",
+                        fgColor: headerColor
+                    },
+                    font: {
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: "center"
+                    }
+                };
+            });
 
-      XLSX.utils.book_append_sheet(wb, ws, estado || 'Aprobadas');
-    });
+            const colWidths = datos[0].map((_, colIndex) =>
+                Math.max(
+                    ...datos.map(row => (row[colIndex] !== null && row[colIndex] !== undefined ? row[colIndex].toString().length : 0))
+                )
+            );
 
-    const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
-    this.guardarComoExcel(excelBuffer, 'Estados de Certificaciones');
-  }
-  
+            ws["!cols"] = colWidths.map(width => ({ wch: width }));
 
-  guardarComoExcel(buffer: any, nombreArchivo: string): void {
-    const data: Blob = new Blob([buffer], { type: this.EXCEL_TYPE });
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(data);
-      link.download = nombreArchivo + this.EXCEL_EXTENSION;
-      link.click();
-  }
+            XLSX.utils.book_append_sheet(wb, ws, estado || 'Aprobadas');
+        });
+
+        const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        this.guardarComoExcel(excelBuffer, 'Estados de Certificaciones');
+    }
+
+
+    guardarComoExcel(buffer: any, nombreArchivo: string): void {
+        const data: Blob = new Blob([buffer], { type: this.EXCEL_TYPE });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(data);
+        link.download = nombreArchivo + this.EXCEL_EXTENSION;
+        link.click();
+    }
 
 }

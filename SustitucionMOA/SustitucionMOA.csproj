@@ -330,6 +330,9 @@
     <Content Include="Content\images\icons\bell-ring.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\images\icons\book-open.svg" />
+    <Content Include="Content\images\icons\book-open2.svg" />
+    <Content Include="Content\images\icons\book.svg" />
     <Content Include="Content\images\icons\dolly-solid.svg" />
     <Content Include="Content\images\icons\paper-clip.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -686,6 +689,7 @@
     <Content Include="Template\CertificacionesPendientesDeAprobacion-Proveedor.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacionRechazada.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacion.html" />
+    <Content Include="Template\CertificacionesPendientesDeAprobacion-Posicion.html" />
     <Content Include="Template\EnvioCamposSustentablesUcropit.html" />
     <Content Include="Template\NotificacionEsPendientesDeAprobacion.html" />
     <Content Include="Template\NotificacionOrdenesDeCarga.html" />
@@ -1715,6 +1719,7 @@
     <TypeScriptCompile Include="src\app\echeq\mis-echeq\mis-echeq.grilla\mis-echeq-grilla.component.spec.ts" />
     <TypeScriptCompile Include="src\app\echeq\mis-echeq\mis-echeq.grilla\mis-echeq-grilla.component.ts" />
     <TypeScriptCompile Include="src\app\error.interceptor.ts" />
+    <TypeScriptCompile Include="src\app\factura\factura.model.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.service.ts" />
     <TypeScriptCompile Include="src\app\faq\faq-routing.module.ts" />

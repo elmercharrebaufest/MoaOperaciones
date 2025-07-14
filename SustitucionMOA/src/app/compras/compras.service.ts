@@ -30,6 +30,7 @@ import { SubPosicionCrearPoMultipleDto } from '../modelos/SubPosicion-CrearPoMul
 import { ProcesarPrecargaSolpResponse } from '../modelos/compras/PrecargaSolp/procesarPrecargaSolpResponse';
 import { MaterialSolp } from '../modelos/compras/materialSolp';
 import { ServicioSolp } from '../modelos/compras/servicioSolp';
+import { PeticionDeOfertaDesvincularDto } from '../modelos/compras/POMultiple/peticionDeOfertaDesvincularDto';
 
 @Injectable({
     providedIn: 'root'
@@ -214,18 +215,21 @@ export class ComprasService extends BaseService {
 
     public getByProveedorAsync(
         fechaInicio: any = this.filtros.fechaDesde,
+        fechaFin: string,
         proveedorId: string,
         DocumentoNumero: string,
         columnaOrden: string = this.filtros.columnaNombre,
         ordenAscendente: boolean = this.filtros.ordenAscendente,
         pagina: number = this.filtros.pagina,
         elementosPorPagina: number = this.filtros.itemsPorPagina,
-        verTodo: boolean | false
+        verTodo: boolean | false,
+        ordenCompra: string | undefined
     ): Observable<any> {
 
         let params: HttpParams = new HttpParams();
 
         params = params.set('fechaInicio', (fechaInicio != null ? fechaInicio : ""));
+        params = params.set('fechaFin', fechaFin);
         params = params.set('vendedor', proveedorId);
         params = params.set('documentoNumero', DocumentoNumero);
         params = params.set('ColumnaOrden', columnaOrden);
@@ -233,6 +237,7 @@ export class ComprasService extends BaseService {
         params = params.set('pagina', pagina.toString());
         params = params.set('elementosPorPagina', elementosPorPagina.toString());
         params = params.set('verTodo', verTodo.toString());
+        params = params.set('OrdenCompra', ordenCompra || "");
 
         return this.http
             .get<any[]>('/api/EntradaServicio/GetByProveedorAsync', { params: params, headers: this.headers }).pipe(
@@ -242,10 +247,13 @@ export class ComprasService extends BaseService {
             );
     }
 
-    ObtenerESLocales(verTodo: boolean | false, proveedorId: string | '') {
+    ObtenerESLocales(verTodo: boolean | false, proveedorId: string | '', fechaInicio: string, fechaFin: string, ordenCompra: string | undefined) {
         let params: HttpParams = new HttpParams();
         params = params.set('verTodo', verTodo.toString());
         params = params.set('vendedor', proveedorId);
+        params = params.set('fechaInicio', fechaInicio);
+        params = params.set('fechaFin', fechaFin);
+        params = params.set('OrdenCompra', ordenCompra || "");
 
         return this.http
             .get<any[]>('/api/EntradaServicio/ObtenerESLocales', { params: params, headers: this.headers }).pipe(
@@ -271,7 +279,7 @@ export class ComprasService extends BaseService {
             .post('/api/EntradaServicio/DeleteById', payload, { headers: this.headersPost })
     }
 
-    public postCreateAsync(parametros: any, report: any, IdAdjuntos): Observable<any> {
+    public CrearEntradaServicio(parametros: any, report: any, IdAdjuntos): Observable<any> {
 
         var payload = new FormData();
 
@@ -279,23 +287,21 @@ export class ComprasService extends BaseService {
             Posiciones: parametros,
             report: report,
             IdAdjuntos: IdAdjuntos
-            // Asegúrate de incluir todos los campos requeridos por la interfaz
         };
 
         payload.append('request', JSON.stringify(request));
         //payload.append('report', JSON.stringify(report));
         //payload.append('IdAdjuntos', JSON.stringify(IdAdjuntos));
 
-        return this.http.post('/api/EntradaServicio/CreateAsync', payload, { headers: this.headers })
+        return this.http
+            .post('/api/EntradaServicio/CrearEntradaServicio', payload, { headers: this.headers })
             .pipe(
                 catchError(error => {
                     return throwError(error);
                 })
             );
     }
-
-
-
+    
     public AdjuntarArchivosCertificacion(archivos: File[]): Observable<any> {
 
         var payload = new FormData();
@@ -364,6 +370,7 @@ export class ComprasService extends BaseService {
             ObservacionesCotizacion: solp.observacionesCotizacion,
             ObservacionesCotizacionCondEsp: solp.observacionesCotizacionCondEsp,
             ProveedorAsignado_Id: solp.proveedorAsignado_Id,
+            SeraUsadoEnPliegoMultiple: solp.seraUsadoEnPliegoMultiple,
             TrabajoYaHecho: solp.trabajoHecho,
             ConPresupuesto: solp.conPresupuesto,
             CertificacionAutomatica: solp.certificacionAutomatica,
@@ -382,6 +389,7 @@ export class ComprasService extends BaseService {
             CodigoProveedorSap: solp.codigoProveedorSap,
             Posiciones: null,
             MultipleFinalizado: solp.MultipleFinalizado,
+            AdmiteCertificacionesParciales: solp.admiteCertificacionesParciales,
         };
 
         if (incluirPosiciones) {
@@ -1578,6 +1586,7 @@ export class ComprasService extends BaseService {
                 headers: this.headers
             });
     }
+
     public runReasignacion() {
         return this.http
             .get('/api/Derivacion/CorrerReasignacionManual', {
@@ -1609,6 +1618,7 @@ export class ComprasService extends BaseService {
         return this.http
             .get<any>('/api/compras/ValidarFechaVigenciaRegistroInfo', { headers: this.headers, params });
     }
+
     public actualizarFechaVigenciaRegistroInfo(nuevaFechaVigencia: string, registrosInfo: { CotizacionPosicion_Id: any, SolpPosicion_Id: any }[]): Observable<ApiResponse<boolean>> {
         var payload = new FormData();
         payload.append('data', JSON.stringify({ registrosInfo, nuevaFechaVigencia }));
@@ -1671,5 +1681,49 @@ export class ComprasService extends BaseService {
         return this.http
             .post<ApiResponse<ProcesarPrecargaSolpResponse>>('/api/compras/ProcesarPrecargaSolp', payload, { params: params, headers: this.headersPost })
             .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    desvincularSolpDePOMultipleMaterial(solpPosicionId: number, idsPOsADesvincular: string[]): Observable<ApiResponse<void>> {
+        var payload = new FormData();
+        payload.append('solpPosicionId', solpPosicionId.toString());
+        payload.append('idsPOsADesvincular', idsPOsADesvincular.toString());
+
+        return this.http
+            .post('/api/compras/DesvincularSolpDePOMultipleMaterial', payload, { headers: this.headers })
+            .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    desvincularSolpDePOMultipleServicio(solpId: number, idsPOsADesvincular: string[]): Observable<ApiResponse<void>> {
+        var payload = new FormData();
+        payload.append('solpId', solpId.toString());
+        payload.append('idsPOsADesvincular', idsPOsADesvincular.toString());
+
+        return this.http
+            .post('/api/compras/DesvincularSolpDePOMultipleServicio', payload, { headers: this.headers })
+            .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+    
+    obtenerPeticionesDeOfertaParaDesvincularMaterial(solpPosicionId: number): Observable<ApiResponse<PeticionDeOfertaDesvincularDto[]>> {
+        let params: HttpParams = new HttpParams()
+            .append('solpPosicionId', solpPosicionId.toString());
+
+        return this.http
+            .get<ApiResponse<PeticionDeOfertaDesvincularDto[]>>(
+                '/api/compras/ObtenerPeticionesDeOfertaParaDesvincularMaterial',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(120000,
+                throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    obtenerPeticionesDeOfertaParaDesvincularServicio(solpId: number): Observable<ApiResponse<PeticionDeOfertaDesvincularDto[]>> {
+        let params: HttpParams = new HttpParams()
+            .append('solpId', solpId.toString());
+
+        return this.http
+            .get<ApiResponse<PeticionDeOfertaDesvincularDto[]>>(
+                '/api/compras/ObtenerPeticionesDeOfertaParaDesvincularServicio',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(120000,
+                throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 }

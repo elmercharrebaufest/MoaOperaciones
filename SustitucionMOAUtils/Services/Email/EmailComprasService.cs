@@ -1,13 +1,18 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Net.Mail;
+using System.Text;
 using System.Web.Security;
+using SustitucionMOAUtils.Services.Email.Dto;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -141,6 +146,23 @@ namespace SustitucionMOAUtils.Services.Email
             {
                 Log.Error($"Error al enviar mail de finalizacion de Pliego Multiple: {pliego.NombreObra}", ex);
             }
+        }
+
+        public void EnviarMailPeticionDeOferta(MailPeticionDeOfertaRequest req)
+        {
+            var peticion = req.PeticionDeOferta;
+
+            var asunto = req.EsEdicionPO ? $"Modificación en la PO {peticion.Id}" :
+                $"MOA - Pedido de Oferta {peticion.Id}: {peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.NombreObra}";
+
+            if (peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.Adicional == true)
+            {
+                asunto += $" - con Adicional OC: {peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.NroOrdenDeCompraAdicional}";
+            }
+
+            var cuerpo = GenerarCuerpoMailPeticionDeOferta(peticion, req.EsProveedor, req.ListaArchivosParaMailPO, req.EsEdicionPO, req.Proveedores);
+
+            emailService.EnviarMail(req.Destinatarios, asunto, "", null, cuerpo, null, null, null, null, req.ArchivosAdjuntos);
         }
 
         private AlternateView ObtenerCuerpoCotizacionCreada(Cotizacion cotizacion)
@@ -367,6 +389,130 @@ namespace SustitucionMOAUtils.Services.Email
             var alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(logoMailResource);
             return alternateView;
+        }
+
+        private AlternateView GenerarCuerpoMailPeticionDeOferta(PeticionDeOferta peticion, bool esProveedor, List<FileDto> listaArchivosParaMailPO, bool esEdicionPO, List<string> proveedores = null)
+        {
+            var filePath = httpContextService.ObtenerPathLogoMail();
+            var logoMoaResource = new LinkedResource(filePath) { ContentId = Guid.NewGuid().ToString() };
+
+            var htmlBodyBuilder = new StringBuilder();
+            htmlBodyBuilder.Append($"En el presente mail se informa la {(esEdicionPO ? "modificación de la " : "nueva ")}PO {peticion.Id} ");
+
+            if (esProveedor)
+            {
+                htmlBodyBuilder.Append("generada con Molinos Agro S.A <br />");
+            }
+            else
+            {
+                htmlBodyBuilder.Append("que se envió a los siguientes proveedores: <br />");
+                proveedores.ForEach(prov => htmlBodyBuilder.AppendLine($"{prov} <br />"));
+            }
+
+            if (!string.IsNullOrEmpty(peticion.Observaciones))
+            {
+                var observacionesFormatted = peticion.Observaciones.Replace("\n", "<br />");
+                htmlBodyBuilder.AppendLine($"<br />Observaciones: {observacionesFormatted} <br /><br />");
+            }
+
+            if (esProveedor)
+            {
+                var primeraPosicion = peticion.Posiciones.First().SolpPosicion;
+                var esServicio = peticion.Posiciones.First().SolpPosicion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO";
+
+                if (esServicio)
+                {
+                    var solpConPliegoSinRepetir
+                        = peticion
+                            .Posiciones
+                            .GroupBy(x => x.SolpPosicion.Solp.Id)
+                            .Select(x => x.First()) // groupBy + select => distinctBy
+                            .Where(x => ValidarSolpSiTienePliego(x.SolpPosicion));
+
+                    var cantidadSolpConPliego = solpConPliegoSinRepetir.Count();
+
+                    if (cantidadSolpConPliego == 1)
+                    {
+                        var posicion = solpConPliegoSinRepetir.Single().SolpPosicion;
+                        var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] +
+                            $"/api/compras/DescargarPliegoDesdeLink?solpId={posicion.Solp.Id}&token={posicion.Solp.EmailLinkToken}";
+
+                        htmlBodyBuilder
+                            .Append("<p style = 'line-height: 24px; font-size: 16px; margin: 0;' align = 'center' >")
+                            .Append(" Para descargar el legajo, haga ")
+                            .Append($"<a href = '{downloadLinkUrl}' download rel='noopener noreferrer'>click aquí</a>")
+                            .AppendLine("</p> <br />");
+                    }
+                    if (cantidadSolpConPliego > 1)
+                    {
+                        htmlBodyBuilder.Append("<p style = 'line-height: 24px; font-size: 16px; margin: 0;' align = 'center' >")
+                            .Append("Algunas SOLP tienen legajo disponible para descarga. Haga click en los elementos para descargarlos")
+                            .Append("</p> <ul>");
+
+                        foreach (Solp solp in solpConPliegoSinRepetir.Select(x => x.SolpPosicion.Solp))
+                        {
+                            var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] +
+                                $"/api/compras/DescargarPliegoDesdeLink?solpId={solp.Id}&token={solp.EmailLinkToken}";
+
+                            htmlBodyBuilder.Append($"<li> <a href = '{downloadLinkUrl}' download rel='noopener noreferrer'>{solp.NroSolp}</a> </li>");
+                        }
+                        htmlBodyBuilder.AppendLine("</ul> <br />");
+                    }
+                }
+
+                if (peticion.AdjuntoPliego == true)
+                {
+                    htmlBodyBuilder.Append("<p style = 'line-height: 24px; font-size: 16px; margin: 0;' align = 'center' >")
+                        .Append("A continuación, se listan los documentos de pliego de generalidades y documentación relevante para la contratista:")
+                        .AppendLine("<ul>");
+
+                    foreach (FileDto archivo in listaArchivosParaMailPO)
+                    {
+                        htmlBodyBuilder.AppendLine("<li>")
+                            .Append($"<a href='{archivo.Url}' download rel='noopener noreferrer'>{archivo.Filename}</a>")
+                            .AppendLine("</li>");
+                    }
+                    htmlBodyBuilder.AppendLine("</ul>");
+                }
+
+                if (primeraPosicion.Solp.Pliego.RequisitoCiberseguridad == true && esServicio)
+                {
+                    htmlBodyBuilder
+                        .AppendLine("<p>Le enviamos los requisitos de ciberseguridad obligatorios para todos los proveedores, contratistas y consultores que se conecten a la red LAN y/o VPN, o a las aplicaciones internas de Molinos Agro durante la prestación de sus servicios. Por favor, asegúrese de cumplir con estos requisitos para garantizar la seguridad de nuestras operaciones:</p>")
+                        .AppendLine("<p>Solicitamos puedan firmar el documento adjunto considerando las siguientes condiciones:</p>")
+                        .AppendLine("<ul>")
+                        .AppendLine("<li>Si el servicio es prestado directamente por su empresa, el documento debe firmarlo el titular o apoderado legal de la empresa.</li>")
+                        .AppendLine("<li>Si el servicio es prestado por un colaborador de la empresa, el documento deberá ser firmado por la empresa principal y no por su colaborador.</li>")
+                        .AppendLine("<li>Cualquier otra prestación en la que se conecten a la red LAN y/o VPN, o aplicaciones internas de Molinos Agro requerirá la firma de la empresa principal.</li>")
+                        .AppendLine("</ul>")
+                        .AppendLine("<p>Puede descargar el documento de requisitos de ciberseguridad desde el siguiente enlace: <a href='https://b2cmoagro.blob.core.windows.net/moaopublic/Requisitos%20de%20seguridad%20de%20terceros_v1.4.docx' download rel='noopener noreferrer'>Requisitos de seguridad de terceros_v1.4</a></p>");
+                }
+            }
+
+            htmlBodyBuilder.AppendLine("<br />En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar ")
+                .AppendLine("<br/><br/>Saludos Cordiales<br/>")
+                .AppendLine("Molinos Agro S.A. <br/><br/> ")
+                .AppendLine("<img width:'5%' src='cid:").Append(logoMoaResource.ContentId).Append("'/>");
+
+            var alternateView = AlternateView.CreateAlternateViewFromString(htmlBodyBuilder.ToString(), null, "text/html");
+            alternateView.LinkedResources.Add(logoMoaResource);
+            return alternateView;
+        }
+
+        private bool ValidarSolpSiTienePliego(SolpPosicion posicion)
+        {
+            var tieneCondicionEspecial =
+                posicion.Solp.TrabajoYaHecho == true ||
+                posicion.Solp.Urgencia == true ||
+                posicion.Solp.Adicional == true ||
+                posicion.Solp.CondEspProveedorAsignado == true;
+
+            var casoConPliego =
+                posicion.Solp.TipoSolp?.Codigo == "CON_PLIEGO" || (posicion.Solp.TipoSolp?.Codigo == "SIN_PLIEGO" &&
+                posicion.Solp.Pliego.Archivos.Any(x => x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp) &&
+                !tieneCondicionEspecial);
+
+            return casoConPliego;
         }
     }
 }

@@ -106,6 +106,9 @@ namespace SustitucionMOAModel.Dto
 
         [ExcelIgnore]
         public IEnumerable<string> ListaPO { get; set; }
+        
+        [ExcelIgnore]
+        public bool SeraUsadoEnPliegoMultiple { get; set; }
 
         [ExcelColumnName("Tiene PO")]
         [ExcelColumnType(ExcelCellType.Text)]

@@ -1,10 +1,12 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Compras.POMultiple;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +32,49 @@ namespace SustitucionMOARepositorio.Repositorios
             var servicios = Listar<ServicioSolp>(s => s.CodigoSap.ToString().Contains(codigoSapMatch));
 
             return servicios.ConvertAll(s => new ServicioSolpDto(s));
+        }
+
+        public List<PeticionDeOfertaDesvincularDto> ListarPOsDesvinculablesDePosicionMaterial(int solpPosicionId)
+        {
+            var peticionesDesvinculables = (
+                from solpPos in Set<SolpPosicion>()
+                join posp in Set<PeticionDeOfertaSolpPosicion>() on solpPos.Id equals posp.SolpPosicion_Id
+                join po in Set<PeticionDeOferta>() on posp.PeticionDeOferta_Id equals po.Id
+                join pou in Set<PeticionDeOfertaUsuario>() on po.Id equals pou.PeticionDeOferta_Id
+                where
+                    solpPos.Id == solpPosicionId
+                select new PeticionDeOfertaDesvincularDto
+                {
+                    NroPeticion = posp.PeticionDeOferta_Id,
+                    CantidadPosiciones = po.Posiciones.Count,
+                    HayCotizacion = pou.Cotizaciones.Any()
+                }
+                ).ToList();
+
+            return peticionesDesvinculables;
+        }
+
+        public List<PeticionDeOfertaDesvincularDto> ListarPOsDesvinculablesDeSolpServicio(int solpId)
+        {
+            var peticionesDesvinculables = (
+                from solp in Set<Solp>()
+                join solpPos in Set<SolpPosicion>() on solp.Id equals solpPos.Solp_Id
+                join posp in Set<PeticionDeOfertaSolpPosicion>() on solpPos.Id equals posp.SolpPosicion_Id
+                join po in Set<PeticionDeOferta>() on posp.PeticionDeOferta_Id equals po.Id
+                join pou in Set<PeticionDeOfertaUsuario>() on po.Id equals pou.PeticionDeOferta_Id
+                where
+                    solp.Id == solpId
+                select new PeticionDeOfertaDesvincularDto
+                {
+                    NroPeticion = posp.PeticionDeOferta_Id,
+                    CantidadPosiciones = po.Posiciones.Select(p => p.SolpPosicion).Select(sp => sp.Solp_Id).Distinct().Count(),
+                    HayCotizacion = pou.Cotizaciones.Any()
+                }
+                )
+                .Distinct()
+                .ToList();
+
+            return peticionesDesvinculables;
         }
     }
 }

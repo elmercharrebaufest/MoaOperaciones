@@ -609,7 +609,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                 PrecioFinal: item.PrecioFinal || 0,
                 PrecioBruto: item.PrecioBruto || 0,
                 EstadoLiberacionDetalle: item.EstadoLiberacionDetalle || '',
-                AdmiteCertificacionesParciales: true
+                AdmiteCertificacionesParciales: item.AdmiteCertificacionesParciales || false,
             };
             this.ordenesDeCompra.push(adjudicacion);
         });

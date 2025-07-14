@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOAUtils.Helpers;
@@ -62,24 +63,34 @@ namespace SustitucionMOATest.Controllers
         public void RegistrarCertificacion_ValidInput_ReturnsJsonResult()
         {
             // Arrange
-            var certificaciones = new List<CertificacionDto>
+            var grupos = new List<GrupoCertificaciones>
             {
-                new CertificacionDto { NRO_Certificacion = "123", NombreDeArchivo = "archivo1.pdf" },
-                new CertificacionDto { NRO_Certificacion = "456", NombreDeArchivo = "archivo2.pdf" }
+                new GrupoCertificaciones
+                {
+                    Items = new List<CertificacionDto> { new CertificacionDto { NRO_Certificacion = "123", NombreDeArchivo = "archivo1.pdf" } },
+                    NombreArchivo = "archivo1.pdf",
+                    EsFacturaPorDiferenciaTasaDeCambio = false
+                },
+                new GrupoCertificaciones
+                {
+                    Items = new List<CertificacionDto> { new CertificacionDto { NRO_Certificacion = "456", NombreDeArchivo = "archivo2.pdf" } },
+                    NombreArchivo = "archivo2.pdf",
+                    EsFacturaPorDiferenciaTasaDeCambio = false
+                }
             };
-            var certificacionesJson = JsonConvert.SerializeObject(certificaciones);
+            var gruposJson = JsonConvert.SerializeObject(grupos);
             var files = new List<HttpPostedFileBase>();
 
-            mockFacturaService.Setup(s => s.RegistrarCertificacion(It.IsAny<List<CertificacionDto>>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<List<HttpPostedFileBase>>(), It.IsAny<string>(), It.IsAny<string>()))
+            mockFacturaService.Setup(s => s.RegistrarCertificaciones(It.IsAny<List<GrupoCertificaciones>>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<List<HttpPostedFileBase>>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(new List<CertificacionRegistrada>());
 
             // Act
-            var result = controller.RegistrarCertificacion(certificacionesJson, files) as JsonResult;
+            var result = controller.RegistrarCertificacion(gruposJson, files) as JsonResult;
 
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<JsonResult>(result);
-            mockFacturaService.Verify(s => s.RegistrarCertificacion(It.IsAny<List<CertificacionDto>>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<List<HttpPostedFileBase>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockFacturaService.Verify(s => s.RegistrarCertificaciones(It.IsAny<List<GrupoCertificaciones>>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<List<HttpPostedFileBase>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
     }
 }

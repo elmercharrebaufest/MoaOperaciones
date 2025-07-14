@@ -132,7 +132,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         if (this.adjudicacion == null || this.adjudicacion == undefined) {
             this.adjudicacion = {
                 Id: undefined,
-                AdmiteCertificacionesParciales: true
+                AdmiteCertificacionesParciales: false,
             };
         }
     }

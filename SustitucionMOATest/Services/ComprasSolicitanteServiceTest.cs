@@ -236,7 +236,11 @@ namespace SustitucionMOATest.Services
                 It.IsAny<Expression<Func<Usuario, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
                .Returns(new List<UsuarioDto>() { new UsuarioDto { Mail = "bmelgarejo@prueba.com", UsuarioSap = "BRISAM" } });
 
-            var result = target.ListarUsuarioSolicitante();
+            var roles = new List<RolDropdownDto> { new RolDropdownDto { Id = 1, Nombre = "Solicitante" } };
+            int usuarioId = 1;
+
+            var result = target.ListarUsuarioSolicitante(roles, usuarioId);
+
             Assert.That(result, Is.Not.Null);
         }
     }
