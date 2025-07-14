@@ -6,7 +6,7 @@
   <setParameter name="HfContexto-Web.config Connection String" value="data source=HCI-SQL2K19-DES.huenei.com.ar;User Id=MoaUser;Password=Huenei%5050;Initial Catalog=MOAOperacionesHangfire;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
  <setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
 
-	<setParameter name="PasswordSapEnc Config" value="JJB4bZok9i28exDKsPlaTA==" />
+	<setParameter name="PasswordSap Config" value="JJB4bZok9i28exDKsPlaTA==" />
 
 	<setParameter name="EsLocal Config" value="false" />
 

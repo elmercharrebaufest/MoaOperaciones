@@ -11,12 +11,17 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IComprasSapService
     {
         SolpSAPDto ConvertirSOLPSAP(Solp solpActual);
+        SolpSAPSinPIDto ConvertirSOLPSAPSinPI(Solp solpActual);
 
         RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(Adjudicacion AdjudicacionEntity, bool creadoAutomatico = false);
         ResultadoGenerico EditarOrdenDeCompra(AdjudicacionDto adjudicacion);
 
         CrearSolpConsumerMOAResponse CrearSolpSap(SolpSAPDto solpSap);
+        CrearSolpConsumerMOAResponse CrearSolpSapSinPI(SolpSAPSinPIDto solpSAPSinPI);
+
         ModificarSolpConsumerMOAResponse ModificarSolpSap(SolpSAPDto solpSap);
+        ModificarSolpConsumerMOAResponse ModificarSolpSapSinPI(SolpSAPSinPIDto solpSap);
+
         ObtenerSolpSAPResponse ObtenerSolpSap(ObtenerSolpRequest obtenerSolpRequest);
 
         List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);

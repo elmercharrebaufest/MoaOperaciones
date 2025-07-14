@@ -6,7 +6,12 @@ using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ListarPesificaciones;
+using SustitucionMOAWS.Logger;
+using SustitucionMOAWS.Util;
+using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
+using System.Configuration;
+using static Google.Apis.Requests.BatchRequest;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -17,30 +22,86 @@ namespace SustitucionMOAWS.WSConsumers
 
     public class ListarPesificacionesConsumer : IListarPesificacionesConsumer
     {
-        readonly SI_MPMF_MOAOP_LISTAR_PESIFClient service = new SI_MPMF_MOAOP_LISTAR_PESIFClient();
+
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
         private readonly IRepositorio repositorio;
 
         public ListarPesificacionesConsumer(IRepositorio repositorio)
         {
-            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             this.repositorio = repositorio;
 
         }
 
         public ListarPesificacionesWSMOAResponse Request(string proveedor)
         {
-            var pesificaciones = service.SI_MPMF_MOAOP_LISTAR_PESIF(proveedor);
-            return Map(pesificaciones);
-        }
+            if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
+            {
+                var agent = new Z_WS_MOAOP_DIRECTClient();
+                agent.ClientCredentials.UserName.UserName = UserSap;
+                agent.ClientCredentials.UserName.Password = PassSap;
+                var request = new Z_MPMF_MOAOP_LISTAR_PESIF()
+                {
+                    IM_LIFNR = proveedor
+                };
+                Log.Info($"SAP sin PI Z_MPMF_MOAOP_LISTAR_PESIF request");
+                Log.Info(request.ToXml());
 
-        private ListarPesificacionesWSMOAResponse Map(ZMPES6500[] pesificaciones)
+                var response = agent.Z_MPMF_MOAOP_LISTAR_PESIF(request);
+                Log.Info($"SAP sin PI Z_MPMF_MOAOP_LISTAR_PESIF response");
+                Log.Info(response.ToXml());
+
+                return MapSinPI(response);
+            }
+            else
+            {
+                Log.Info($"Con PI SI_MPMF_MOAOP_LISTAR_PESIF" );
+
+                SI_MPMF_MOAOP_LISTAR_PESIFClient service = new SI_MPMF_MOAOP_LISTAR_PESIFClient();
+                service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+                service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+                var pesificaciones = service.SI_MPMF_MOAOP_LISTAR_PESIF(proveedor);
+                return Map(pesificaciones);
+            }
+        }
+        private ListarPesificacionesWSMOAResponse MapSinPI(Z_MPMF_MOAOP_LISTAR_PESIFResponse response)
         {
             var result = new ListarPesificacionesWSMOAResponse();
             var soja200FechaCotizacionStr = repositorio.Obtener<Configuracion>(a => a.Code == "Soja200FechaCotizacion").Value;
             var soja200FechaCotizacion = DateTime.ParseExact(soja200FechaCotizacionStr, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
-            foreach (ZMPES6500 pesificacion in pesificaciones)
+            foreach (WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES6500 pesificacion in response.EX_SALIDA)
+            {
+                var fechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                if (fechaPesificacionDate.Date == soja200FechaCotizacion)
+                {
+                    fechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_CARGA, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                }
+                result.Pesificaciones.Add(new PesificacionSapDto
+                {
+                    FechaCarga = SAPFormatter.FormatearFecha(pesificacion.FECHA_CARGA),
+                    FechaCargaDate = (DateTime.ParseExact(pesificacion.FECHA_CARGA, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)).ToString("yyyy-MM-ddTHH:mm:ss"),
+                    Contrato = pesificacion.CONTRATO,
+                    Fijacion = pesificacion.FIJACION,
+                    Kilos = pesificacion.KILOS,
+                    KilosString = SAPFormatter.FormatearCantidad(pesificacion.KILOS, "KG"),
+                    Precio = pesificacion.PRECIO,
+                    PrecioString = SAPFormatter.FormatearMonto(pesificacion.PRECIO, "USD"),
+                    FechaPesificacion = SAPFormatter.FormatearFecha(fechaPesificacionDate),
+                    FechaPesificacionDate = fechaPesificacionDate.ToString("yyyy-MM-ddTHH:mm:ss"),
+                    TipoCambio = SAPFormatter.FormatearMonto(pesificacion.TIPO_CAMBIO, "ARP"),
+                });
+            }
+
+            return result;
+        }
+        private ListarPesificacionesWSMOAResponse Map(ListarPesificaciones.ZMPES6500[] pesificaciones)
+        {
+            var result = new ListarPesificacionesWSMOAResponse();
+            var soja200FechaCotizacionStr = repositorio.Obtener<Configuracion>(a => a.Code == "Soja200FechaCotizacion").Value;
+            var soja200FechaCotizacion = DateTime.ParseExact(soja200FechaCotizacionStr, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+            foreach (ListarPesificaciones.ZMPES6500 pesificacion in pesificaciones)
             {
                 var fechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                 if (fechaPesificacionDate.Date == soja200FechaCotizacion)

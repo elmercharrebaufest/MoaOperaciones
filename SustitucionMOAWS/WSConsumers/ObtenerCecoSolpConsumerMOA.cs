@@ -1,9 +1,14 @@
-﻿using SustitucionMOAModel.Models.WSMapMOA.Compras;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerCecoSolpWebServiceMOA;
+using SustitucionMOAWS.Util;
+using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -13,29 +18,56 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class ObtenerCecoSolpConsumerMOA : IObtenerCecoSolpConsumerMOA
     {
-        SI_MMRFC_OBTENER_CECOClient service;
         private const string COMP_CODE = "MOA";
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
 
         public ObtenerCecoSolpConsumerMOA()
         {
-            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CECO&amp;interfaceNamespace=urn%3AOPERACIONES";
-            service = new SI_MMRFC_OBTENER_CECOClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));         
-            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+
         }
 
         public object request()
         {
             try
             {
-                string IM_COMP_CODE = COMP_CODE;
-                string IM_COSTCENTER = "";
-                string EX_EXITO = "";
-                BAPIRETURN EX_RETURN = new BAPIRETURN();
+                if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
+                {
+                    var agent = new Z_WS_MOAOP_COMPRAS_DIRECTClient();
+                    agent.ClientCredentials.UserName.UserName = UserSap;
+                    agent.ClientCredentials.UserName.Password = PassSap;
 
-                BAPI0012_2[] error = service.SI_MMRFC_OBTENER_CECO(IM_COMP_CODE, IM_COSTCENTER, out EX_EXITO, out EX_RETURN);
+                    string IM_COMP_CODE = COMP_CODE;
+                    string IM_COSTCENTER = "";
 
-                return map(error, EX_EXITO);
+                    var request = new Z_MMRFC_OBTENER_CECO()
+                    {
+                        IM_COMP_CODE = IM_COMP_CODE,
+                        IM_COSTCENTER = IM_COSTCENTER
+                    };
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CECO request");
+                    Log.Info(request.ToXml());
+                    var response = agent.Z_MMRFC_OBTENER_CECO(request);
+                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CECO response");
+                    Log.Info(response.ToXml());
+                    return MapSinPI(response);
+                }
+                else
+                {
+                    SI_MMRFC_OBTENER_CECOClient service;
+                    var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CECO&amp;interfaceNamespace=urn%3AOPERACIONES";
+                    service = new SI_MMRFC_OBTENER_CECOClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
+                    service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+                    service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+                    string IM_COMP_CODE = COMP_CODE;
+                    string IM_COSTCENTER = "";
+                    string EX_EXITO = "";
+                    ObtenerCecoSolpWebServiceMOA.BAPIRETURN EX_RETURN = new ObtenerCecoSolpWebServiceMOA.BAPIRETURN();
+                    ObtenerCecoSolpWebServiceMOA.BAPI0012_2[] error = service.SI_MMRFC_OBTENER_CECO(IM_COMP_CODE, IM_COSTCENTER, out EX_EXITO, out EX_RETURN);
+                    return map(error, EX_EXITO);
+                }
+
+
             }
             catch (Exception e)
             {
@@ -43,14 +75,32 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-        protected virtual object map(BAPI0012_2[] error, string EX_EXITO)
+        private object MapSinPI(Z_MMRFC_OBTENER_CECOResponse response)
+        {
+            CecoWSMOAResponse result = new CecoWSMOAResponse();
+            result.Cecos = new List<Ceco> { };
+            if (response.EX_EXITO == "200")
+            {
+                foreach (WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPI0012_2 ceco in response.EX_COSTCENTER_LIST)
+                {
+                    result.Cecos.Add(new Ceco()
+                    {
+                        CostCenter = ceco.COSTCENTER,
+                        Descripcion = ceco.COCNTR_TXT
+                    });
+                }
+            }
+            return result;
+        }
+
+        protected virtual object map(ObtenerCecoSolpWebServiceMOA.BAPI0012_2[] error, string EX_EXITO)
         {
             CecoWSMOAResponse result = new CecoWSMOAResponse();
             result.Cecos = new List<Ceco> { };
 
             if (EX_EXITO == "200")
             {
-                foreach (BAPI0012_2 ceco in error)
+                foreach (ObtenerCecoSolpWebServiceMOA.BAPI0012_2 ceco in error)
                 {
                     result.Cecos.Add(new Ceco()
                     {
