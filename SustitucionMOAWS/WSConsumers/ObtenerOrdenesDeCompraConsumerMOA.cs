@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SustitucionMOAFotmatter;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Models.WSMapMOA;
-using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.ObtenerOrdenesDeCompraWebServiceMOA;
-using SustitucionMOAWS.OrdenesDeCompraParaSolpWebServiceMOA;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 
 namespace SustitucionMOAWS.WSConsumers
@@ -37,7 +29,7 @@ namespace SustitucionMOAWS.WSConsumers
             string vendedor = parametros.vendedor;
             string OC = parametros.OrdenCompraId;
             //MMSN - 574: Si ingresa OC o proveedor, son independientes de la fecha. De no coincidir OC y vendedor, retornar el error. 
-            if(!String.IsNullOrEmpty(OC) || !String.IsNullOrEmpty(vendedor))
+            if (!String.IsNullOrEmpty(OC) || !String.IsNullOrEmpty(vendedor))
             {
                 fechaInicio = "";
             }
@@ -88,7 +80,7 @@ namespace SustitucionMOAWS.WSConsumers
                     ProveedorNumero = item.VENDOR
                 });
             }
-            
+
             return result;
         }
 

@@ -465,9 +465,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.tablaPO = result.data;
                         this.obtenerSolicitantes(result.data);
                         this.cargarArrayProcesosSpinners(this.tablaPO);
-                        this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
+                        this.length = result.data.length > 0 ? result.data[0].ItemsTotales : 0;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+                        //this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
 
                     }
                     if (this.expandedPositionRow) {
@@ -501,6 +502,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         }
 
         return false; //<-- Prevent Refresh
+    }
+
+    handlePageEvent(e: any) {
+        this.pageSize = e.rows;
+        this.pageIndex = e.page + 1;        
+        this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }
 
     esPosicionCompleta(posicion): boolean {

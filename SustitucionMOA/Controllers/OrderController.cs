@@ -21,32 +21,42 @@ namespace SustitucionMOA.Controllers
             this.orderService = orderService;
         }
 
-        //[ValidateInput(false)]
-        //[CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_SOLP)]
-        //[HttpGet]
         public ActionResult GetByProveedor(OrderParamsDto parametros)
         {
-            // Filtro necesario por el tipo de dato que envía el front desde que se amplió la búsqueda de proveedores.
             if (parametros.vendedor == "undefined")
             {
                 parametros.vendedor = string.Empty;
             }
+            parametros.pagina = parametros.pagina == 0 ? 1 : parametros.pagina;
+            parametros.elementosPorPagina = parametros.elementosPorPagina == 0 ? 10 : parametros.elementosPorPagina;
 
             string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
+            //descomentar
             ListaPaginada<DetalleOrdenDeCompraDto> result = orderService.ObtenerOrdenesCompraConDetalle(parametros, userMail);
+
+            ////inicio datos de pruebas
+            //List<DetalleOrdenDeCompraDto> items = new List<DetalleOrdenDeCompraDto>();
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    items.Add(new DetalleOrdenDeCompraDto { NumeroOrdenDeCompra = i.ToString() });
+            //}
+            //ListaPaginada<DetalleOrdenDeCompraDto> result = new ListaPaginada<DetalleOrdenDeCompraDto>(
+            //     items.Skip(parametros.pagina * parametros.elementosPorPagina).Take(10).ToList(),
+            //     parametros.pagina,
+            //     parametros.elementosPorPagina,
+            //     items.Count
+            // );
+            ////fin datos de pruebas
 
             if (result.Items.Count > 0)
             {
                 result.Items.FirstOrDefault().ItemsTotales = result.ItemsTotales;
                 result.Items.FirstOrDefault().Pagina = result.Pagina;
                 result.Items.FirstOrDefault().ItemPorPagina = result.ItemsPorPagina;
-
             }
-
             return ContentCustom(new { data = result });
         }
-
 
         public async Task<ActionResult> GetSolicitantesByNroSolped(List<string> solpList)
         {
@@ -57,6 +67,5 @@ namespace SustitucionMOA.Controllers
 
             return ContentCustom(new { data = result });
         }
-
     }
 }
