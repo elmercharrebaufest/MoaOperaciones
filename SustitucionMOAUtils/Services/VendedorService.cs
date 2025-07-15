@@ -9,6 +9,8 @@ using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -352,9 +354,7 @@ namespace SustitucionMOAUtils.Services
         }
         private List<ProveedorDto> GetVendedoresInternal(string mailUsuario, Func<Proveedor, bool> filtro = null)
         {
-
             var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
-
             var listadoProveedores = new List<ProveedorDto>();
 
             if (usuario.EsAdmin() || usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
@@ -366,8 +366,10 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                var proveedores = usuario.Proveedores.ToList();
+                var proveedores1 = usuario.ObtenerProveedor();
+                var proveedores = repositorio.Listar<Proveedor>(p => p.CUIT == usuario.CUITRegistro).ToList();
 
+                //var proveedores = usuario.Proveedores.ToList();
 
                 if (filtro != null)
                 {
@@ -376,7 +378,6 @@ namespace SustitucionMOAUtils.Services
 
                 listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto(proveedor, false)).ToList());
             }
-
 
             foreach (var item in listadoProveedores.Where(a => a.CUIT == null || a.CUIT == ""))
             {

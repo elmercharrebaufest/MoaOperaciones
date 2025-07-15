@@ -756,6 +756,7 @@ namespace SustitucionMOAUtils.Services
                 DomicilioDescr = request.DomicilioDescr,
                 RazonSocialDestino = request.RazonSocialDestino,
                 Escalable = request.Escalable,
+                TransporteExiste = orden.TransporteExiste,
                 //Campos Con valores que no cambian
                 Producto = orden.Producto,
                 Cliente = orden.Cliente,
