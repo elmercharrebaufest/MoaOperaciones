@@ -157,6 +157,7 @@ export class OrdenesDeCargaFasonAltaComponent
             this.obtenerOrdenDeCarga();
         } else if (this.esAdmin) {
             this.obtenerCorredores();
+            this.cargarClientes('');
         }
     }
 
@@ -429,6 +430,7 @@ export class OrdenesDeCargaFasonAltaComponent
                             this.obtenerCorredores();
                         } else {
                             this.obtenerCorredores();
+                            this.cargarClientes('');
                         }
 
                         const producto = this.listaProductos.find(producto => producto.MaterialId == this.ordenDeCargaFason.Producto_Id)
