@@ -13,7 +13,7 @@
   <setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="http://gvicdataagro02.molinosagro.ad/services/DataAgroServices.svc" />
 
   <setParameter name="PasswordSap Config" value="GOL%2016" />
-  <setParameter name="SAPsinPI Config" value="1" />
+  <setParameter name="SAPsinPI Config" value="0" />
   <setParameter name="SapUserS4 Config" value="GWEBSRV_GOL" />
   <setParameter name="SapPassS4 Config" value="#x=X$tZGo\cH" />
   <setParameter name="AzureADTenantId Config" value="moagro.onmicrosoft.com" />
