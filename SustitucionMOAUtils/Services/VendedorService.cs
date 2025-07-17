@@ -9,8 +9,6 @@ using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -366,10 +364,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                var proveedores1 = usuario.ObtenerProveedor();
-                var proveedores = repositorio.Listar<Proveedor>(p => p.CUIT == usuario.CUITRegistro).ToList();
-
-                //var proveedores = usuario.Proveedores.ToList();
+                var proveedores = usuario.Proveedores.ToList();
 
                 if (filtro != null)
                 {
