@@ -1,6 +1,4 @@
-﻿using Microsoft.Win32;
-using Newtonsoft.Json;
-using SustitucionMOAFotmatter;
+﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
@@ -14,9 +12,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.ServiceModel;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -41,11 +37,10 @@ namespace SustitucionMOAWS.WSConsumers
                 agent.ClientCredentials.UserName.UserName = UserSap;
                 agent.ClientCredentials.UserName.Password = PassSap;
 
-                WS_GAQ_sin_PI_DIRECT_MOAOP.BAPIRETURN[] BAPIRETURNE       = new WS_GAQ_sin_PI_DIRECT_MOAOP.BAPIRETURN[] { };
-                WS_GAQ_sin_PI_DIRECT_MOAOP.MEWIPIRTEXT[] MEWIPIRTEXTE     = new WS_GAQ_sin_PI_DIRECT_MOAOP.MEWIPIRTEXT[] { };
-                WS_GAQ_sin_PI_DIRECT_MOAOP.MEWISCALEQUAN[] MEWISCALEQUANE = new WS_GAQ_sin_PI_DIRECT_MOAOP.MEWISCALEQUAN[] { };
-                WS_GAQ_sin_PI_DIRECT_MOAOP.MEWISCALEVAL[] MEWISCALEVALE   = new WS_GAQ_sin_PI_DIRECT_MOAOP.MEWISCALEVAL[] { };
-                WS_GAQ_sin_PI_DIRECT_MOAOP.MEWIEINE MEWIEINEE             = new WS_GAQ_sin_PI_DIRECT_MOAOP.MEWIEINE();
+                WS_GAQ_sin_PI_DIRECT_MOAOP.BAPIRETURN[] BAPIRETURNE = new WS_GAQ_sin_PI_DIRECT_MOAOP.BAPIRETURN[] { };
+                WS_GAQ_sin_PI_DIRECT_MOAOP.MEWIPIRTEXT[] MEWIPIRTEXTE;
+                WS_GAQ_sin_PI_DIRECT_MOAOP.MEWISCALEQUAN[] MEWISCALEQUANE;
+                WS_GAQ_sin_PI_DIRECT_MOAOP.MEWISCALEVAL[] MEWISCALEVALE;
 
                 var registrosSap = DevolverDatosSapRegistroSinPI(registrosInfo);
                 string xml = "";
@@ -55,7 +50,6 @@ namespace SustitucionMOAWS.WSConsumers
                     MEWIPIRTEXTE = new WS_GAQ_sin_PI_DIRECT_MOAOP.MEWIPIRTEXT[] { };
                     MEWISCALEQUANE = new WS_GAQ_sin_PI_DIRECT_MOAOP.MEWISCALEQUAN[] { };
                     MEWISCALEVALE = new WS_GAQ_sin_PI_DIRECT_MOAOP.MEWISCALEVAL[] { };
-                    MEWIEINEE = new WS_GAQ_sin_PI_DIRECT_MOAOP.MEWIEINE();
 
                     WS_GAQ_sin_PI_DIRECT_MOAOP.MEWICONDITION[] CONDITIONE = item.CONDITION != null ? item.CONDITION.ToArray() : new WS_GAQ_sin_PI_DIRECT_MOAOP.MEWICONDITION[] { };
                     WS_GAQ_sin_PI_DIRECT_MOAOP.MEWIVALIDITY[] MEWIVALIDITYE = item.MEWIVALIDITY != null ? item.MEWIVALIDITY.ToArray() : new WS_GAQ_sin_PI_DIRECT_MOAOP.MEWIVALIDITY[] { };
@@ -116,22 +110,22 @@ namespace SustitucionMOAWS.WSConsumers
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-                AgregarRegistroInfoServiceWebMOA.BAPIRETURN[]    BAPIRETURNE    = new AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] { };
-                AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[]   MEWIPIRTEXTE   = new AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] { };
+                AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] BAPIRETURNE = new AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] { };
+                AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] MEWIPIRTEXTE = new AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] { };
                 AgregarRegistroInfoServiceWebMOA.MEWISCALEQUAN[] MEWISCALEQUANE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEQUAN[] { };
-                AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[]  MEWISCALEVALE  = new AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] { };
-                AgregarRegistroInfoServiceWebMOA.MEWIEINE        MEWIEINEE      = new AgregarRegistroInfoServiceWebMOA.MEWIEINE();
+                AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] MEWISCALEVALE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] { };
+                AgregarRegistroInfoServiceWebMOA.MEWIEINE MEWIEINEE = new AgregarRegistroInfoServiceWebMOA.MEWIEINE();
 
                 var registrosSap = DevolverDatosSapRegistro(registrosInfo);
                 string xml = "";
 
                 foreach (var item in registrosSap)
                 {
-                    BAPIRETURNE    = new AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] { };
-                    MEWIPIRTEXTE   = new AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] { };
+                    BAPIRETURNE = new AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] { };
+                    MEWIPIRTEXTE = new AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] { };
                     MEWISCALEQUANE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEQUAN[] { };
-                    MEWISCALEVALE  = new AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] { };
-                    MEWIEINEE      = new AgregarRegistroInfoServiceWebMOA.MEWIEINE();
+                    MEWISCALEVALE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] { };
+                    MEWIEINEE = new AgregarRegistroInfoServiceWebMOA.MEWIEINE();
 
                     AgregarRegistroInfoServiceWebMOA.MEWICONDITION[] CONDITIONE = item.CONDITION != null ? item.CONDITION.ToArray() : new AgregarRegistroInfoServiceWebMOA.MEWICONDITION[] { };
                     AgregarRegistroInfoServiceWebMOA.MEWIVALIDITY[] MEWIVALIDITYE = item.MEWIVALIDITY != null ? item.MEWIVALIDITY.ToArray() : new AgregarRegistroInfoServiceWebMOA.MEWIVALIDITY[] { };
