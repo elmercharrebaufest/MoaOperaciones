@@ -110,22 +110,16 @@ namespace SustitucionMOAWS.WSConsumers
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-                AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] BAPIRETURNE = new AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] { };
-                AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] MEWIPIRTEXTE = new AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] { };
-                AgregarRegistroInfoServiceWebMOA.MEWISCALEQUAN[] MEWISCALEQUANE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEQUAN[] { };
-                AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] MEWISCALEVALE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] { };
-                AgregarRegistroInfoServiceWebMOA.MEWIEINE MEWIEINEE = new AgregarRegistroInfoServiceWebMOA.MEWIEINE();
-
                 var registrosSap = DevolverDatosSapRegistro(registrosInfo);
                 string xml = "";
 
                 foreach (var item in registrosSap)
                 {
-                    BAPIRETURNE = new AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] { };
-                    MEWIPIRTEXTE = new AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] { };
-                    MEWISCALEQUANE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEQUAN[] { };
-                    MEWISCALEVALE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] { };
-                    MEWIEINEE = new AgregarRegistroInfoServiceWebMOA.MEWIEINE();
+                    AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] BAPIRETURNE = new AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] { };
+                    AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] MEWIPIRTEXTE = new AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] { };
+                    AgregarRegistroInfoServiceWebMOA.MEWISCALEQUAN[] MEWISCALEQUANE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEQUAN[] { };
+                    AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] MEWISCALEVALE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] { };
+                    AgregarRegistroInfoServiceWebMOA.MEWIEINE MEWIEINEE;
 
                     AgregarRegistroInfoServiceWebMOA.MEWICONDITION[] CONDITIONE = item.CONDITION != null ? item.CONDITION.ToArray() : new AgregarRegistroInfoServiceWebMOA.MEWICONDITION[] { };
                     AgregarRegistroInfoServiceWebMOA.MEWIVALIDITY[] MEWIVALIDITYE = item.MEWIVALIDITY != null ? item.MEWIVALIDITY.ToArray() : new AgregarRegistroInfoServiceWebMOA.MEWIVALIDITY[] { };
