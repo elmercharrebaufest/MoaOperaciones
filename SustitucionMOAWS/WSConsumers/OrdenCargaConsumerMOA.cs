@@ -1,13 +1,10 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAModel.Models;
-using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOAModel.Util;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
@@ -27,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Windows.Controls;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -63,7 +59,7 @@ namespace SustitucionMOAWS.WSConsumers
         Z_MPMF_MOAOP_CONTROL_CARGA 	CC-00	'OK'
 
         */
-        
+
         private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
         private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
 
@@ -82,15 +78,15 @@ namespace SustitucionMOAWS.WSConsumers
 
                 var request = new Z_MPMF_MOAOP_CONTROL_CARGA()
                 {
-                    IM_CLIENTE     = string.IsNullOrEmpty(datosCarga.Cliente )? " " : datosCarga.Cliente ,
-                    IM_CONTRATO    = string.IsNullOrEmpty(datosCarga.Contrato)? " " : datosCarga.Contrato,
-                    IM_CORREDOR    = string.IsNullOrEmpty(datosCarga.Corredor)? " " : datosCarga.Corredor,
-                    IM_CUIT        = string.IsNullOrEmpty(datosCarga.Cuit    )? " " : datosCarga.Cuit,
-                    IM_CUITDESTF   = string.IsNullOrEmpty(datosCarga.CuitDestino) ? " " : datosCarga.CuitDestino,
+                    IM_CLIENTE = string.IsNullOrEmpty(datosCarga.Cliente) ? " " : datosCarga.Cliente,
+                    IM_CONTRATO = string.IsNullOrEmpty(datosCarga.Contrato) ? " " : datosCarga.Contrato,
+                    IM_CORREDOR = string.IsNullOrEmpty(datosCarga.Corredor) ? " " : datosCarga.Corredor,
+                    IM_CUIT = string.IsNullOrEmpty(datosCarga.Cuit) ? " " : datosCarga.Cuit,
+                    IM_CUITDESTF = string.IsNullOrEmpty(datosCarga.CuitDestino) ? " " : datosCarga.CuitDestino,
                     IM_CUITDESTINAT = string.IsNullOrEmpty(datosCarga.CuitDestinatario) ? " " : datosCarga.CuitDestinatario,
-                    IM_MATERIAL    = string.IsNullOrEmpty(datosCarga.Material) ? " " : datosCarga.Material,
-                    IM_PEDIDO      = string.IsNullOrEmpty(datosCarga.Pedido  ) ? " " : datosCarga.Pedido  ,
-                    IM_SOLO_SISA   = datosCarga.SoloSisa ? "X" : " "
+                    IM_MATERIAL = string.IsNullOrEmpty(datosCarga.Material) ? " " : datosCarga.Material,
+                    IM_PEDIDO = string.IsNullOrEmpty(datosCarga.Pedido) ? " " : datosCarga.Pedido,
+                    IM_SOLO_SISA = datosCarga.SoloSisa ? "X" : " "
                 };
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_CONTROL_CARGA request");
                 Log.Info(request.ToXml());
@@ -165,23 +161,23 @@ namespace SustitucionMOAWS.WSConsumers
 
                 var request = new Z_MPMF_MOAOP_CREAR_ORDEN_CARGA()
                 {
-                    IM_CLIENTE      = req.Cliente,
-                    IM_CODPLANTA    = req.PlantaCodigo,
-                    IM_CONTRATO     = req.Contrato,
-                    IM_CORREDOR     = req.Corredor,
-                    IM_CUITDESTF    = req.CuitDestino,
+                    IM_CLIENTE = req.Cliente,
+                    IM_CODPLANTA = req.PlantaCodigo,
+                    IM_CONTRATO = req.Contrato,
+                    IM_CORREDOR = req.Corredor,
+                    IM_CUITDESTF = string.IsNullOrWhiteSpace(req.CuitDestino) ? "" : req.CuitDestino,
                     IM_CUITDESTINAT = req.CuitDestinatario,
-                    IM_DOMORDEN     = req.DomicilioDescr,
-                    IM_INDRVTA      = indrvta,//IM_INDRVTA
-                    IM_KILOS        = req.Kilos,
-                    IM_MATERIAL     = req.Material,
-                    IM_NAMEDESTF    = req.RazonSocialDestino,
+                    IM_DOMORDEN = req.DomicilioDescr,
+                    IM_INDRVTA = indrvta,//IM_INDRVTA
+                    IM_KILOS = req.Kilos,
+                    IM_MATERIAL = req.Material,
+                    IM_NAMEDESTF = req.RazonSocialDestino,
                     IM_NAMEDESTINAT = req.RazonSocialDestinatario,
-                    IM_ORDENDOM     = req.DomicilioOrden.ToString(),
-                    IM_PEDIDO       = req.PedidoInput,
-                    IM_TIPODOM      = req.DomicilioTipo,
-                    IM_USUARIO      = req.UsuarioSAP,
-                    IM_VALIDA_KG    = req.ValidaKg ? "X" : "",
+                    IM_ORDENDOM = req.DomicilioOrden.ToString(),
+                    IM_PEDIDO = req.PedidoInput,
+                    IM_TIPODOM = req.DomicilioTipo,
+                    IM_USUARIO = req.UsuarioSAP,
+                    IM_VALIDA_KG = req.ValidaKg ? "X" : "",
                 };
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_CREAR_ORDEN_CARGA request");
                 Log.Info(request.ToXml());
@@ -212,7 +208,7 @@ namespace SustitucionMOAWS.WSConsumers
                     IM_CODPLANTA: req.PlantaCodigo,
                     IM_CONTRATO: req.Contrato,
                     IM_CORREDOR: req.Corredor,
-                    IM_CUITDESTF: req.CuitDestino,
+                    IM_CUITDESTF: string.IsNullOrWhiteSpace(req.CuitDestino) ? "" : req.CuitDestino,
                     IM_CUITDESTINAT: req.CuitDestinatario,
                     IM_DOMORDEN: req.DomicilioDescr,
                     IM_INDRVTA: indrvta,//IM_INDRVTA
@@ -268,7 +264,7 @@ namespace SustitucionMOAWS.WSConsumers
                 var agent = new Z_WS_MOAOP_DIRECTClient();
                 agent.ClientCredentials.UserName.UserName = UserSap;
                 agent.ClientCredentials.UserName.Password = PassSap;
-                
+
                 var cuit_tr = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.TransportistaReal : entregaReq.Transportista;
                 var cuit_int_flete = !string.IsNullOrEmpty(entregaReq.TransportistaReal) ? entregaReq.Transportista : entregaReq.TransportistaReal;
                 if (!pedidoAnticipado)
@@ -276,26 +272,26 @@ namespace SustitucionMOAWS.WSConsumers
 
                 var request = new Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE()
                 {
-                    IM_CUITDESTF         = string.IsNullOrEmpty(entregaReq.CuitDestino     ) ? " " : entregaReq.CuitDestino     ,
-                    IM_CUITDESTINAT      = string.IsNullOrEmpty(entregaReq.CuitDestinatario) ? " " : entregaReq.CuitDestinatario,
-                    IM_DOCUMENTO         = string.IsNullOrEmpty(entregaReq.Documento       ) ? " " : entregaReq.Documento       ,
-                    IM_DOMORDEN          = string.IsNullOrEmpty(entregaReq.DomicilioDescr  ) ? " " : entregaReq.DomicilioDescr,
-                    IM_INDRVTA           = entregaReq.Reventa ? "X" : " ",
-                    IM_KILOS             = entregaReq.Kilos,
-                    IM_NAMEDESTF         = string.IsNullOrEmpty(entregaReq.RazonSocialDestino     ) ? " " : entregaReq.RazonSocialDestino     ,
-                    IM_NAMEDESTINAT      = string.IsNullOrEmpty(entregaReq.RazonSocialDestinatario) ? " " : entregaReq.RazonSocialDestinatario,
-                    IM_NOMBRECONDUCTOR   = string.IsNullOrEmpty(entregaReq.NombreConductor        ) ? " " : entregaReq.NombreConductor,
-                    IM_ORDENDOM          = entregaReq.DomicilioOrden == null ? "" : entregaReq.DomicilioOrden.ToString(),
-                    IM_PATENTEACOPLADO   = string.IsNullOrEmpty(entregaReq.PatenteAcoplado) ? " " : entregaReq.PatenteAcoplado,
-                    IM_PATENTECHASIS     = string.IsNullOrEmpty(entregaReq.PatenteChasis  ) ? " " : entregaReq.PatenteChasis  ,
-                    IM_PEDIDO            = string.IsNullOrEmpty(entregaReq.Pedido         ) ? " " : entregaReq.Pedido         ,
-                    IM_TIPODOCUMENTO     = string.IsNullOrEmpty(entregaReq.TipoDocumento  ) ? " " : entregaReq.TipoDocumento  ,
-                    IM_TIPODOM           = string.IsNullOrEmpty(entregaReq.DomicilioTipo  ) ? " " : entregaReq.DomicilioTipo  ,
-                    IM_TRANSPORTISTA     = string.IsNullOrEmpty(cuit_tr       ) ? " " : cuit_tr       ,
-                    IM_TRANSPORTISTA_REAL= string.IsNullOrEmpty(cuit_int_flete) ? " " : cuit_int_flete,
-                    IM_USUARIO           = "CACERESN",
-                    IM_ZZCODPLANTA       = string.IsNullOrEmpty(entregaReq.PlantaCodigo) ? " " : entregaReq.PlantaCodigo,
-                    IM_DESTINO_MERCADERIA= string.IsNullOrEmpty(entregaReq.DestinoMercaderia) ? " " : entregaReq.DestinoMercaderia,
+                    IM_CUITDESTF = string.IsNullOrEmpty(entregaReq.CuitDestino) ? " " : entregaReq.CuitDestino,
+                    IM_CUITDESTINAT = string.IsNullOrEmpty(entregaReq.CuitDestinatario) ? " " : entregaReq.CuitDestinatario,
+                    IM_DOCUMENTO = string.IsNullOrEmpty(entregaReq.Documento) ? " " : entregaReq.Documento,
+                    IM_DOMORDEN = string.IsNullOrEmpty(entregaReq.DomicilioDescr) ? " " : entregaReq.DomicilioDescr,
+                    IM_INDRVTA = entregaReq.Reventa ? "X" : " ",
+                    IM_KILOS = entregaReq.Kilos,
+                    IM_NAMEDESTF = string.IsNullOrEmpty(entregaReq.RazonSocialDestino) ? " " : entregaReq.RazonSocialDestino,
+                    IM_NAMEDESTINAT = string.IsNullOrEmpty(entregaReq.RazonSocialDestinatario) ? " " : entregaReq.RazonSocialDestinatario,
+                    IM_NOMBRECONDUCTOR = string.IsNullOrEmpty(entregaReq.NombreConductor) ? " " : entregaReq.NombreConductor,
+                    IM_ORDENDOM = entregaReq.DomicilioOrden == null ? "" : entregaReq.DomicilioOrden.ToString(),
+                    IM_PATENTEACOPLADO = string.IsNullOrEmpty(entregaReq.PatenteAcoplado) ? " " : entregaReq.PatenteAcoplado,
+                    IM_PATENTECHASIS = string.IsNullOrEmpty(entregaReq.PatenteChasis) ? " " : entregaReq.PatenteChasis,
+                    IM_PEDIDO = string.IsNullOrEmpty(entregaReq.Pedido) ? " " : entregaReq.Pedido,
+                    IM_TIPODOCUMENTO = string.IsNullOrEmpty(entregaReq.TipoDocumento) ? " " : entregaReq.TipoDocumento,
+                    IM_TIPODOM = string.IsNullOrEmpty(entregaReq.DomicilioTipo) ? " " : entregaReq.DomicilioTipo,
+                    IM_TRANSPORTISTA = string.IsNullOrEmpty(cuit_tr) ? " " : cuit_tr,
+                    IM_TRANSPORTISTA_REAL = string.IsNullOrEmpty(cuit_int_flete) ? " " : cuit_int_flete,
+                    IM_USUARIO = "CACERESN",
+                    IM_ZZCODPLANTA = string.IsNullOrEmpty(entregaReq.PlantaCodigo) ? " " : entregaReq.PlantaCodigo,
+                    IM_DESTINO_MERCADERIA = string.IsNullOrEmpty(entregaReq.DestinoMercaderia) ? " " : entregaReq.DestinoMercaderia,
                 };
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE request");
                 Log.Info(request.ToXml());
@@ -439,7 +435,7 @@ namespace SustitucionMOAWS.WSConsumers
                         }
                     }
                     string tipoContrato = ConvertirATipoContratoFasSAP(request.TipoContrato);
-                    tipoContrato = tipoContrato.Length > 0 ? tipoContrato.Substring(0,1) : tipoContrato;
+                    tipoContrato = tipoContrato.Length > 0 ? tipoContrato.Substring(0, 1) : tipoContrato;
                     WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
 
                     var requestFas = new Z_MPMF_MOAOP_VISUALIZAR_ZFAS()
@@ -668,7 +664,7 @@ namespace SustitucionMOAWS.WSConsumers
             var resp = OrdenCargaControlEstadoRequest("", "", cuitTransportista);
             return ResponseConverter.GetOrdenCargaControlEstadoResponse(resp);
         }
-        
+
         public ModOrdenCargaResponseHandler AnularOrdenCarga(OrdenDeCarga orden)
         {
 
@@ -687,9 +683,9 @@ namespace SustitucionMOAWS.WSConsumers
                 };
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_MOD_ORDEN_CARGA request");
                 Log.Info(request.ToXml());
-                
+
                 var response = agent.Z_MPMF_MOAOP_MOD_ORDEN_CARGA(request);
-                
+
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_MOD_ORDEN_CARGA response");
                 Log.Info(response.ToXml());
 
@@ -777,15 +773,15 @@ namespace SustitucionMOAWS.WSConsumers
 
                 var request = new Z_MPMF_MOAOP_MOD_ENTREGA()
                 {
-                    IM_ACOPLADO          = req.Acoplado,
-                    IM_BORRAR            = "",
-                    IM_CHASIS            = req.Chasis,
-                    IM_CHOFER            = req.Chofer,
-                    IM_DOCUMENTO         = req.Documento,
-                    IM_ENTREGA           = req.NumeroEntrega,
-                    IM_TIPODOC           = req.TipoDoc,
-                    IM_TRANSPORTE        = codigoSapTransporte,
-                    IM_TRANSPORTISTA_REAL= cuitTransportistaReal
+                    IM_ACOPLADO = req.Acoplado,
+                    IM_BORRAR = "",
+                    IM_CHASIS = req.Chasis,
+                    IM_CHOFER = req.Chofer,
+                    IM_DOCUMENTO = req.Documento,
+                    IM_ENTREGA = req.NumeroEntrega,
+                    IM_TIPODOC = req.TipoDoc,
+                    IM_TRANSPORTE = codigoSapTransporte,
+                    IM_TRANSPORTISTA_REAL = cuitTransportistaReal
                 };
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_MOD_ENTREGA request");
                 Log.Info(request.ToXml());
@@ -842,7 +838,7 @@ namespace SustitucionMOAWS.WSConsumers
                 return resultado;
             }
         }
-        
+
         public bool VerificarContratoAbierto(string contrato)
         {
             if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
@@ -855,12 +851,12 @@ namespace SustitucionMOAWS.WSConsumers
 
                 var request = new Z_MPMF_MOAOP_VISUALIZAR_ZFAS()
                 {
-                    IM_CLIENTE       = "",
-                    IM_CONTRATO      = contrato,
-                    IM_CORREDOR      = "",
-                    IM_FECHA         = fechas,
-                    IM_MATERIAL      = "",
-                    IM_PENDIENTE     = "X",
+                    IM_CLIENTE = "",
+                    IM_CONTRATO = contrato,
+                    IM_CORREDOR = "",
+                    IM_FECHA = fechas,
+                    IM_MATERIAL = "",
+                    IM_PENDIENTE = "X",
                     IM_TIPO_CONTRATO = TipoContratoFas_Todos
                 };
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_VISUALIZAR_ZFAS request");
@@ -910,7 +906,7 @@ namespace SustitucionMOAWS.WSConsumers
             var contratoSAP = OrdenCargaVisualizarClienteExecute(request).Resultados.FirstOrDefault();
             return contratoSAP;
         }
-        
+
         private List<FechaWS> ObtenerFechas()
         {
             return new List<FechaWS>
@@ -922,7 +918,7 @@ namespace SustitucionMOAWS.WSConsumers
                     }
                 };
         }
-        
+
         private OrdenCargaVisualizarCliente.ZMPES4100[] ObtenerRangoFechas()
         {
             var hasta = DateTime.Now;
@@ -943,7 +939,7 @@ namespace SustitucionMOAWS.WSConsumers
                 FECHA_OP_HASTA = SAPFormatter.PrepararFecha(hasta)
             }}.ToArray();
         }
-        
+
 
         private CrearEntregaRequest LimpiarRequestSinPedidoAnticipado(CrearEntregaRequest entregaReq)
         {
