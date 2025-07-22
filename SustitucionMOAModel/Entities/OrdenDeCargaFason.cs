@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Dto.OrdenDeCargaFason;
+﻿using SustitucionMOAModel.Dto.OrdenDeCargaCommon;
+using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
@@ -84,39 +85,41 @@ namespace SustitucionMOAModel.Entities
         }
 
         public OrdenDeCargaFason() { }
-        public OrdenDeCargaFason(CrearOrdenDeCargaFasonRequest request)
+
+        public OrdenDeCargaFason(CrearOrdenDeCargaFasonRequest request, UnidadTransporteCarga unidadTransporte)
         {
+            ApellidoChofer = unidadTransporte.ApellidoChofer;
+            CUILChofer = unidadTransporte.CUILChofer;
+            CUITDestinatario = request.CUITDestinatario;
+            CUITDestino = request.CUITDestino;
+            CUITIntermediarioFlete = unidadTransporte.CUITIntermediarioFlete;
+            CUITTransporte = unidadTransporte.CUITTransporte;
             Cantidad = request.Cantidad;
-            Cliente_Id = request.Cliente;
-            CorredorId = request.CorredorId;
-            CUILChofer = request.CUILChofer;
-            CUITTransporte = request.CUITTransporte;
-            FechaCreacion = DateTime.Now;
-            NombreChofer = request.NombreChofer;
-            ApellidoChofer = request.ApellidoChofer;
-            Observacion = request.Observacion;
-            PatenteAcoplado = request.PatenteAcoplado;
-            PatenteChasis = request.PatenteChasis;
-            Producto_Id = request.Producto_Id;
-            RazonSocialTransporte = request.RazonSocialTransporte;
-            FleteMOA = request.FleteMOA;
-            CUITIntermediarioFlete = request.CUITIntermediarioFlete;
-            RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
             ClienteComoRemitenteComercial = !string.IsNullOrEmpty(request.CUITDestino) &&
                 request.CUITDestino != request.CUITCliente.ToString();
-            PlantaCodigo = request.PlantaCodigo;
-            DomicilioTipo = request.DomicilioTipo;
-            DomicilioOrden = request.DomicilioOrden;
-            DomicilioDescr = request.DomicilioDescr;
-            CUITDestinatario = request.CUITDestinatario;
-            RazonSocialDestinatario = request.RazonSocialDestinatario;
-            CUITDestino = request.CUITDestino;
-            RazonSocialDestino = request.RazonSocialDestino;
+            Cliente_Id = request.Cliente;
+            CorredorId = request.CorredorId;
             DestinatarioExisteScato = request.DestinatarioExisteScato;
             DestinoExisteScato = request.DestinoExisteScato;
             DestinoMercaderia = request.DestinoMercaderia;
+            DomicilioDescr = request.DomicilioDescr;
+            DomicilioOrden = request.DomicilioOrden;
+            DomicilioTipo = request.DomicilioTipo;
             Escalable = request.Escalable;
+            FechaCreacion = DateTime.Now;
+            FleteMOA = request.FleteMOA;
+            NombreChofer = unidadTransporte.NombreChofer;
+            Observacion = request.Observacion;
+            PatenteAcoplado = unidadTransporte.PatenteAcoplado;
+            PatenteChasis = unidadTransporte.PatenteChasis;
+            PlantaCodigo = request.PlantaCodigo;
+            Producto_Id = request.Producto_Id;
+            RazonSocialDestinatario = request.RazonSocialDestinatario;
+            RazonSocialDestino = request.RazonSocialDestino;
+            RazonSocialIntermediarioFlete = unidadTransporte.RazonSocialIntermediarioFlete;
+            RazonSocialTransporte = unidadTransporte.RazonSocialTransporte;
         }
+
         public override bool Equals(object obj)
         {
             return obj is OrdenDeCargaFason carga &&

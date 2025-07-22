@@ -399,21 +399,19 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
 
-        [HttpPost]
-        public ActionResult ObtenerCuilsChofer(string ordenDeCargaFasonJson)
+        [HttpGet]
+        public ActionResult ObtenerCuilsChofer(int clienteId, string patenteAcoplado)
         {
-            var ordenDeCarga = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
             var mailUsuario = SessionPersister.Mail;
-            return Json(new { cuils = ordenDeCargaFasonService.ObtenerCuilsChofer(ordenDeCarga, mailUsuario) }, JsonRequestBehavior.AllowGet);
+            return Json(new { cuils = ordenDeCargaFasonService.ObtenerCuilsChofer(clienteId, patenteAcoplado, mailUsuario) }, JsonRequestBehavior.AllowGet);
 
         }
 
-        [HttpPost]
-        public ActionResult ObtenerCuitsTransporte(string ordenDeCargaFasonJson)
+        [HttpGet]
+        public ActionResult ObtenerCuitsTransporte(int clienteId, string patenteAcoplado)
         {
-            var ordenDeCarga = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
             var mailUsuario = SessionPersister.Mail;
-            return Json(new { cuits = ordenDeCargaFasonService.ObtenerCuitsTransporte(ordenDeCarga, mailUsuario) }, JsonRequestBehavior.AllowGet);
+            return Json(new { cuits = ordenDeCargaFasonService.ObtenerCuitsTransporte(clienteId, patenteAcoplado, mailUsuario) }, JsonRequestBehavior.AllowGet);
 
         }
 

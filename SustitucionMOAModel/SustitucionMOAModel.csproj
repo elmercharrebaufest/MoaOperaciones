@@ -115,6 +115,7 @@
     <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\NotificacionEsPendientesDiariasDto.cs" />
     <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />
+    <Compile Include="Dto\OrdenDeCargaCommon\UnidadTransporteCarga.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
     <Compile Include="Dto\OrdenDeCarga\GestionAltasFAS.cs" />
     <Compile Include="Dto\OrdendesDeCargaApiDto.cs" />

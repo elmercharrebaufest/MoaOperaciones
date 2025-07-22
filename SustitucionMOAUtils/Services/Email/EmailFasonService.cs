@@ -66,7 +66,7 @@ namespace SustitucionMOAUtils.Services.Email
             emailService.EnviarMail(emailSenderData);
         }
         
-        public void EnviarMailIntentoEdicionActiva(OrdenDeCargaFason orden, OrdenDeCargaFasonRequest request)
+        public void EnviarMailIntentoEdicionActiva(OrdenDeCargaFason orden, EditarOrdenDeCargaFasonRequest request)
         {
             var tablaInformacionOrden = CrearTablaDetalleOrden(
                 orden,
@@ -204,17 +204,17 @@ namespace SustitucionMOAUtils.Services.Email
             return tablaBuilder.ToString();
         }
         
-        private string CrearTablaDetalleOrden(OrdenDeCargaFason orden, OrdenDeCargaFasonRequest request)
+        private string CrearTablaDetalleOrden(OrdenDeCargaFason orden, EditarOrdenDeCargaFasonRequest request)
         {
             var detalleCorredor = orden.Corredor != null ? orden.Corredor.CUIT + " - " + orden.Corredor.RazonSocial : "---";
             return InicioTablaDetalle() + CrearFilaTablaDetalleOrden(
                 ordenId: orden.Id,
                 cliente: $"{orden.Cliente.CUIT} - {orden.Cliente.RazonSocial}",
                 corredor: $"{detalleCorredor}",
-                chofer: $"{request.CUILChofer} - {request.ApellidoChofer}, {request.NombreChofer}",
-                transporte: $"{request.CUITTransporte} - {request.RazonSocialTransporte}",
-                patenteChasis: request.PatenteChasis,
-                patenteAcoplado: request.PatenteAcoplado,
+                chofer: $"{request.UnidadTransporte.CUILChofer} - {request.UnidadTransporte.ApellidoChofer}, {request.UnidadTransporte.NombreChofer}",
+                transporte: $"{request.UnidadTransporte.CUITTransporte} - {request.UnidadTransporte.RazonSocialTransporte}",
+                patenteChasis: request.UnidadTransporte.PatenteChasis,
+                patenteAcoplado: request.UnidadTransporte.PatenteAcoplado,
                 fecha: orden.FechaCreacion.ToString("dd/MM/yyyy")
                 ) + FinalTabla();
         }

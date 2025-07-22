@@ -14,6 +14,8 @@ import { Domicilio } from '../common/models/ordenes-de-carga/domicilio';
 import { ValidarCuitExisteScatoResponse } from '../common/models/ordenes-de-carga-common/ValidarCuitExisteScatoResponse';
 import { Proveedor } from '../common/models/proveedor';
 import { ValidarCamionResponse } from '../common/models/ordenes-de-carga/ValidarCamionResponse';
+import { CrearOrdenDeCargaFasonRequest } from '../common/models/ordenes-de-carga-fason/crearOrdenDeCargaFasonRequest';
+import { EditarOrdenDeCargaFasonRequest } from '../common/models/ordenes-de-carga-fason/editarOrdenDeCargaFasonRequest';
 
 @Injectable({
     providedIn: 'root'
@@ -29,11 +31,11 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
-    public agregar(ordenDeCargaFason: OrdenDeCargaFasonDto): Observable<any> {
+    public agregar(crearOrdenFasonRequest: CrearOrdenDeCargaFasonRequest): Observable<any> {
         let payload = new FormData();
         payload.append(
             "ordenDeCargaFasonJson",
-            JSON.stringify(ordenDeCargaFason)
+            JSON.stringify(crearOrdenFasonRequest)
         );
 
         return this.http
@@ -41,16 +43,15 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
-    public editar(ordenDeCargaFason: OrdenDeCargaFasonDto): Observable<any> {
+    public editar(editarOrdenFasonRequest: EditarOrdenDeCargaFasonRequest): Observable<any> {
         let payload = new FormData();
         payload.append(
             "ordenDeCargaJson",
-            JSON.stringify(ordenDeCargaFason)
+            JSON.stringify(editarOrdenFasonRequest)
         );
 
         return this.http
             .post('/api/OrdenDeCargaFason/Editar', payload)
-            //.post('/api/OrdenDeCargaFason/Editar', payload)
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
@@ -216,25 +217,32 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
-    public getCuilsChofer(ordenDeCargaFason: OrdenDeCargaFasonDto): Observable<any> {
-        let payload = new FormData();
-        payload.append(
-            "ordenDeCargaFasonJson",
-            JSON.stringify({ CUITCliente: ordenDeCargaFason.CUITCliente, Cliente: ordenDeCargaFason.Cliente, PatenteAcoplado: ordenDeCargaFason.PatenteAcoplado })
-        );
+    // public getCuilsChofer(ordenDeCargaFason: OrdenDeCargaFasonDto): Observable<any> {
+    public getCuilsChofer(clienteId: string, patenteAcoplado: string): Observable<any> {
+        console.debug("service get cuils chofer con params: " + clienteId + patenteAcoplado);
+        // let payload = new FormData();
+        // payload.append(
+        //     "ordenDeCargaFasonJson",
+        //     JSON.stringify({ CUITCliente: ordenDeCargaFason.CUITCliente, Cliente: ordenDeCargaFason.Cliente, PatenteAcoplado: ordenDeCargaFason.PatenteAcoplado })
+        // );
+        let params: HttpParams = new HttpParams()
+            .append("clienteId", clienteId)
+            .append("patenteAcoplado", patenteAcoplado);
+
         return this.http
-            .post('/api/OrdenDeCargaFason/ObtenerCuilsChofer', payload);
+            .get('/api/OrdenDeCargaFason/ObtenerCuilsChofer', { params: params, headers: this.headers });
     }
 
-    public getCuitsTransporte(ordenDeCargaFason: OrdenDeCargaFasonDto): Observable<any> {
-        let payload = new FormData();
-        payload.append(
-            "ordenDeCargaFasonJson",
-            JSON.stringify({ CUITCliente: ordenDeCargaFason.CUITCliente, Cliente: ordenDeCargaFason.Cliente, PatenteAcoplado: ordenDeCargaFason.PatenteAcoplado })
-        );
+    public getCuitsTransporte(clienteId: string, patenteAcoplado: string): Observable<any> {
+        console.debug("service get cuits transporte con params: " + clienteId + patenteAcoplado);
+        let params: HttpParams = new HttpParams()
+            .append("clienteId", clienteId)
+            .append("patenteAcoplado", patenteAcoplado);
+
         return this.http
-            .post('/api/OrdenDeCargaFason/ObtenerCuitsTransporte', payload);
+            .get('/api/OrdenDeCargaFason/ObtenerCuitsTransporte', { params: params, headers: this.headers });
     }
+
     public verificarCNRT(chasis: string, acoplado: string): Observable<ApiResponse<ValidarCamionResponse>> {
         let params: HttpParams = new HttpParams()
             .append("patenteChasis", chasis)
@@ -246,6 +254,7 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
+
     public getPatentes(ordenDeCargaFason: OrdenDeCargaFasonDto): Observable<any> {
         let payload = new FormData();
         // console.log(ordenDeCarga)

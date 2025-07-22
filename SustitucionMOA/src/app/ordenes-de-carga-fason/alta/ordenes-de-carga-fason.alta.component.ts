@@ -24,6 +24,9 @@ import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { MSG_ALERTA_CAMION_NO_EXISTE, MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
 import { Checkbox } from 'primeng/checkbox';
 import { EstadoOrdenDeCargaFason } from '../../common/models/ordenes-de-carga-fason/estadoOrdenDeCargaFason';
+import { UnidadTransporteCarga } from '../../common/models/ordenes-de-carga-common/unidadTransporteCarga';
+import { CrearOrdenDeCargaFasonRequest } from '../../common/models/ordenes-de-carga-fason/crearOrdenDeCargaFasonRequest';
+import { EditarOrdenDeCargaFasonRequest } from '../../common/models/ordenes-de-carga-fason/editarOrdenDeCargaFasonRequest';
 
 @Component({
     selector: 'app-alta',
@@ -87,14 +90,13 @@ export class OrdenesDeCargaFasonAltaComponent
     modificaFleteMOA: boolean = this.isAuthorized(Permiso.FleteMOA);
 
     ordenDeCargaFason: OrdenDeCargaFasonDto = new OrdenDeCargaFasonDto();
+    unidadTransporte: UnidadTransporteCarga = new UnidadTransporteCarga();
+    estaEditandoUnidadTransporte: boolean = true;
+    unidadesTransporteAgregadas: UnidadTransporteCarga[] = [];
     ordenDeCargaFasonId: number = 0;
 
     maxDateValue = sumarDias(new Date(), 5)
-
-
     hoy: Date = new Date();
-
-    private selectUndefinedOptionValue: any;
 
     public nombreChofer: string;
     validaCPEDG = false;
@@ -103,7 +105,7 @@ export class OrdenesDeCargaFasonAltaComponent
     validandoCuitDestino: boolean = false;
     mensajeCuitDestinatario: string = "";
     mensajeCuitDestino: string = "";
-    editando = false;
+    esEdicionDeOrden = false;
 
     cuitsTransporte: any = [];
     cuilsChofer: any = [];
@@ -112,21 +114,13 @@ export class OrdenesDeCargaFasonAltaComponent
     escalableCNRT?: boolean;
     errorAlValidarEscalable = false;
 
-    get noPuedeEditarCuitsTerceros() {
-        return this.ordenDeCargaFason.Id && this.ordenDeCargaFason.Estado == EstadoOrdenDeCargaFason.Entregada;
-    }
-    generalFormatter(data: any): string {
-        return `${data['label']}`;
-    }
-
-    generalFormatterAcoplado(data: any): string {
-        return `${data['value']}`;
-    }
     ngOnInit() {
-        this.userEmail = sessionStorage.getItem("username");
+        this.userEmail = sessionStorage.getItem("username") || "username no encontrado";
         this.ordenDeCargaFason.Cantidad = 30000;
         this.route.params.forEach((params: Params) => {
-            if (params["id"] > 0) { this.ordenDeCargaFasonId = params["id"]; this.editando = true }
+            if (params["id"] > 0) {
+                this.ordenDeCargaFasonId = params["id"];
+                this.esEdicionDeOrden = true }
             else {
                 this.getPatentes();
             }
@@ -143,7 +137,7 @@ export class OrdenesDeCargaFasonAltaComponent
 
         if (!this.esAdmin) {
             if (this.isCorredor()) {
-                this.CodigoCorredor = sessionStorage.getItem("proveedor");
+                this.CodigoCorredor = sessionStorage.getItem("proveedor") || "proveedor no encontrado";
                 this.ordenDeCargaFason.CodigoCorredor = this.CodigoCorredor;
                 this.cargarClientes(this.CodigoCorredor);
             } else {
@@ -161,8 +155,21 @@ export class OrdenesDeCargaFasonAltaComponent
         }
     }
 
+    get noPuedeEditarCuitsTerceros() {
+        return this.ordenDeCargaFason.Id && this.ordenDeCargaFason.Estado == EstadoOrdenDeCargaFason.Entregada;
+    }
+
+    generalFormatter(data: any): string {
+        return `${data['label']}`;
+    }
+
+    generalFormatterAcoplado(data: any): string {
+        return `${data['value']}`;
+    }
+
     aceptar() {
-        document.getElementById("botonCerrarModal").click();
+        const botonCerrarModal = document.getElementById("botonCerrarModal");
+        if (botonCerrarModal) { botonCerrarModal.click(); }
         this.redirigirAListado();
     }
 
@@ -172,7 +179,59 @@ export class OrdenesDeCargaFasonAltaComponent
         );
     }
 
-    validar() {
+    validarUnidadTransporte(unidad: UnidadTransporteCarga): boolean {
+        if (!unidad.PatenteChasis || unidad.PatenteChasis.trim().length < 6) {
+            this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
+            return false;
+        }
+        if (!unidad.PatenteAcoplado || unidad.PatenteAcoplado.trim().length < 6) {
+            this.mensajeComponent.setInfoMsg("Ingrese una patente acoplado válida.");
+            return false;
+        }
+        if (unidad.PatenteAcoplado == unidad.PatenteChasis) {
+            this.mensajeComponent.setInfoMsg("Los números de patente no pueden ser iguales.");
+            return false;
+        }
+        if (!unidad.NombreChofer || unidad.NombreChofer.trim().length < 2) {
+            this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
+            return false;
+        }
+        if (!unidad.ApellidoChofer || unidad.ApellidoChofer.trim().length < 2) {
+            this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
+            return false;
+        }
+        if (unidad.NombreChofer == unidad.ApellidoChofer) {
+            this.mensajeComponent.setInfoMsg("El nombre y apellido del chofer no pueden ser iguales.");
+            return false;
+        }
+        if (!unidad.RazonSocialTransporte || unidad.RazonSocialTransporte.trim().length < 2) {
+            this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
+            return false;
+        }
+        if (!unidad.CantidadDeViajes && !this.ordenDeCargaFasonId) {
+            this.mensajeComponent.setInfoMsg("Ingrese una cantidad de viajes.");
+            return false;
+        }
+        if (!this.esFormatoCuilCuitValido(unidad.CUILChofer) || this.mensajesOrdenDeCargaFason.CUILChofer) {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
+            return false;
+        }
+        if (!this.esFormatoCuilCuitValido(unidad.CUITTransporte) || this.mensajesOrdenDeCargaFason.CUITTransporte) {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
+            return false;
+        }
+        if (unidad.CUITIntermediarioFlete && this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete) {
+            this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete);
+            return false;
+        }
+        if (unidad.CUITIntermediarioFlete && !this.esFormatoCuilCuitValido(unidad.CUITIntermediarioFlete)) {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT Intermediario flete válido.");
+            return false;
+        }
+        return true;
+    }
+
+    validarCabecera() {
         if (this.esAdmin && !this.clienteSeleccionado) {
             this.mensajeComponent.setInfoMsg("Seleccione un cliente.");
             return false;
@@ -180,54 +239,6 @@ export class OrdenesDeCargaFasonAltaComponent
         if (!this.ordenDeCargaFason.Producto_Id) {
             // Mostrar un mensaje de error al usuario o hacer algo para indicar que es necesario seleccionar un corredor
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.PatenteChasis == undefined || this.ordenDeCargaFason.PatenteChasis.trim().length < 6) {
-            this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.PatenteAcoplado == undefined || this.ordenDeCargaFason.PatenteAcoplado.trim().length < 6) {
-            this.mensajeComponent.setInfoMsg("Ingrese una patente acoplado válida.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.PatenteAcoplado == this.ordenDeCargaFason.PatenteChasis) {
-            this.mensajeComponent.setInfoMsg("Los números de patente no pueden ser iguales.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.NombreChofer == undefined || this.ordenDeCargaFason.NombreChofer.trim().length < 2) {
-            this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.ApellidoChofer == undefined || this.ordenDeCargaFason.ApellidoChofer.trim().length < 2) {
-            this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.NombreChofer == this.ordenDeCargaFason.ApellidoChofer) {
-            this.mensajeComponent.setInfoMsg("El nombre y apellido del chofer no pueden ser iguales.");
-            return false;
-        }
-        if (!this.esFormatoCuilCuitValido(this.ordenDeCargaFason.CUILChofer) || this.mensajesOrdenDeCargaFason.CUILChofer) {
-            this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.RazonSocialTransporte == undefined || this.ordenDeCargaFason.RazonSocialTransporte.trim().length < 2) {
-            this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
-            return false;
-        }
-        if (!this.esFormatoCuilCuitValido(this.ordenDeCargaFason.CUITTransporte) || this.mensajesOrdenDeCargaFason.CUITTransporte) {
-            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
-            return false;
-        }
-        if (!this.ordenDeCargaFason.CantidadDeViajes && !this.ordenDeCargaFasonId) {
-            this.mensajeComponent.setInfoMsg("Ingrese una cantidad de viajes.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.CUITIntermediarioFlete && this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete) {
-            this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete);
-            return false;
-        }
-        if (this.ordenDeCargaFason.CUITIntermediarioFlete && !this.esFormatoCuilCuitValido(this.ordenDeCargaFason.CUITIntermediarioFlete)) {
-            this.mensajeComponent.setInfoMsg("Ingrese un CUIT Intermediario flete válido.");
             return false;
         }
         if (this.validaCPEDG) {
@@ -244,7 +255,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 return false;
             }
             if (!this.ordenDeCargaFason.PlantaCodigo) {
-                this.mensajeComponent.setInfoMsg(this.mensajeCuitDestino || "Debe seleccionar una plante para este tipo de material.")
+                this.mensajeComponent.setInfoMsg(this.mensajeCuitDestino || "Debe seleccionar una planta para este tipo de material.")
                 return false;
             }
             if (!this.ordenDeCargaFason.DomicilioTipo || !this.ordenDeCargaFason.DomicilioDescr || !this.ordenDeCargaFason.DomicilioOrden) {
@@ -260,7 +271,6 @@ export class OrdenesDeCargaFasonAltaComponent
         return true;
     }
 
-    //Changes
     onCorredorSeleccionado = (proveedor: any) => {
         this.CodigoCorredor = this.corredorSeleccionado.CodigoProveedor;
         this.ordenDeCargaFason.CUITCorredor = this.corredorSeleccionado.CUIT;
@@ -280,7 +290,7 @@ export class OrdenesDeCargaFasonAltaComponent
         if (this.ordenDeCargaFason.ProductoSeleccionado && this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca) {
             this.validarSisaCliente();
         }
-        if (!this.editando) {
+        if (!this.esEdicionDeOrden) {
             this.validacionExistenciaPatente$.next()
         }
     }
@@ -330,86 +340,104 @@ export class OrdenesDeCargaFasonAltaComponent
         return result;
     }
 
-    //Servicios
     guardarOrdenDeCargaFason() {
-        if (!this.validar()) {
-            this.spinnerComponent.hideIt();
+        this.mensajeComponent.setMsgsEmpty();
+        if (!this.validarCabecera()) {
             return;
         }
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.unsubscribe();
-        this.blockUI.start('Grabando...');
         try {
-            if (this.ordenDeCargaFasonId > 0) {
-                this.subscription = this.service
-                    .editar(this.ordenDeCargaFason)
-                    .subscribe(
-                        (result) => {
-                            this.spinnerComponent.hideIt();
-                            this.blockUI.stop();
-                            if (result.logout == true) {
-                                this.sessionDataService.logout();
-                            } else if (result.error != undefined && result.error != "") {
-                                this.mensajeComponent.setErrorMsg(result.error);
-                            } else if (result.info != undefined) {
-                                this.mensajeComponent.setInfoMsg(result.info);
-                            } else if (result.data.error != undefined && result.data.error != "") {
-                                this.mensajeComponent.setErrorMsg(result.data.error);
-                            } else if (result.data.info != undefined) {
-                                this.mensajeComponent.setInfoMsg(result.data.info);
-                            } else {
-                                this.mensajeComponent.setMsgsEmpty();
-                                this.mensajeSuccess = result.data.Mensaje;
-                                this.ordenDeCargaFasonId = result.data.IdEntidad;
-                                document.getElementById("openModalNotificacion")
-                                    .click();
-                            }
-                        },
-                        (error) => {
-                            this.spinnerComponent.hideIt();
-                            this.mensajeComponent.setErrorMsg(error.message);
-                            this.blockUI.stop();
-                        }
-                    );
+            if (this.esEdicionDeOrden) {
+                this.guardarEdicionOrdenDeCargaFason();
             } else {
-                this.subscription = this.service
-                    .agregar(this.ordenDeCargaFason)
-                    .subscribe(
-                        (result) => {
-                            this.spinnerComponent.hideIt();
-                            this.blockUI.stop();
-                            if (result.logout == true) {
-                                this.sessionDataService.logout();
-                            } else if (result.error != undefined && result.error != "") {
-                                this.mensajeComponent.setErrorMsg(result.error);
-                            } else if (result.info != undefined) {
-                                this.mensajeComponent.setInfoMsg(result.info);
-                            } else if (result.data.error != undefined && result.data.error != "") {
-                                this.mensajeComponent.setErrorMsg(result.data.error);
-                            } else if (result.data.info != undefined) {
-                                this.mensajeComponent.setInfoMsg(result.data.info);
-                            } else {
-                                this.mensajeComponent.setMsgsEmpty();
-                                this.mensajeSuccess = result.data.Mensaje;
-                                this.ordenDeCargaFasonId = result.data.IdEntidad;
-                                this.gestionarAltasCuitTerceros(this.ordenDeCargaFasonId.toString());
-                                document.getElementById("openModalNotificacion")
-                                    .click();
-                            }
-                        },
-                        (error) => {
-                            this.spinnerComponent.hideIt();
-                            this.mensajeComponent.setErrorMsg(error.message);
-                            this.blockUI.stop();
-                        }
-                    );
+                this.guardarNuevaOrdenDeCargaFason();
             }
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
+            this.spinnerComponent.hideIt();
         }
     }
 
+    guardarNuevaOrdenDeCargaFason() {
+        this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
+        this.unsubscribe();
+        let crearOrdenFasonReq: CrearOrdenDeCargaFasonRequest = {
+            ...this.ordenDeCargaFason,
+            UnidadesTransporte: this.unidadesTransporteAgregadas
+        };
+        this.subscription = this.service
+            .agregar(crearOrdenFasonReq)
+            .subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data.error != undefined && result.data.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.data.error);
+                    } else if (result.data.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.data.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.mensajeSuccess = result.data.Mensaje;
+                        this.ordenDeCargaFasonId = result.data.IdEntidad;
+                        this.gestionarAltasCuitTerceros(this.ordenDeCargaFasonId.toString());
+                        document.getElementById("openModalNotificacion").click();
+                    }
+                },
+                (error) => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            );
+    }
+
+    guardarEdicionOrdenDeCargaFason() {
+        if (!this.validarUnidadTransporte(this.unidadTransporte)) {
+            return;
+        }
+        this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
+        this.unsubscribe();
+        let editarOrdenFasonReq: EditarOrdenDeCargaFasonRequest = {
+            ...this.ordenDeCargaFason,
+            UnidadTransporte: this.unidadTransporte
+        };
+        this.subscription = this.service
+            .editar(editarOrdenFasonReq)
+            .subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else if (result.data.error != undefined && result.data.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.data.error);
+                    } else if (result.data.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.data.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.mensajeSuccess = result.data.Mensaje;
+                        this.ordenDeCargaFasonId = result.data.IdEntidad;
+                        document.getElementById("openModalNotificacion").click();
+                    }
+                },
+                (error) => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            );
+    }
 
     obtenerOrdenDeCarga() {
         try {
@@ -422,7 +450,6 @@ export class OrdenesDeCargaFasonAltaComponent
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-
                         this.ordenDeCargaFason = result.data.Response;
                         this.clienteCodigo = result.data.Response.Cliente;
                         this.CodigoCorredor = result.data.Response.Corredor;
@@ -435,9 +462,22 @@ export class OrdenesDeCargaFasonAltaComponent
 
                         const producto = this.listaProductos.find(producto => producto.MaterialId == this.ordenDeCargaFason.Producto_Id)
                         this.selectProducto(producto);
-                        if (this.ordenDeCargaFason.CUITDestino)
+                        if (this.ordenDeCargaFason.CUITDestino) {
                             this.onDestinoIngresado(this.ordenDeCargaFason.CUITDestino)
-
+                        }
+                        
+                        this.unidadTransporte = {
+                            PatenteChasis: result.data.Response.PatenteChasis,
+                            PatenteAcoplado: result.data.Response.PatenteAcoplado,
+                            NombreChofer: result.data.Response.NombreChofer,
+                            ApellidoChofer: result.data.Response.ApellidoChofer,
+                            CUILChofer: result.data.Response.CUILChofer,
+                            RazonSocialTransporte: result.data.Response.RazonSocialTransporte,
+                            CUITTransporte: result.data.Response.CUITTransporte,
+                            CUITIntermediarioFlete: result.data.Response.CUITIntermediarioFlete,
+                            RazonSocialIntermediarioFlete: result.data.Response.RazonSocialIntermediarioFlete,
+                            CantidadDeViajes: 1
+                        };
                     }
                 },
                 error => {
@@ -450,11 +490,10 @@ export class OrdenesDeCargaFasonAltaComponent
         }
     }
 
-
     obtenerProductos = () => {
         this.service.getMateriales().subscribe(
             (result) => {
-                this.listaProductos = result.data;
+                this.listaProductos = result.data || [];
             },
             (error) => {
                 this.mensajeComponent.setErrorMsg(error.message);
@@ -463,23 +502,18 @@ export class OrdenesDeCargaFasonAltaComponent
     }
 
     obtenerCorredores() {
-        //this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
         try {
-
             this.service.obtenerCorredores().subscribe(
                 result => {
                     if (result.logout == true) {
-                        //this.blockUI.stop();
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.CodigoCorredor = '';
                         this.listaClientes = [];
                         this.mensajeComponent.setErrorMsg(result.error);
-                        //this.blockUI.stop();
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
-                        //this.blockUI.stop();
                     } else {
                         this.listaCorredores = this.ordenarYFiltrarCorredores(result.corredores);
                         if (this.CodigoCorredor != "") {
@@ -492,12 +526,10 @@ export class OrdenesDeCargaFasonAltaComponent
                                 this.cargarClientes(this.corredorSeleccionado.CodigoProveedor);
                             }
                         }
-                        //this.blockUI.stop();
                     }
                 },
                 error => {
                     this.mensajeComponent.setErrorMsg(error.message);
-                    //this.blockUI.stop();
                 }
             );
         } catch (err) {
@@ -557,12 +589,13 @@ export class OrdenesDeCargaFasonAltaComponent
     seRetiraEnPatagonia(material: Material): boolean {
         return RETIRO_EN_PATAGONIA.includes(material.CodigoSap);
     }
+
     validarIntermediarioFlete() {
         this.validando.CUITIntermediarioFlete = true;
-        this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete = null;
-        this.ordenDeCargaFason.RazonSocialIntermediarioFlete = null;
+        this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete = undefined;
+        this.unidadTransporte.RazonSocialIntermediarioFlete = undefined;
 
-        let cuitIF = this.ordenDeCargaFason.CUITIntermediarioFlete;
+        let cuitIF = this.unidadTransporte.CUITIntermediarioFlete;
         if (!cuitIF || !this.revisarCUITFormatoValido(cuitIF)) {
             this.validando.CUITIntermediarioFlete = false;
             return;
@@ -572,7 +605,7 @@ export class OrdenesDeCargaFasonAltaComponent
             if (data) {
                 if (data.EsCuitValido) {
                     if (data.ExisteIntermediario) {
-                        this.ordenDeCargaFason.RazonSocialIntermediarioFlete = data.RazonSocial;
+                        this.unidadTransporte.RazonSocialIntermediarioFlete = data.RazonSocial;
                     } else {
                         this.displayModal = 'CUITIntermediarioFlete';
                     }
@@ -583,6 +616,7 @@ export class OrdenesDeCargaFasonAltaComponent
             this.validando.CUITIntermediarioFlete = false;
         });
     }
+
     gestionarAltaCUIT() {
         const campo = this.displayModal;
         const cuit = this.ordenDeCargaFason[campo];
@@ -604,28 +638,10 @@ export class OrdenesDeCargaFasonAltaComponent
 
         })
     }
-    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
-        if (response.logout) {
-            this.sessionDataService.logout();
-            return null;
-        }
-        if (response.error) {
-            this.mensajeComponent.setErrorMsg(response.error);
-            this.scrollAMensaje()
-            return null;
-        }
-        if (response.info) {
-            this.mensajeComponent.setInfoMsg(response.info)
-        }
-        return response.data;
-    }
 
-    scrollAMensaje() {
-        this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
-    }
     cancelarGestionAltaCUIT() {
         if (this.displayModal === 'CUITIntermediarioFlete') {
-            this.ordenDeCargaFason.CUITIntermediarioFlete = undefined;
+            this.unidadTransporte.CUITIntermediarioFlete = undefined;
         }
         this.displayModal = null;
     }
@@ -649,17 +665,20 @@ export class OrdenesDeCargaFasonAltaComponent
             this.validarSisaCliente();
         this.setCantidadCambioProducto();
     }
+    
     setCantidadCambioProducto() {
         this.ordenDeCargaFason.Cantidad =
             this.ordenDeCargaFason.ProductoSeleccionado.CodigoSap == CODIGO_PELLET_GIRASOL_INTEGRAL ? CANTIDAD_PELLET_GIRASOL : CANTIDAD_DEFAULT;
     }
+
     setearDefaultEnCPEDG() {
         this.ordenDeCargaFason.RemitenteComercial = false;
-        this.ordenDeCargaFason.CUITIntermediarioFlete = null;
-        this.ordenDeCargaFason.RazonSocialIntermediarioFlete = null;
+        this.unidadTransporte.CUITIntermediarioFlete = undefined;
+        this.unidadTransporte.RazonSocialIntermediarioFlete = undefined;
         this.validarIntermediarioFlete();
         this.resetearPlantasDomicilios();
     }
+
     onPlantaSeleccionadaChanged() {
         if (this.plantaSeleccionada) {
             this.ordenDeCargaFason.PlantaCodigo = this.plantaSeleccionada.Codigo.toString();
@@ -686,6 +705,7 @@ export class OrdenesDeCargaFasonAltaComponent
         if (this.ordenDeCargaFasonId && this.listaPlantas)
             this.plantaSeleccionada = this.listaPlantas.find(planta => planta.Codigo.toString() == this.ordenDeCargaFason.PlantaCodigo);
     }
+
     definirValorDomicilio() {
         if (this.ordenDeCargaFasonId && this.listaDomicilios)
             this.domicilioSeleccionado = this.listaDomicilios.find(domicilio =>
@@ -694,6 +714,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 && domicilio.Tipo.toString() == this.ordenDeCargaFason.DomicilioTipo
             );
     }
+
     onDestinoIngresado(cuitDestino: string) {
         if (cuitDestino) {
             this.validando.CUITDestino = true;
@@ -714,6 +735,7 @@ export class OrdenesDeCargaFasonAltaComponent
             this.domicilioSeleccionado = undefined;
         }
     }
+
     manejarRespuestaDomicilio(resp: ApiResponse<Domicilio[]>, cuitDestino: string) {
         let domicilios: Domicilio[] | null;
         if (domicilios = this.manejarErroresApiResponse(resp)) {
@@ -726,6 +748,7 @@ export class OrdenesDeCargaFasonAltaComponent
             this.scrollAMensaje()
         }
     }
+
     manejarRespuestaPlanta(resp: ApiResponse<Planta[]>, cuitDestino: string) {
         let plantas: Planta[] | null;
         if (plantas = this.manejarErroresApiResponse(resp)) {
@@ -738,6 +761,7 @@ export class OrdenesDeCargaFasonAltaComponent
             this.scrollAMensaje()
         }
     }
+
     copiarCuitClienteEn(campo: "CUITDestinatario" | "CUITDestino") {
         this.mensajesGestionCuit[campo] = undefined;
         if (this.ordenDeCargaFason[campo] != this.clienteSeleccionado.CUIT) {
@@ -748,6 +772,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 this.validarSisaDestino();
         }
     }
+
     resetearPlantasDomicilios() {
         this.plantaSeleccionada = undefined;
         this.domicilioSeleccionado = undefined;
@@ -759,6 +784,9 @@ export class OrdenesDeCargaFasonAltaComponent
 
     validarCuitDestinatarioExiste() {
         const cuit = this.ordenDeCargaFason.CUITDestinatario;
+        if (!cuit) {
+            return;
+        }
         this.validandoCuitDestinatario = true;
         this.ordenDeCargaFason.RazonSocialDestinatario = undefined;
 
@@ -779,7 +807,9 @@ export class OrdenesDeCargaFasonAltaComponent
 
     validarCuitDestinoExiste() {
         const cuit = this.ordenDeCargaFason.CUITDestino;
-
+        if (!cuit) {
+            return;
+        }
         this.validandoCuitDestino = true;
 
         this.service.validarExisteCuitScato(cuit).subscribe(
@@ -794,7 +824,6 @@ export class OrdenesDeCargaFasonAltaComponent
                 else {
                     this.ordenDeCargaFason.RazonSocialDestino = data.RazonSocial;
                 }
-
                 this.asignarRemitenteComercial();
             })
     }
@@ -879,15 +908,16 @@ export class OrdenesDeCargaFasonAltaComponent
             }
         );
     }
+
     validarCuitTransporte() {
         const campo = "CUITTransporte";
-        const cuit = this.ordenDeCargaFason.CUITTransporte ? this.ordenDeCargaFason.CUITTransporte.toString() : "";
+        const cuit = this.unidadTransporte.CUITTransporte ? this.unidadTransporte.CUITTransporte.toString() : "";
         if (!this.revisarCUITFormatoValido(cuit))
             return;
         if (this.mensajesOrdenDeCargaFason[campo])
             this.floatMsgService.setMsgsEmpty();
         this.validando[campo] = true;
-        this.mensajesOrdenDeCargaFason[campo] = null;
+        this.mensajesOrdenDeCargaFason[campo] = undefined;
         this.service.validarCuitTransporte(cuit).subscribe(result => {
             this.validando[campo] = false;
             let data = this.manejarErroresApiResponse(result);
@@ -900,13 +930,13 @@ export class OrdenesDeCargaFasonAltaComponent
 
     validarCuilChofer() {
         const campo = "CUILChofer";
-        const cuit = this.ordenDeCargaFason.CUILChofer ? this.ordenDeCargaFason.CUILChofer.toString() : "";
+        const cuit = this.unidadTransporte.CUILChofer ? this.unidadTransporte.CUILChofer.toString() : "";
         if (!this.revisarCUITFormatoValido(cuit))
             return;
         if (this.mensajesOrdenDeCargaFason[campo])
             this.floatMsgService.setMsgsEmpty();
         this.validando[campo] = true;
-        this.mensajesOrdenDeCargaFason[campo] = null;
+        this.mensajesOrdenDeCargaFason[campo] = undefined;
         this.service.validarCuilChofer(cuit).subscribe(result => {
             this.validando[campo] = false;
             let data = this.manejarErroresApiResponse(result);
@@ -928,27 +958,31 @@ export class OrdenesDeCargaFasonAltaComponent
             }
         });
     }
+
     patenteAcopladoSelected(event: any) {
         if (typeof (event) === "string")
-            this.ordenDeCargaFason.PatenteAcoplado = event.toUpperCase();
+            this.unidadTransporte.PatenteAcoplado = event.toUpperCase();
         else if (event.value)
-            this.ordenDeCargaFason.PatenteAcoplado = event.value.toUpperCase();
+            this.unidadTransporte.PatenteAcoplado = event.value.toUpperCase();
     }
+
     patenteChasisSelected(event: any) {
         if (typeof (event) === "string")
-            this.ordenDeCargaFason.PatenteChasis = event.toUpperCase();
+            this.unidadTransporte.PatenteChasis = event.toUpperCase();
         else if (event.value)
-            this.ordenDeCargaFason.PatenteChasis = event.value.toUpperCase();
+            this.unidadTransporte.PatenteChasis = event.value.toUpperCase();
         this.validacionExistenciaPatente$.next()
     }
+
     get patenteAcopladoValida() {
-        return this.ordenDeCargaFason.PatenteAcoplado && this.ordenDeCargaFason.PatenteAcoplado.trim().length >= 6
+        return this.unidadTransporte.PatenteAcoplado && this.unidadTransporte.PatenteAcoplado.trim().length >= 6
     }
-    get patenteChasisValido() {
+
+    get patenteChasisValido(): boolean {
         return (
-            this.ordenDeCargaFason.PatenteChasis &&
-            this.ordenDeCargaFason.PatenteChasis.trim().length >= 6 &&
-            this.esPatenteValida(this.ordenDeCargaFason.PatenteChasis));
+            !!this.unidadTransporte.PatenteChasis &&
+            this.unidadTransporte.PatenteChasis.trim().length >= 6 &&
+            this.esPatenteValida(this.unidadTransporte.PatenteChasis));
     }
 
     displayModalEscalable = false;
@@ -960,10 +994,11 @@ export class OrdenesDeCargaFasonAltaComponent
         //Posible check de si está marcado el campo escalable
         this.validarCNRTSubject.next();
     }
+
     validarCNRTRequest() {
         this.validando.Escalable = true;
         this.validarCNRTSubscription = this.service
-            .verificarCNRT(this.ordenDeCargaFason.PatenteChasis, this.ordenDeCargaFason.PatenteAcoplado)
+            .verificarCNRT(this.unidadTransporte.PatenteChasis, this.unidadTransporte.PatenteAcoplado)
             .subscribe(res => {
                 this.validando.Escalable = false;
                 const validezCNRTResponse = this.manejarErroresApiResponse(res)
@@ -983,6 +1018,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 }
             })
     }
+    
     validarEscalable() {
         if (!this.ordenDeCargaFason.Escalable)
             return;
@@ -994,17 +1030,21 @@ export class OrdenesDeCargaFasonAltaComponent
         else if (this.escalableCNRT === undefined)
             this.validarCNRT();
     }
+
     setValorEscalable(value = false) {
         this.escalableCheckbox.writeValue(value)
         this.ordenDeCargaFason.Escalable = value;
     }
+
     marcarComoEscalable() {
         this.setValorEscalable(true)
         this.displayModalEscalable = false;
     }
+
     dejarSinEscalable() {
         this.displayModalEscalable = false;
     }
+
     public extraOnDestroy(): void {
         this.localSubscriptions.unsubscribe();
     }
@@ -1063,10 +1103,14 @@ export class OrdenesDeCargaFasonAltaComponent
     }
 
     getCuilsChofer() {
+        if (!this.ordenDeCargaFason.Cliente || !this.unidadTransporte.PatenteAcoplado) {
+            return;
+        }
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
+        console.debug("obtener cuils chofer con params: " + this.ordenDeCargaFason.Cliente + this.unidadTransporte.PatenteAcoplado);
         try {
-            this.service.getCuilsChofer(this.ordenDeCargaFason).subscribe(
+            this.service.getCuilsChofer(this.ordenDeCargaFason.Cliente, this.unidadTransporte.PatenteAcoplado).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -1097,10 +1141,14 @@ export class OrdenesDeCargaFasonAltaComponent
     }
 
     getCuitsTransporte() {
+        if (!this.ordenDeCargaFason.Cliente || !this.unidadTransporte.PatenteAcoplado) {
+            return;
+        }
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
+        console.debug("obtener cuits transporte con params: " + this.ordenDeCargaFason.Cliente + this.unidadTransporte.PatenteAcoplado);
         try {
-            this.service.getCuitsTransporte(this.ordenDeCargaFason).subscribe(
+            this.service.getCuitsTransporte(this.ordenDeCargaFason.Cliente, this.unidadTransporte.PatenteAcoplado).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -1128,6 +1176,7 @@ export class OrdenesDeCargaFasonAltaComponent
             return false; //<-- Prevent Refresh
         }
     }
+
     gestionarAltasCuitTerceros(ordenId: string) {
         this.service.EnviarMailAltaCuitTerceros(this.gestiona["CUITIntermediarioFlete"],
             this.gestiona["CUITDestino"], this.gestiona["CUITDestinatario"], ordenId).subscribe(result => {
@@ -1142,6 +1191,7 @@ export class OrdenesDeCargaFasonAltaComponent
             }
             );
     }
+
     cargarAltaCuit() {
         const campo = this.displayModal;
         const razonSocial = this.razonSocialParaGestion;
@@ -1162,6 +1212,7 @@ export class OrdenesDeCargaFasonAltaComponent
     get usaRemitenteComercial() {
         return this.ordenDeCargaFason.CUITCliente.toString() != this.ordenDeCargaFason.CUITDestino;
     }
+
     validandoCliente = false;
 
     validarSisaCliente() {
@@ -1175,7 +1226,7 @@ export class OrdenesDeCargaFasonAltaComponent
             result => {
                 this.validandoCliente = false;
                 const esValidoSisa = this.manejarErroresApiResponse(result);
-                if (!esValidoSisa) {
+                if (esValidoSisa === false) {
                     this.ordenDeCargaFason.ProductoSeleccionado = null;
                     this.ordenDeCargaFason.Producto_Id = null;
                     this.selectProducto();
@@ -1207,7 +1258,7 @@ export class OrdenesDeCargaFasonAltaComponent
     validarExistenciaPatentes() {
         this.validacionExistenciaPatenteSub = this.service
             .validarExistenciaPatentes(
-                this.ordenDeCargaFason.PatenteChasis, this.ordenDeCargaFason.CUITCliente)
+                this.unidadTransporte.PatenteChasis, this.ordenDeCargaFason.CUITCliente)
             .subscribe(res => {
                 const notificarExistencia = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
                 if (notificarExistencia) {
@@ -1222,5 +1273,90 @@ export class OrdenesDeCargaFasonAltaComponent
 
     esFormatoCuilCuitValido(cuit: string): boolean {
         return !!(cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number))
+    }
+
+    pasarAMayusculas(event: any): string {
+        return event.toUpperCase();
+    }
+
+    agregarNuevaUnidadTransporte() {
+        this.unidadTransporte = new UnidadTransporteCarga();
+        this.estaEditandoUnidadTransporte = true;
+        return false;
+    }
+
+    guardarUnidadTransporte() {
+        if (!this.unidadTransporte || !this.validarUnidadTransporte(this.unidadTransporte)) {
+            return;
+        }
+        this.unidadesTransporteAgregadas.push(this.unidadTransporte);
+        this.resetearUnidadTransporte();
+    }
+
+    editarUnidadTransporte(unidadAEditar: UnidadTransporteCarga) {
+        this.unidadTransporte = unidadAEditar;
+        this.unidadesTransporteAgregadas.splice(this.unidadesTransporteAgregadas.indexOf(unidadAEditar), 1);
+        this.estaEditandoUnidadTransporte = true;
+    }
+
+    removerUnidadTransporte(unidadAEditar: UnidadTransporteCarga) {
+        this.confirmationService.confirm({
+            message: '¿Está seguro de que desea eliminar esta unidad de transporte de la orden?',
+            accept: () => {
+                this.unidadesTransporteAgregadas.splice(this.unidadesTransporteAgregadas.indexOf(unidadAEditar), 1);
+            },
+            reject: () => {}
+        })
+    }
+
+    resetearUnidadTransporte() {
+        this.unidadTransporte = new UnidadTransporteCarga();
+        this.estaEditandoUnidadTransporte = false;
+        this.mensajesOrdenDeCargaFason.CUILChofer = undefined;
+        this.mensajesOrdenDeCargaFason.CUITTransporte = undefined;
+        this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete = undefined;
+        this.mensajeComponent.setMsgsEmpty();
+    }
+
+    puedeGuardarOrden(): boolean {
+        let puedeGuardar = this.esEdicionDeOrden ||
+            (this.unidadesTransporteAgregadas.length > 0 && !this.estaEditandoUnidadTransporte);
+        
+        return puedeGuardar;
+    }
+
+    getTooltipBotonGuardarOrden(): string {
+        if (!this.esEdicionDeOrden && this.unidadesTransporteAgregadas.length == 0) {
+            return "Debe agregar al menos una unidad de transporte";
+        }
+        if (!this.esEdicionDeOrden && this.estaEditandoUnidadTransporte) {
+            return "Está editando una unidad de transporte. Guarde o cancele la misma antes de enviar la orden";
+        }
+        return "";
+    }
+
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return null;
+        }
+        if (response.error) {
+            this.mensajeComponent.setErrorMsg(response.error);
+            this.scrollAMensaje()
+            return null;
+        }
+        if (response.info) {
+            this.mensajeComponent.setInfoMsg(response.info)
+        }
+        if (response.data != undefined) {
+            return response.data;
+        }
+        else {
+            return null;
+        }
+    }
+
+    scrollAMensaje() {
+        if (this.messagesContainer) { this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' }); }
     }
 }
