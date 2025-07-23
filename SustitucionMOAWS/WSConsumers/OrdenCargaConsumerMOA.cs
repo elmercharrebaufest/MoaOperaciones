@@ -78,15 +78,15 @@ namespace SustitucionMOAWS.WSConsumers
 
                 var request = new Z_MPMF_MOAOP_CONTROL_CARGA()
                 {
-                    IM_CLIENTE = string.IsNullOrEmpty(datosCarga.Cliente) ? " " : datosCarga.Cliente,
-                    IM_CONTRATO = string.IsNullOrEmpty(datosCarga.Contrato) ? " " : datosCarga.Contrato,
-                    IM_CORREDOR = string.IsNullOrEmpty(datosCarga.Corredor) ? " " : datosCarga.Corredor,
-                    IM_CUIT = string.IsNullOrEmpty(datosCarga.Cuit) ? " " : datosCarga.Cuit,
-                    IM_CUITDESTF = string.IsNullOrEmpty(datosCarga.CuitDestino) ? " " : datosCarga.CuitDestino,
-                    IM_CUITDESTINAT = string.IsNullOrEmpty(datosCarga.CuitDestinatario) ? " " : datosCarga.CuitDestinatario,
-                    IM_MATERIAL = string.IsNullOrEmpty(datosCarga.Material) ? " " : datosCarga.Material,
-                    IM_PEDIDO = string.IsNullOrEmpty(datosCarga.Pedido) ? " " : datosCarga.Pedido,
-                    IM_SOLO_SISA = datosCarga.SoloSisa ? "X" : " "
+                    IM_CLIENTE = string.IsNullOrWhiteSpace(datosCarga.Cliente) ? "" : datosCarga.Cliente,
+                    IM_CONTRATO = string.IsNullOrWhiteSpace(datosCarga.Contrato) ? "" : datosCarga.Contrato,
+                    IM_CORREDOR = string.IsNullOrWhiteSpace(datosCarga.Corredor) ? "" : datosCarga.Corredor,
+                    IM_CUIT = string.IsNullOrWhiteSpace(datosCarga.Cuit) ? "" : datosCarga.Cuit,
+                    IM_CUITDESTF = string.IsNullOrWhiteSpace(datosCarga.CuitDestino) ? "" : datosCarga.CuitDestino,
+                    IM_CUITDESTINAT = string.IsNullOrWhiteSpace(datosCarga.CuitDestinatario) ? "" : datosCarga.CuitDestinatario,
+                    IM_MATERIAL = string.IsNullOrWhiteSpace(datosCarga.Material) ? "" : datosCarga.Material,
+                    IM_PEDIDO = string.IsNullOrWhiteSpace(datosCarga.Pedido) ? "" : datosCarga.Pedido,
+                    IM_SOLO_SISA = datosCarga.SoloSisa ? "X" : ""
                 };
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_CONTROL_CARGA request");
                 Log.Info(request.ToXml());
@@ -272,26 +272,26 @@ namespace SustitucionMOAWS.WSConsumers
 
                 var request = new Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE()
                 {
-                    IM_CUITDESTF = string.IsNullOrEmpty(entregaReq.CuitDestino) ? " " : entregaReq.CuitDestino,
-                    IM_CUITDESTINAT = string.IsNullOrEmpty(entregaReq.CuitDestinatario) ? " " : entregaReq.CuitDestinatario,
-                    IM_DOCUMENTO = string.IsNullOrEmpty(entregaReq.Documento) ? " " : entregaReq.Documento,
-                    IM_DOMORDEN = string.IsNullOrEmpty(entregaReq.DomicilioDescr) ? " " : entregaReq.DomicilioDescr,
-                    IM_INDRVTA = entregaReq.Reventa ? "X" : " ",
+                    IM_CUITDESTF = string.IsNullOrWhiteSpace(entregaReq.CuitDestino) ? "" : entregaReq.CuitDestino,
+                    IM_CUITDESTINAT = string.IsNullOrWhiteSpace(entregaReq.CuitDestinatario) ? "" : entregaReq.CuitDestinatario,
+                    IM_DOCUMENTO = string.IsNullOrWhiteSpace(entregaReq.Documento) ? "" : entregaReq.Documento,
+                    IM_DOMORDEN = string.IsNullOrWhiteSpace(entregaReq.DomicilioDescr) ? "" : entregaReq.DomicilioDescr,
+                    IM_INDRVTA = entregaReq.Reventa ? "X" : "",
                     IM_KILOS = entregaReq.Kilos,
-                    IM_NAMEDESTF = string.IsNullOrEmpty(entregaReq.RazonSocialDestino) ? " " : entregaReq.RazonSocialDestino,
-                    IM_NAMEDESTINAT = string.IsNullOrEmpty(entregaReq.RazonSocialDestinatario) ? " " : entregaReq.RazonSocialDestinatario,
-                    IM_NOMBRECONDUCTOR = string.IsNullOrEmpty(entregaReq.NombreConductor) ? " " : entregaReq.NombreConductor,
+                    IM_NAMEDESTF = string.IsNullOrWhiteSpace(entregaReq.RazonSocialDestino) ? "" : entregaReq.RazonSocialDestino,
+                    IM_NAMEDESTINAT = string.IsNullOrWhiteSpace(entregaReq.RazonSocialDestinatario) ? "" : entregaReq.RazonSocialDestinatario,
+                    IM_NOMBRECONDUCTOR = string.IsNullOrWhiteSpace(entregaReq.NombreConductor) ? "" : entregaReq.NombreConductor,
                     IM_ORDENDOM = entregaReq.DomicilioOrden == null ? "" : entregaReq.DomicilioOrden.ToString(),
-                    IM_PATENTEACOPLADO = string.IsNullOrEmpty(entregaReq.PatenteAcoplado) ? " " : entregaReq.PatenteAcoplado,
-                    IM_PATENTECHASIS = string.IsNullOrEmpty(entregaReq.PatenteChasis) ? " " : entregaReq.PatenteChasis,
-                    IM_PEDIDO = string.IsNullOrEmpty(entregaReq.Pedido) ? " " : entregaReq.Pedido,
-                    IM_TIPODOCUMENTO = string.IsNullOrEmpty(entregaReq.TipoDocumento) ? " " : entregaReq.TipoDocumento,
-                    IM_TIPODOM = string.IsNullOrEmpty(entregaReq.DomicilioTipo) ? " " : entregaReq.DomicilioTipo,
-                    IM_TRANSPORTISTA = string.IsNullOrEmpty(cuit_tr) ? " " : cuit_tr,
-                    IM_TRANSPORTISTA_REAL = string.IsNullOrEmpty(cuit_int_flete) ? " " : cuit_int_flete,
+                    IM_PATENTEACOPLADO = string.IsNullOrWhiteSpace(entregaReq.PatenteAcoplado) ? "" : entregaReq.PatenteAcoplado,
+                    IM_PATENTECHASIS = string.IsNullOrWhiteSpace(entregaReq.PatenteChasis) ? "" : entregaReq.PatenteChasis,
+                    IM_PEDIDO = string.IsNullOrWhiteSpace(entregaReq.Pedido) ? "" : entregaReq.Pedido,
+                    IM_TIPODOCUMENTO = string.IsNullOrWhiteSpace(entregaReq.TipoDocumento) ? "" : entregaReq.TipoDocumento,
+                    IM_TIPODOM = string.IsNullOrWhiteSpace(entregaReq.DomicilioTipo) ? "" : entregaReq.DomicilioTipo,
+                    IM_TRANSPORTISTA = string.IsNullOrWhiteSpace(cuit_tr) ? "" : cuit_tr,
+                    IM_TRANSPORTISTA_REAL = string.IsNullOrWhiteSpace(cuit_int_flete) ? "" : cuit_int_flete,
                     IM_USUARIO = "CACERESN",
-                    IM_ZZCODPLANTA = string.IsNullOrEmpty(entregaReq.PlantaCodigo) ? " " : entregaReq.PlantaCodigo,
-                    IM_DESTINO_MERCADERIA = string.IsNullOrEmpty(entregaReq.DestinoMercaderia) ? " " : entregaReq.DestinoMercaderia,
+                    IM_ZZCODPLANTA = string.IsNullOrWhiteSpace(entregaReq.PlantaCodigo) ? "" : entregaReq.PlantaCodigo,
+                    IM_DESTINO_MERCADERIA = string.IsNullOrWhiteSpace(entregaReq.DestinoMercaderia) ? "" : entregaReq.DestinoMercaderia,
                 };
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_ORDEN_CARGA_ENTRE request");
                 Log.Info(request.ToXml());

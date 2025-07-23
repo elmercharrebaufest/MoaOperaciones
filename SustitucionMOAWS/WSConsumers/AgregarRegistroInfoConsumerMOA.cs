@@ -113,13 +113,14 @@ namespace SustitucionMOAWS.WSConsumers
                 var registrosSap = DevolverDatosSapRegistro(registrosInfo);
                 string xml = "";
 
+                AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] BAPIRETURNE = new AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] { };
+                AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] MEWIPIRTEXTE = new AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] { };
+                AgregarRegistroInfoServiceWebMOA.MEWISCALEQUAN[] MEWISCALEQUANE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEQUAN[] { };
+                AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] MEWISCALEVALE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] { };
+                AgregarRegistroInfoServiceWebMOA.MEWIEINE MEWIEINEE;
+
                 foreach (var item in registrosSap)
                 {
-                    AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] BAPIRETURNE = new AgregarRegistroInfoServiceWebMOA.BAPIRETURN[] { };
-                    AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] MEWIPIRTEXTE = new AgregarRegistroInfoServiceWebMOA.MEWIPIRTEXT[] { };
-                    AgregarRegistroInfoServiceWebMOA.MEWISCALEQUAN[] MEWISCALEQUANE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEQUAN[] { };
-                    AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] MEWISCALEVALE = new AgregarRegistroInfoServiceWebMOA.MEWISCALEVAL[] { };
-                    AgregarRegistroInfoServiceWebMOA.MEWIEINE MEWIEINEE;
 
                     AgregarRegistroInfoServiceWebMOA.MEWICONDITION[] CONDITIONE = item.CONDITION != null ? item.CONDITION.ToArray() : new AgregarRegistroInfoServiceWebMOA.MEWICONDITION[] { };
                     AgregarRegistroInfoServiceWebMOA.MEWIVALIDITY[] MEWIVALIDITYE = item.MEWIVALIDITY != null ? item.MEWIVALIDITY.ToArray() : new AgregarRegistroInfoServiceWebMOA.MEWIVALIDITY[] { };
