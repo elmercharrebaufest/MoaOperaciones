@@ -107,6 +107,7 @@
     <Compile Include="Dto\Compras\ValidarFechaVigenciaRegistroInfoReqDto.cs" />
     <Compile Include="Dto\Compras\ValidarFechaVigenciaRegistroInfoResDto.cs" />
     <Compile Include="Dto\EntradaServicioParamsDto.cs" />
+    <Compile Include="Dto\EstadoProveedorDto.cs" />
     <Compile Include="Dto\FileDto.cs" />
     <Compile Include="Dto\FrontLoggerRequestDto.cs" />
     <Compile Include="Dto\LiberadorSapDto.cs" />

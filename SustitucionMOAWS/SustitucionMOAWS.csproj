@@ -1007,6 +1007,9 @@
     <None Include="Service References\DataAgroServices\DataAgroServices3.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\DataAgroServices\DataAgroServices4.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\DataAgroServices\SustitucionMOAWS.DataAgroServices.ResultadoSap.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
