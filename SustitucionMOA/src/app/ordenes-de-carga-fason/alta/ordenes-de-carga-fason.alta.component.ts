@@ -1108,7 +1108,6 @@ export class OrdenesDeCargaFasonAltaComponent
         }
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
-        console.debug("obtener cuils chofer con params: " + this.ordenDeCargaFason.Cliente + this.unidadTransporte.PatenteAcoplado);
         try {
             this.service.getCuilsChofer(this.ordenDeCargaFason.Cliente, this.unidadTransporte.PatenteAcoplado).subscribe(
                 (result: any) => {
@@ -1146,7 +1145,6 @@ export class OrdenesDeCargaFasonAltaComponent
         }
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
-        console.debug("obtener cuits transporte con params: " + this.ordenDeCargaFason.Cliente + this.unidadTransporte.PatenteAcoplado);
         try {
             this.service.getCuitsTransporte(this.ordenDeCargaFason.Cliente, this.unidadTransporte.PatenteAcoplado).subscribe(
                 (result: any) => {
@@ -1301,12 +1299,13 @@ export class OrdenesDeCargaFasonAltaComponent
 
     removerUnidadTransporte(unidadAEditar: UnidadTransporteCarga) {
         this.confirmationService.confirm({
+            key: 'confirmarRemoverTransporte',
             message: '¿Está seguro de que desea eliminar esta unidad de transporte de la orden?',
             accept: () => {
                 this.unidadesTransporteAgregadas.splice(this.unidadesTransporteAgregadas.indexOf(unidadAEditar), 1);
             },
             reject: () => {}
-        })
+        });
     }
 
     resetearUnidadTransporte() {

@@ -4,6 +4,7 @@ using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
+using SustitucionMOAModel.Dto.OrdenDeCargaCommon;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
@@ -70,80 +71,95 @@ namespace SustitucionMOAUtils.Services
             this.kgDisponiblesFasService = kgDisponiblesFasService;
         }
 
-        public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario, GestionAltasFAS gestionAltas)
+        public Resultado Agregar(CrearOrdenDeCargaRequest crearOrdenDeCargaRequest, string mailUsuario)
         {
-            Log.Info($"Agregar orden de carga con datos: {ordenDeCarga.ToDto().ToJson()}. MailUsuario: {mailUsuario}");
-            Result contratoSAP = null;
+            var ordenReq = crearOrdenDeCargaRequest.OrdenDeCarga;
+            var gestionAltas = crearOrdenDeCargaRequest.GestionAltasFAS;
+
+            Log.Info($"Agregar orden de carga con datos: {ordenReq.ToDto().ToJson()}. MailUsuario: {mailUsuario}");
+            
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                LlenarOrdenAltaCorredorCliente(ordenDeCarga, usuario);
-                ValidarOrdenDeCargaAlta(ordenDeCarga);
-                LlenarOrdenAlta(ordenDeCarga, usuario);
-                var contratoTieneKgsDisponibles = ContratoTieneKgDisponibles(ordenDeCarga, out contratoSAP);
-                LlenarOrdenDeCargaFleteMOA(ordenDeCarga, contratoSAP);
+                
+                LlenarOrdenAltaCorredorCliente(ordenReq, usuario);
+                
+                LlenarOrdenAlta(ordenReq, usuario);
+
+                var contratoTieneKgsDisponibles = ContratoTieneKgDisponibles(ordenReq, out Result contratoSAP);
+                
+                LlenarOrdenDeCargaFleteMOA(ordenReq, contratoSAP);
+                
                 var ordenPuedeEnviarseDirectoSap = contratoTieneKgsDisponibles;
 
-                var crearPedido = VerificarOrden(ordenDeCarga, ordenDeCarga.Cliente, false);
-                Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: {crearPedido}");
-                repositorio.Agregar(ordenDeCarga);
-
-                if (crearPedido && ordenPuedeEnviarseDirectoSap)
+                OrdenDeCarga nuevaOrden = null;
+                foreach (var unidadTransporte in crearOrdenDeCargaRequest.UnidadesTransporte)
                 {
-                    ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
-                    if (ordenDeCarga.EsFacturaAnticipada)
+                    nuevaOrden = new OrdenDeCarga(ordenReq, unidadTransporte);
+
+                    ValidarOrdenDeCargaAlta(nuevaOrden);
+                    
+                    nuevaOrden.TransporteExiste = TransporteExiste(nuevaOrden);
+                    
+                    var crearPedido = VerificarOrden(nuevaOrden, nuevaOrden.Cliente, false);
+
+                    repositorio.Agregar(nuevaOrden);
+
+                    if (crearPedido && ordenPuedeEnviarseDirectoSap)
                     {
-                        if (PedidoTieneKgDisponibles(ordenDeCarga))
+                        nuevaOrden.ContratoSAP = nuevaOrden.ContratoIngresado;
+                        if (nuevaOrden.EsFacturaAnticipada)
                         {
-                            ordenDeCarga.NumeroFacturaSeleccionada = ordenDeCarga.NumeroFactura;
-                            ordenDeCarga.NumeroPedido = ordenDeCarga.NumeroPedidoIngresado;
+                            if (PedidoTieneKgDisponibles(nuevaOrden))
+                            {
+                                nuevaOrden.NumeroFacturaSeleccionada = nuevaOrden.NumeroFactura;
+                                nuevaOrden.NumeroPedido = nuevaOrden.NumeroPedidoIngresado;
+                            }
+                            if (!nuevaOrden.SinSeleccionarFactura)
+                                GenerarEntregaSAP(nuevaOrden);
+                            else
+                            {
+                                nuevaOrden.DescripcionErrorInterno = "Orden con pedido entre 0 a 15Tn.";
+                                nuevaOrden.Estado = EstadoOrdenDeCarga.Pendiente;
+                            }
                         }
-                        if (!ordenDeCarga.SinSeleccionarFactura)
-                            GenerarEntregaSAP(ordenDeCarga);
                         else
                         {
-                            ordenDeCarga.DescripcionErrorInterno = "Orden con pedido entre 0 a 15Tn.";
-                            ordenDeCarga.Estado = EstadoOrdenDeCarga.Pendiente;
+                            var creadaEnSAP = CrearPedidoEnSAP(nuevaOrden, nuevaOrden.Cliente, true, mailUsuario);
+                            if (creadaEnSAP)
+                            {
+                                VerificarSituacionCrediticia(nuevaOrden, true);
+                            }
                         }
                     }
-                    else
+
+                    if (nuevaOrden.Estado == EstadoOrdenDeCarga.SinEnviarASAP &&
+                        (!contratoTieneKgsDisponibles || (nuevaOrden.EsFacturaAnticipada && !PedidoTieneKgDisponibles(nuevaOrden))))
                     {
-                        var creadaEnSAP = CrearPedidoEnSAP(ordenDeCarga, ordenDeCarga.Cliente, true, mailUsuario);
-                        if (creadaEnSAP)
-                        {
-                            VerificarSituacionCrediticia(ordenDeCarga, true);
-                        }
+                        nuevaOrden.Estado = EstadoOrdenDeCarga.Pendiente;
+                        nuevaOrden.DescripcionErrorInterno = "Orden con contrato/pedido entre 0 a 15Tn.";
                     }
+                    repositorio.GuardarCambios();
+
+                    if (nuevaOrden.Estado == EstadoOrdenDeCarga.ContratoVencido)
+                    {
+                        emailFasService.EnviarMailContratoVencido(nuevaOrden);
+                    }
+
+                    if (!ordenPuedeEnviarseDirectoSap)
+                    {
+                        emailFasService.EnviarMailVariosContratos(nuevaOrden);
+                    }
+
+                    NotificarContratoSinKm(nuevaOrden);
+                    NotificarTransporte(nuevaOrden.Id);
+                    NotificarVariasFacturas(nuevaOrden);
+                    NotificarCamionAutorizadoMultiplesOrdenes(nuevaOrden);
+
+                    gestionAltas.OrdenId = nuevaOrden.Id;
+                    EnviarMailAltaCuitTerceros(gestionAltas);
                 }
-
-                if (ordenDeCarga.Estado == EstadoOrdenDeCarga.SinEnviarASAP &&
-                    (!contratoTieneKgsDisponibles ||
-                    (ordenDeCarga.EsFacturaAnticipada && !PedidoTieneKgDisponibles(ordenDeCarga))))
-                {
-                    ordenDeCarga.Estado = EstadoOrdenDeCarga.Pendiente;
-                    ordenDeCarga.DescripcionErrorInterno = "Orden con contrato/pedido entre 0 a 15Tn.";
-                }
-                repositorio.GuardarCambios();
-
-                if (ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido)
-                {
-                    emailFasService.EnviarMailContratoVencido(ordenDeCarga);
-                }
-
-                if (!ordenPuedeEnviarseDirectoSap)
-                {
-                    emailFasService.EnviarMailVariosContratos(ordenDeCarga);
-                }
-
-                NotificarContratoSinKm(ordenDeCarga);
-                NotificarTransporte(ordenDeCarga.Id);
-                NotificarVariasFacturas(ordenDeCarga);
-                NotificarCamionAutorizadoMultiplesOrdenes(ordenDeCarga);
-
-                var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
-                gestionAltas.OrdenId = ordenDeCarga.Id;
-                EnviarMailAltaCuitTerceros(gestionAltas);
-                Log.Info($"Result: {resultado.ToJson()}");
+                var resultado = new Resultado { IdEntidad = nuevaOrden.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
                 return resultado;
             }
             catch (ValidationCustomException vcex)
@@ -227,10 +243,6 @@ namespace SustitucionMOAUtils.Services
                         });
                     }
                 }
-                //if (!esInterno && historialCambios.Count > 0)
-                //{
-                //    SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
-                //}
 
                 foreach (var historialCambio in historialCambios)
                 {
@@ -1254,36 +1266,6 @@ namespace SustitucionMOAUtils.Services
             return ValidarSisa(cuitDestinatario, cuitDestino, codigoMaterial);
         }
 
-        public bool EnviarMailAltaCuitTerceros(GestionAltasFAS gestionAltas)
-        {
-            if (gestionAltas.OrdenId is null)
-            {
-                throw new Exception("No se ha especificado una orden de carga");
-            }
-            Log.Info($"EnviarMailAltaCuitTerceros params => gestionaFlete: {gestionAltas.GestionaFlete}, " +
-                $"gestionaDestino: {gestionAltas.GestionaDestino}, gestionaDestinatario: {gestionAltas.GestionaDestinatario}, ordenId:{gestionAltas.OrdenId}");
-
-            var ordenDeCarga = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id == gestionAltas.OrdenId);
-
-            if (gestionAltas.GestionaFlete)
-            {
-                emailFasService.EnviarMailAltaIntermediarioFlete(
-                    ordenDeCarga.CUITIntermediarioFlete,
-                    ordenDeCarga.RazonSocialIntermediarioFlete,
-                    ordenDeCarga.Id);
-            }
-
-            if (gestionAltas.GestionaDestino || gestionAltas.GestionaDestinatario)
-            {
-                emailFasService.EnviarMailAltaTempranaCuit(
-                    ordenDeCarga, gestionAltas.OrdenId ?? 0,
-                    gestionAltas.GestionaDestino,
-                    gestionAltas.GestionaDestinatario);
-            }
-
-            return true;
-        }
-
         public void VerificarCompensacion(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
@@ -1578,6 +1560,36 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        private bool EnviarMailAltaCuitTerceros(GestionAltasFAS gestionAltas)
+        {
+            if (gestionAltas.OrdenId is null)
+            {
+                throw new Exception("No se ha especificado una orden de carga");
+            }
+            Log.Info($"EnviarMailAltaCuitTerceros params => gestionaFlete: {gestionAltas.GestionaFlete}, " +
+                $"gestionaDestino: {gestionAltas.GestionaDestino}, gestionaDestinatario: {gestionAltas.GestionaDestinatario}, ordenId:{gestionAltas.OrdenId}");
+
+            var ordenDeCarga = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id == gestionAltas.OrdenId);
+
+            if (gestionAltas.GestionaFlete)
+            {
+                emailFasService.EnviarMailAltaIntermediarioFlete(
+                    ordenDeCarga.CUITIntermediarioFlete,
+                    ordenDeCarga.RazonSocialIntermediarioFlete,
+                    ordenDeCarga.Id);
+            }
+
+            if (gestionAltas.GestionaDestino || gestionAltas.GestionaDestinatario)
+            {
+                emailFasService.EnviarMailAltaTempranaCuit(
+                    ordenDeCarga, gestionAltas.OrdenId ?? 0,
+                    gestionAltas.GestionaDestino,
+                    gestionAltas.GestionaDestinatario);
+            }
+
+            return true;
+        }
+
         private List<OrdenDeCarga> OrdenesConPatentesRepetidas(string patenteChasis)
         {
             return repositorio.Listar<OrdenDeCarga>(oc =>
@@ -1590,7 +1602,6 @@ namespace SustitucionMOAUtils.Services
         {
             var esComercial = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaParaComerciales);
             var esMultifirma = usuario.TienePermiso(PermisoEnum.SeleccionarVendedor);
-            Log.Info($"Llenar Orden de carga para alta. esComercial: {esComercial}. esMultifirma {esMultifirma}");
 
             Proveedor cliente = null;
             if (esComercial || (esMultifirma && ordenDeCarga.CUITCliente != usuario.CUITRegistro))
@@ -1669,9 +1680,10 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new ValidationCustomException("CUIL de chofer inválido");
                 }
+                Log.Debug($"Chofer inválido ({cuilChofer}) en Scato: {choferRes.Data.ToJson()}");
             }
-            Log.Debug(this.GetType().Name, "Agregar", $" chofer en Scato: {choferRes.Data.ToJson()}");
         }
+
         private void LlenarOrdenAlta(OrdenDeCarga ordenDeCarga, Usuario usuario)
         {
             ordenDeCarga.Estado = EstadoOrdenDeCarga.ErrorDeCarga;
@@ -1716,8 +1728,6 @@ namespace SustitucionMOAUtils.Services
                 ordenDeCarga.Reventa = ordenDeCarga.CUITCliente != ordenDeCarga.CUITDestino;
                 ordenDeCarga.KmsARecorrer = ObtenerDistanciaARecorrer(ordenDeCarga.DomicilioDescr);
             }
-
-            ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
             ordenDeCarga.FechaVencimiento = CalcularFechaVencimiento(DateTime.Now);
         }
 
@@ -1747,8 +1757,7 @@ namespace SustitucionMOAUtils.Services
         private bool ContratoTieneKgDisponibles(OrdenDeCarga orden, out Result contratoSAP)
         {
             var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
-            Log.Info($"Validar kg orden: patente={orden.PatenteAcoplado}, chasis={orden.ChasisAcoplado}, " +
-                $"código cliente={orden.Cliente.CodigoProveedor}, número contrato={numeroContrato}");
+
             contratoSAP = ordenCargaConsumer.ObtenerContratoSAP(numeroContrato, null) ?? throw new InfoCustomException("No se encontró el contrato en SAP");
 
             Log.Info($"Validar kg contrato: detalles={contratoSAP.Detalles} ");
@@ -1756,12 +1765,16 @@ namespace SustitucionMOAUtils.Services
             var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor).Where(ordenPendiente => ordenPendiente.Id != orden.Id).ToList();
 
             var kilosDisponibles = kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes);
-            Log.Info($"Validar kg disponibles: {kilosDisponibles}");
-            if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
-                throw new InfoCustomException($"El contrato seleccionado no tiene kg disponibles");
-            if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
-                return false;
+            Log.Info($"Contrato {numeroContrato} - Validar kg disponibles: {kilosDisponibles}");
 
+            if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
+            {
+                throw new InfoCustomException($"El contrato seleccionado no tiene kg disponibles");
+            }
+            if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
+            {
+                return false;
+            }
             return true;
         }
 

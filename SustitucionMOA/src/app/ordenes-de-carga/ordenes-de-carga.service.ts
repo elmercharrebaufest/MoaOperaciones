@@ -17,6 +17,7 @@ import { Proveedor } from '../common/models/proveedor';
 import { ValidarCamionResponse } from '../common/models/ordenes-de-carga/ValidarCamionResponse';
 import { ValidarChoferResponse } from '../common/models/ordenes-de-carga/ValidarChoferResponse';
 import { GestionAltasFAS } from '../common/models/ordenes-de-carga/gestionAltasFAS';
+import { CrearOrdenDeCargaRequest } from '../common/models/ordenes-de-carga/crearOrdenDeCargaRequest';
 
 @Injectable({
     providedIn: 'root'
@@ -101,24 +102,11 @@ export class OrdenesDeCargaService extends OrdenesBaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
-    // public solicitarEdicion(ordenDeCargaId: Number): Observable<any> {
-    //     let params: HttpParams = new HttpParams()
-    //         .append('ordenDeCargaId', ordenDeCargaId.toString());
-
-    //     return this.http
-    //         .get<OrdenDeCarga[]>('/api/OrdenDeCarga/SolicitarEdicion', { params: params })
-    //         .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
-    // }
-
-    public agregar(ordenDeCarga: OrdenDeCarga, gestionAltas: GestionAltasFAS): Observable<any> {
+    public agregar(crearOrdenDeCargaRequest: CrearOrdenDeCargaRequest): Observable<any> {
         let payload = new FormData();
         payload.append(
-            "ordenDeCargaJson",
-            JSON.stringify(ordenDeCarga)
-        );
-        payload.append(
-            "gestionAltaFASJson",
-            JSON.stringify(gestionAltas)
+            "crearOrdenDeCargaRequestJson",
+            JSON.stringify(crearOrdenDeCargaRequest)
         );
 
         return this.http

@@ -29,17 +29,14 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult Agregar(string ordenDeCargaJson, string gestionAltaFASJson)
+        public ActionResult Agregar(string crearOrdenDeCargaRequestJson)
         {
             lock (_lockCreacionOrdenes)
             {
-
-                var ordenDeCarga = JsonConvert.DeserializeObject<OrdenDeCarga>(ordenDeCargaJson);
-                var gestionAltas = JsonConvert.DeserializeObject<GestionAltasFAS>(gestionAltaFASJson);
+                var crearOrdenDeCargaRequest = JsonConvert.DeserializeObject<CrearOrdenDeCargaRequest>(crearOrdenDeCargaRequestJson);
                 var mailUsuario = SessionPersister.Mail;
-                return JsonCustom(new { data = ordenDeCargaService.Agregar(ordenDeCarga, mailUsuario, gestionAltas) });
+                return JsonCustom(new { data = ordenDeCargaService.Agregar(crearOrdenDeCargaRequest, mailUsuario) });
             }
-
         }
 
         [HttpPost]

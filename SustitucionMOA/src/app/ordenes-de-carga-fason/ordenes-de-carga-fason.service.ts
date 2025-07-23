@@ -217,14 +217,7 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
-    // public getCuilsChofer(ordenDeCargaFason: OrdenDeCargaFasonDto): Observable<any> {
     public getCuilsChofer(clienteId: string, patenteAcoplado: string): Observable<any> {
-        console.debug("service get cuils chofer con params: " + clienteId + patenteAcoplado);
-        // let payload = new FormData();
-        // payload.append(
-        //     "ordenDeCargaFasonJson",
-        //     JSON.stringify({ CUITCliente: ordenDeCargaFason.CUITCliente, Cliente: ordenDeCargaFason.Cliente, PatenteAcoplado: ordenDeCargaFason.PatenteAcoplado })
-        // );
         let params: HttpParams = new HttpParams()
             .append("clienteId", clienteId)
             .append("patenteAcoplado", patenteAcoplado);
@@ -234,7 +227,6 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
     }
 
     public getCuitsTransporte(clienteId: string, patenteAcoplado: string): Observable<any> {
-        console.debug("service get cuits transporte con params: " + clienteId + patenteAcoplado);
         let params: HttpParams = new HttpParams()
             .append("clienteId", clienteId)
             .append("patenteAcoplado", patenteAcoplado);
@@ -257,7 +249,6 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
 
     public getPatentes(ordenDeCargaFason: OrdenDeCargaFasonDto): Observable<any> {
         let payload = new FormData();
-        // console.log(ordenDeCarga)
         payload.append(
             "ordenDeCargaFasonJson",
             JSON.stringify(ordenDeCargaFason)
@@ -265,6 +256,7 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
         return this.http
             .post('/api/OrdenDeCargaFason/ObtenerPatentes', payload);
     }
+
     public EnviarMailAltaCuitTerceros(gestionaFlete: boolean, gestionaDestino: boolean, gestionaDestinatario: boolean,
         ordenId: string): Observable<ApiResponse<boolean>> {
         const payload = {
@@ -278,6 +270,7 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
                 '/api/OrdenDeCargaFason/EnviarMailAltaCuitTerceros',
                 payload)
     }
+    
     public verificarCuitsTerceros(ordenId: number): Observable<ApiResponse<boolean>> {
         let params: HttpParams = new HttpParams()
             .append("ordenId", ordenId.toString());

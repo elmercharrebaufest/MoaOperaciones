@@ -25,11 +25,13 @@ import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factur
 import { IOrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
 import { Subject, Subscription, forkJoin } from 'rxjs';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Checkbox } from 'primeng/checkbox';
 import { MSG_ALERTA_CAMION_NO_EXISTE, MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
 import { Permiso } from '../../common/enums/Permisos';
 import { GestionAltasFAS } from '../../common/models/ordenes-de-carga/gestionAltasFAS';
+import { UnidadTransporteCarga } from '../../common/models/ordenes-de-carga-common/unidadTransporteCarga';
+import { CrearOrdenDeCargaRequest } from '../../common/models/ordenes-de-carga/crearOrdenDeCargaRequest';
 
 @Component({
     selector: 'app-ordenes-de-carga.alta',
@@ -39,7 +41,10 @@ import { GestionAltasFAS } from '../../common/models/ordenes-de-carga/gestionAlt
 })
 export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdenesBaseComponent {
     @BlockUI() blockUI: NgBlockUI;
-    @ViewChild("escalableCheckbox") escalableCheckbox: Checkbox
+    
+    @ViewChild("escalableCheckbox")
+    escalableCheckbox: Checkbox
+    
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -50,11 +55,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     private messagesContainer?: ElementRef<HTMLDivElement>;
 
     ordenDeCargaId: number = 0;
+    ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
+    unidadTransporte: UnidadTransporteCarga = new UnidadTransporteCarga();
+    estaEditandoUnidadTransporte: boolean = true;
+    unidadesTransporteAgregadas: UnidadTransporteCarga[] = [];
+    esEdicionDeOrden: boolean = false;
 
     validarCNRTSubject = new Subject();
     validarCNRTSubscription?: Subscription;
     subscriptions = new Subscription();
-    ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajesOrdenDeCarga: Partial<Record<keyof OrdenDeCarga, string>> = {};
     mensajesGestionCuit: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, string>> = {};
     gestiona: Partial<Record<keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'>, boolean>> = {
@@ -64,7 +73,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     validando: Partial<Record<keyof OrdenDeCarga, boolean>> = {};
     displayModal: keyof Pick<OrdenDeCarga, 'CUITDestinatario' | 'CUITDestino' | 'CUITIntermediarioFlete'> | null;
     validaCPEDG = false;
-    editando = false;
     focusRazonSocialParaGestion = true;
     mensajeError: string = "";
     mensajeSuccess: string = "";
@@ -142,7 +150,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         protected modalService: ModalService,
         protected empresaGranosService: EmpresaGranosService,
         public datepipe: DatePipe,
-        protected msgService: MessageService
+        protected msgService: MessageService,
+        private confirmationService: ConfirmationService
     ) {
         super(navService, securytiService, floatMsgService, modalService);
 
@@ -159,11 +168,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 .subscribe(() => {
                     this.validacionExistenciaPatenteSub = this.service
                         .validarExistenciaPatentes(
-                            this.ordenDeCarga.ChasisAcoplado, this.ordenDeCarga.CUITCliente)
+                            this.unidadTransporte.PatenteChasis, this.ordenDeCarga.CUITCliente)
                         .subscribe(res => {
                             const notificarExistencia = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
                             if (notificarExistencia) {
-                                this.floatMsgService.setInfoMsg("El camión ya fué autorizado por otro cliente.");
+                                this.floatMsgService.setInfoMsg("El camión ya fue autorizado por otro cliente.");
                             }
                         });
                 })
@@ -178,13 +187,16 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     ngOnInit() {
-        this.userEmail = sessionStorage.getItem("username");
+        this.userEmail = sessionStorage.getItem("username") || "username no encontrado";
         this.desde = this.getFecha(12);
         this.hasta = this.getFecha(0);
         this.ordenDeCarga.Cantidad = 0;
 
         this.route.params.forEach((params: Params) => {
-            if (params["id"] > 0) this.ordenDeCargaId = params["id"];
+            if (params["id"] > 0) {
+                this.ordenDeCargaId = params["id"];
+                this.esEdicionDeOrden = true;
+            }
         });
         this.navService.setSeccionList([]);
 
@@ -192,38 +204,35 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         if (this.esComercial) {
             this.onCorredorFocusOut('', false);
         }
-        else if (this.esCorredor) {
-            this.CodigoCorredor = sessionStorage.getItem("proveedor");
-            if (this.ordenDeCargaId == 0) {
-                this.cargarClientes(this.CodigoCorredor);
+        else {
+            if (this.esCorredor) {
+                this.CodigoCorredor = sessionStorage.getItem("proveedor") || "proveedor no encontrado";
+                if (!this.esEdicionDeOrden) {
+                    this.cargarClientes(this.CodigoCorredor);
+                }
             }
         }
 
-        this.editando = this.ordenDeCargaId > 0;
         this.obtenerCorredores();
 
-        if (this.ordenDeCargaId > 0) {
+        if (this.esEdicionDeOrden) {
             this.obtenerOrdenDeCarga();
             this.noEditarCliente = true;
-        } else {
+        }
+        else {
             this.getPatentes();
         }
+
         if (this.isAuthorized('VER ORDENES DE CARGA DE TERCEROS')) {
             this.ordenDeCarga.CUITCliente = 0;
         }
+
         if (this.esCliente()) {
             const esInterno = this.esComercial || this.esCorredor;
             if (!esInterno) {
-                // this.clienteSeleccionado = {
-                //     id: sessionStorage.getItem("proveedorId"),
-                //     CUIT: sessionStorage.getItem("cuit"),
-                //     CodigoProveedor: sessionStorage.getItem("proveedor")
-                // }
-                // this.clienteCodigo = this.clienteSeleccionado.CodigoProveedor;
-                // this.ordenDeCarga.CUITCliente = this.clienteSeleccionado.CUIT;
                 this.cargarClienteDirecto(parseInt(sessionStorage.getItem("proveedorId") || ""))
                     .then(() => {
-                        if (this.ordenDeCargaId == 0) {
+                        if (!this.esEdicionDeOrden) {
                             this.cargarContratosDisponibles(this.clienteCodigo);
                         }
                     });
@@ -241,12 +250,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     obtenerMateriales() {
-        //Sacamos lo de la lista de campaña, ya que ahora son independientes
         try {
             this.service.getMateriales().subscribe(
                 (result) => {
                     this.listaMateriales = result.data;
-                    if (this.editando && !this.Contrato)
+                    if (this.esEdicionDeOrden && !this.Contrato)
                         this.onContratoSeleccionadoChanged()
                 },
                 (error) => {
@@ -260,14 +268,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
     }
 
-
-    validar() {
-        if (!this.ordenDeCarga.NombreChofer || this.ordenDeCarga.NombreChofer.trim().length < 2) {
+    validarUnidadTransporte(unidad: UnidadTransporteCarga): boolean {
+        if (!unidad.NombreChofer || unidad.NombreChofer.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
             return false;
         }
-        /*VER ESTA VALIDACION, ACA VALIDA COMO SI FUERA UN CUIT PERO EN EL FRONT DICE QUE PONGA EL DNI/CUIL*/
-        if (!this.ordenDeCarga.CUITChofer || this.ordenDeCarga.CUITChofer.toString().trim().length != 11 || this.mensajesOrdenDeCarga.CUITChofer || this.validando.CUITChofer) {
+        if (!unidad.CUILChofer || unidad.CUILChofer.toString().trim().length != 11 || this.mensajesOrdenDeCarga.CUITChofer || this.validando.CUITChofer) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
         }
@@ -279,23 +285,37 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
             return false;
         }
-        if (this.ordenDeCarga.ChasisAcoplado == this.ordenDeCarga.PatenteAcoplado) {
-            this.mensajeComponent.setInfoMsg("Las patentes de chásis y acoplado no pueden ser iguales.");
+        if (unidad.PatenteChasis == unidad.PatenteAcoplado) {
+            this.mensajeComponent.setInfoMsg("Las patentes de chasis y acoplado no pueden ser iguales.");
             return false;
         }
-        if (!this.ordenDeCarga.RazonSocialTransporte || this.ordenDeCarga.RazonSocialTransporte.trim().length < 2) {
+        if (!unidad.RazonSocialTransporte || unidad.RazonSocialTransporte.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
             return false;
         }
-        if (!this.ordenDeCarga.CUITTransporte || this.ordenDeCarga.CUITTransporte.toString().trim().length != 11 || this.mensajesOrdenDeCarga.CUITTransporte || this.validando.CUITTransporte) {
+        if (!unidad.CUITTransporte || unidad.CUITTransporte.toString().trim().length != 11 || this.mensajesOrdenDeCarga.CUITTransporte || this.validando.CUITTransporte) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
             return false;
         }
-        if (this.ordenDeCarga.CUITIntermediarioFlete && this.ordenDeCarga.CUITIntermediarioFlete.toString().trim().length != 11) {
+        if (unidad.CUITIntermediarioFlete && unidad.CUITIntermediarioFlete.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de intermediario flete válido.");
             return false;
         }
+        return true;
+    }
 
+    validarCabecera() {
+        if (!this.esEdicionDeOrden) {
+            if (this.unidadesTransporteAgregadas.length < 1) {
+                this.mensajeComponent.setInfoMsg("Debe agregar al menos una unidad de transporte.");
+                return false;
+            }
+            const kilosSinConsumir = this.kilosSinConsumir();
+            if (kilosSinConsumir < 0 && (kilosSinConsumir + this.ordenDeCarga.Cantidad) <= 0) {
+                this.mensajeComponent.setInfoMsg("Los kilos disponibles no son suficientes para la cantidad de unidades de transporte.");
+                return false;
+            }
+        }
         if (this.validaCPEDG) {
             if (!this.ordenDeCarga.CUITDestinatario ||
                 (this.ordenDeCarga.CUITDestinatario && !this.revisarCUITFormatoValido(this.ordenDeCarga.CUITDestinatario))
@@ -348,7 +368,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             return false;
         }
 
-        if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada) {
+        if (this.ordenDeCarga.ContratoSeleccionado &&
+            this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada) {
             if (!this.ordenDeCarga.NumeroFactura) {
                 this.mensajeComponent.setInfoMsg("Debe seleccionar un número de factura para este tipo de contrato.");
                 return false;
@@ -397,8 +418,23 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                         }
                         this.getPatentes();
                         this.cargarContratosDisponibles(result.data.CodigoCliente);
-                        if (this.ordenDeCarga.CUITDestino)
+
+                        if (this.ordenDeCarga.CUITDestino) {
                             this.onDestinoIngresado(this.ordenDeCarga.CUITDestino)
+                        }
+
+                        this.unidadTransporte = {
+                            PatenteChasis: this.ordenDeCarga.ChasisAcoplado,
+                            PatenteAcoplado: this.ordenDeCarga.PatenteAcoplado,
+                            NombreChofer: this.ordenDeCarga.NombreChofer,
+                            CUILChofer: this.ordenDeCarga.CUITChofer.toString(),
+                            RazonSocialTransporte: this.ordenDeCarga.RazonSocialTransporte,
+                            CUITTransporte: this.ordenDeCarga.CUITTransporte.toString(),
+                            CUITIntermediarioFlete: this.ordenDeCarga.CUITIntermediarioFlete,
+                            RazonSocialIntermediarioFlete: this.ordenDeCarga.RazonSocialIntermediarioFlete,
+                            CantidadDeViajes: 1,
+                            ApellidoChofer: ""
+                        };
                     }
                 },
                 error => {
@@ -413,20 +449,21 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     submit() {
+        this.mensajeComponent.setMsgsEmpty();
         if (!this.Contrato) {
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
         }
 
-        if (!this.validar()) {
+        if (!this.validarCabecera()) {
             this.spinnerComponent.hideIt();
-            this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' })
+            if (this.messagesContainer) { this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' }); }
             return;
         }
         this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
 
         try {
-            if (this.ordenDeCargaId > 0) {
+            if (this.esEdicionDeOrden) {
                 if (this.esInterno) {
                     this.verificarOrdenActivaScato(this.ordenDeCargaId.toString());
                     this.abrirModalEdicionInterno();
@@ -445,8 +482,15 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     agregarOrden() {
         this.spinnerComponent.showIt();
         this.blockUI.start('Grabando...');
+
+        let crearOrdenRequest: CrearOrdenDeCargaRequest = {
+            OrdenDeCarga: this.ordenDeCarga,
+            GestionAltasFAS: this.getDatosGestionAlta(),
+            UnidadesTransporte: this.unidadesTransporteAgregadas
+        };
+
         this.subscription = this.service
-            .agregar(this.ordenDeCarga, this.getDatosGestionAlta()).pipe(take(1))
+            .agregar(crearOrdenRequest).pipe(take(1))
             .subscribe(
                 (result) => {
                     this.spinnerComponent.hideIt();
@@ -469,8 +513,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                         this.mensajeComponent.setMsgsEmpty();
                         this.mensajeSuccess = result.data.Mensaje;
                         this.ordenDeCargaId = result.data.IdEntidad;
-                        document.getElementById("openModalNotificacion")
-                            .click();
+                        document.getElementById("openModalNotificacion").click();
                     }
                 },
                 (error) => {
@@ -483,11 +526,17 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     editarOrden() {
+        if (!this.validarUnidadTransporte(this.unidadTransporte)) {
+            return;
+        }
 
         document.getElementById("closemodalEditarOrden").click();
 
         this.spinnerComponent.showIt();
         this.blockUI.start('Grabando...');
+
+        this.copiarUnidadDeTransporteEnOrdenDeCarga();
+
         this.subscription = this.service
             .editar(this.ordenDeCarga, this.getDatosGestionAlta()).pipe(take(1))
             .subscribe(
@@ -598,6 +647,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         try {
+            this.copiarUnidadDeTransporteEnOrdenDeCarga();
             this.subscription = this.service.getCuilsChofer(this.ordenDeCarga).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -632,6 +682,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         try {
+            this.copiarUnidadDeTransporteEnOrdenDeCarga();
             this.subscription = this.service.getCuitsTransporte(this.ordenDeCarga).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -663,22 +714,25 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
 
     chasisAcopladoSelected(event: string | { value: string }) {
         if (typeof (event) === "string")
-            this.ordenDeCarga.ChasisAcoplado = event.toUpperCase();
+            this.unidadTransporte.PatenteChasis = event.toUpperCase();
         else if (event.value)
-            this.ordenDeCarga.ChasisAcoplado = event.value.toUpperCase();
+            this.unidadTransporte.PatenteChasis = event.value.toUpperCase();
         this.validacionExistenciaPatente$.next()
     }
+
     patenteAcopladoSelected(event: string | { value: string }) {
         if (typeof (event) === "string")
-            this.ordenDeCarga.PatenteAcoplado = event.toUpperCase();
+            this.unidadTransporte.PatenteAcoplado = event.toUpperCase();
         else if (event.value)
-            this.ordenDeCarga.PatenteAcoplado = event.value.toUpperCase();
+            this.unidadTransporte.PatenteAcoplado = event.value.toUpperCase();
     }
+    
     cuitChoferSelected(value: any) {
-        this.ordenDeCarga.CUITChofer = value.value;
+        this.unidadTransporte.CUILChofer = value.value;
     }
+    
     cuitTransporteSelected(value: any) {
-        this.ordenDeCarga.CUITTransporte = value.value;
+        this.unidadTransporte.CUITTransporte = value.value;
     }
 
     generalFormatter(data: any): string {
@@ -701,7 +755,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     onCorredorSeleccionado = (proveedor: any) => {
         this.CodigoCorredor = this.corredorSeleccionado.idVendedor;
         this.obtenerCorredor(this.CodigoCorredor);
-
     }
 
     onCorredorFocusOut = (proveedor: any, edit: boolean) => {
@@ -813,25 +866,25 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.getPatentes();
         this.cargarContratosDisponibles(pClienteCodigo);
         this.setearDefaultEnCPEDG();
-        if (!this.editando) {
+        if (!this.esEdicionDeOrden) {
             this.validacionExistenciaPatente$.next()
         }
     }
 
     onContratoSeleccionadoChanged = () => {
-        if (this.editando && !this.listaMateriales)
+        if (this.esEdicionDeOrden && !this.listaMateriales)
             return;
         this.facturasDisponibles = [];
         this.ordenDeCarga.NumeroFactura = null;
         this.facturaSeleccionada = null;
         this.mensajesOrdenDeCarga = {
             ... this.mensajesOrdenDeCarga,
-            CUITIntermediarioFlete: null,
-            CUITCorredor: null,
-            CUITCliente: null,
-            CUITDestino: null,
-            CUITDestinatario: null,
-            NumeroFacturaSeleccionada: null,
+            CUITIntermediarioFlete: undefined,
+            CUITCorredor: undefined,
+            CUITCliente: undefined,
+            CUITDestino: undefined,
+            CUITDestinatario: undefined,
+            NumeroFacturaSeleccionada: undefined
         }
         if (this.ordenDeCarga.ContratoSeleccionado) {
             this.Contrato = this.ordenDeCarga.ContratoSeleccionado.NumeroContrato;
@@ -843,9 +896,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.cambioProducto();
             this.validaCPEDG = (materialSeleccionado != undefined && materialSeleccionado.ValidaSisaRuca);
             this.validarKilosDisponibles()
-            if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada)
-                this.obtenerFacturas()
-            this.validarSisaCorredorCliente()
+            if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato === TipoContrato.FacturaAnticipada) {
+                this.obtenerFacturas();
+            }
+            this.validarSisaCorredorCliente();
         }
         else {
             this.Contrato = "";
@@ -945,7 +999,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     ordenarYFiltrarCorredores(result: any): any[] {
-
         result = result.filter(
             (thing, i, arr) => arr.findIndex(t => t.idVendedor === thing.idVendedor) === i
         );
@@ -998,7 +1051,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.mensajeComponent.setMsgsEmpty();
         this.loadingCorredores = true;
         try {
-
             this.seleccionarProveedorService.getVendedores("", "", 4).subscribe(
                 result => {
                     if (result.logout == true) {
@@ -1017,9 +1069,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                         this.listaCorredores = this.ordenarYFiltrarCorredores(result.data.vendedores);
                         if (this.CodigoCorredor != "") {
                             let seleccionado = result.data.vendedores.find(a => a.idVendedor == this.CodigoCorredor);
-                            if (seleccionado)
+                            if (seleccionado) {
                                 this.corredorSeleccionado = seleccionado;
-
+                            }
                         }
                         //this.blockUI.stop();
                     }
@@ -1037,7 +1089,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.mensajeComponent.setErrorMsg(err);
             this.blockUI.stop();
         }
-
     }
 
     cargarContratosDisponibles(pClienteCodigo: string) {
@@ -1207,7 +1258,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
     }
     revisarCUITFormatoValido(cuit: string): boolean {
-        return cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
+        return !!cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number)
     }
 
     cargarAltaCuit() {
@@ -1229,7 +1280,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     validarSisaCorredorCliente() {
-
         if (!this.ordenDeCarga.ContratoSeleccionado || !this.validaCPEDG) {
             this.mensajeComponent.setMsgsEmpty();
             return;
@@ -1298,10 +1348,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
 
                 if (campo === "CUITCliente")
                     this.reiniciarProducto();
-
-            } else {
-                if (campo !== "CUITCliente")
+            }
+            else {
+                if (campo !== "CUITCliente") {
                     this.validarExisteCUIT(campo);
+                }
             }
         });
     }
@@ -1309,11 +1360,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     validarIntermediarioFlete() {
         this.validando.CUITIntermediarioFlete = true;
         this.intermediarioFleteCuitFormatoValido = true;
-        this.ordenDeCarga.RazonSocialIntermediarioFlete = undefined;
+        this.unidadTransporte.RazonSocialIntermediarioFlete = undefined;
         this.gestiona['CUITIntermediarioFlete'] = false;
         this.mensajesGestionCuit['CUITIntermediarioFlete'] = '';
 
-        let cuitIF = this.ordenDeCarga.CUITIntermediarioFlete;
+        let cuitIF = this.unidadTransporte.CUITIntermediarioFlete;
         if (!cuitIF || !this.revisarCUITFormatoValido(cuitIF)) {
             this.validando.CUITIntermediarioFlete = false;
             return;
@@ -1323,7 +1374,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             if (data) {
                 if (data.EsCuitValido) {
                     if (data.ExisteIntermediario) {
-                        this.ordenDeCarga.RazonSocialIntermediarioFlete = data.RazonSocial;
+                        this.unidadTransporte.RazonSocialIntermediarioFlete = data.RazonSocial;
                         this.mensajesGestionCuit['CUITIntermediarioFlete'] = undefined;
                     } else {
                         this.displayModal = 'CUITIntermediarioFlete';
@@ -1372,12 +1423,17 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         if (response.info) {
             this.mensajeComponent.setInfoMsg(response.info)
         }
-        return response.data;
+        if (response.data != undefined) {
+            return response.data;
+        }
+        else {
+            return null;
+        }
     }
 
     validarCuilChofer() {
         const campo = "CUITChofer";
-        const cuilChofer = this.ordenDeCarga.CUITChofer ? this.ordenDeCarga.CUITChofer.toString() : "";
+        const cuilChofer = this.unidadTransporte.CUILChofer ? this.unidadTransporte.CUILChofer.toString() : "";
         const cuitCliente = this.ordenDeCarga.CUITCliente;
 
         if (!this.revisarCUITFormatoValido(cuilChofer))
@@ -1405,7 +1461,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
 
     validarCuitTransporte() {
         const campo = "CUITTransporte";
-        const cuit = this.ordenDeCarga.CUITTransporte ? this.ordenDeCarga.CUITTransporte.toString() : "";
+        const cuit = this.unidadTransporte.CUITTransporte ? this.unidadTransporte.CUITTransporte.toString() : "";
         if (!this.revisarCUITFormatoValido(cuit))
             return;
         if (this.mensajesOrdenDeCarga[campo])
@@ -1421,12 +1477,14 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             }
         });
     }
+
     definirValorPlanta() {
-        if (this.editando && this.listaPlantas)
+        if (this.esEdicionDeOrden && this.listaPlantas)
             this.plantaSeleccionada = this.listaPlantas.find(planta => planta.Codigo.toString() == this.ordenDeCarga.PlantaCodigo);
     }
+
     definirValorDomicilio() {
-        if (this.editando && this.listaDomicilios)
+        if (this.esEdicionDeOrden && this.listaDomicilios)
             this.domicilioSeleccionado = this.listaDomicilios.find(domicilio =>
                 domicilio.Descripcion == this.ordenDeCarga.DomicilioDescr
                 && domicilio.Orden == this.ordenDeCarga.DomicilioOrden
@@ -1447,7 +1505,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.validarSisaCuit(this.clienteSeleccionado.cuit, 'CUITDestinatario');
         this.ordenDeCarga.CUITDestino = undefined;
         this.validarSisaCuit(this.clienteSeleccionado.cuit, 'CUITDestino');
-        this.ordenDeCarga.CUITIntermediarioFlete = undefined;
+        this.unidadTransporte.CUITIntermediarioFlete = undefined;
         this.validarIntermediarioFlete();
         this.resetearPlantasDomicilios();
     }
@@ -1484,12 +1542,14 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             }
         });
     }
+
     setNumeroFactura(value: Factura) {
         const { NumeroFactura, NumeroPedido } = value;
         this.ordenDeCarga.NumeroFactura = NumeroFactura;
         this.ordenDeCarga.NumeroPedidoIngresado = NumeroPedido;
         this.validarKilosDisponiblesPedido();
     }
+
     validarKilosDisponibles() {
         this.mensajesOrdenDeCarga.ContratoSeleccionado = null;
 
@@ -1509,6 +1569,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             }
         }
     }
+
     validarKilosDisponiblesPedido() {
         this.mensajesOrdenDeCarga.NumeroFacturaSeleccionada = null;
 
@@ -1541,18 +1602,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             });
         });
     }
+
     get patenteAcopladoValida() {
         return (
-            this.ordenDeCarga.PatenteAcoplado &&
-            this.ordenDeCarga.PatenteAcoplado.trim().length >= 6 &&
-            this.esPatenteValida(this.ordenDeCarga.PatenteAcoplado));
+            this.unidadTransporte.PatenteAcoplado &&
+            this.unidadTransporte.PatenteAcoplado.trim().length >= 6 &&
+            this.esPatenteValida(this.unidadTransporte.PatenteAcoplado));
     }
 
     get chasisAcopladoValido() {
         return (
-            this.ordenDeCarga.ChasisAcoplado &&
-            this.ordenDeCarga.ChasisAcoplado.trim().length >= 6 &&
-            this.esPatenteValida(this.ordenDeCarga.ChasisAcoplado));
+            this.unidadTransporte.PatenteChasis &&
+            this.unidadTransporte.PatenteChasis.trim().length >= 6 &&
+            this.esPatenteValida(this.unidadTransporte.PatenteChasis));
     }
 
     displayModalEscalable = false;
@@ -1564,10 +1626,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         //Posible check de si está marcado el campo escalable
         this.validarCNRTSubject.next();
     }
+
     validarCNRTRequest() {
         this.validando.Escalable = true;
         this.validarCNRTSubscription = this.service
-            .verificarCNRT(this.ordenDeCarga.ChasisAcoplado, this.ordenDeCarga.PatenteAcoplado)
+            .verificarCNRT(this.unidadTransporte.PatenteChasis, this.unidadTransporte.PatenteAcoplado)
             .subscribe(res => {
                 this.validando.Escalable = false;
                 const validezCNRTResponse = this.manejarErroresApiResponse(res)
@@ -1587,6 +1650,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 }
             })
     }
+
     validarEscalable() {
         if (!this.ordenDeCarga.Escalable)
             return;
@@ -1598,17 +1662,21 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         else if (this.escalableCNRT === undefined)
             this.validarCNRT();
     }
+
     setValorEscalable(value = false) {
         this.escalableCheckbox.writeValue(value)
         this.ordenDeCarga.Escalable = value;
     }
+
     marcarComoEscalable() {
         this.setValorEscalable(true)
         this.displayModalEscalable = false;
     }
+
     dejarSinEscalable() {
         this.displayModalEscalable = false;
     }
+
     public extraOnDestroy(): void {
         if (this.validacionExistenciaPatenteSub)
             this.validacionExistenciaPatenteSub.unsubscribe()
@@ -1643,6 +1711,17 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
     }
 
+    copiarUnidadDeTransporteEnOrdenDeCarga() {
+        this.ordenDeCarga.ChasisAcoplado = this.unidadTransporte.PatenteChasis;
+        this.ordenDeCarga.PatenteAcoplado = this.unidadTransporte.PatenteAcoplado;
+        this.ordenDeCarga.NombreChofer = this.unidadTransporte.NombreChofer;
+        this.ordenDeCarga.CUITChofer = Number(this.unidadTransporte.CUILChofer);
+        this.ordenDeCarga.RazonSocialTransporte = this.unidadTransporte.RazonSocialTransporte;
+        this.ordenDeCarga.CUITTransporte = Number(this.unidadTransporte.CUITTransporte);
+        this.ordenDeCarga.CUITIntermediarioFlete = this.unidadTransporte.CUITIntermediarioFlete;
+        this.ordenDeCarga.RazonSocialIntermediarioFlete = this.unidadTransporte.RazonSocialIntermediarioFlete;
+    }
+
     abrirModalEdicionInterno() {
         document.getElementById("openEdicionOrdenInterno").click();
     }
@@ -1663,7 +1742,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     esPatenteValida(patente: string) {
         const exprReg = /[A-Z]{3}[0-9]{3}|[A-Z]{2}[0-9]{3}[A-Z]{2}/;
         const esValida = exprReg.test(patente);
-        // console.log("Patente " + patente + " es válida? -> " + esValida);
         return esValida;
     }
 
@@ -1673,6 +1751,94 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             GestionaDestino: this.gestiona["CUITDestino"],
             GestionaFlete: this.gestiona["CUITIntermediarioFlete"],
         }
+    }
+
+    agregarNuevaUnidadTransporte() {
+        if (!this.ordenDeCarga.ContratoSeleccionado || this.ordenDeCarga.Cantidad == 0) {
+            this.floatMsgService.setInfoMsg("Debe seleccionar Contrato y Producto");
+            return false;
+        }
+        const kgsSinConsumir = this.kilosSinConsumir();
+        if (kgsSinConsumir <= 0) {
+            this.floatMsgService.setInfoMsg("No hay kilos suficientes para agregar unidad de transporte");
+            return false;
+        }
+        this.unidadTransporte = new UnidadTransporteCarga();
+        this.estaEditandoUnidadTransporte = true;
+        return false;
+    }
+
+    guardarUnidadTransporte() {
+        if (!this.unidadTransporte || !this.validarUnidadTransporte(this.unidadTransporte)) {
+            return;
+        }
+        if (!this.ordenDeCarga.ContratoSeleccionado || this.ordenDeCarga.Cantidad == 0) {
+            this.floatMsgService.setInfoMsg("Debe seleccionar Contrato y Producto");
+            return;
+        }
+        const kgsSinConsumir = this.kilosSinConsumir();
+        if (kgsSinConsumir <= 0) {
+            this.floatMsgService.setInfoMsg("No hay kilos suficientes para agregar unidad de transporte");
+            return;
+        }
+        this.unidadesTransporteAgregadas.push(this.unidadTransporte);
+        this.resetearUnidadTransporte();
+    }
+
+    editarUnidadTransporte(unidadAEditar: UnidadTransporteCarga) {
+        this.unidadTransporte = unidadAEditar;
+        this.unidadesTransporteAgregadas.splice(this.unidadesTransporteAgregadas.indexOf(unidadAEditar), 1);
+        this.estaEditandoUnidadTransporte = true;
+    }
+
+    removerUnidadTransporte(unidadAEditar: UnidadTransporteCarga) {
+            this.confirmationService.confirm({
+                key: 'confirmarRemoverTransporte',
+                message: '¿Está seguro de que desea eliminar esta unidad de transporte de la orden?',
+                accept: () => {
+                    this.unidadesTransporteAgregadas.splice(this.unidadesTransporteAgregadas.indexOf(unidadAEditar), 1);
+                },
+                reject: () => {}
+            });
+        }
+
+    resetearUnidadTransporte() {
+        this.unidadTransporte = new UnidadTransporteCarga();
+        this.estaEditandoUnidadTransporte = false;
+        this.mensajesOrdenDeCarga.CUITChofer = undefined;
+        this.mensajesOrdenDeCarga.CUITTransporte = undefined;
+        this.mensajesOrdenDeCarga.CUITIntermediarioFlete = undefined;
+        this.mensajeComponent.setMsgsEmpty();
+    }
+
+    puedeGuardarOrden(): boolean {
+        let puedeGuardar = this.esEdicionDeOrden ||
+            (this.unidadesTransporteAgregadas.length > 0 && !this.estaEditandoUnidadTransporte);
+        
+        return puedeGuardar;
+    }
+
+    getTooltipBotonGuardarOrden(): string {
+        if (!this.esEdicionDeOrden && this.unidadesTransporteAgregadas.length == 0) {
+            return "Debe agregar al menos una unidad de transporte";
+        }
+        if (!this.esEdicionDeOrden && this.estaEditandoUnidadTransporte) {
+            return "Está editando una unidad de transporte. Guarde o cancele la misma antes de enviar la orden";
+        }
+        return "";
+    }
+
+    kilosSinConsumir(): number {
+        if (!this.esEdicionDeOrden && this.ordenDeCarga.ContratoSeleccionado && this.ordenDeCarga.Cantidad > 0) {
+            const { KgDisponibles } = this.ordenDeCarga.ContratoSeleccionado;
+            const kilosConsumidos = this.unidadesTransporteAgregadas.length * this.ordenDeCarga.Cantidad;
+            return KgDisponibles - kilosConsumidos;
+        }
+        return 0;
+    }
+
+    pasarAMayusculas(event: any): string {
+        return event.toUpperCase();
     }
 }
 

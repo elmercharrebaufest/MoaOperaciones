@@ -546,3 +546,10 @@
             class="ui-button-secondary"></button>
     </p-footer>
 </p-dialog>
+
+<p-confirmDialog #dialogoConfirmarRemover key="confirmarRemoverTransporte" header="Confirmar eliminación" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoConfirmarRemover.reject()"></button>
+        <button type="button" pButton label="Sí" class="ui-button-success botonModal" (click)="dialogoConfirmarRemover.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
