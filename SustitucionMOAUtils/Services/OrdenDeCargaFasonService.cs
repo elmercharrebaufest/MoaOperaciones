@@ -54,49 +54,43 @@ namespace SustitucionMOAUtils.Services
         public ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request)
         {
             Log.Debug($"Listar(request: {request.ToJson()})");
-            try
+
+            var fechaIncioDateTime = DataFormatter.StringToDateTime(request.FechaDesde, "");
+            var fechaFinDateTime = DataFormatter.StringToDateTime(request.FechaHasta, "");
+
+            var usuario = repositorioFason.Obtener<Usuario>(u => u.Mail == request.MailUsuario);
+            var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
+            fechaFinDateTime = fechaFinDateTime.AddDays(1);
+
+
+            var codigoProveedorClientesRelacionados = usuario.Proveedores.Select(c => c.CodigoProveedor);
+
+            Expression<Func<OrdenDeCargaFason, bool>> filtro = x =>
+            (esInterno || codigoProveedorClientesRelacionados.Contains(x.Cliente.CodigoProveedor))
+            && x.FechaCreacion >= fechaIncioDateTime && x.FechaCreacion <= fechaFinDateTime
+            && (esInterno || (request.EsCorredor ? x.CorredorId != null : x.CorredorId == null));
+
+            var listadoConFiltro = repositorioFason.ListarConsultable(filtro);
+
+            if (listadoConFiltro.Count() == 0)
             {
-                var fechaIncioDateTime = DataFormatter.StringToDateTime(request.FechaDesde, "");
-                var fechaFinDateTime = DataFormatter.StringToDateTime(request.FechaHasta, "");
+                throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de carga fason"));
+            }
 
-                var usuario = repositorioFason.Obtener<Usuario>(u => u.Mail == request.MailUsuario);
-                var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
-                fechaFinDateTime = fechaFinDateTime.AddDays(1);
+            var hashPatentesCargadas = ObtenerHashPatentesCargadas(listadoConFiltro.AsEnumerable());
 
-
-                var codigoProveedorClientesRelacionados = usuario.Proveedores.Select(c => c.CodigoProveedor);
-
-                Expression<Func<OrdenDeCargaFason, bool>> filtro = x =>
-                (esInterno || codigoProveedorClientesRelacionados.Contains(x.Cliente.CodigoProveedor))
-                && x.FechaCreacion >= fechaIncioDateTime && x.FechaCreacion <= fechaFinDateTime
-                && (esInterno || (request.EsCorredor ? x.CorredorId != null : x.CorredorId == null));
-
-                var listadoConFiltro = repositorioFason.ListarConsultable(filtro);
-
-                if (listadoConFiltro.Count() == 0)
+            var listado = listadoConFiltro.ToList().OrderByDescending(x => x.FechaCreacion)
+                .Select(x => new OrdenDeCargaFasonDto(x, esInterno)
                 {
-                    throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de carga fason"));
-                }
+                    TienePatentesRepetidas = VerificarOrdenConPatentesRepetidas(x, hashPatentesCargadas),
+                    TienePatenteMultiplesAutorizaciones = VerificarChasisConMultiplesAutorizaciones(x, hashPatentesCargadas)
+                })
+                .ToList();
 
-                var hashPatentesCargadas = ObtenerHashPatentesCargadas(listadoConFiltro.AsEnumerable());
+            var response = new ListarOrdenDeCargaFasonResponse { Response = listado };
 
-                var listado = listadoConFiltro.ToList().OrderByDescending(x => x.FechaCreacion)
-                    .Select(x => new OrdenDeCargaFasonDto(x, esInterno)
-                    {
-                        TienePatentesRepetidas = VerificarOrdenConPatentesRepetidas(x, hashPatentesCargadas),
-                        TienePatenteMultiplesAutorizaciones = VerificarChasisConMultiplesAutorizaciones(x, hashPatentesCargadas)
-                    })
-                    .ToList();
+            return response;
 
-                var response = new ListarOrdenDeCargaFasonResponse { Response = listado };
-
-                return response;
-            }
-            catch (Exception error)
-            {
-                Log.Error(error);
-                throw new WSCustomException(ErrorMsg.ErrorWS, error);
-            }
 
         }
 
