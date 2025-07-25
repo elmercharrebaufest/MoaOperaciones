@@ -367,7 +367,7 @@ namespace SustitucionMOAUtils.Services
                 EntradaServicioCreateRespuestaDto resultadoCreacionES;
                 if (validacionIngresanteResp.Message == "Auto")
                 {
-                    resultadoCreacionES = CrearEntradaServicioAsync(posicionES, mailUsuario, crearESRequestDto.report, crearESRequestDto.IdAdjuntos, solpNro, proveedor).GetAwaiter().GetResult();
+                    resultadoCreacionES = CrearEntradaServicio(posicionES, mailUsuario, crearESRequestDto.report, crearESRequestDto.IdAdjuntos, solpNro, proveedor);
                 }
                 else
                 {
@@ -1108,13 +1108,13 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        private async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicioAsync(EntradaServicioCreateParamsDto posicion,
+        private EntradaServicioCreateRespuestaDto CrearEntradaServicio(EntradaServicioCreateParamsDto posicion,
             string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber, string proveedor = null)
         {
             SustitucionMOAWS.Logger.Log.Info("EntradaServicioService.CrearEntradaServicio");
 
             // 3 - Si alguna de las validaciones es correcta, alta automatica.
-            EntradaServicioCreateRespuestaDto result = await new CrearEntradaDeServicioConsumerMOA().CrearEntradaServicioAsync(posicion).ConfigureAwait(false);
+            EntradaServicioCreateRespuestaDto result = new CrearEntradaDeServicioConsumerMOA().CrearEntradaServicio(posicion);
 
             ////MMSN-602 - Cargar en tabla aprobaciones si se creo la ES.
             if (result.Type == "I" && result.Id == "SE")
