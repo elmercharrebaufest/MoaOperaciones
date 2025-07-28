@@ -352,6 +352,8 @@ namespace SustitucionMOAUtils.Services
 
         public List<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(CreateEntradaServicioDto crearESRequestDto, string mailUsuario)
         {
+            ValidarCreacionEntradaServicio(crearESRequestDto);
+
             var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio);
             var centrosSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Centro");
             var almacenesSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Almacen");
@@ -1939,6 +1941,19 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new Exception(crearESResult.ToString());
                 }
+            }
+        }
+
+        private void ValidarCreacionEntradaServicio(CreateEntradaServicioDto crearESRequestDto)
+        {
+            if (crearESRequestDto.Posiciones == null || crearESRequestDto.Posiciones.Count == 0) { return; }
+
+            var remitoNro = crearESRequestDto.Posiciones.First().EntrySheetHeader.DocumentoReferenciaNumero;
+            var proveedorCodigo = crearESRequestDto.Posiciones.First().EntrySheetHeader.Proveedor;
+
+            if (repositorioEntradaServicio.ExisteRemitoActivoParaProveedor(remitoNro, proveedorCodigo))
+            {
+                throw new ValidationCustomException($"El remito {remitoNro} ya fue utilizado para el proveedor {proveedorCodigo}");
             }
         }
     }

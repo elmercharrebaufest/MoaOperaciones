@@ -299,24 +299,33 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
                     let msjTypes: string[] = [];
-                    response.data.forEach(element => {
-                        if (!element) {
-                            this.mensajeError = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
-                            resultMsj.push("<li>Ha ocurrido un error por favor inténtelo nuevamente más tarde.</li>");
+                    if (response.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        if (response.error) {
+                            resultMsj.push(`<li>${response.error}</li>`);
+                            msjTypes.push('E');
                         }
                         else {
-                            let msj = element.Message.startsWith("Sólo es posible contabilizar en ") ||
-                                element.Message.startsWith("Contabilice en ") ?
-                                "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message;
-
-                            resultMsj.push("<li>" + msj + "</li>");
-
-                            if (!msjTypes.includes(element.Type)) {
-                                msjTypes.push(element.Type);
+                            response.data.forEach(element => {
+                            if (!element) {
+                                this.mensajeError = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
+                                resultMsj.push("<li>Ha ocurrido un error por favor inténtelo nuevamente más tarde.</li>");
                             }
+                            else {
+                                let msj = element.Message.startsWith("Sólo es posible contabilizar en ") ||
+                                    element.Message.startsWith("Contabilice en ") ?
+                                    "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message;
 
+                                resultMsj.push("<li>" + msj + "</li>");
+
+                                if (!msjTypes.includes(element.Type)) {
+                                    msjTypes.push(element.Type);
+                                }
+                            }});
                         }
-                    });
+                    }
                     this.blockUI.stop();
                     this.mensajeError = resultMsj.join("");
                     this.confirmationService.confirm({

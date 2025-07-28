@@ -33,5 +33,21 @@ namespace SustitucionMOARepositorio.Repositorios
 
             return adjudicacionQry.FirstOrDefault();
         }
+
+        public bool ExisteRemitoActivoParaProveedor(string remitoNro, string proveedorCodigo)
+        {
+            if (string.IsNullOrEmpty(remitoNro) || string.IsNullOrEmpty(proveedorCodigo)) return false;
+
+            var existeQry =
+                Set<Aprobaciones>()
+                    .Where(ap =>
+                        ap.Referencia == remitoNro &&
+                        ap.Proveedor == proveedorCodigo &&
+                        !ap.Fecha_rechazo.HasValue &&
+                        string.IsNullOrEmpty(ap.Anulado_por))
+                    .Any();
+
+            return existeQry;
+        }
     }
 }
