@@ -142,7 +142,7 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var vendedor in response.vendedores.Where(a => a.estadoMoa.Contains("Habilitado")))
             {
-                var estadoProveedor = estadoProveedores.SingleOrDefault(a => a.CUIT == vendedor.cuit);
+                var estadoProveedor = estadoProveedores.FirstOrDefault(a => a.CUIT == vendedor.cuit);
                 if (estadoProveedor != null)
                 {
                     vendedor.estadoMoa = estadoProveedor.EstadoHomeDescripcion;
