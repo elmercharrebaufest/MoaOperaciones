@@ -327,7 +327,7 @@ namespace SustitucionMOAWS.WSConsumers
                         PLND_DELRY = "X",
                         QUOTATION = "X",
                         QUOT_DATE = "X",
-                        NET_PRICE = "X",
+                        NET_PRICE = registro.EsModificar ? "" : "X",
                         PRICE_UNIT = "X",
                         ORDERPR_UN = "X",
                         PRICE_DATE = "X",
