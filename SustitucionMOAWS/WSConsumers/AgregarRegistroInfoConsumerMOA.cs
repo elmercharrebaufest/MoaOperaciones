@@ -321,7 +321,7 @@ namespace SustitucionMOAWS.WSConsumers
                         INFO_TYPE = "X",
                         PLANT = string.IsNullOrEmpty(registro.Centro) ? "" : "X",
                         PUR_GROUP = "X",
-                        CURRENCY = "X",
+                        CURRENCY = registro.EsModificar ? "" : "X",
                         MIN_PO_QTY = "X",
                         NRM_PO_QTY = "X",
                         PLND_DELRY = "X",
@@ -330,7 +330,7 @@ namespace SustitucionMOAWS.WSConsumers
                         NET_PRICE = registro.EsModificar ? "" : "X",
                         PRICE_UNIT = "X",
                         ORDERPR_UN = "X",
-                        PRICE_DATE = "X",
+                        PRICE_DATE = registro.EsModificar ? "" : "X",
 
                     },
                 };
