@@ -321,7 +321,7 @@ namespace SustitucionMOAWS.WSConsumers
                         INFO_TYPE = "X",
                         PLANT = string.IsNullOrEmpty(registro.Centro) ? "" : "X",
                         PUR_GROUP = "X",
-                        CURRENCY = registro.EsModificar ? "" : "X",
+                        CURRENCY = "X",
                         MIN_PO_QTY = "X",
                         NRM_PO_QTY = "X",
                         PLND_DELRY = "X",
