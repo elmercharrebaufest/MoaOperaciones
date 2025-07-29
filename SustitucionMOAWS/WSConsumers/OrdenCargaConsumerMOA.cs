@@ -154,40 +154,48 @@ namespace SustitucionMOAWS.WSConsumers
 
             if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
             {
-                var agent = new Z_WS_MOAOP_DIRECTClient();
-                agent.ClientCredentials.UserName.UserName = UserSap;
-                agent.ClientCredentials.UserName.Password = PassSap;
-                var indrvta = req.Reventa ? "X" : "";
-
-                var request = new Z_MPMF_MOAOP_CREAR_ORDEN_CARGA()
+                try
                 {
-                    IM_CLIENTE = req.Cliente,
-                    IM_CODPLANTA = req.PlantaCodigo,
-                    IM_CONTRATO = req.Contrato,
-                    IM_CORREDOR = req.Corredor,
-                    IM_CUITDESTF = string.IsNullOrWhiteSpace(req.CuitDestino) ? "" : req.CuitDestino,
-                    IM_CUITDESTINAT = req.CuitDestinatario,
-                    IM_DOMORDEN = req.DomicilioDescr,
-                    IM_INDRVTA = indrvta,//IM_INDRVTA
-                    IM_KILOS = req.Kilos,
-                    IM_MATERIAL = req.Material,
-                    IM_NAMEDESTF = req.RazonSocialDestino,
-                    IM_NAMEDESTINAT = req.RazonSocialDestinatario,
-                    IM_ORDENDOM = req.DomicilioOrden.ToString(),
-                    IM_PEDIDO = req.PedidoInput,
-                    IM_TIPODOM = req.DomicilioTipo,
-                    IM_USUARIO = req.UsuarioSAP,
-                    IM_VALIDA_KG = req.ValidaKg ? "X" : "",
-                };
-                Log.Info($"SAP sin PI Z_MPMF_MOAOP_CREAR_ORDEN_CARGA request");
-                Log.Info(request.ToXml());
-                var response = agent.Z_MPMF_MOAOP_CREAR_ORDEN_CARGA(request);
-                Log.Info($"SAP sin PI Z_MPMF_MOAOP_CREAR_ORDEN_CARGA response");
-                Log.Info(response.ToXml());
+                    var agent = new Z_WS_MOAOP_DIRECTClient();
+                    agent.ClientCredentials.UserName.UserName = UserSap;
+                    agent.ClientCredentials.UserName.Password = PassSap;
 
-                pedidoOutput = response.EX_PEDIDO;
-                resultOutput = response.EX_MENSAJE;
-                return ResponseConverter.GetOrdenCargaCrearOrden(response.EX_MENSAJE);
+                    var request = new Z_MPMF_MOAOP_CREAR_ORDEN_CARGA()
+                    {
+                        IM_CLIENTE = string.IsNullOrWhiteSpace(req.Cliente) ? "" : req.Cliente,
+                        IM_CODPLANTA = string.IsNullOrWhiteSpace(req.PlantaCodigo) ? "" : req.PlantaCodigo,
+                        IM_CONTRATO = string.IsNullOrWhiteSpace(req.Contrato) ? "" : req.Contrato,
+                        IM_CORREDOR = string.IsNullOrWhiteSpace(req.Corredor) ? "" : req.Corredor,
+                        IM_CUITDESTF = string.IsNullOrWhiteSpace(req.CuitDestino) ? "" : req.CuitDestino,
+                        IM_CUITDESTINAT = string.IsNullOrWhiteSpace(req.CuitDestinatario) ? "" : req.CuitDestinatario,
+                        IM_DOMORDEN = string.IsNullOrWhiteSpace(req.DomicilioDescr) ? "" : req.DomicilioDescr,
+                        IM_INDRVTA = req.Reventa ? "X" : "",
+                        IM_KILOS = req.Kilos,
+                        IM_MATERIAL = string.IsNullOrWhiteSpace(req.Material) ? "" : req.Material,
+                        IM_NAMEDESTF = string.IsNullOrWhiteSpace(req.RazonSocialDestino) ? "" : req.RazonSocialDestino,
+                        IM_NAMEDESTINAT = string.IsNullOrWhiteSpace(req.RazonSocialDestinatario) ? "" : req.RazonSocialDestinatario,
+                        IM_ORDENDOM = string.IsNullOrWhiteSpace(req.DomicilioOrden?.ToString()) ? "" : req.DomicilioOrden.ToString(),
+                        IM_PEDIDO = string.IsNullOrWhiteSpace(req.PedidoInput) ? "" : req.PedidoInput,
+                        IM_TIPODOM = string.IsNullOrWhiteSpace(req.DomicilioTipo) ? "" : req.DomicilioTipo,
+                        IM_USUARIO = string.IsNullOrWhiteSpace(req.UsuarioSAP) ? "" : req.UsuarioSAP,
+                        IM_VALIDA_KG = req.ValidaKg ? "X" : "",
+                    };
+                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_CREAR_ORDEN_CARGA request");
+                    Log.Info(request.ToXml());
+                    var response = agent.Z_MPMF_MOAOP_CREAR_ORDEN_CARGA(request);
+                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_CREAR_ORDEN_CARGA response");
+                    Log.Info(response.ToXml());
+
+                    pedidoOutput = response.EX_PEDIDO;
+                    resultOutput = response.EX_MENSAJE;
+                    return ResponseConverter.GetOrdenCargaCrearOrden(response.EX_MENSAJE);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                    throw;
+                }
+
             }
             else
             {
