@@ -270,6 +270,8 @@ namespace SustitucionMOAUtils.Services
                     throw new Exception($"Error al convertir fechas. Desde: {fechaDesde}. Hasta: {fechaHasta}");
                 }
 
+                ValidarReferenciaCircularSuplentes(usuario.Mail, suplente, fechaDesdeDT, fechaHastaDT);
+
                 var usuarioReasignacion = new UsuarioReasignacion
                 {
                     Usuario_Id = idUsuario,
@@ -1168,6 +1170,31 @@ namespace SustitucionMOAUtils.Services
                 .Select(x => new UsuarioComprasDto(x));
 
             return usuariosCompras.ToList();
+        }
+
+        private void ValidarReferenciaCircularSuplentes(string mailUsuario, string mailSuplente, DateTime fechaDesde, DateTime fechaHasta, List<string> usuariosYaEvaluados = null)
+        {
+            if (string.IsNullOrEmpty(mailSuplente))
+            {
+                return;
+            }
+
+            usuariosYaEvaluados = usuariosYaEvaluados ?? new List<string> { mailUsuario };
+            if (usuariosYaEvaluados.Contains(mailSuplente))
+            {
+                throw new ValidationCustomException($"No se puede guardar el suplente, genera referencia circular para el periodo ({string.Join(" -> ", usuariosYaEvaluados)})");
+            }
+            usuariosYaEvaluados.Add(mailSuplente);
+
+            var suplente = repositorio.ObtenerSuplenteEnPeriodo(mailSuplente, fechaDesde, fechaHasta);
+            if (suplente == null)
+            {
+                return;
+            }
+            else
+            {
+                ValidarReferenciaCircularSuplentes(suplente.Mail, suplente.Suplente, fechaDesde, fechaHasta, usuariosYaEvaluados);
+            }
         }
     }
 }

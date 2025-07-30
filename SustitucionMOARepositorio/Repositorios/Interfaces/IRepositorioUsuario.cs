@@ -10,6 +10,7 @@ namespace SustitucionMOARepositorio.Repositorios.Interfaces
 {
     public interface IRepositorioUsuario : IRepositorio
     {
+        Usuario ObtenerSuplenteEnPeriodo(string mailUsuario, DateTime fechaDesde, DateTime fechaHasta);
         List<UsuarioDto> ObtenerUsuarios();
         bool VerificarActividadUsuario(Usuario usuario);
     }

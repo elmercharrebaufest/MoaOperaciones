@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SqlClient;
@@ -59,6 +60,23 @@ namespace SustitucionMOARepositorio.Repositorios
                 }).ToList();
 
             return usuariosDto;
+        }
+
+        public Usuario ObtenerSuplenteEnPeriodo(string mailUsuario, DateTime fechaDesde, DateTime fechaHasta)
+        {
+            fechaDesde = fechaDesde.Date;
+            fechaHasta = fechaHasta.Date;
+
+            var qrySuplente =
+                from usuario in Set<Usuario>()
+                join reasignacion in Set<UsuarioReasignacion>() on usuario.Id equals reasignacion.Usuario_Id
+                where
+                    usuario.Mail == mailUsuario &&
+                    fechaDesde <= reasignacion.FechaHasta &&
+                    fechaHasta >= reasignacion.FechaDesde
+                select usuario;
+
+            return qrySuplente.FirstOrDefault();
         }
 
         public bool VerificarActividadUsuario(Usuario usuario)
