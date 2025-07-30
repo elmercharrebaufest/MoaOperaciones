@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -48,6 +49,22 @@ namespace SustitucionMOARepositorio.Repositorios
                     .Any();
 
             return existeQry;
+        }
+
+        public string ObtenerMailSuplenteSegunFecha(string mailUsuario, DateTime fechaReasignacion)
+        {
+            var fechaFiltro = fechaReasignacion.Date;
+
+            var qrySuplente =
+                from usuario in Set<Usuario>()
+                join reasignacion in Set<UsuarioReasignacion>() on usuario.Id equals reasignacion.Usuario_Id
+                where
+                    usuario.Mail == mailUsuario &&
+                    reasignacion.FechaDesde <= fechaFiltro &&
+                    reasignacion.FechaHasta >= fechaFiltro
+                select usuario.Suplente;
+
+            return qrySuplente.FirstOrDefault();
         }
     }
 }
