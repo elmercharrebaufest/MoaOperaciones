@@ -319,20 +319,19 @@ namespace SustitucionMOAUtils.Services
             {
                 parametros.DocumentoNumero = parametros.DocumentoNumero.Replace("\\", "").Replace("\"", "");
             }
+
+            List<Aprobaciones> aprobacionesABorrar;
             if (parametros.DocumentoNumero.Contains("T_"))
             {
-                //Temporal - hard delete
-                List<Aprobaciones> apToDelete = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == parametros.DocumentoNumero);
-                foreach (Aprobaciones ap in apToDelete)
-                {
-                    ap.Estado_certificacion = "Anulada";
-                    ap.Anulado_por = usuario.Mail;
-                }
-                repositorioEntradaServicio.GuardarCambios();
+                //Temporal
+                aprobacionesABorrar = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == parametros.DocumentoNumero);
                 result = "Se ha eliminado la entrada de servicio " + parametros.DocumentoNumero;
             }
             else
             {
+                var nro_ES_Sap = int.Parse(parametros.DocumentoNumero);
+                aprobacionesABorrar = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_ES_Sap);
+
                 string fechaContabilizacion = parametros.FechaContabilizacion;
                 DateTime FechaContabilizacionToDateTime = Convert.ToDateTime(fechaContabilizacion).ToUniversalTime();
                 int currentMonth = DateTime.UtcNow.Month;
@@ -346,6 +345,12 @@ namespace SustitucionMOAUtils.Services
                 result = new BorrarEntradaServicioConsumerMOA().BorrarEntradaServicio(parametros.DocumentoNumero, fechaContabilizacion);
             }
 
+            foreach (Aprobaciones ap in aprobacionesABorrar)
+            {
+                ap.Estado_certificacion = "Anulada";
+                ap.Anulado_por = usuario.Mail;
+            }
+            repositorioEntradaServicio.GuardarCambios();
 
             return result;
         }
