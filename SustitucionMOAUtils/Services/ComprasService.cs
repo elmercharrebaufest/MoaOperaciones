@@ -3410,9 +3410,10 @@ namespace SustitucionMOAUtils.Services
                 foreach (SolpPosicionDto posicion in todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.Posicion))
                 {
                     var posicionSolpSAP = posicionesSap
-                        .Single(sap =>
+                        .SingleOrDefault(sap =>
                             sap.NumeroSolicitud == posicion.NroSolp &&
-                            int.Parse(sap.NumeroPosicion) == posicion.Indice);
+                            int.Parse(sap.NumeroPosicion) == posicion.Indice)
+                        ?? throw new ValidationCustomException($"No se encontró la posición en SAP (SOLP {posicion.NroSolp} Posición {posicion.Indice})");
 
                     posicion.CantidadAdjudicada = posicionSolpSAP.Ordered; //Cantidad que ya se adjudico
                     posicion.Cantidad = posicionSolpSAP.Cantidad;
