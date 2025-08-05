@@ -707,6 +707,7 @@
     <Compile Include="Consulta\Paginacion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\Constante.cs" />
+    <Compile Include="Util\EntitiesExtensions\AprobacionesExtensions.cs" />
     <Compile Include="Util\Permisos.cs" />
     <Compile Include="Util\PrefijoCondicionEspecial.cs" />
     <Compile Include="Util\SolpTemplateKeys.cs" />

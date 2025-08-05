@@ -1334,9 +1334,19 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
           ColumnaEditar: columnaEditar,
           NuevoValor: valor
         }
-        this.service.enviarEdicionIngresante(data).subscribe( 
+        this.service.enviarEdicionIngresante(data).subscribe(
         resp => {
-            this.setearNuevoValorDeCelda(valor, columnaEditar, id, nroOc);
+            if (resp.error) {
+                this.confirmationService.confirm({
+                    message: resp.error,
+                    rejectVisible: false,
+                    acceptLabel: "Aceptar"
+                });
+                this.procesandoCelda[columnaEditar][id] = false;
+            }
+            else {
+                this.setearNuevoValorDeCelda(valor, columnaEditar, id, nroOc);
+            }
         }, error => {
             console.error(error)
         }

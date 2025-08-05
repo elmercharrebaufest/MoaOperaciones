@@ -6,6 +6,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Util.EntitiesExtensions;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services.Email.Dto;
@@ -215,7 +216,7 @@ namespace SustitucionMOAUtils.Services
         /// <param name="temporal"></param>
         /// <param name="ordenParams"></param>
         /// <returns>entradaServicioTemp</returns>
-        public EntradaServicioCabeceraDto MapEntradaServicioCabecera(Aprobaciones temporal, OrderParamsDto ordenParams)
+        private EntradaServicioCabeceraDto MapEntradaServicioCabecera(Aprobaciones temporal, OrderParamsDto ordenParams)
         {
             DateTime fechaCreacionFormateada = (DateTime)temporal.Fecha_Carga_ES;
             DateTime fechaContabilizacionFormateada = (DateTime)temporal.Fecha_Contabilizacion;
@@ -229,7 +230,7 @@ namespace SustitucionMOAUtils.Services
                 MontoTotal = temporal.Monto_total.ToString(),
                 FechaCreacion = fechaCreacionFormateada.ToString("dd/MM/yyyy"),
                 FechaCreacionDateTime = temporal.Fecha_Carga_ES,
-                EntradaServicio = temporal.Estado_certificacion == "Aprobada" ? temporal.NRO_ES_SAP.ToString() : temporal.NRO_ES_LOCAL,
+                EntradaServicio = temporal.EstaAprobada() ? temporal.NRO_ES_SAP.ToString() : temporal.NRO_ES_LOCAL,
                 Estado = temporal.Estado_certificacion,
                 MotivoRechazo = temporal.Motivo_rechazo,
                 NumeroCertificacion = temporal.NRO_ES_LOCAL,
@@ -243,13 +244,13 @@ namespace SustitucionMOAUtils.Services
                 AnuladaPor = temporal.Anulado_por
             };
 
-            if (temporal.Estado_certificacion == "Aprobada")
+            if (temporal.EstaAprobada())
             {
                 DateTime fechaAprobacionFormateada = (DateTime)temporal.Fecha_aprobacion;
                 entradaServicioTemp.FechaAprobacion = fechaAprobacionFormateada.ToString("dd/MM/yyyy");
             }
 
-            if (temporal.Estado_certificacion == "Rechazado")
+            if (temporal.EstaRechazada())
             {
                 DateTime fechaRechazoFormateada = (DateTime)temporal.Fecha_rechazo;
                 entradaServicioTemp.FechaRechazo = fechaRechazoFormateada.ToString("dd/MM/yyyy");
@@ -347,7 +348,7 @@ namespace SustitucionMOAUtils.Services
 
             foreach (Aprobaciones ap in aprobacionesABorrar)
             {
-                ap.Estado_certificacion = "Anulada";
+                ap.SetEstadoAnulada();
                 ap.Anulado_por = usuario.Mail;
             }
             repositorioEntradaServicio.GuardarCambios();
@@ -501,7 +502,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         ServiceDetailDto serviceDetailDto = new ServiceDetailDto();
 
-                        if (ES.Estado_certificacion == "Pendiente Aprobación")
+                        if (ES.EstaPendienteAprobacion())
                         {
                             EntrySheetServiceItemSection item = new EntrySheetServiceItemSection
                             {
@@ -547,11 +548,11 @@ namespace SustitucionMOAUtils.Services
                     {
                         foreach (var ES in EntradasDeServicioTemp)
                         {
-                            if (ES.Estado_certificacion == "Pendiente Aprobación")
+                            if (ES.EstaPendienteAprobacion())
                             {
 
                                 ES.NRO_ES_SAP = ESNumber;
-                                ES.Estado_certificacion = "Aprobada";
+                                ES.SetEstadoAprobada();
                                 ES.Fecha_aprobacion = DateTime.Today;
                                 result.NroESSap = ESNumber.ToString();
                                 repositorioEntradaServicio.GuardarCambios();
@@ -597,11 +598,11 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var ES in EntradasDeServicioTemp)
             {
-                if (ES.Estado_certificacion == "Pendiente Aprobación")
+                if (ES.EstaPendienteAprobacion())
                 {
                     try
                     {
-                        ES.Estado_certificacion = "Rechazado";
+                        ES.SetEstadoRechazada();
                         ES.Motivo_rechazo = rechazo.MotivoRechazo;
                         ES.Fecha_rechazo = DateTime.Today;
                         repositorioEntradaServicio.GuardarCambios();
@@ -797,13 +798,14 @@ namespace SustitucionMOAUtils.Services
                     }
                     else if (info.ColumnaEditar == "Remito")
                     {
+                        ValidarEdicionRemito(ESTemporal, info.NuevoValor);
                         ESTemporal.Referencia = info.NuevoValor;
                     }
                     repositorioEntradaServicio.GuardarCambios();
                 }
                 else
                 {
-                    return "Nro de entrada servicio no encontrado.";
+                    throw new ValidationCustomException("Nro de entrada servicio no encontrado.");
                 }
             }
             catch (Exception e)
@@ -1458,14 +1460,14 @@ namespace SustitucionMOAUtils.Services
             if (auto)
             {
                 temp.NRO_ES_SAP = ESNumber;
-                temp.Estado_certificacion = "Aprobada";
+                temp.SetEstadoAprobada();
                 temp.Aprobada_automaticamente = true;
                 temp.Aprobador_CDS = userMail;
                 temp.Fecha_aprobacion = DateTime.Today;
             }
             else
             {
-                temp.Estado_certificacion = "Pendiente Aprobación";
+                temp.SetEstadoPendienteAprobacion();
                 temp.Aprobada_automaticamente = false;
             }
             #endregion
@@ -1758,7 +1760,7 @@ namespace SustitucionMOAUtils.Services
             {
                 foreach (Aprobaciones ap in ESList)
                 {
-                    if (ap.Estado_certificacion != "Pendiente Aprobación")
+                    if (!ap.EstaPendienteAprobacion())
                     {
                         res = "Modificado -" + ap.Estado_certificacion;
                         break;
@@ -1941,6 +1943,19 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        private void ValidarEdicionRemito(Aprobaciones aprobacionAEditar, string nuevoRemito)
+        {
+            if (aprobacionAEditar.Referencia == nuevoRemito)
+            {
+                return;
+            }
+
+            if (repositorioEntradaServicio.ExisteRemitoActivoParaProveedor(nuevoRemito, aprobacionAEditar.Proveedor))
+            {
+                throw new ValidationCustomException($"No se puede ingresar el remito {nuevoRemito}. El mismo ya fue utilizado para el proveedor {aprobacionAEditar.Proveedor}");
+            }
+        }
+
         private List<Aprobaciones> ObtenerEntradasServicioPendientesParaReasignacion(string nro_es_local)
         {
             var aprobacionesReasignar = repositorioEntradaServicio.Listar<Aprobaciones>(t => t.NRO_ES_LOCAL == nro_es_local);
@@ -1950,7 +1965,7 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException($"Nro de entrada servicio {nro_es_local} no encontrado.");
             }
 
-            var aprobacionYaTratada = aprobacionesReasignar.FirstOrDefault(x => x.NRO_ES_SAP.HasValue || x.Estado_certificacion != "Pendiente Aprobación");
+            var aprobacionYaTratada = aprobacionesReasignar.FirstOrDefault(x => x.NRO_ES_SAP.HasValue || !x.EstaPendienteAprobacion());
             if (aprobacionYaTratada != null)
             {
                 throw new ValidationCustomException($"Entrada de servicio ya tratada. Nro ES SAP: {aprobacionYaTratada.NRO_ES_SAP}, Estado: {aprobacionYaTratada.Estado_certificacion}.");

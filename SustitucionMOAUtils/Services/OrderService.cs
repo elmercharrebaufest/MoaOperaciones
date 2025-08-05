@@ -4,6 +4,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Util.EntitiesExtensions;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.WSConsumers;
@@ -237,7 +238,7 @@ namespace SustitucionMOAUtils.Services
                     //Buscar posición correspondiente a ES Temporal
                     var position = detalleOrdenDeCompraDto.Posiciones.First(x => x.NumeroPosicion == nroPosicion);
 
-                    if (aprobacion.Estado_certificacion == "Aprobada")
+                    if (aprobacion.EstaAprobada())
                     {
                         var itemPosicion = position.Items.First(x => x.NumeroLinea == nroLinea);
 
@@ -254,7 +255,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
-                    if (aprobacion.Estado_certificacion == "Pendiente Aprobación" && position != null)
+                    if (aprobacion.EstaPendienteAprobacion() && position != null)
                     {
                         List<SolicitantesSolpedDto> solicitante = GetSolicitantes(new List<string> { position.NumeroSolp }).GetAwaiter().GetResult();
 
