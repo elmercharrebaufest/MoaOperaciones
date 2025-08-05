@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using System.Text;
 using SustitucionMOAModel.Util;
+using System.Linq;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -261,7 +262,7 @@ namespace SustitucionMOAUtils.Services.Email
             return "</tbody>" +
             "</table>";
         }
-        
+
         private string CrearTablaCambios(List<Variance> listaValoresDiferentes)
         {
             var tablaBuilder = new StringBuilder();
@@ -277,7 +278,12 @@ namespace SustitucionMOAUtils.Services.Email
               "</tr>" +
               "</thead>" +
               "<tbody>");
-            foreach (var diferencia in listaValoresDiferentes)
+
+            // Filter out boolean values before processing
+            var valoresNoBooleanos = listaValoresDiferentes.Where(diferencia =>
+                !(diferencia.valA is bool) && !(diferencia.valB is bool)).ToList();
+
+            foreach (var diferencia in valoresNoBooleanos)
             {
                 tablaBuilder.Append("<tr>" +
                 $"<td>{diferencia.PropertyName}</td>" +
