@@ -270,7 +270,7 @@
                                         [(ngModel)]="unidadTransporte.PatenteChasis"
                                         [source]="patentesChasis"
                                         (ngModelChange)="chasisAcopladoSelected($event);validarCNRT()"
-                                        [disabled]="!esEdicionDeOrden && !estaEditandoUnidadTransporte"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
                                         [no-match-found-text]="'No se encontraron resultados'" [min-chars]="2" maxlength="7"
                                         [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" mask="AAAAAAA" />
                                 </div>
@@ -285,7 +285,7 @@
                                         [(ngModel)]="unidadTransporte.PatenteAcoplado"
                                         [source]="patentesAcoplados"
                                         (ngModelChange)="patenteAcopladoSelected($event);onPatenteSeleccionada();validarCNRT()"
-                                        [disabled]="!esEdicionDeOrden && !estaEditandoUnidadTransporte"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
                                         [no-match-found-text]="'No se encontraron resultados'" [min-chars]="2" maxlength="7"
                                         [value-formatter]="generalFormatterAcoplado"
                                         [list-formatter]="generalFormatterAcoplado" mask="AAAAAAA" />
@@ -300,7 +300,7 @@
                                     <input type="text"
                                         [(ngModel)]="unidadTransporte.NombreChofer"
                                         (ngModelChange)="unidadTransporte.NombreChofer = pasarAMayusculas($event)"
-                                        [disabled]="!esEdicionDeOrden && !estaEditandoUnidadTransporte"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
                                         maxlength="35">
                                 </div>
                             </div>
@@ -314,7 +314,7 @@
                                         [(ngModel)]="unidadTransporte.CUILChofer"
                                         (ngModelChange)="validarCuilChofer()" [source]="cuilsChofer"
                                         (valueChanged)="cuitChoferSelected($event)"
-                                        [disabled]="!esEdicionDeOrden && !estaEditandoUnidadTransporte"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
                                         [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
                                         [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [min-chars]="2" />
                                     <div *ngIf="validando.CUITChofer">
@@ -331,7 +331,7 @@
                                     <input type="text"
                                         [(ngModel)]="unidadTransporte.RazonSocialTransporte"
                                         (ngModelChange)="unidadTransporte.RazonSocialTransporte = pasarAMayusculas($event)"
-                                        [disabled]="!esEdicionDeOrden && !estaEditandoUnidadTransporte"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
                                         maxlength="50">
                                 </div>
                             </div>
@@ -345,7 +345,7 @@
                                         [(ngModel)]="unidadTransporte.CUITTransporte"
                                         (ngModelChange)="validarCuitTransporte()" [source]="cuitsTransporte"
                                         (valueChanged)="cuitTransporteSelected($event)"
-                                        [disabled]="!esEdicionDeOrden && !estaEditandoUnidadTransporte"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
                                         [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
                                         [min-chars]="2" [value-formatter]="generalFormatter"
                                         [list-formatter]="generalFormatter" [placeholder]="descripcionTransporte">
@@ -365,7 +365,7 @@
                                             <input type="text"
                                                 [(ngModel)]="unidadTransporte.CUITIntermediarioFlete"
                                                 (change)="validarIntermediarioFlete()"
-                                                [disabled]="!esEdicionDeOrden && !estaEditandoUnidadTransporte"
+                                                [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
                                                 mask="00-00000000-0" [placeholder]="descripcionIntermediarioFlete">
                                             <span class="ui-inputgroup-addon" *ngIf="validando.CUITIntermediarioFlete">
                                                 <p-progressSpinner
@@ -388,12 +388,12 @@
 
                             <div class="containerBotones">
                                 <div class="col-xs-12 col-md-12" *ngIf="!esEdicionDeOrden" style="margin-top: 1em;">
-                                    <div *ngIf="!estaEditandoUnidadTransporte">
+                                    <div *ngIf="!estaAgregandoUnidadTransporte">
                                         <div class="col-xs-6 col-md-6">
                                             <a (click)="agregarNuevaUnidadTransporte();" href="#">+ Añadir nueva unidad</a>
                                         </div>
                                     </div>
-                                    <div *ngIf="estaEditandoUnidadTransporte">
+                                    <div *ngIf="estaAgregandoUnidadTransporte">
                                         <div class="col-xs-6 col-md-6">
                                             <input type="button" value="Agregar" (click)="guardarUnidadTransporte()" class="btn-custom btn-add btn-mediano" />
                                         </div>
@@ -430,7 +430,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr *ngFor="let unidad of unidadesTransporteAgregadas" role="row" style="font-weight: normal;">
+                                            <tr *ngFor="let unidad of unidadesTransporteAgregadas"
+                                                role="row" style="font-weight: normal;"
+                                                [class.filaTransporteSeleccionada]="unidad === unidadTransporte">
                                                 <td>{{ unidad.PatenteChasis }}</td>
                                                 <td>{{ unidad.PatenteAcoplado }}</td>
                                                 <td>{{ unidad.NombreChofer }}</td>
@@ -594,9 +596,9 @@
     </p-footer>
 </p-dialog>
 
-<p-confirmDialog #dialogoConfirmarRemover key="confirmarRemoverTransporte" header="Confirmar eliminación" [responsive]="true" appendTo="body">
+<p-confirmDialog #dialogoConfirmar key="confirmarAccion" header="Confirmar" [responsive]="true" appendTo="body">
     <p-footer>
-        <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoConfirmarRemover.reject()"></button>
-        <button type="button" pButton label="Sí" class="ui-button-success botonModal" (click)="dialogoConfirmarRemover.accept()"></button>
+        <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoConfirmar.reject()"></button>
+        <button type="button" pButton label="Sí" class="ui-button-success botonModal" (click)="dialogoConfirmar.accept()"></button>
     </p-footer>
 </p-confirmDialog>

@@ -57,7 +57,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     ordenDeCargaId: number = 0;
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     unidadTransporte: UnidadTransporteCarga = new UnidadTransporteCarga();
-    estaEditandoUnidadTransporte: boolean = true;
+    estaAgregandoUnidadTransporte: boolean = true;
     unidadesTransporteAgregadas: UnidadTransporteCarga[] = [];
     esEdicionDeOrden: boolean = false;
 
@@ -164,7 +164,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 .pipe(
                     debounceTime(500),
                     filter(_ =>
-                        this.chasisAcopladoValido && !!this.ordenDeCarga.CUITCliente))
+                        this.chasisAcopladoValido(this.unidadTransporte) && !!this.ordenDeCarga.CUITCliente))
                 .subscribe(() => {
                     this.validacionExistenciaPatenteSub = this.service
                         .validarExistenciaPatentes(
@@ -277,12 +277,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
         }
-        if (!this.patenteAcopladoValida) {
-            this.mensajeComponent.setInfoMsg("Ingrese una patente válida.");
+        if (!this.patenteAcopladoValida(unidad)) {
+            this.mensajeComponent.setInfoMsg("Ingrese una patente acoplado válida.");
             return false;
         }
-        if (!this.chasisAcopladoValido) {
-            this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
+        if (!this.chasisAcopladoValido(unidad)) {
+            this.mensajeComponent.setInfoMsg("Ingrese una patente chasis válida.");
             return false;
         }
         if (unidad.PatenteChasis == unidad.PatenteAcoplado) {
@@ -459,6 +459,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             if (this.messagesContainer) { this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' }); }
             return;
         }
+        
+        if (this.unidadesTransporteAgregadas.some(ut => !this.validarUnidadTransporte(ut))) {
+            this.spinnerComponent.hideIt();
+            if (this.messagesContainer) { this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' }); }
+            return;
+        }
+
         this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
 
@@ -1603,25 +1610,25 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         });
     }
 
-    get patenteAcopladoValida() {
+    patenteAcopladoValida(transporte: UnidadTransporteCarga): boolean {
         return (
-            this.unidadTransporte.PatenteAcoplado &&
-            this.unidadTransporte.PatenteAcoplado.trim().length >= 6 &&
-            this.esPatenteValida(this.unidadTransporte.PatenteAcoplado));
+            !!transporte.PatenteAcoplado &&
+            transporte.PatenteAcoplado.trim().length >= 6 &&
+            this.esPatenteValida(transporte.PatenteAcoplado));
     }
 
-    get chasisAcopladoValido() {
+    chasisAcopladoValido(transporte: UnidadTransporteCarga): boolean {
         return (
-            this.unidadTransporte.PatenteChasis &&
-            this.unidadTransporte.PatenteChasis.trim().length >= 6 &&
-            this.esPatenteValida(this.unidadTransporte.PatenteChasis));
+            !!transporte.PatenteChasis &&
+            transporte.PatenteChasis.trim().length >= 6 &&
+            this.esPatenteValida(transporte.PatenteChasis));
     }
 
     displayModalEscalable = false;
     decidioEscalable = false;
 
     validarCNRT() {
-        if (!(this.patenteAcopladoValida && this.chasisAcopladoValido))
+        if (!(this.patenteAcopladoValida(this.unidadTransporte) && this.chasisAcopladoValido(this.unidadTransporte)))
             return;
         //Posible check de si está marcado el campo escalable
         this.validarCNRTSubject.next();
@@ -1764,7 +1771,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             return false;
         }
         this.unidadTransporte = new UnidadTransporteCarga();
-        this.estaEditandoUnidadTransporte = true;
+        this.estaAgregandoUnidadTransporte = true;
         return false;
     }
 
@@ -1786,34 +1793,51 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     editarUnidadTransporte(unidadAEditar: UnidadTransporteCarga) {
-        this.unidadTransporte = unidadAEditar;
-        this.unidadesTransporteAgregadas.splice(this.unidadesTransporteAgregadas.indexOf(unidadAEditar), 1);
-        this.estaEditandoUnidadTransporte = true;
-    }
-
-    removerUnidadTransporte(unidadAEditar: UnidadTransporteCarga) {
+        if (this.estaAgregandoUnidadTransporte) {
             this.confirmationService.confirm({
-                key: 'confirmarRemoverTransporte',
-                message: '¿Está seguro de que desea eliminar esta unidad de transporte de la orden?',
+                key: 'confirmarAccion',
+                message: 'Al seleccionar esta unidad de transporte para editar, se descartará la que estaba agregando. ¿Desea continuar de todos modos?',
                 accept: () => {
-                    this.unidadesTransporteAgregadas.splice(this.unidadesTransporteAgregadas.indexOf(unidadAEditar), 1);
+                    this.unidadTransporte = unidadAEditar;
+                    this.estaAgregandoUnidadTransporte = false;
                 },
                 reject: () => {}
             });
         }
+        else {
+            this.unidadTransporte = unidadAEditar;
+            this.estaAgregandoUnidadTransporte = false;
+        }
+    }
+
+    removerUnidadTransporte(unidadAEditar: UnidadTransporteCarga) {
+        this.confirmationService.confirm({
+            key: 'confirmarAccion',
+            message: '¿Está seguro de que desea eliminar esta unidad de transporte de la orden?',
+            accept: () => {
+                this.unidadesTransporteAgregadas.splice(this.unidadesTransporteAgregadas.indexOf(unidadAEditar), 1);
+            },
+            reject: () => {}
+        });
+    }
 
     resetearUnidadTransporte() {
         this.unidadTransporte = new UnidadTransporteCarga();
-        this.estaEditandoUnidadTransporte = false;
+        this.estaAgregandoUnidadTransporte = false;
         this.mensajesOrdenDeCarga.CUITChofer = undefined;
         this.mensajesOrdenDeCarga.CUITTransporte = undefined;
         this.mensajesOrdenDeCarga.CUITIntermediarioFlete = undefined;
         this.mensajeComponent.setMsgsEmpty();
     }
 
+    estaIngresandoUnidadTransporte(): boolean {
+        let estaEditando = this.unidadesTransporteAgregadas.includes(this.unidadTransporte);
+        return estaEditando || this.estaAgregandoUnidadTransporte;
+    }
+
     puedeGuardarOrden(): boolean {
         let puedeGuardar = this.esEdicionDeOrden ||
-            (this.unidadesTransporteAgregadas.length > 0 && !this.estaEditandoUnidadTransporte);
+            (this.unidadesTransporteAgregadas.length > 0 && !this.estaAgregandoUnidadTransporte);
         
         return puedeGuardar;
     }
@@ -1822,8 +1846,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         if (!this.esEdicionDeOrden && this.unidadesTransporteAgregadas.length == 0) {
             return "Debe agregar al menos una unidad de transporte";
         }
-        if (!this.esEdicionDeOrden && this.estaEditandoUnidadTransporte) {
-            return "Está editando una unidad de transporte. Guarde o cancele la misma antes de enviar la orden";
+        if (!this.esEdicionDeOrden && this.estaAgregandoUnidadTransporte) {
+            return "Está agregando una nueva unidad de transporte. Guarde o cancele la misma antes de enviar la orden";
         }
         return "";
     }

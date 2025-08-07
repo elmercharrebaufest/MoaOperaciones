@@ -91,7 +91,7 @@ export class OrdenesDeCargaFasonAltaComponent
 
     ordenDeCargaFason: OrdenDeCargaFasonDto = new OrdenDeCargaFasonDto();
     unidadTransporte: UnidadTransporteCarga = new UnidadTransporteCarga();
-    estaEditandoUnidadTransporte: boolean = true;
+    estaAgregandoUnidadTransporte: boolean = true;
     unidadesTransporteAgregadas: UnidadTransporteCarga[] = [];
     ordenDeCargaFasonId: number = 0;
 
@@ -358,6 +358,9 @@ export class OrdenesDeCargaFasonAltaComponent
     }
 
     guardarNuevaOrdenDeCargaFason() {
+        if (this.unidadesTransporteAgregadas.some(ut => !this.validarUnidadTransporte(ut))) {
+            return;
+        }
         this.spinnerComponent.showIt();
         this.blockUI.start('Grabando...');
         this.unsubscribe();
@@ -1279,7 +1282,7 @@ export class OrdenesDeCargaFasonAltaComponent
 
     agregarNuevaUnidadTransporte() {
         this.unidadTransporte = new UnidadTransporteCarga();
-        this.estaEditandoUnidadTransporte = true;
+        this.estaAgregandoUnidadTransporte = true;
         return false;
     }
 
@@ -1292,14 +1295,26 @@ export class OrdenesDeCargaFasonAltaComponent
     }
 
     editarUnidadTransporte(unidadAEditar: UnidadTransporteCarga) {
-        this.unidadTransporte = unidadAEditar;
-        this.unidadesTransporteAgregadas.splice(this.unidadesTransporteAgregadas.indexOf(unidadAEditar), 1);
-        this.estaEditandoUnidadTransporte = true;
+        if (this.estaAgregandoUnidadTransporte) {
+            this.confirmationService.confirm({
+                key: 'confirmarAccion',
+                message: 'Al seleccionar esta unidad de transporte para editar, se descartará la que estaba agregando. ¿Desea continuar de todos modos?',
+                accept: () => {
+                    this.unidadTransporte = unidadAEditar;
+                    this.estaAgregandoUnidadTransporte = false;
+                },
+                reject: () => {}
+            });
+        }
+        else {
+            this.unidadTransporte = unidadAEditar;
+            this.estaAgregandoUnidadTransporte = false;
+        }
     }
 
     removerUnidadTransporte(unidadAEditar: UnidadTransporteCarga) {
         this.confirmationService.confirm({
-            key: 'confirmarRemoverTransporte',
+            key: 'confirmarAccion',
             message: '¿Está seguro de que desea eliminar esta unidad de transporte de la orden?',
             accept: () => {
                 this.unidadesTransporteAgregadas.splice(this.unidadesTransporteAgregadas.indexOf(unidadAEditar), 1);
@@ -1310,16 +1325,21 @@ export class OrdenesDeCargaFasonAltaComponent
 
     resetearUnidadTransporte() {
         this.unidadTransporte = new UnidadTransporteCarga();
-        this.estaEditandoUnidadTransporte = false;
+        this.estaAgregandoUnidadTransporte = false;
         this.mensajesOrdenDeCargaFason.CUILChofer = undefined;
         this.mensajesOrdenDeCargaFason.CUITTransporte = undefined;
         this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete = undefined;
         this.mensajeComponent.setMsgsEmpty();
     }
 
+    estaIngresandoUnidadTransporte(): boolean {
+        let estaEditando = this.unidadesTransporteAgregadas.includes(this.unidadTransporte);
+        return estaEditando || this.estaAgregandoUnidadTransporte;
+    }
+
     puedeGuardarOrden(): boolean {
         let puedeGuardar = this.esEdicionDeOrden ||
-            (this.unidadesTransporteAgregadas.length > 0 && !this.estaEditandoUnidadTransporte);
+            (this.unidadesTransporteAgregadas.length > 0 && !this.estaAgregandoUnidadTransporte);
         
         return puedeGuardar;
     }
@@ -1328,8 +1348,8 @@ export class OrdenesDeCargaFasonAltaComponent
         if (!this.esEdicionDeOrden && this.unidadesTransporteAgregadas.length == 0) {
             return "Debe agregar al menos una unidad de transporte";
         }
-        if (!this.esEdicionDeOrden && this.estaEditandoUnidadTransporte) {
-            return "Está editando una unidad de transporte. Guarde o cancele la misma antes de enviar la orden";
+        if (!this.esEdicionDeOrden && this.estaAgregandoUnidadTransporte) {
+            return "Está agregando una nueva unidad de transporte. Guarde o cancele la misma antes de enviar la orden";
         }
         return "";
     }
