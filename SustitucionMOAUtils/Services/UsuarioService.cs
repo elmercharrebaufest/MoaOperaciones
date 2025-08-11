@@ -3,6 +3,7 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.UsuarioDtos;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
@@ -62,9 +63,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                //List<Entidades.Usuario> usuarios = repositorio.Listar<Entidades.Usuario>();
-
-                //List<UsuarioDto> usuariosDto = usuarios.Select(x => new UsuarioDto(x)).ToList();
                 var usuariosDto = repositorio.ObtenerUsuarios();
 
                 if (usuariosDto.Count == 0)
@@ -939,29 +937,24 @@ namespace SustitucionMOAUtils.Services
         #endregion
 
         #region AsignarNuevoCUIT
-        public ProveedorDto GetProveedorAprobadoPorCuit(string cuit, string mailUsuarioSesion)
+        public List<ProveedorARelacionar> GetProveedoresARelacionar(string cuit, string mailUsuario)
         {
-
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSesion);
-
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             if (usuario == null || !usuario.TieneRol(RolEnum.Administracion))
             {
                 throw new InfoCustomException("Usuario no autorizado a realizar esta acción.");
             }
-            var proveedor = repositorio.Obtener<Proveedor>(p => p.CUIT == cuit && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
 
-            if (proveedor == null)
-            {
-                return null;
-            }
+            var proveedores = repositorio.GetProveedoresARelacionar(cuit);
 
-            return new ProveedorDto
-            {
-                RazonSocial = proveedor.RazonSocial,
-                CodigoProveedor = proveedor.CodigoProveedor,
-                IdTipoProveedor = proveedor.TipoProveedor.Id
-            };
+            var proveedoresARelacionar = proveedores
+                .GroupBy(p => p.IdTipoProveedor)
+                .Select(g => g.First())
+                .ToList();
+
+            return proveedoresARelacionar;
         }
+
         public void AsignarNuevaCUIT(AsignarNuevaCuitDto datosAsignar, string mailUsuarioSesion)
         {
             var usuarioSesion = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSesion);
@@ -978,7 +971,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("No se ha encontrado un usuario para asignar la cuit.");
             }
 
-            if (usuario.Proveedores.Any(p => p.CUIT == datosAsignar.CuitAAsignar))
+            if (usuario.Proveedores.Any(p => p.CUIT == datosAsignar.CuitAAsignar && p.TipoProveedor.Id == datosAsignar.TipoProveedorIdAAsignar))
             {
                 throw new InfoCustomException("El usuario ya tiene asignada la cuit solicitada.");
             }

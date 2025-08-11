@@ -158,6 +158,7 @@
     <Compile Include="Dto\SustentableRenspaExisteDto.cs" />
     <Compile Include="Dto\UnidadMedidaSapDto.cs" />
     <Compile Include="Dto\UsuarioReasignacionDto.cs" />
+    <Compile Include="Dto\UsuarioDtos\ProveedorARelacionar.cs" />
     <Compile Include="Entities\AdjuntosEntradasDeServicio.cs" />
     <Compile Include="Entities\AplicacionCartaPorteCargaMasiva.cs" />
     <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />

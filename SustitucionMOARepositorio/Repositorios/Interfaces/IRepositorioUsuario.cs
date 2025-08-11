@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.UsuarioDtos;
 using SustitucionMOAModel.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace SustitucionMOARepositorio.Repositorios.Interfaces
     {
         Usuario ObtenerSuplenteEnPeriodo(string mailUsuario, DateTime fechaDesde, DateTime fechaHasta);
         List<UsuarioDto> ObtenerUsuarios();
+        List<ProveedorARelacionar> GetProveedoresARelacionar(string cuit);
         bool VerificarActividadUsuario(Usuario usuario);
     }
 }

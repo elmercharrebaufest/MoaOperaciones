@@ -1,5 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.UsuarioDtos;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -77,6 +79,27 @@ namespace SustitucionMOARepositorio.Repositorios
                 select usuario;
 
             return qrySuplente.FirstOrDefault();
+        }
+
+        public List<ProveedorARelacionar> GetProveedoresARelacionar(string cuit)
+        {
+            var proveedoresARelacionar = (
+                from prov in Set<Proveedor>()
+                where
+                    prov.CUIT == cuit &&
+                    prov.EstadoAprobacion == EstadoAprobacion.Aprobado
+                select new ProveedorARelacionar
+                {
+                    Id = prov.Id,
+                    CodigoProveedor = prov.CodigoProveedor,
+                    CUIT = prov.CUIT,
+                    IdTipoProveedor = prov.TipoProveedor.Id,
+                    RazonSocial = prov.RazonSocial,
+                    TipoProveedor = prov.TipoProveedor.Nombre
+                })
+                .ToList();
+
+            return proveedoresARelacionar;
         }
 
         public bool VerificarActividadUsuario(Usuario usuario)
