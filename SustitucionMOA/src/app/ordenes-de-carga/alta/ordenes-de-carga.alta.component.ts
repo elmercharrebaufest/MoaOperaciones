@@ -41,10 +41,10 @@ import { CrearOrdenDeCargaRequest } from '../../common/models/ordenes-de-carga/c
 })
 export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdenesBaseComponent {
     @BlockUI() blockUI: NgBlockUI;
-    
+
     @ViewChild("escalableCheckbox")
     escalableCheckbox: Checkbox
-    
+
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -459,7 +459,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             if (this.messagesContainer) { this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' }); }
             return;
         }
-        
+
         if (this.unidadesTransporteAgregadas.some(ut => !this.validarUnidadTransporte(ut))) {
             this.spinnerComponent.hideIt();
             if (this.messagesContainer) { this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' }); }
@@ -733,11 +733,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         else if (event.value)
             this.unidadTransporte.PatenteAcoplado = event.value.toUpperCase();
     }
-    
+
     cuitChoferSelected(value: any) {
         this.unidadTransporte.CUILChofer = value.value;
     }
-    
+
     cuitTransporteSelected(value: any) {
         this.unidadTransporte.CUITTransporte = value.value;
     }
@@ -1801,7 +1801,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                     this.unidadTransporte = unidadAEditar;
                     this.estaAgregandoUnidadTransporte = false;
                 },
-                reject: () => {}
+                reject: () => { }
             });
         }
         else {
@@ -1817,7 +1817,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             accept: () => {
                 this.unidadesTransporteAgregadas.splice(this.unidadesTransporteAgregadas.indexOf(unidadAEditar), 1);
             },
-            reject: () => {}
+            reject: () => { }
         });
     }
 
@@ -1838,7 +1838,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     puedeGuardarOrden(): boolean {
         let puedeGuardar = this.esEdicionDeOrden ||
             (this.unidadesTransporteAgregadas.length > 0 && !this.estaAgregandoUnidadTransporte);
-        
+
         return puedeGuardar;
     }
 
@@ -1854,7 +1854,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
 
     kilosSinConsumir(): number {
         if (!this.esEdicionDeOrden && this.ordenDeCarga.ContratoSeleccionado && this.ordenDeCarga.Cantidad > 0) {
-            const { KgDisponibles } = this.ordenDeCarga.ContratoSeleccionado;
+            let KgDisponibles;
+            if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato == TipoContrato.Normal) {
+                KgDisponibles = this.ordenDeCarga.ContratoSeleccionado.KgDisponibles;
+            } else {
+                KgDisponibles = this.facturaSeleccionada.KgDisponibles;
+            }
             const kilosConsumidos = this.unidadesTransporteAgregadas.length * this.ordenDeCarga.Cantidad;
             return KgDisponibles - kilosConsumidos;
         }
