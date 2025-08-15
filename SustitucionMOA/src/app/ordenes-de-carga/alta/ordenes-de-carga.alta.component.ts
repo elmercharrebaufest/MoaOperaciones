@@ -88,6 +88,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     patentesChasis: any;
     patentesAcoplados: any;
     razonSocialParaGestion = "";
+    displayModalConfirmacion: boolean = false;
 
     private selectUndefinedOptionValue: any;
 
@@ -467,6 +468,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
 
         this.mensajeComponent.setMsgsEmpty();
+        
+        // Mostrar modal de confirmación
+        this.displayModalConfirmacion = true;
+    }
+
+    confirmarEnvio() {
+        this.displayModalConfirmacion = false;
         this.unsubscribe();
 
         try {
@@ -484,6 +492,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             console.error(e);
             this.mensajeComponent.setErrorMsg(e);
         }
+    }
+
+    cancelarEnvio() {
+        this.displayModalConfirmacion = false;
     }
 
     agregarOrden() {
@@ -1868,6 +1880,25 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
 
     pasarAMayusculas(event: any): string {
         return event.toUpperCase();
+    }
+
+    disableForm(): boolean {
+        return this.unidadesTransporteAgregadas.length > 0;
+    }
+
+    getNombreDeProducto(): string {
+        let productId = this.ordenDeCarga.Producto_Id;
+        if (!productId) {
+            return '';
+        }
+        
+        let material = this.listaMateriales.find(item => item.MaterialId === productId);
+        if (material && material.Descripcion) {
+            let splited = material.Descripcion.split('-');
+            return splited.length > 1 ? splited[1].toUpperCase() : material.Descripcion.toUpperCase();
+        }
+        
+        return '';
     }
 }
 

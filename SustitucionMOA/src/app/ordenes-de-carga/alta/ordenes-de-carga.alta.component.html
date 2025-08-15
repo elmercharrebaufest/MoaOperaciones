@@ -31,7 +31,7 @@
                                         [(ngModel)]="corredorSeleccionado"
                                         [options]="listaCorredores"
                                         (ngModelChange)="onCorredorSeleccionado()"
-                                        [disabled]="noEditarCliente"
+                                        [disabled]="noEditarCliente || disableForm()"
                                         [filter]="true" optionLabel="descVendedor"
                                         placeholder="Seleccione un Corredor" filterBy="value.descVendedor">
                                     </p-dropdown>
@@ -49,7 +49,7 @@
                                         [(ngModel)]="clienteSeleccionado"
                                         [options]="listaClientes"
                                         (ngModelChange)="onClienteSeleccionado()"
-                                        [disabled]="noEditarCliente"
+                                        [disabled]="noEditarCliente || disableForm()"
                                         optionLabel="RazonSocial" placeholder="Seleccione un Cliente"
                                         [filter]="true" filterBy="value.RazonSocial">
                                     </p-dropdown>
@@ -68,7 +68,7 @@
                                         [options]="contratosDisponibles"
                                         (selectedChange)="onContratoSeleccionadoChanged()"
                                         [(selected)]="ordenDeCarga.ContratoSeleccionado"
-                                        [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente"
+                                        [disabled]="(ordenDeCargaId > 0 && !puedeEditarContrato) || noEditarCliente || disableForm()"
                                         [placeholder]="'Seleccione un Contrato - Producto - Kg Disponibles'" [filterKey]="'Label'">
                                         <ng-template let-option>
                                             <p class="option-label" [ngClass]="{
@@ -91,7 +91,7 @@
                                         [(ngModel)]="facturaSeleccionada"
                                         [options]="facturasDisponibles"
                                         (onChange)="setNumeroFactura($event.value)"
-                                        [disabled]="noEditarCliente"
+                                        [disabled]="noEditarCliente || disableForm()"
                                         placeholder="Seleccione un número de factura" [optionLabel]="'Label'"
                                         [filter]="true" filterBy="">
                                     </p-dropdown>
@@ -104,7 +104,7 @@
                                 <div class="styled-select">
                                     <textarea id="DestinoMercaderia" placeholder="Localidad - Provincia"
                                         [(ngModel)]="ordenDeCarga.DestinoMercaderia" rows="2" [maxLength]="40"
-                                        [disabled]="esEdicionDeOrden"></textarea>
+                                        [disabled]="esEdicionDeOrden || disableForm()"></textarea>
                                 </div>
                             </div>
                             <ng-container *ngIf="validaCPEDG">
@@ -253,7 +253,7 @@
                                 </div>
                                 <p-checkbox #escalableCheckbox name="escalable" [binary]="true"
                                     [(ngModel)]="ordenDeCarga.Escalable"
-                                    (ngModelChange)="!errorAlValidarEscalable? validarEscalable(): null">
+                                    (ngModelChange)="!errorAlValidarEscalable? validarEscalable(): null" [disabled]="disableForm()">
                                 </p-checkbox>
                             </div>
                         </div>
@@ -408,7 +408,7 @@
 
                         <div class="col-xs-12 col-md-11" *ngIf="!esEdicionDeOrden" style="margin-left: 3em; margin-bottom: 2em; margin-top: 2em;">
                             <div class="formulario-label">
-                                Unidades de transporte:
+                                Unidades de transporte de carga de {{getNombreDeProducto()}}:
                             </div>
                             <div *ngIf="unidadesTransporteAgregadas.length == 0" class="styled-select" style="color: red;">
                                 Aún no se agregó ninguna unidad de transporte
@@ -593,6 +593,20 @@
         <button type="button" pButton icon="pi pi-check" (click)="marcarComoEscalable()" label="Si"></button>
         <button type="button" pButton icon="pi pi-close" (click)="dejarSinEscalable()" label="No"
             class="ui-button-secondary"></button>
+    </p-footer>
+</p-dialog>
+
+<!-- Modal de confirmación envío -->
+<p-dialog [header]="'Confirmar envío de orden'" [(visible)]="displayModalConfirmacion" [modal]="true" 
+    [responsive]="true" [style]="{width: '400px', minWidth: '300px', maxWidth:'500px'}" [minY]="70" 
+    [draggable]="false" appendTo="body" [closable]="false">
+    <p>¿Está seguro de que desea enviar la orden de carga para el producto:</p>
+    <p><strong>{{getNombreDeProducto()}}</strong></p>
+    <p-footer>
+        <button type="button" pButton icon="pi pi-check" (click)="confirmarEnvio()" 
+            label="Confirmar" class="ui-button-success"></button>
+        <button type="button" pButton icon="pi pi-times" (click)="cancelarEnvio()" 
+            label="Cancelar" class="ui-button-secondary"></button>
     </p-footer>
 </p-dialog>
 
