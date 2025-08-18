@@ -1,0 +1,1109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="urn:sap-com:document:sap:rfc:functions" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:sap-com:document:sap:rfc:functions" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation>
+    <sidl:sidl xmlns:sidl="http://www.sap.com/2007/03/sidl" />
+  </wsdl:documentation>
+  <wsp:UsingPolicy wsdl:required="true" />
+  <wsp:Policy wsu:Id="BN__Z_WS_BAPI_DIRECT_MLBO">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
+        <saptrnbnd:OptimizedMimeSerialization xmlns:saptrnbnd="http://schemas.xmlsoap.org/ws/2004/09/policy/optimizedmimeserialization" wsp:Optional="true" />
+        <wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" wsp:Optional="true" />
+        <wsp:All xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+          <sp:TransportBinding xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wst="http://docs.oasis-open.org/ws-sx/ws-trust/200512" xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex">
+            <wsp:Policy>
+              <sp:TransportToken>
+                <wsp:Policy>
+                  <sp:HttpsToken>
+                    <wsp:Policy>
+                      <sp:HttpBasicAuthentication />
+                    </wsp:Policy>
+                  </sp:HttpsToken>
+                </wsp:Policy>
+              </sp:TransportToken>
+              <sp:AlgorithmSuite>
+                <wsp:Policy>
+                  <sp:Basic128Rsa15 />
+                </wsp:Policy>
+              </sp:AlgorithmSuite>
+              <sp:Layout>
+                <wsp:Policy>
+                  <sp:Strict />
+                </wsp:Policy>
+              </sp:Layout>
+            </wsp:Policy>
+          </sp:TransportBinding>
+        </wsp:All>
+      </wsp:All>
+      <wsp:All>
+        <sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
+        <saptrnbnd:OptimizedXMLTransfer uri="http://xml.sap.com/2006/11/esi/esp/binxml" xmlns:saptrnbnd="http://www.sap.com/webas/710/soap/features/transportbinding/" wsp:Optional="true" />
+        <wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" wsp:Optional="true" />
+        <wsp:All xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+          <sp:TransportBinding xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wst="http://docs.oasis-open.org/ws-sx/ws-trust/200512" xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex">
+            <wsp:Policy>
+              <sp:TransportToken>
+                <wsp:Policy>
+                  <sp:HttpsToken>
+                    <wsp:Policy>
+                      <sp:HttpBasicAuthentication />
+                    </wsp:Policy>
+                  </sp:HttpsToken>
+                </wsp:Policy>
+              </sp:TransportToken>
+              <sp:AlgorithmSuite>
+                <wsp:Policy>
+                  <sp:Basic128Rsa15 />
+                </wsp:Policy>
+              </sp:AlgorithmSuite>
+              <sp:Layout>
+                <wsp:Policy>
+                  <sp:Strict />
+                </wsp:Policy>
+              </sp:Layout>
+            </wsp:Policy>
+          </sp:TransportBinding>
+        </wsp:All>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="BN__Z_WS_BAPI_DIRECT_MLBO_soap12">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
+        <saptrnbnd:OptimizedMimeSerialization xmlns:saptrnbnd="http://schemas.xmlsoap.org/ws/2004/09/policy/optimizedmimeserialization" wsp:Optional="true" />
+        <wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" wsp:Optional="true" />
+        <wsp:All xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+          <sp:TransportBinding xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wst="http://docs.oasis-open.org/ws-sx/ws-trust/200512" xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex">
+            <wsp:Policy>
+              <sp:TransportToken>
+                <wsp:Policy>
+                  <sp:HttpsToken>
+                    <wsp:Policy>
+                      <sp:HttpBasicAuthentication />
+                    </wsp:Policy>
+                  </sp:HttpsToken>
+                </wsp:Policy>
+              </sp:TransportToken>
+              <sp:AlgorithmSuite>
+                <wsp:Policy>
+                  <sp:Basic128Rsa15 />
+                </wsp:Policy>
+              </sp:AlgorithmSuite>
+              <sp:Layout>
+                <wsp:Policy>
+                  <sp:Strict />
+                </wsp:Policy>
+              </sp:Layout>
+            </wsp:Policy>
+          </sp:TransportBinding>
+        </wsp:All>
+      </wsp:All>
+      <wsp:All>
+        <sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
+        <saptrnbnd:OptimizedXMLTransfer uri="http://xml.sap.com/2006/11/esi/esp/binxml" xmlns:saptrnbnd="http://www.sap.com/webas/710/soap/features/transportbinding/" wsp:Optional="true" />
+        <wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" wsp:Optional="true" />
+        <wsp:All xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+          <sp:TransportBinding xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wst="http://docs.oasis-open.org/ws-sx/ws-trust/200512" xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex">
+            <wsp:Policy>
+              <sp:TransportToken>
+                <wsp:Policy>
+                  <sp:HttpsToken>
+                    <wsp:Policy>
+                      <sp:HttpBasicAuthentication />
+                    </wsp:Policy>
+                  </sp:HttpsToken>
+                </wsp:Policy>
+              </sp:TransportToken>
+              <sp:AlgorithmSuite>
+                <wsp:Policy>
+                  <sp:Basic128Rsa15 />
+                </wsp:Policy>
+              </sp:AlgorithmSuite>
+              <sp:Layout>
+                <wsp:Policy>
+                  <sp:Strict />
+                </wsp:Policy>
+              </sp:Layout>
+            </wsp:Policy>
+          </sp:TransportBinding>
+        </wsp:All>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="IF__Z_WS_BAPI_DIRECT_MLBO">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sapsession:Session xmlns:sapsession="http://www.sap.com/webas/630/soap/features/session/">
+          <sapsession:enableSession>false</sapsession:enableSession>
+        </sapsession:Session>
+        <sapcentraladmin:CentralAdministration xmlns:sapcentraladmin="http://www.sap.com/webas/700/soap/features/CentralAdministration/" wsp:Optional="true">
+          <sapcentraladmin:BusinessApplicationID>00505681C3051EEF95B240C9AFF6B858</sapcentraladmin:BusinessApplicationID>
+        </sapcentraladmin:CentralAdministration>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="OP__BAPI_ENTRYSHEET_CREATE">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <saptrhnw05:required xmlns:saptrhnw05="http://www.sap.com/NW05/soap/features/transaction/">no</saptrhnw05:required>
+        <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false</sapcomhnd:enableCommit>
+        <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true</sapblock:enableBlocking>
+        <saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="OP__BAPI_ENTRYSHEET_GETDETAIL">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <saptrhnw05:required xmlns:saptrhnw05="http://www.sap.com/NW05/soap/features/transaction/">no</saptrhnw05:required>
+        <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false</sapcomhnd:enableCommit>
+        <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true</sapblock:enableBlocking>
+        <saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="OP__BAPI_ENTRYSHEET_DELETE">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <saptrhnw05:required xmlns:saptrhnw05="http://www.sap.com/NW05/soap/features/transaction/">no</saptrhnw05:required>
+        <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false</sapcomhnd:enableCommit>
+        <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true</sapblock:enableBlocking>
+        <saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="OP__BAPI_ENTRYSHEET_GETLIST">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <saptrhnw05:required xmlns:saptrhnw05="http://www.sap.com/NW05/soap/features/transaction/">no</saptrhnw05:required>
+        <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false</sapcomhnd:enableCommit>
+        <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true</sapblock:enableBlocking>
+        <saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema attributeFormDefault="qualified" targetNamespace="urn:sap-com:document:sap:rfc:functions">
+      <xsd:simpleType name="char1">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="1" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char10">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="10" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char12">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="12" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char132">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="132" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char14">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="14" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char15">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="15" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char16">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="16" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char18">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="18" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char2">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="2" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char20">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="20" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char220">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="220" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char24">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="24" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char25">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="25" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char3">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="3" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char30">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="30" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char32">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="32" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char35">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="35" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char4">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="4" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char40">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="40" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char50">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="50" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char6">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="6" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char8">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="8" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char9">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="9" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="cuky5">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="5" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="curr11.2">
+        <xsd:restriction base="xsd:decimal">
+          <xsd:totalDigits value="11" />
+          <xsd:fractionDigits value="2" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="date10">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="10" />
+          <xsd:pattern value="\d\d\d\d-\d\d-\d\d" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="decimal23.4">
+        <xsd:restriction base="xsd:decimal">
+          <xsd:totalDigits value="23" />
+          <xsd:fractionDigits value="4" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="decimal3.0">
+        <xsd:restriction base="xsd:decimal">
+          <xsd:totalDigits value="3" />
+          <xsd:fractionDigits value="0" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="decimal3.1">
+        <xsd:restriction base="xsd:decimal">
+          <xsd:totalDigits value="3" />
+          <xsd:fractionDigits value="1" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="decimal4.1">
+        <xsd:restriction base="xsd:decimal">
+          <xsd:totalDigits value="4" />
+          <xsd:fractionDigits value="1" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="decimal5.0">
+        <xsd:restriction base="xsd:decimal">
+          <xsd:totalDigits value="5" />
+          <xsd:fractionDigits value="0" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric10">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="10" />
+          <xsd:pattern value="\d*" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric2">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="2" />
+          <xsd:pattern value="\d*" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric3">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="3" />
+          <xsd:pattern value="\d*" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric4">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="4" />
+          <xsd:pattern value="\d*" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric5">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="5" />
+          <xsd:pattern value="\d*" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric6">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="6" />
+          <xsd:pattern value="\d*" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric8">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="8" />
+          <xsd:pattern value="\d*" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="quantum13.3">
+        <xsd:restriction base="xsd:decimal">
+          <xsd:totalDigits value="13" />
+          <xsd:fractionDigits value="3" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="time">
+        <xsd:restriction base="xsd:time">
+          <xsd:pattern value="[0-9]{2}:[0-9]{2}:[0-9]{2}" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="unit3">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="3" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="BAPIESLLTX">
+        <xsd:sequence>
+          <xsd:element name="PCKG_NO" type="tns:numeric10" />
+          <xsd:element name="LINE_NO" type="tns:numeric10" />
+          <xsd:element name="TEXT_ID" type="tns:char4" />
+          <xsd:element name="FORMAT_COL" type="tns:char2" />
+          <xsd:element name="TEXT_LINE" type="tns:char132" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIRETURN1">
+        <xsd:sequence>
+          <xsd:element name="TYPE" type="tns:char1" />
+          <xsd:element name="ID" type="tns:char20" />
+          <xsd:element name="NUMBER" type="tns:numeric3" />
+          <xsd:element name="MESSAGE" type="tns:char220" />
+          <xsd:element name="LOG_NO" type="tns:char20" />
+          <xsd:element name="LOG_MSG_NO" type="tns:numeric6" />
+          <xsd:element name="MESSAGE_V1" type="tns:char50" />
+          <xsd:element name="MESSAGE_V2" type="tns:char50" />
+          <xsd:element name="MESSAGE_V3" type="tns:char50" />
+          <xsd:element name="MESSAGE_V4" type="tns:char50" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIESKL">
+        <xsd:sequence>
+          <xsd:element name="PCKG_NO" type="tns:numeric10" />
+          <xsd:element name="LINE_NO" type="tns:numeric10" />
+          <xsd:element name="SERNO_LINE" type="tns:numeric2" />
+          <xsd:element name="DELETE_IND" type="tns:char1" />
+          <xsd:element name="INACTIVE" type="tns:char1" />
+          <xsd:element name="QUANTITY" type="tns:quantum13.3" />
+          <xsd:element name="PERCENTAGE" type="tns:decimal4.1" />
+          <xsd:element name="NET_VALUE" type="tns:decimal23.4" />
+          <xsd:element name="SERIAL_NO" type="tns:numeric2" />
+          <xsd:element name="HPACKNO" type="tns:numeric10" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIESLL">
+        <xsd:sequence>
+          <xsd:element name="PCKG_NO" type="tns:numeric10" />
+          <xsd:element name="LINE_NO" type="tns:numeric10" />
+          <xsd:element name="EXT_LINE" type="tns:numeric10" />
+          <xsd:element name="OUTL_LEVEL" type="xsd:unsignedByte" />
+          <xsd:element name="OUTL_NO" type="tns:char8" />
+          <xsd:element name="OUTL_IND" type="tns:char1" />
+          <xsd:element name="SUBPCKG_NO" type="tns:numeric10" />
+          <xsd:element name="DELETE_IND" type="tns:char1" />
+          <xsd:element name="SERVICE" type="tns:char18" />
+          <xsd:element name="SERV_TYPE" type="tns:char3" />
+          <xsd:element name="EDITION" type="tns:numeric4" />
+          <xsd:element name="SSC_ITEM" type="tns:char18" />
+          <xsd:element name="EXT_SERV" type="tns:char18" />
+          <xsd:element name="QUANTITY" type="tns:quantum13.3" />
+          <xsd:element name="BASE_UOM" type="tns:unit3" />
+          <xsd:element name="UOM_ISO" type="tns:char3" />
+          <xsd:element name="OVF_TOL" type="tns:decimal3.1" />
+          <xsd:element name="OVF_UNLIM" type="tns:char1" />
+          <xsd:element name="PRICE_UNIT" type="tns:decimal5.0" />
+          <xsd:element name="GROSS_VAL" type="tns:decimal23.4" />
+          <xsd:element name="NET_VALUE" type="tns:decimal23.4" />
+          <xsd:element name="FROM_LINE" type="tns:char6" />
+          <xsd:element name="TO_LINE" type="tns:char6" />
+          <xsd:element name="SHORT_TEXT" type="tns:char40" />
+          <xsd:element name="DISTRIB" type="tns:char1" />
+          <xsd:element name="PERS_NO" type="tns:numeric8" />
+          <xsd:element name="WAGETYPE" type="tns:char4" />
+          <xsd:element name="PLN_PCKG" type="tns:numeric10" />
+          <xsd:element name="PLN_LINE" type="tns:numeric10" />
+          <xsd:element name="CON_PCKG" type="tns:numeric10" />
+          <xsd:element name="CON_LINE" type="tns:numeric10" />
+          <xsd:element name="TMP_PCKG" type="tns:numeric10" />
+          <xsd:element name="TMP_LINE" type="tns:numeric10" />
+          <xsd:element name="SSC_LIM" type="tns:char1" />
+          <xsd:element name="LIMIT_LINE" type="tns:numeric10" />
+          <xsd:element name="ACTUAL_QTY" type="tns:quantum13.3" />
+          <xsd:element name="ACTUAL_VAL" type="tns:decimal23.4" />
+          <xsd:element name="CON_VALUE" type="tns:decimal23.4" />
+          <xsd:element name="CON_QTY" type="tns:quantum13.3" />
+          <xsd:element name="TARGET_VAL" type="tns:decimal23.4" />
+          <xsd:element name="UNPL_VAL" type="tns:decimal23.4" />
+          <xsd:element name="UNPL_QTY" type="tns:quantum13.3" />
+          <xsd:element name="BASLINE_NO" type="tns:numeric10" />
+          <xsd:element name="BASIC_LINE" type="tns:char1" />
+          <xsd:element name="ALTERNAT" type="tns:char1" />
+          <xsd:element name="BIDDER" type="tns:char1" />
+          <xsd:element name="SUPP_LINE" type="tns:char1" />
+          <xsd:element name="OPEN_QTY" type="tns:char1" />
+          <xsd:element name="INFORM" type="tns:char1" />
+          <xsd:element name="BLANKET" type="tns:char1" />
+          <xsd:element name="EVENTUAL" type="tns:char1" />
+          <xsd:element name="TAX_CODE" type="tns:char2" />
+          <xsd:element name="TAXJURCODE" type="tns:char15" />
+          <xsd:element name="PRICE_CHG" type="tns:char1" />
+          <xsd:element name="MATL_GROUP" type="tns:char9" />
+          <xsd:element name="NOND_ITAX" type="tns:decimal23.4" />
+          <xsd:element name="DATE" type="tns:date10" />
+          <xsd:element name="BEGINTIME" type="tns:time" />
+          <xsd:element name="ENDTIME" type="tns:time" />
+          <xsd:element name="EXTPERS_NO" type="tns:char40" />
+          <xsd:element name="FORMULA" type="tns:char10" />
+          <xsd:element name="FORM_VAL1" type="tns:quantum13.3" />
+          <xsd:element name="FORM_VAL2" type="tns:quantum13.3" />
+          <xsd:element name="FORM_VAL3" type="tns:quantum13.3" />
+          <xsd:element name="FORM_VAL4" type="tns:quantum13.3" />
+          <xsd:element name="FORM_VAL5" type="tns:quantum13.3" />
+          <xsd:element name="USERF1_NUM" type="tns:numeric10" />
+          <xsd:element name="USERF2_NUM" type="tns:quantum13.3" />
+          <xsd:element name="USERF1_TXT" type="tns:char40" />
+          <xsd:element name="USERF2_TXT" type="tns:char10" />
+          <xsd:element name="GR_PRICE" type="tns:decimal23.4" />
+          <xsd:element name="HI_LINE_NO" type="tns:numeric10" />
+          <xsd:element name="EXTREFKEY" type="tns:char40" />
+          <xsd:element name="PER_SDATE" type="tns:date10" />
+          <xsd:element name="PER_EDATE" type="tns:date10" />
+          <xsd:element name="EXTERNAL_ITEM_ID" type="tns:char40" />
+          <xsd:element name="SERVICE_ITEM_KEY" type="tns:numeric10" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIESKN">
+        <xsd:sequence>
+          <xsd:element name="PCKG_NO" type="tns:numeric10" />
+          <xsd:element name="SERIAL_NO" type="tns:numeric2" />
+          <xsd:element name="DELETE_IND" type="tns:char1" />
+          <xsd:element name="PERCENTAGE" type="tns:decimal4.1" />
+          <xsd:element name="ACCASS_VAL" type="tns:decimal23.4" />
+          <xsd:element name="GL_ACCOUNT" type="tns:char10" />
+          <xsd:element name="BUS_AREA" type="tns:char4" />
+          <xsd:element name="COSTCENTER" type="tns:char10" />
+          <xsd:element name="SD_DOC" type="tns:char10" />
+          <xsd:element name="ITM_NUMBER" type="tns:numeric6" />
+          <xsd:element name="ASSET_NO" type="tns:char12" />
+          <xsd:element name="SUB_NUMBER" type="tns:char4" />
+          <xsd:element name="ORDER" type="tns:char12" />
+          <xsd:element name="CO_AREA" type="tns:char4" />
+          <xsd:element name="TO_COSTCTR" type="tns:char1" />
+          <xsd:element name="TO_ORDER" type="tns:char1" />
+          <xsd:element name="TO_PROJECT" type="tns:char1" />
+          <xsd:element name="COST_OBJ" type="tns:char12" />
+          <xsd:element name="PROF_SEG" type="tns:numeric10" />
+          <xsd:element name="PROFIT_CTR" type="tns:char10" />
+          <xsd:element name="WBS_ELEM" type="tns:char24" />
+          <xsd:element name="NETWORK" type="tns:char12" />
+          <xsd:element name="ROUTING_NO" type="tns:numeric10" />
+          <xsd:element name="RL_EST_KEY" type="tns:char8" />
+          <xsd:element name="COUNTER" type="tns:numeric8" />
+          <xsd:element name="PART_ACCT" type="tns:char10" />
+          <xsd:element name="CMMT_ITEM" type="tns:char14" />
+          <xsd:element name="REC_IND" type="tns:char2" />
+          <xsd:element name="FUNDS_CTR" type="tns:char16" />
+          <xsd:element name="FUND" type="tns:char10" />
+          <xsd:element name="FUNC_AREA" type="tns:char4" />
+          <xsd:element name="TAX_CODE" type="tns:char2" />
+          <xsd:element name="TAXJURCODE" type="tns:char15" />
+          <xsd:element name="GRANT_NBR" type="tns:char20" />
+          <xsd:element name="CMMT_ITEM_LONG" type="tns:char24" />
+          <xsd:element name="FUNC_AREA_LONG" type="tns:char16" />
+          <xsd:element name="ACTIVITY" type="tns:char4" />
+          <xsd:element name="RES_DOC" type="tns:char10" />
+          <xsd:element name="RES_ITEM" type="tns:numeric3" />
+          <xsd:element name="BUDGET_PERIOD" type="tns:char10" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIESSRTX">
+        <xsd:sequence>
+          <xsd:element name="SHEET_NO" type="tns:char10" />
+          <xsd:element name="TEXT_ID" type="tns:char4" />
+          <xsd:element name="FORMAT_COL" type="tns:char2" />
+          <xsd:element name="TEXT_LINE" type="tns:char132" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIESSR">
+        <xsd:sequence>
+          <xsd:element name="SHEET_NO" type="tns:char10" />
+          <xsd:element name="EXT_NUMBER" type="tns:char16" />
+          <xsd:element name="CREATED_BY" type="tns:char12" />
+          <xsd:element name="CREATED_ON" type="tns:date10" />
+          <xsd:element name="CH_ON" type="tns:date10" />
+          <xsd:element name="CHANGED_BY" type="tns:char12" />
+          <xsd:element name="PERSON_INT" type="tns:char12" />
+          <xsd:element name="PERSON_EXT" type="tns:char12" />
+          <xsd:element name="LOCATION" type="tns:char25" />
+          <xsd:element name="REF_DATE" type="tns:date10" />
+          <xsd:element name="BEGDATE" type="tns:date10" />
+          <xsd:element name="ENDDATE" type="tns:date10" />
+          <xsd:element name="GROSS_VAL" type="tns:decimal23.4" />
+          <xsd:element name="UNPL_VAL" type="tns:decimal23.4" />
+          <xsd:element name="UNPLC_VAL" type="tns:decimal23.4" />
+          <xsd:element name="CURRENCY" type="tns:cuky5" />
+          <xsd:element name="CURR_ISOCD" type="tns:char3" />
+          <xsd:element name="PCKG_NO" type="tns:numeric10" />
+          <xsd:element name="SHORT_TEXT" type="tns:char40" />
+          <xsd:element name="PO_NUMBER" type="tns:char10" />
+          <xsd:element name="PO_ITEM" type="tns:numeric5" />
+          <xsd:element name="DELETE_IND" type="tns:char1" />
+          <xsd:element name="ACCEPTANCE" type="tns:char1" />
+          <xsd:element name="FIN_ENTRY" type="tns:char1" />
+          <xsd:element name="REL_GROUP" type="tns:char2" />
+          <xsd:element name="REL_STRAT" type="tns:char2" />
+          <xsd:element name="REL_IND" type="tns:char1" />
+          <xsd:element name="REL_STATUS" type="tns:char8" />
+          <xsd:element name="SUBJ_TO_R" type="tns:char1" />
+          <xsd:element name="BLOCK_IND" type="tns:char1" />
+          <xsd:element name="SCORE_TIME" type="tns:decimal3.0" />
+          <xsd:element name="SCORE_QUAL" type="tns:decimal3.0" />
+          <xsd:element name="DOC_DATE" type="tns:date10" />
+          <xsd:element name="POST_DATE" type="tns:date10" />
+          <xsd:element name="REF_DOC_NO" type="tns:char16" />
+          <xsd:element name="ACCASSCAT" type="tns:char1" />
+          <xsd:element name="NET_VALUE" type="tns:decimal23.4" />
+          <xsd:element name="PREQ_NO" type="tns:char10" />
+          <xsd:element name="PREQ_ITEM" type="tns:numeric5" />
+          <xsd:element name="MAINTPLAN" type="tns:char12" />
+          <xsd:element name="MAINTITEM" type="tns:char16" />
+          <xsd:element name="CALL_NO" type="xsd:int" />
+          <xsd:element name="FRCO_DOC" type="tns:char10" />
+          <xsd:element name="FRCO_ITEM" type="tns:numeric6" />
+          <xsd:element name="COMM_NO" type="tns:char20" />
+          <xsd:element name="USER_FIELD" type="tns:char20" />
+          <xsd:element name="REF_DOC_NO_LONG" type="tns:char35" />
+          <xsd:element name="EXT_NUMBER_LONG" type="tns:char35" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIESSRC">
+        <xsd:sequence>
+          <xsd:element name="SHEET_NO" type="tns:char10" />
+          <xsd:element name="EXT_NUMBER" type="tns:char16" />
+          <xsd:element name="PERSON_INT" type="tns:char12" />
+          <xsd:element name="PERSON_EXT" type="tns:char12" />
+          <xsd:element name="LOCATION" type="tns:char25" />
+          <xsd:element name="REF_DATE" type="tns:date10" />
+          <xsd:element name="BEGDATE" type="tns:date10" />
+          <xsd:element name="ENDDATE" type="tns:date10" />
+          <xsd:element name="PCKG_NO" type="tns:numeric10" />
+          <xsd:element name="SHORT_TEXT" type="tns:char40" />
+          <xsd:element name="PO_NUMBER" type="tns:char10" />
+          <xsd:element name="PO_ITEM" type="tns:numeric5" />
+          <xsd:element name="BLOCK_IND" type="tns:char1" />
+          <xsd:element name="SCORE_TIME" type="tns:decimal3.0" />
+          <xsd:element name="SCORE_QUAL" type="tns:decimal3.0" />
+          <xsd:element name="DOC_DATE" type="tns:date10" />
+          <xsd:element name="POST_DATE" type="tns:date10" />
+          <xsd:element name="REF_DOC_NO" type="tns:char16" />
+          <xsd:element name="ACCASSCAT" type="tns:char1" />
+          <xsd:element name="COMM_NO" type="tns:char20" />
+          <xsd:element name="USER_FIELD" type="tns:char20" />
+          <xsd:element name="ACCEPTANCE" type="tns:char1" />
+          <xsd:element name="FIN_ENTRY" type="tns:char1" />
+          <xsd:element name="REF_DOC_NO_LONG" type="tns:char35" />
+          <xsd:element name="EXT_NUMBER_LONG" type="tns:char35" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIRET2">
+        <xsd:sequence>
+          <xsd:element name="TYPE" type="tns:char1" />
+          <xsd:element name="ID" type="tns:char20" />
+          <xsd:element name="NUMBER" type="tns:numeric3" />
+          <xsd:element name="MESSAGE" type="tns:char220" />
+          <xsd:element name="LOG_NO" type="tns:char20" />
+          <xsd:element name="LOG_MSG_NO" type="tns:numeric6" />
+          <xsd:element name="MESSAGE_V1" type="tns:char50" />
+          <xsd:element name="MESSAGE_V2" type="tns:char50" />
+          <xsd:element name="MESSAGE_V3" type="tns:char50" />
+          <xsd:element name="MESSAGE_V4" type="tns:char50" />
+          <xsd:element name="PARAMETER" type="tns:char32" />
+          <xsd:element name="ROW" type="xsd:int" />
+          <xsd:element name="FIELD" type="tns:char30" />
+          <xsd:element name="SYSTEM" type="tns:char10" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIESKLC">
+        <xsd:sequence>
+          <xsd:element name="PCKG_NO" type="tns:numeric10" />
+          <xsd:element name="LINE_NO" type="tns:numeric10" />
+          <xsd:element name="SERNO_LINE" type="tns:numeric2" />
+          <xsd:element name="PERCENTAGE" type="tns:decimal4.1" />
+          <xsd:element name="SERIAL_NO" type="tns:numeric2" />
+          <xsd:element name="QUANTITY" type="tns:quantum13.3" />
+          <xsd:element name="NET_VALUE" type="tns:curr11.2" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIESLLC">
+        <xsd:sequence>
+          <xsd:element name="PCKG_NO" type="tns:numeric10" />
+          <xsd:element name="LINE_NO" type="tns:numeric10" />
+          <xsd:element name="EXT_LINE" type="tns:numeric10" />
+          <xsd:element name="OUTL_LEVEL" type="xsd:unsignedByte" />
+          <xsd:element name="OUTL_NO" type="tns:char8" />
+          <xsd:element name="OUTL_IND" type="tns:char1" />
+          <xsd:element name="SUBPCKG_NO" type="tns:numeric10" />
+          <xsd:element name="SERVICE" type="tns:char18" />
+          <xsd:element name="SERV_TYPE" type="tns:char3" />
+          <xsd:element name="EDITION" type="tns:numeric4" />
+          <xsd:element name="SSC_ITEM" type="tns:char18" />
+          <xsd:element name="EXT_SERV" type="tns:char18" />
+          <xsd:element name="QUANTITY" type="tns:quantum13.3" />
+          <xsd:element name="BASE_UOM" type="tns:unit3" />
+          <xsd:element name="UOM_ISO" type="tns:char3" />
+          <xsd:element name="OVF_TOL" type="tns:decimal3.1" />
+          <xsd:element name="OVF_UNLIM" type="tns:char1" />
+          <xsd:element name="PRICE_UNIT" type="tns:decimal5.0" />
+          <xsd:element name="GR_PRICE" type="tns:decimal23.4" />
+          <xsd:element name="FROM_LINE" type="tns:char6" />
+          <xsd:element name="TO_LINE" type="tns:char6" />
+          <xsd:element name="SHORT_TEXT" type="tns:char40" />
+          <xsd:element name="DISTRIB" type="tns:char1" />
+          <xsd:element name="PERS_NO" type="tns:numeric8" />
+          <xsd:element name="WAGETYPE" type="tns:char4" />
+          <xsd:element name="PLN_PCKG" type="tns:numeric10" />
+          <xsd:element name="PLN_LINE" type="tns:numeric10" />
+          <xsd:element name="CON_PCKG" type="tns:numeric10" />
+          <xsd:element name="CON_LINE" type="tns:numeric10" />
+          <xsd:element name="TMP_PCKG" type="tns:numeric10" />
+          <xsd:element name="TMP_LINE" type="tns:numeric10" />
+          <xsd:element name="SSC_LIM" type="tns:char1" />
+          <xsd:element name="LIMIT_LINE" type="tns:numeric10" />
+          <xsd:element name="TARGET_VAL" type="tns:decimal23.4" />
+          <xsd:element name="BASLINE_NO" type="tns:numeric10" />
+          <xsd:element name="BASIC_LINE" type="tns:char1" />
+          <xsd:element name="ALTERNAT" type="tns:char1" />
+          <xsd:element name="BIDDER" type="tns:char1" />
+          <xsd:element name="SUPP_LINE" type="tns:char1" />
+          <xsd:element name="OPEN_QTY" type="tns:char1" />
+          <xsd:element name="INFORM" type="tns:char1" />
+          <xsd:element name="BLANKET" type="tns:char1" />
+          <xsd:element name="EVENTUAL" type="tns:char1" />
+          <xsd:element name="TAX_CODE" type="tns:char2" />
+          <xsd:element name="TAXJURCODE" type="tns:char15" />
+          <xsd:element name="PRICE_CHG" type="tns:char1" />
+          <xsd:element name="MATL_GROUP" type="tns:char9" />
+          <xsd:element name="DATE" type="tns:date10" />
+          <xsd:element name="BEGINTIME" type="tns:time" />
+          <xsd:element name="ENDTIME" type="tns:time" />
+          <xsd:element name="EXTPERS_NO" type="tns:char40" />
+          <xsd:element name="FORMULA" type="tns:char10" />
+          <xsd:element name="FORM_VAL1" type="tns:quantum13.3" />
+          <xsd:element name="FORM_VAL2" type="tns:quantum13.3" />
+          <xsd:element name="FORM_VAL3" type="tns:quantum13.3" />
+          <xsd:element name="FORM_VAL4" type="tns:quantum13.3" />
+          <xsd:element name="FORM_VAL5" type="tns:quantum13.3" />
+          <xsd:element name="USERF1_NUM" type="tns:numeric10" />
+          <xsd:element name="USERF2_NUM" type="tns:quantum13.3" />
+          <xsd:element name="USERF1_TXT" type="tns:char40" />
+          <xsd:element name="USERF2_TXT" type="tns:char10" />
+          <xsd:element name="HI_LINE_NO" type="tns:numeric10" />
+          <xsd:element name="EXTREFKEY" type="tns:char40" />
+          <xsd:element name="DELETE_IND" type="tns:char1" />
+          <xsd:element name="PER_SDATE" type="tns:date10" />
+          <xsd:element name="PER_EDATE" type="tns:date10" />
+          <xsd:element name="EXTERNAL_ITEM_ID" type="tns:char40" />
+          <xsd:element name="SERVICE_ITEM_KEY" type="tns:numeric10" />
+          <xsd:element name="NET_VALUE" type="tns:decimal23.4" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIESKNC">
+        <xsd:sequence>
+          <xsd:element name="PCKG_NO" type="tns:numeric10" />
+          <xsd:element name="SERIAL_NO" type="tns:numeric2" />
+          <xsd:element name="GL_ACCOUNT" type="tns:char10" />
+          <xsd:element name="BUS_AREA" type="tns:char4" />
+          <xsd:element name="COSTCENTER" type="tns:char10" />
+          <xsd:element name="SD_DOC" type="tns:char10" />
+          <xsd:element name="ITM_NUMBER" type="tns:numeric6" />
+          <xsd:element name="ASSET_NO" type="tns:char12" />
+          <xsd:element name="SUB_NUMBER" type="tns:char4" />
+          <xsd:element name="ORDER" type="tns:char12" />
+          <xsd:element name="CO_AREA" type="tns:char4" />
+          <xsd:element name="TO_COSTCTR" type="tns:char1" />
+          <xsd:element name="TO_ORDER" type="tns:char1" />
+          <xsd:element name="TO_PROJECT" type="tns:char1" />
+          <xsd:element name="COST_OBJ" type="tns:char12" />
+          <xsd:element name="PROF_SEG" type="tns:numeric10" />
+          <xsd:element name="PROFIT_CTR" type="tns:char10" />
+          <xsd:element name="WBS_ELEM" type="tns:char24" />
+          <xsd:element name="NETWORK" type="tns:char12" />
+          <xsd:element name="ROUTING_NO" type="tns:numeric10" />
+          <xsd:element name="RL_EST_KEY" type="tns:char8" />
+          <xsd:element name="COUNTER" type="tns:numeric8" />
+          <xsd:element name="PART_ACCT" type="tns:char10" />
+          <xsd:element name="CMMT_ITEM" type="tns:char14" />
+          <xsd:element name="REC_IND" type="tns:char2" />
+          <xsd:element name="FUNDS_CTR" type="tns:char16" />
+          <xsd:element name="FUND" type="tns:char10" />
+          <xsd:element name="FUNC_AREA" type="tns:char4" />
+          <xsd:element name="GRANT_NBR" type="tns:char20" />
+          <xsd:element name="CMMT_ITEM_LONG" type="tns:char24" />
+          <xsd:element name="FUNC_AREA_LONG" type="tns:char16" />
+          <xsd:element name="ACTIVITY" type="tns:char4" />
+          <xsd:element name="RES_DOC" type="tns:char10" />
+          <xsd:element name="RES_ITEM" type="tns:numeric3" />
+          <xsd:element name="BUDGET_PERIOD" type="tns:char10" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIESLLTX">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIESLLTX" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIRETURN1">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIRETURN1" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIESKL">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIESKL" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIESLL">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIESLL" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIESKN">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIESKN" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIESSRTX">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIESSRTX" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIRET2">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIRET2" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIESKLC">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIESKLC" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIESLLC">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIESLLC" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIESKNC">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIESKNC" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TABLE_OF_BAPIESSR">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIESSR" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="BAPI_ENTRYSHEET_GETDETAIL">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="ENTRYSHEET" type="tns:char10" />
+            <xsd:element minOccurs="0" name="ENTRYSHEET_ACCOUNT_ASSIGNMENT" type="tns:TABLE_OF_BAPIESKN" />
+            <xsd:element minOccurs="0" name="ENTRYSHEET_HEADER_TEXT" type="tns:TABLE_OF_BAPIESSRTX" />
+            <xsd:element minOccurs="0" name="ENTRYSHEET_SERVICES" type="tns:TABLE_OF_BAPIESLL" />
+            <xsd:element minOccurs="0" name="ENTRYSHEET_SERVICES_TEXTS" type="tns:TABLE_OF_BAPIESLLTX" />
+            <xsd:element minOccurs="0" name="ENTRYSHEET_SRV_ACCASS_VALUES" type="tns:TABLE_OF_BAPIESKL" />
+            <xsd:element minOccurs="0" name="LONG_TEXTS" type="tns:char1" />
+            <xsd:element minOccurs="0" name="RETURN" type="tns:TABLE_OF_BAPIRETURN1" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="BAPI_ENTRYSHEET_GETDETAILResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="ENTRYSHEET_ACCOUNT_ASSIGNMENT" type="tns:TABLE_OF_BAPIESKN" />
+            <xsd:element name="ENTRYSHEET_HEADER" type="tns:BAPIESSR" />
+            <xsd:element minOccurs="0" name="ENTRYSHEET_HEADER_TEXT" type="tns:TABLE_OF_BAPIESSRTX" />
+            <xsd:element minOccurs="0" name="ENTRYSHEET_SERVICES" type="tns:TABLE_OF_BAPIESLL" />
+            <xsd:element minOccurs="0" name="ENTRYSHEET_SERVICES_TEXTS" type="tns:TABLE_OF_BAPIESLLTX" />
+            <xsd:element minOccurs="0" name="ENTRYSHEET_SRV_ACCASS_VALUES" type="tns:TABLE_OF_BAPIESKL" />
+            <xsd:element minOccurs="0" name="RETURN" type="tns:TABLE_OF_BAPIRETURN1" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="BAPI_ENTRYSHEET_CREATE">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="ENTRYSHEETACCOUNTASSIGNMENT" type="tns:TABLE_OF_BAPIESKNC" />
+            <xsd:element name="ENTRYSHEETHEADER" type="tns:BAPIESSRC" />
+            <xsd:element minOccurs="0" name="ENTRYSHEETHEADERTEXT" type="tns:TABLE_OF_BAPIESSRTX" />
+            <xsd:element minOccurs="0" name="ENTRYSHEETSERVICES" type="tns:TABLE_OF_BAPIESLLC" />
+            <xsd:element minOccurs="0" name="ENTRYSHEETSERVICESTEXTS" type="tns:TABLE_OF_BAPIESLLTX" />
+            <xsd:element minOccurs="0" name="ENTRYSHEETSRVACCASSVALUES" type="tns:TABLE_OF_BAPIESKLC" />
+            <xsd:element minOccurs="0" name="NO_COMMIT" type="tns:char1" />
+            <xsd:element name="RETURN" type="tns:TABLE_OF_BAPIRET2" />
+            <xsd:element minOccurs="0" name="TESTRUN" type="tns:char1" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="BAPI_ENTRYSHEET_CREATEResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="ENTRYSHEET" type="tns:char10" />
+            <xsd:element minOccurs="0" name="ENTRYSHEETACCOUNTASSIGNMENT" type="tns:TABLE_OF_BAPIESKNC" />
+            <xsd:element minOccurs="0" name="ENTRYSHEETHEADERTEXT" type="tns:TABLE_OF_BAPIESSRTX" />
+            <xsd:element minOccurs="0" name="ENTRYSHEETSERVICES" type="tns:TABLE_OF_BAPIESLLC" />
+            <xsd:element minOccurs="0" name="ENTRYSHEETSERVICESTEXTS" type="tns:TABLE_OF_BAPIESLLTX" />
+            <xsd:element minOccurs="0" name="ENTRYSHEETSRVACCASSVALUES" type="tns:TABLE_OF_BAPIESKLC" />
+            <xsd:element name="RETURN" type="tns:TABLE_OF_BAPIRET2" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="BAPI_ENTRYSHEET_DELETE">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="ENTRYSHEET" type="tns:char10" />
+            <xsd:element name="RETURN" type="tns:TABLE_OF_BAPIRET2" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="BAPI_ENTRYSHEET_DELETEResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="RETURN" type="tns:TABLE_OF_BAPIRET2" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="BAPI_ENTRYSHEET_GETLIST">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="DOC_DATE" type="tns:date10" />
+            <xsd:element minOccurs="0" name="DOC_TYPE" type="tns:char4" />
+            <xsd:element minOccurs="0" name="ENTRYSHEET_DATE" type="tns:date10" />
+            <xsd:element minOccurs="0" name="ENTRYSHEET_HEADER" type="tns:TABLE_OF_BAPIESSR" />
+            <xsd:element minOccurs="0" name="MAT_GRP" type="tns:char9" />
+            <xsd:element minOccurs="0" name="PLANT" type="tns:char4" />
+            <xsd:element minOccurs="0" name="PO_NUMBER" type="tns:char10" />
+            <xsd:element minOccurs="0" name="PURCH_ORG" type="tns:char4" />
+            <xsd:element minOccurs="0" name="PUR_GROUP" type="tns:char3" />
+            <xsd:element minOccurs="0" name="REL_CODE" type="tns:char2" />
+            <xsd:element minOccurs="0" name="REL_GROUP" type="tns:char2" />
+            <xsd:element minOccurs="0" name="RETURN" type="tns:TABLE_OF_BAPIRETURN1" />
+            <xsd:element minOccurs="0" name="VENDOR" type="tns:char10" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="BAPI_ENTRYSHEET_GETLISTResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="ENTRYSHEET_HEADER" type="tns:TABLE_OF_BAPIESSR" />
+            <xsd:element minOccurs="0" name="RETURN" type="tns:TABLE_OF_BAPIRETURN1" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="BAPI_ENTRYSHEET_GETDETAIL">
+    <wsdl:part name="parameters" element="tns:BAPI_ENTRYSHEET_GETDETAIL" />
+  </wsdl:message>
+  <wsdl:message name="BAPI_ENTRYSHEET_GETDETAILResponse">
+    <wsdl:part name="parameter" element="tns:BAPI_ENTRYSHEET_GETDETAILResponse" />
+  </wsdl:message>
+  <wsdl:message name="BAPI_ENTRYSHEET_CREATE">
+    <wsdl:part name="parameters" element="tns:BAPI_ENTRYSHEET_CREATE" />
+  </wsdl:message>
+  <wsdl:message name="BAPI_ENTRYSHEET_CREATEResponse">
+    <wsdl:part name="parameter" element="tns:BAPI_ENTRYSHEET_CREATEResponse" />
+  </wsdl:message>
+  <wsdl:message name="BAPI_ENTRYSHEET_DELETE">
+    <wsdl:part name="parameters" element="tns:BAPI_ENTRYSHEET_DELETE" />
+  </wsdl:message>
+  <wsdl:message name="BAPI_ENTRYSHEET_DELETEResponse">
+    <wsdl:part name="parameter" element="tns:BAPI_ENTRYSHEET_DELETEResponse" />
+  </wsdl:message>
+  <wsdl:message name="BAPI_ENTRYSHEET_GETLIST">
+    <wsdl:part name="parameters" element="tns:BAPI_ENTRYSHEET_GETLIST" />
+  </wsdl:message>
+  <wsdl:message name="BAPI_ENTRYSHEET_GETLISTResponse">
+    <wsdl:part name="parameter" element="tns:BAPI_ENTRYSHEET_GETLISTResponse" />
+  </wsdl:message>
+  <wsdl:portType name="Z_WS_BAPI_DIRECT_MLBO">
+    <wsdl:documentation>
+      <sapdoc:sapdoc xmlns:sapdoc="urn:sap:esi:documentation">
+        <sapdoc:docitem docURL="http://gviceccqa.molinosagro.ad:8000/sap/bc/esdt/docu/sd_text?sap-client=400&amp;sd_name=Z_WS_BAPI_DIRECT_MLBO" />
+      </sapdoc:sapdoc>
+    </wsdl:documentation>
+    <wsp:Policy>
+      <wsp:PolicyReference URI="#IF__Z_WS_BAPI_DIRECT_MLBO" />
+    </wsp:Policy>
+    <wsdl:operation name="BAPI_ENTRYSHEET_GETDETAIL">
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP__BAPI_ENTRYSHEET_GETDETAIL" />
+      </wsp:Policy>
+      <wsdl:input message="tns:BAPI_ENTRYSHEET_GETDETAIL" />
+      <wsdl:output message="tns:BAPI_ENTRYSHEET_GETDETAILResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="BAPI_ENTRYSHEET_CREATE">
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP__BAPI_ENTRYSHEET_CREATE" />
+      </wsp:Policy>
+      <wsdl:input message="tns:BAPI_ENTRYSHEET_CREATE" />
+      <wsdl:output message="tns:BAPI_ENTRYSHEET_CREATEResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="BAPI_ENTRYSHEET_DELETE">
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP__BAPI_ENTRYSHEET_DELETE" />
+      </wsp:Policy>
+      <wsdl:input message="tns:BAPI_ENTRYSHEET_DELETE" />
+      <wsdl:output message="tns:BAPI_ENTRYSHEET_DELETEResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="BAPI_ENTRYSHEET_GETLIST">
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP__BAPI_ENTRYSHEET_GETLIST" />
+      </wsp:Policy>
+      <wsdl:input message="tns:BAPI_ENTRYSHEET_GETLIST" />
+      <wsdl:output message="tns:BAPI_ENTRYSHEET_GETLISTResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="Z_WS_BAPI_DIRECT_MLBO" type="tns:Z_WS_BAPI_DIRECT_MLBO">
+    <wsp:Policy>
+      <wsp:PolicyReference URI="#BN__Z_WS_BAPI_DIRECT_MLBO" />
+    </wsp:Policy>
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="BAPI_ENTRYSHEET_GETDETAIL">
+      <soap:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_BAPI_DIRECT_MLBO:BAPI_ENTRYSHEET_GETDETAILRequest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BAPI_ENTRYSHEET_CREATE">
+      <soap:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_BAPI_DIRECT_MLBO:BAPI_ENTRYSHEET_CREATERequest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BAPI_ENTRYSHEET_DELETE">
+      <soap:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_BAPI_DIRECT_MLBO:BAPI_ENTRYSHEET_DELETERequest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BAPI_ENTRYSHEET_GETLIST">
+      <soap:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_BAPI_DIRECT_MLBO:BAPI_ENTRYSHEET_GETLISTRequest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="Z_WS_BAPI_DIRECT_MLBO_soap12" type="tns:Z_WS_BAPI_DIRECT_MLBO">
+    <wsp:Policy>
+      <wsp:PolicyReference URI="#BN__Z_WS_BAPI_DIRECT_MLBO_soap12" />
+    </wsp:Policy>
+    <wsoap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="BAPI_ENTRYSHEET_GETDETAIL">
+      <wsoap12:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_BAPI_DIRECT_MLBO:BAPI_ENTRYSHEET_GETDETAILRequest" style="document" />
+      <wsdl:input>
+        <wsoap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <wsoap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BAPI_ENTRYSHEET_CREATE">
+      <wsoap12:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_BAPI_DIRECT_MLBO:BAPI_ENTRYSHEET_CREATERequest" style="document" />
+      <wsdl:input>
+        <wsoap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <wsoap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BAPI_ENTRYSHEET_DELETE">
+      <wsoap12:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_BAPI_DIRECT_MLBO:BAPI_ENTRYSHEET_DELETERequest" style="document" />
+      <wsdl:input>
+        <wsoap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <wsoap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BAPI_ENTRYSHEET_GETLIST">
+      <wsoap12:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_BAPI_DIRECT_MLBO:BAPI_ENTRYSHEET_GETLISTRequest" style="document" />
+      <wsdl:input>
+        <wsoap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <wsoap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Z_WS_BAPI_DIRECT_MLBO">
+    <wsdl:port name="Z_WS_BAPI_DIRECT_MLBO" binding="tns:Z_WS_BAPI_DIRECT_MLBO">
+      <soap:address location="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mlbo/400/z_ws_bapi_direct_mlbo/z_ws_bapi_direct_mlbo" />
+    </wsdl:port>
+    <wsdl:port name="Z_WS_BAPI_DIRECT_MLBO_soap12" binding="tns:Z_WS_BAPI_DIRECT_MLBO_soap12">
+      <wsoap12:address location="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mlbo/400/z_ws_bapi_direct_mlbo/z_ws_bapi_direct_mlbo" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

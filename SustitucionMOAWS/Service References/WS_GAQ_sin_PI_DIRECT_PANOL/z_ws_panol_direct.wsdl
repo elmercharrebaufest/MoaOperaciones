@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="urn:sap-com:document:sap:rfc:functions" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:sap-com:document:sap:rfc:functions" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation>
+    <sidl:sidl xmlns:sidl="http://www.sap.com/2007/03/sidl" />
+  </wsdl:documentation>
+  <wsp:UsingPolicy wsdl:required="true" />
+  <wsp:Policy wsu:Id="BN__Z_WS_PANOL_DIRECT">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
+        <saptrnbnd:OptimizedMimeSerialization xmlns:saptrnbnd="http://schemas.xmlsoap.org/ws/2004/09/policy/optimizedmimeserialization" wsp:Optional="true" />
+        <wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" wsp:Optional="true" />
+        <wsp:All xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+          <sp:TransportBinding xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wst="http://docs.oasis-open.org/ws-sx/ws-trust/200512" xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex">
+            <wsp:Policy>
+              <sp:TransportToken>
+                <wsp:Policy>
+                  <sp:HttpsToken>
+                    <wsp:Policy>
+                      <sp:HttpBasicAuthentication />
+                    </wsp:Policy>
+                  </sp:HttpsToken>
+                </wsp:Policy>
+              </sp:TransportToken>
+              <sp:AlgorithmSuite>
+                <wsp:Policy>
+                  <sp:Basic128Rsa15 />
+                </wsp:Policy>
+              </sp:AlgorithmSuite>
+              <sp:Layout>
+                <wsp:Policy>
+                  <sp:Strict />
+                </wsp:Policy>
+              </sp:Layout>
+            </wsp:Policy>
+          </sp:TransportBinding>
+        </wsp:All>
+      </wsp:All>
+      <wsp:All>
+        <sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
+        <saptrnbnd:OptimizedXMLTransfer uri="http://xml.sap.com/2006/11/esi/esp/binxml" xmlns:saptrnbnd="http://www.sap.com/webas/710/soap/features/transportbinding/" wsp:Optional="true" />
+        <wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" wsp:Optional="true" />
+        <wsp:All xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+          <sp:TransportBinding xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wst="http://docs.oasis-open.org/ws-sx/ws-trust/200512" xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex">
+            <wsp:Policy>
+              <sp:TransportToken>
+                <wsp:Policy>
+                  <sp:HttpsToken>
+                    <wsp:Policy>
+                      <sp:HttpBasicAuthentication />
+                    </wsp:Policy>
+                  </sp:HttpsToken>
+                </wsp:Policy>
+              </sp:TransportToken>
+              <sp:AlgorithmSuite>
+                <wsp:Policy>
+                  <sp:Basic128Rsa15 />
+                </wsp:Policy>
+              </sp:AlgorithmSuite>
+              <sp:Layout>
+                <wsp:Policy>
+                  <sp:Strict />
+                </wsp:Policy>
+              </sp:Layout>
+            </wsp:Policy>
+          </sp:TransportBinding>
+        </wsp:All>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="BN__Z_WS_PANOL_DIRECT_soap12">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
+        <saptrnbnd:OptimizedMimeSerialization xmlns:saptrnbnd="http://schemas.xmlsoap.org/ws/2004/09/policy/optimizedmimeserialization" wsp:Optional="true" />
+        <wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" wsp:Optional="true" />
+        <wsp:All xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+          <sp:TransportBinding xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wst="http://docs.oasis-open.org/ws-sx/ws-trust/200512" xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex">
+            <wsp:Policy>
+              <sp:TransportToken>
+                <wsp:Policy>
+                  <sp:HttpsToken>
+                    <wsp:Policy>
+                      <sp:HttpBasicAuthentication />
+                    </wsp:Policy>
+                  </sp:HttpsToken>
+                </wsp:Policy>
+              </sp:TransportToken>
+              <sp:AlgorithmSuite>
+                <wsp:Policy>
+                  <sp:Basic128Rsa15 />
+                </wsp:Policy>
+              </sp:AlgorithmSuite>
+              <sp:Layout>
+                <wsp:Policy>
+                  <sp:Strict />
+                </wsp:Policy>
+              </sp:Layout>
+            </wsp:Policy>
+          </sp:TransportBinding>
+        </wsp:All>
+      </wsp:All>
+      <wsp:All>
+        <sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
+        <saptrnbnd:OptimizedXMLTransfer uri="http://xml.sap.com/2006/11/esi/esp/binxml" xmlns:saptrnbnd="http://www.sap.com/webas/710/soap/features/transportbinding/" wsp:Optional="true" />
+        <wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" wsp:Optional="true" />
+        <wsp:All xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+          <sp:TransportBinding xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:wst="http://docs.oasis-open.org/ws-sx/ws-trust/200512" xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex">
+            <wsp:Policy>
+              <sp:TransportToken>
+                <wsp:Policy>
+                  <sp:HttpsToken>
+                    <wsp:Policy>
+                      <sp:HttpBasicAuthentication />
+                    </wsp:Policy>
+                  </sp:HttpsToken>
+                </wsp:Policy>
+              </sp:TransportToken>
+              <sp:AlgorithmSuite>
+                <wsp:Policy>
+                  <sp:Basic128Rsa15 />
+                </wsp:Policy>
+              </sp:AlgorithmSuite>
+              <sp:Layout>
+                <wsp:Policy>
+                  <sp:Strict />
+                </wsp:Policy>
+              </sp:Layout>
+            </wsp:Policy>
+          </sp:TransportBinding>
+        </wsp:All>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="IF__Z_WS_PANOL_DIRECT">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sapsession:Session xmlns:sapsession="http://www.sap.com/webas/630/soap/features/session/">
+          <sapsession:enableSession>false</sapsession:enableSession>
+        </sapsession:Session>
+        <sapcentraladmin:CentralAdministration xmlns:sapcentraladmin="http://www.sap.com/webas/700/soap/features/CentralAdministration/" wsp:Optional="true">
+          <sapcentraladmin:BusinessApplicationID>00505681C3051EEF95B240C9AFF6B858</sapcentraladmin:BusinessApplicationID>
+        </sapcentraladmin:CentralAdministration>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="OP__Z_MMRFC_GEN_MOVSTK_PAN">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <saptrhnw05:required xmlns:saptrhnw05="http://www.sap.com/NW05/soap/features/transaction/">no</saptrhnw05:required>
+        <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false</sapcomhnd:enableCommit>
+        <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true</sapblock:enableBlocking>
+        <saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="OP__Z_MMRFC_OBT_INSUMO_PAN">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <saptrhnw05:required xmlns:saptrhnw05="http://www.sap.com/NW05/soap/features/transaction/">no</saptrhnw05:required>
+        <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false</sapcomhnd:enableCommit>
+        <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true</sapblock:enableBlocking>
+        <saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="OP__Z_MMRFC_LISTADO_MAT_PAN">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <saptrhnw05:required xmlns:saptrhnw05="http://www.sap.com/NW05/soap/features/transaction/">no</saptrhnw05:required>
+        <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false</sapcomhnd:enableCommit>
+        <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true</sapblock:enableBlocking>
+        <saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema attributeFormDefault="qualified" targetNamespace="urn:sap-com:document:sap:rfc:functions">
+      <xsd:simpleType name="char1">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="1" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char10">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="10" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char12">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="12" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char18">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="18" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char20">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="20" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char220">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="220" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char25">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="25" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char3">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="3" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char30">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="30" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char32">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="32" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char4">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="4" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char40">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="40" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char5">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="5" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="char50">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="50" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric3">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="3" />
+          <xsd:pattern value="\d*" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric4">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="4" />
+          <xsd:pattern value="\d*" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="numeric6">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="6" />
+          <xsd:pattern value="\d*" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="quantum13.3">
+        <xsd:restriction base="xsd:decimal">
+          <xsd:totalDigits value="13" />
+          <xsd:fractionDigits value="3" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="unit3">
+        <xsd:restriction base="xsd:string">
+          <xsd:maxLength value="3" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="ZMPES6910">
+        <xsd:sequence>
+          <xsd:element name="MATERIAL" type="tns:char18" />
+          <xsd:element name="MATL_DESC" type="tns:char40" />
+          <xsd:element name="ALMACEN" type="tns:char4" />
+          <xsd:element name="VAL_TYPE" type="tns:char10" />
+          <xsd:element name="STOCK_LU" type="tns:quantum13.3" />
+          <xsd:element name="UBICACION" type="tns:char10" />
+          <xsd:element name="UNIDAD_MED" type="tns:unit3" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIRETURN">
+        <xsd:sequence>
+          <xsd:element name="TYPE" type="tns:char1" />
+          <xsd:element name="CODE" type="tns:char5" />
+          <xsd:element name="MESSAGE" type="tns:char220" />
+          <xsd:element name="LOG_NO" type="tns:char20" />
+          <xsd:element name="LOG_MSG_NO" type="tns:numeric6" />
+          <xsd:element name="MESSAGE_V1" type="tns:char50" />
+          <xsd:element name="MESSAGE_V2" type="tns:char50" />
+          <xsd:element name="MESSAGE_V3" type="tns:char50" />
+          <xsd:element name="MESSAGE_V4" type="tns:char50" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZMPES5950">
+        <xsd:sequence>
+          <xsd:element name="MATERIAL" type="tns:char18" />
+          <xsd:element name="MATL_DESC" type="tns:char40" />
+          <xsd:element name="ALMACEN" type="tns:char4" />
+          <xsd:element name="VAL_TYPE" type="tns:char10" />
+          <xsd:element name="STOCK_LU" type="tns:quantum13.3" />
+          <xsd:element name="UBICACION" type="tns:char10" />
+          <xsd:element name="UNIDAD_MED" type="tns:unit3" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZMPES5960">
+        <xsd:sequence>
+          <xsd:element name="MATERIAL" type="tns:char18" />
+          <xsd:element name="CLASE_VAL" type="tns:char10" />
+          <xsd:element name="ALMACEN" type="tns:char4" />
+          <xsd:element name="CLSMOV" type="tns:char3" />
+          <xsd:element name="CANTIDAD" type="tns:quantum13.3" />
+          <xsd:element name="CECO" type="tns:char10" />
+          <xsd:element name="ORDEN" type="tns:char12" />
+          <xsd:element name="USUARIO" type="tns:char25" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPI2017_GM_HEAD_RET">
+        <xsd:sequence>
+          <xsd:element name="MAT_DOC" type="tns:char10" />
+          <xsd:element name="DOC_YEAR" type="tns:numeric4" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIRET2">
+        <xsd:sequence>
+          <xsd:element name="TYPE" type="tns:char1" />
+          <xsd:element name="ID" type="tns:char20" />
+          <xsd:element name="NUMBER" type="tns:numeric3" />
+          <xsd:element name="MESSAGE" type="tns:char220" />
+          <xsd:element name="LOG_NO" type="tns:char20" />
+          <xsd:element name="LOG_MSG_NO" type="tns:numeric6" />
+          <xsd:element name="MESSAGE_V1" type="tns:char50" />
+          <xsd:element name="MESSAGE_V2" type="tns:char50" />
+          <xsd:element name="MESSAGE_V3" type="tns:char50" />
+          <xsd:element name="MESSAGE_V4" type="tns:char50" />
+          <xsd:element name="PARAMETER" type="tns:char32" />
+          <xsd:element name="ROW" type="xsd:int" />
+          <xsd:element name="FIELD" type="tns:char30" />
+          <xsd:element name="SYSTEM" type="tns:char10" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZMPTT9730">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ZMPES6910" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZMPTT9600">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ZMPES5960" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BAPIRET2_T">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:BAPIRET2" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Z_MMRFC_LISTADO_MAT_PAN">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="IM_ALMACEN" type="tns:char4" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Z_MMRFC_LISTADO_MAT_PANResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="EX_EXITO" type="tns:char3" />
+            <xsd:element name="EX_MATERIALES" type="tns:ZMPTT9730" />
+            <xsd:element name="EX_RETURN" type="tns:BAPIRETURN" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Z_MMRFC_OBT_INSUMO_PAN">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="IM_ALMACEN" type="tns:char4" />
+            <xsd:element minOccurs="0" name="IM_CLASE_VAL" type="tns:char10" />
+            <xsd:element minOccurs="0" name="IM_MATERIAL" type="tns:char18" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Z_MMRFC_OBT_INSUMO_PANResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="EX_EXITO" type="tns:char3" />
+            <xsd:element name="EX_INSUMO" type="tns:ZMPES5950" />
+            <xsd:element name="EX_RETURN" type="tns:BAPIRETURN" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Z_MMRFC_GEN_MOVSTK_PAN">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="IM_POSICIONES" type="tns:ZMPTT9600" />
+            <xsd:element name="IM_TEXTO" type="tns:char25" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Z_MMRFC_GEN_MOVSTK_PANResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="EX_DOCMAT" type="tns:BAPI2017_GM_HEAD_RET" />
+            <xsd:element name="EX_EXITO" type="tns:char3" />
+            <xsd:element name="EX_RETURN" type="tns:BAPIRET2_T" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="Z_MMRFC_LISTADO_MAT_PAN">
+    <wsdl:part name="parameters" element="tns:Z_MMRFC_LISTADO_MAT_PAN" />
+  </wsdl:message>
+  <wsdl:message name="Z_MMRFC_LISTADO_MAT_PANResponse">
+    <wsdl:part name="parameter" element="tns:Z_MMRFC_LISTADO_MAT_PANResponse" />
+  </wsdl:message>
+  <wsdl:message name="Z_MMRFC_OBT_INSUMO_PAN">
+    <wsdl:part name="parameters" element="tns:Z_MMRFC_OBT_INSUMO_PAN" />
+  </wsdl:message>
+  <wsdl:message name="Z_MMRFC_OBT_INSUMO_PANResponse">
+    <wsdl:part name="parameter" element="tns:Z_MMRFC_OBT_INSUMO_PANResponse" />
+  </wsdl:message>
+  <wsdl:message name="Z_MMRFC_GEN_MOVSTK_PAN">
+    <wsdl:part name="parameters" element="tns:Z_MMRFC_GEN_MOVSTK_PAN" />
+  </wsdl:message>
+  <wsdl:message name="Z_MMRFC_GEN_MOVSTK_PANResponse">
+    <wsdl:part name="parameter" element="tns:Z_MMRFC_GEN_MOVSTK_PANResponse" />
+  </wsdl:message>
+  <wsdl:portType name="Z_WS_PANOL_DIRECT">
+    <wsdl:documentation>
+      <sapdoc:sapdoc xmlns:sapdoc="urn:sap:esi:documentation">
+        <sapdoc:docitem docURL="http://gviceccqa.molinosagro.ad:8000/sap/bc/esdt/docu/sd_text?sap-client=400&amp;sd_name=Z_WS_PANOL_DIRECT" />
+      </sapdoc:sapdoc>
+    </wsdl:documentation>
+    <wsp:Policy>
+      <wsp:PolicyReference URI="#IF__Z_WS_PANOL_DIRECT" />
+    </wsp:Policy>
+    <wsdl:operation name="Z_MMRFC_LISTADO_MAT_PAN">
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP__Z_MMRFC_LISTADO_MAT_PAN" />
+      </wsp:Policy>
+      <wsdl:input message="tns:Z_MMRFC_LISTADO_MAT_PAN" />
+      <wsdl:output message="tns:Z_MMRFC_LISTADO_MAT_PANResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Z_MMRFC_OBT_INSUMO_PAN">
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP__Z_MMRFC_OBT_INSUMO_PAN" />
+      </wsp:Policy>
+      <wsdl:input message="tns:Z_MMRFC_OBT_INSUMO_PAN" />
+      <wsdl:output message="tns:Z_MMRFC_OBT_INSUMO_PANResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Z_MMRFC_GEN_MOVSTK_PAN">
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP__Z_MMRFC_GEN_MOVSTK_PAN" />
+      </wsp:Policy>
+      <wsdl:input message="tns:Z_MMRFC_GEN_MOVSTK_PAN" />
+      <wsdl:output message="tns:Z_MMRFC_GEN_MOVSTK_PANResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="Z_WS_PANOL_DIRECT" type="tns:Z_WS_PANOL_DIRECT">
+    <wsp:Policy>
+      <wsp:PolicyReference URI="#BN__Z_WS_PANOL_DIRECT" />
+    </wsp:Policy>
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Z_MMRFC_LISTADO_MAT_PAN">
+      <soap:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_PANOL_DIRECT:Z_MMRFC_LISTADO_MAT_PANRequest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Z_MMRFC_OBT_INSUMO_PAN">
+      <soap:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_PANOL_DIRECT:Z_MMRFC_OBT_INSUMO_PANRequest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Z_MMRFC_GEN_MOVSTK_PAN">
+      <soap:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_PANOL_DIRECT:Z_MMRFC_GEN_MOVSTK_PANRequest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="Z_WS_PANOL_DIRECT_soap12" type="tns:Z_WS_PANOL_DIRECT">
+    <wsp:Policy>
+      <wsp:PolicyReference URI="#BN__Z_WS_PANOL_DIRECT_soap12" />
+    </wsp:Policy>
+    <wsoap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Z_MMRFC_LISTADO_MAT_PAN">
+      <wsoap12:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_PANOL_DIRECT:Z_MMRFC_LISTADO_MAT_PANRequest" style="document" />
+      <wsdl:input>
+        <wsoap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <wsoap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Z_MMRFC_OBT_INSUMO_PAN">
+      <wsoap12:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_PANOL_DIRECT:Z_MMRFC_OBT_INSUMO_PANRequest" style="document" />
+      <wsdl:input>
+        <wsoap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <wsoap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Z_MMRFC_GEN_MOVSTK_PAN">
+      <wsoap12:operation soapAction="urn:sap-com:document:sap:rfc:functions:Z_WS_PANOL_DIRECT:Z_MMRFC_GEN_MOVSTK_PANRequest" style="document" />
+      <wsdl:input>
+        <wsoap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <wsoap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Z_WS_PANOL_DIRECT">
+    <wsdl:port name="Z_WS_PANOL_DIRECT" binding="tns:Z_WS_PANOL_DIRECT">
+      <soap:address location="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_panol_direct/400/z_ws_panol_direct/z_ws_panol_direct" />
+    </wsdl:port>
+    <wsdl:port name="Z_WS_PANOL_DIRECT_soap12" binding="tns:Z_WS_PANOL_DIRECT_soap12">
+      <wsoap12:address location="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_panol_direct/400/z_ws_panol_direct/z_ws_panol_direct" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

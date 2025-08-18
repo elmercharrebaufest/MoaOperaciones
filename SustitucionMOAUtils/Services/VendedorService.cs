@@ -352,39 +352,37 @@ namespace SustitucionMOAUtils.Services
         }
         private List<ProveedorDto> GetVendedoresInternal(string mailUsuario, Func<Proveedor, bool> filtro = null)
         {
-
             var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
-
             var listadoProveedores = new List<ProveedorDto>();
-
-            if (usuario.EsAdmin() || usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
+            if (usuario != null)
             {
-                listadoProveedores = repositorio
-                        .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
-                        .Where(filtro)
-                        .Select(proveedor => new ProveedorDto(proveedor, false)).ToList();
-            }
-            else
-            {
-                var proveedores = usuario.Proveedores.ToList();
-
-
-                if (filtro != null)
+                if (usuario.EsAdmin() || usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
                 {
-                    proveedores = proveedores.Where(filtro).ToList();
+                    listadoProveedores = repositorio
+                            .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
+                            .Where(filtro)
+                            .Select(proveedor => new ProveedorDto(proveedor, false)).ToList();
+                }
+                else
+                {
+                    var proveedores = usuario.Proveedores.ToList();
+
+                    if (filtro != null)
+                    {
+                        proveedores = proveedores.Where(filtro).ToList();
+                    }
+
+                    listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto(proveedor, false)).ToList());
                 }
 
-                listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto(proveedor, false)).ToList());
-            }
-
-
-            foreach (var item in listadoProveedores.Where(a => a.CUIT == null || a.CUIT == ""))
-            {
-                item.CUIT = "-";
-            }
-            foreach (var item in listadoProveedores.Where(a => a.RazonSocial == null || a.RazonSocial == ""))
-            {
-                item.RazonSocial = "-";
+                foreach (var item in listadoProveedores.Where(a => a.CUIT == null || a.CUIT == ""))
+                {
+                    item.CUIT = "-";
+                }
+                foreach (var item in listadoProveedores.Where(a => a.RazonSocial == null || a.RazonSocial == ""))
+                {
+                    item.RazonSocial = "-";
+                }
             }
             return listadoProveedores.Distinct().ToList();
         }

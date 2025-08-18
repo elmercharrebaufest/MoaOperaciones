@@ -14,6 +14,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     [Authorize]
     public class OrdenDeCargaController : BaseController
     {
