@@ -56,6 +56,7 @@ namespace SustitucionMOAWS.Interfaces
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
         AdjudicacionDto ObtenerOrdenDeCompraAdjudicacion(string nroOC);
         ResultBAPI_PO_GETDETAIL1 ObtenerOrdenDeCompraRFC(string nroOC);
+        ResultBAPI_PO_GETDETAIL1SinPI ObtenerOrdenDeCompraRFCSinPI(string nroOC);
     }
     public interface IObtenerProveedorConsumerMOA
     {

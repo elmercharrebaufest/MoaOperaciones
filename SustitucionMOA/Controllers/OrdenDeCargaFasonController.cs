@@ -30,31 +30,17 @@ namespace SustitucionMOA.Controllers
         public ActionResult Listar(string fechaInicio, string fechaFin)
         {
             var response = new SustitucionMOAApiResponse<ListarOrdenDeCargaFasonResponse>();
-            try
+
+            var mailUsuario = SessionPersister.Mail;
+            var request = new ListarOrdenDeCargaFasonRequest()
             {
-                var mailUsuario = SessionPersister.Mail;
-                var request = new ListarOrdenDeCargaFasonRequest()
-                {
-                    MailUsuario = mailUsuario,
-                    FechaDesde = fechaInicio,
-                    FechaHasta = fechaFin,
-                    EsCorredor = SessionPersister.EsCodigoDeCorredor
-                };
-                response.Data = ordenDeCargaFasonService.Listar(request);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
+                MailUsuario = mailUsuario,
+                FechaDesde = fechaInicio,
+                FechaHasta = fechaFin,
+                EsCorredor = SessionPersister.EsCodigoDeCorredor
+            };
+            response.Data = ordenDeCargaFasonService.Listar(request);
+
             return ContentCustom(response);
         }
 

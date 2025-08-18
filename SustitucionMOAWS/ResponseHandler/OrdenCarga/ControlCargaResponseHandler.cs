@@ -34,6 +34,24 @@ namespace SustitucionMOAWS.ResponseHandler.OrdenCarga
             }
         }
 
+        public ControlCargaResponseHandler(WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES7060[] mensajesSap)
+        {
+            foreach (var item in mensajesSap)
+            {
+                var resp = item.MENSAJE;
+                logResponse += resp + ". ";
+                if (resp.Contains("|"))
+                {
+                    //TieneMultiplesContratos = true;
+                    contratosSap.Add(resp);
+                }
+                else
+                {
+                    respuestasSap.Add(ResponseConverter.GetOrdenCargaControlCargaResponse(resp));
+                }
+            }
+        }
+
         /// <summary>
         /// Si el cliente tiene varios contratos, devuelve los números. Sino, dispara excepción
         /// </summary>
