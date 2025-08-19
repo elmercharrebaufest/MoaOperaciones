@@ -945,7 +945,7 @@ namespace SustitucionMOAWS.WSConsumers
                     imputacion.CO_AREA = "MOA";
                     imputacion.COSTCENTER = ObtenerImputacion(esPosicionDeMateriales, solpPosicion, new List<string> { "centrodecosto" });
                     imputacion.ORDERID = ObtenerImputacion(esPosicionDeMateriales, solpPosicion, new List<string> { "ordendeot", "ordendeinversion" });
-                    imputacion.PROFIT_CTR = "";
+                    imputacion.PROFIT_CTR = ObtenerImputacion(esPosicionDeMateriales, solpPosicion, new List<string> { "siniestroBeneficio" });
                     imputacion.SUB_NUMBER = "";
                     imputacion.ASSET_NO = "";
                     imputacion.COSTOBJECT = "";
@@ -966,7 +966,7 @@ namespace SustitucionMOAWS.WSConsumers
                         COSTOBJECT = "",
                         COSTCENTER = (solpPosicion.TipoImputacion?.Codigo.ToLower() == "centrodecosto") ? "X" : "",
                         ORDERID = (solpPosicion.TipoImputacion?.Codigo.ToLower() == "ordendeot" || solpPosicion.TipoImputacion?.Codigo.ToLower() == "ordendeinversion") ? "X" : "",
-                        PROFIT_CTR = ""
+                        PROFIT_CTR = (solpPosicion.TipoImputacion?.Codigo.ToLower() == "siniestroBeneficio") ? "X" : "",
                     });
                 }
 
@@ -1030,19 +1030,16 @@ namespace SustitucionMOAWS.WSConsumers
 
                         solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
 
-                        int MAX_CARACTERES_TIPO_INPUTACION = 12;
-
-                        string ORDER_ID_SEL = getCodigoTablaSap(subposicion.TipoImputacionSap).Length > MAX_CARACTERES_TIPO_INPUTACION ? getCodigoTablaSap(subposicion.TipoImputacionSap).Substring(0, MAX_CARACTERES_TIPO_INPUTACION) : getCodigoTablaSap(subposicion.TipoImputacionSap);
-                        string PROFIT_CTR_SEL = getCodigoTablaSap(subposicion.TipoImputacionSap).Length > MAX_CARACTERES_TIPO_INPUTACION ? getCodigoTablaSap(subposicion.TipoImputacionSap).Substring(0, MAX_CARACTERES_TIPO_INPUTACION) : getCodigoTablaSap(subposicion.TipoImputacionSap);
 
                         if (!solpPedidoSAP.IM_POACCOUNTList.Exists(x =>
                                 x.PO_ITEM == $"{poItem:00000}" &&
                                 x.GL_ACCOUNT == getCodigoTablaSap(subposicion.CuentaMayorSap) &&
-                                x.COSTCENTER == getCodigoTablaSap(subposicion.TipoImputacionSap) &&
-                                //x.ORDERID == getCodigoTablaSap(subposicion.TipoImputacionSap) &&
-                                //x.PROFIT_CTR == getCodigoTablaSap(subposicion.TipoImputacionSap)
-                                x.ORDERID == ORDER_ID_SEL &&
-                                x.PROFIT_CTR == ""
+                                x.COSTCENTER == ((getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "centrodecosto") ?
+                                    getCodigoTablaSap(subposicion.TipoImputacionSap) : "") &&
+                                x.ORDERID == ((getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "ordendeinversion") ?
+                                    getCodigoTablaSap(subposicion.TipoImputacionSap) : "") &&
+                                x.PROFIT_CTR == ((getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "siniestroBeneficio") ?
+                                    getCodigoTablaSap(subposicion.TipoImputacionSap) : "")
                             ))
                         {
 
@@ -1057,13 +1054,10 @@ namespace SustitucionMOAWS.WSConsumers
                             imputacion.CO_AREA = "MOA";
                             imputacion.COSTCENTER = (getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "centrodecosto") ?
                                 getCodigoTablaSap(subposicion.TipoImputacionSap) : "";
-
-                            string ORDERID_GEN = (getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "ordendeinversion") ?
+                            imputacion.ORDERID = (getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "ordendeinversion") ?
                                 getCodigoTablaSap(subposicion.TipoImputacionSap) : "";
-                            string PROFIT_CTR_GEN = getCodigoTablaSap(subposicion.TipoImputacionSap);
-
-                            imputacion.ORDERID = ORDERID_GEN.Length > MAX_CARACTERES_TIPO_INPUTACION ? ORDERID_GEN.Substring(0, MAX_CARACTERES_TIPO_INPUTACION) : ORDERID_GEN;
-                            imputacion.PROFIT_CTR = "";
+                            imputacion.PROFIT_CTR = (getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "siniestroBeneficio") ?
+                                getCodigoTablaSap(subposicion.TipoImputacionSap) : "";
 
                             imputacion.SUB_NUMBER = "";
                             imputacion.ASSET_NO = "";
@@ -1085,7 +1079,7 @@ namespace SustitucionMOAWS.WSConsumers
                                 COSTOBJECT = "",
                                 COSTCENTER = (solpPosicion.TipoImputacion?.Codigo.ToLower() == "centrodecosto") ? "X" : "",
                                 ORDERID = (solpPosicion.TipoImputacion?.Codigo.ToLower() == "ordendeot" || solpPosicion.TipoImputacion?.Codigo.ToLower() == "ordendeinversion") ? "X" : "",
-                                PROFIT_CTR = ""
+                                PROFIT_CTR = (solpPosicion.TipoImputacion?.Codigo.ToLower() == "siniestroBeneficio") ? "X" : ""
                             });
 
                             var imputacionSubPos = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIESKLC()
@@ -1104,10 +1098,14 @@ namespace SustitucionMOAWS.WSConsumers
                             var imputacionUsada = solpPedidoSAP.IM_POACCOUNTList.Find(x =>
                                 x.PO_ITEM == $"{poItem:00000}" &&
                                 x.GL_ACCOUNT == getCodigoTablaSap(subposicion.CuentaMayorSap) &&
-                                x.COSTCENTER == getCodigoTablaSap(subposicion.TipoImputacionSap) &&
-                                x.ORDERID == getCodigoTablaSap(subposicion.TipoImputacionSap) &&
-                                x.PROFIT_CTR == ""
+                                x.COSTCENTER == ((getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "centrodecosto") ?
+                                getCodigoTablaSap(subposicion.TipoImputacionSap) : "") &&
+                                x.ORDERID == ((getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "ordendeinversion") ?
+                                getCodigoTablaSap(subposicion.TipoImputacionSap) : "") &&
+                                x.PROFIT_CTR == ((getCodigoTablaGeneral(solpPosicion.TipoImputacion).ToLower() == "siniestroBeneficio") ?
+                                getCodigoTablaSap(subposicion.TipoImputacionSap) : "")
                                 );
+
                             imputacionUsada.QUANTITY += subposicion.Cantidad.Value;
 
                             var imputacionSubPos = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIESKLC()
