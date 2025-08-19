@@ -12,7 +12,6 @@ using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -693,7 +692,7 @@ namespace SustitucionMOAWS.WSConsumers
             ///STREET y STREET_NO ok. no tenemos el campo separado mandamos todo en street            
             ///SERIAL_NO/serialNumber siempre 1 por que se imputa todo a lo mismo sino son imputaciones multiples, en ese caso analizar como se envia.
 
-            
+
             var proveedorCodigoDeLaAdjudicacion = adjudicacion.Posiciones.First().CotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor();
             var usuarioCreadorAdjudicacion = adjudicacion.Usuario.UsuarioSap;
             var usuarioOrganizacionDeCompra = adjudicacion.Usuario.OrganizacionDeCompra;
@@ -826,7 +825,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.QUANTITY = esPosicionDeMateriales ? nuevaCantidad : 0;
                 //IM_POITEM.QUANTITYSpecified = esPosicionDeMateriales;
                 IM_POITEM.PO_UNIT = unidadDeMedida;
-                IM_POITEM.NET_PRICE = Math.Round((esPosicionDeMateriales ? precioConvertido : adjudicacionPosicion.Monto.Value),4);
+                IM_POITEM.NET_PRICE = Math.Round((esPosicionDeMateriales ? precioConvertido : adjudicacionPosicion.Monto.Value), 4);
                 //IM_POITEM.NET_PRICESpecified = true;
                 IM_POITEM.PRICE_UNIT = 1;
                 //IM_POITEM.PRICE_UNITSpecified = true;
@@ -918,7 +917,7 @@ namespace SustitucionMOAWS.WSConsumers
                     COND_TYPE = creadoAutomatico ? "ZP00" : "ZP01",
                     //ZP00 toma los datos del registro info
                     //ZP01 toma los datos de la adjudicacion
-                    COND_VALUE = Math.Round(IM_POITEM.NET_PRICE,4), //el importe de la condición
+                    COND_VALUE = Math.Round(IM_POITEM.NET_PRICE, 4), //el importe de la condición
                     //COND_VALUESpecified = true,
                     CURRENCY = adjudicacion.Moneda.Codigo /*adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo*/,//moneda de la adjudicacion
                     CHANGE_ID = "U",// siempra va el mismo valor
@@ -1017,7 +1016,7 @@ namespace SustitucionMOAWS.WSConsumers
                         subposicionSap.UOM_ISO = unidadesMedidaSap.Find(u => u.Comercial == cotizacionSubPosicion.UnidadDeMedida.CodigoSap).UM;
                         subposicionSap.PRICE_UNIT = 1;
                         //subposicionSap.PRICE_UNITSpecified = true;
-                        subposicionSap.GR_PRICE = Math.Round(cotizacionSubPosicion.Precio.Value,4);
+                        subposicionSap.GR_PRICE = Math.Round(cotizacionSubPosicion.Precio.Value, 4);
                         if (adjudicacion.Moneda.Codigo != cotizacionSubPosicion.Moneda.Codigo)
                         {
                             subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value * obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), adjudicacion.Moneda.Codigo, cotizacionSubPosicion.Moneda.Codigo).TipoCambio;
@@ -1031,11 +1030,11 @@ namespace SustitucionMOAWS.WSConsumers
 
                         solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
 
-                        int MAX_CARACTERES_TIPO_INPUTACION = 10;
+                        int MAX_CARACTERES_TIPO_INPUTACION = 12;
 
                         string ORDER_ID_SEL = getCodigoTablaSap(subposicion.TipoImputacionSap).Length > MAX_CARACTERES_TIPO_INPUTACION ? getCodigoTablaSap(subposicion.TipoImputacionSap).Substring(0, MAX_CARACTERES_TIPO_INPUTACION) : getCodigoTablaSap(subposicion.TipoImputacionSap);
                         string PROFIT_CTR_SEL = getCodigoTablaSap(subposicion.TipoImputacionSap).Length > MAX_CARACTERES_TIPO_INPUTACION ? getCodigoTablaSap(subposicion.TipoImputacionSap).Substring(0, MAX_CARACTERES_TIPO_INPUTACION) : getCodigoTablaSap(subposicion.TipoImputacionSap);
-                        
+
                         if (!solpPedidoSAP.IM_POACCOUNTList.Exists(x =>
                                 x.PO_ITEM == $"{poItem:00000}" &&
                                 x.GL_ACCOUNT == getCodigoTablaSap(subposicion.CuentaMayorSap) &&
@@ -1135,12 +1134,12 @@ namespace SustitucionMOAWS.WSConsumers
                     DELIVERY_DATE = adjudicacionPosicion.PlazoDeEntrega.ToString("dd.MM.yyyy"),
                     PO_ITEM = $"{poItem:00000}",
                     SCHED_LINE = "1",
-                    DELIV_TIME   = "00:00:00",
-                    MS_TIME      = "00:00:00",
-                    LOAD_TIME    = "00:00:00",
-                    TP_TIME      = "00:00:00",
-                    GI_TIME      = "00:00:00",
-                    GR_END_TIME  = "00:00:00",
+                    DELIV_TIME = "00:00:00",
+                    MS_TIME = "00:00:00",
+                    LOAD_TIME = "00:00:00",
+                    TP_TIME = "00:00:00",
+                    GI_TIME = "00:00:00",
+                    GR_END_TIME = "00:00:00",
                     HANDOVERTIME = "00:00:00",
                 });
 
@@ -1281,7 +1280,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public SolpPedidoSAPDto()
         {
-            IM_POACCOUNTList  = new List<CrearPedidoWebServiceMOA.BAPIMEPOACCOUNT>();
+            IM_POACCOUNTList = new List<CrearPedidoWebServiceMOA.BAPIMEPOACCOUNT>();
             IM_POACCOUNTXList = new List<CrearPedidoWebServiceMOA.BAPIMEPOACCOUNTX>();
             IM_POADDREDELIVERYList = new List<CrearPedidoWebServiceMOA.BAPIMEPOADDRDELIVERY>();
             IM_POCONDList = new List<CrearPedidoWebServiceMOA.BAPIMEPOCOND>();
