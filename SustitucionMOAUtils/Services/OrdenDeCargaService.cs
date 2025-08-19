@@ -227,8 +227,8 @@ namespace SustitucionMOAUtils.Services
                     if (!valoresAEditar.Contains(prop.PropertyName))
                         continue;
 
-                    var anterior = !string.IsNullOrEmpty(prop.valA?.ToString()) ? prop.valA?.ToString() : "-";
-                    var nuevo = !string.IsNullOrEmpty(prop.valB?.ToString()) ? prop.valB?.ToString() : "-";
+                    var anterior = !string.IsNullOrEmpty(prop.ValorAnterior?.ToString()) ? prop.ValorAnterior?.ToString() : "-";
+                    var nuevo = !string.IsNullOrEmpty(prop.ValorNuevo?.ToString()) ? prop.ValorNuevo?.ToString() : "-";
                     if (anterior != "-" && nuevo != "-")
                     {
                         historialCambios.Add(new OrdenDeCargaCambiosHistorial

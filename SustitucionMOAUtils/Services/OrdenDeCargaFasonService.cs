@@ -53,8 +53,6 @@ namespace SustitucionMOAUtils.Services
 
         public ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request)
         {
-            Log.Debug($"Listar(request: {request.ToJson()})");
-
             var fechaIncioDateTime = DataFormatter.StringToDateTime(request.FechaDesde, "");
             var fechaFinDateTime = DataFormatter.StringToDateTime(request.FechaHasta, "");
 
@@ -62,13 +60,12 @@ namespace SustitucionMOAUtils.Services
             var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
             fechaFinDateTime = fechaFinDateTime.AddDays(1);
 
-
             var codigoProveedorClientesRelacionados = usuario.Proveedores.Select(c => c.CodigoProveedor);
 
             Expression<Func<OrdenDeCargaFason, bool>> filtro = x =>
-            (esInterno || codigoProveedorClientesRelacionados.Contains(x.Cliente.CodigoProveedor))
-            && x.FechaCreacion >= fechaIncioDateTime && x.FechaCreacion <= fechaFinDateTime
-            && (esInterno || (request.EsCorredor ? x.CorredorId != null : x.CorredorId == null));
+                (esInterno || codigoProveedorClientesRelacionados.Contains(x.Cliente.CodigoProveedor))
+                && x.FechaCreacion >= fechaIncioDateTime && x.FechaCreacion <= fechaFinDateTime
+                && (esInterno || (request.EsCorredor ? x.CorredorId != null : x.CorredorId == null));
 
             var listadoConFiltro = repositorioFason.ListarConsultable(filtro);
 
@@ -79,7 +76,7 @@ namespace SustitucionMOAUtils.Services
 
             var hashPatentesCargadas = ObtenerHashPatentesCargadas(listadoConFiltro.AsEnumerable());
 
-            var listado = listadoConFiltro.ToList().OrderByDescending(x => x.FechaCreacion)
+            var listado = listadoConFiltro.AsEnumerable().OrderByDescending(x => x.FechaCreacion)
                 .Select(x => new OrdenDeCargaFasonDto(x, esInterno)
                 {
                     TienePatentesRepetidas = VerificarOrdenConPatentesRepetidas(x, hashPatentesCargadas),
@@ -90,8 +87,6 @@ namespace SustitucionMOAUtils.Services
             var response = new ListarOrdenDeCargaFasonResponse { Response = listado };
 
             return response;
-
-
         }
 
         public DetalleOrdenDeCargaFasonResponse ObtenerDetalle(int IdOrdenCargaFason, DetalleOrdenDeCargaFasonRequest mailUsuario)
