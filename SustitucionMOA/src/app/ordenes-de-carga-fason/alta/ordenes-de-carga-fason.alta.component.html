@@ -29,7 +29,7 @@
                                         [(ngModel)]="corredorSeleccionado"
                                         [options]="listaCorredores"
                                         (ngModelChange)="onCorredorSeleccionado()"
-                                        [disabled]="esEdicionDeOrden"
+                                        [disabled]="esEdicionDeOrden || disableForm()"
                                         [filter]="true" placeholder="Seleccione un Corredor" optionLabel="RazonSocial" filterBy="value.RazonSocial">
                                     </p-dropdown>
                                 </div>
@@ -44,7 +44,7 @@
                                         [(ngModel)]="clienteSeleccionado"
                                         [options]="listaClientes"
                                         (ngModelChange)="onClienteSeleccionado()"
-                                        [disabled]="esEdicionDeOrden"
+                                        [disabled]="esEdicionDeOrden || disableForm()"
                                         optionLabel="RazonSocial" placeholder="Seleccione un Cliente" [filter]="true">
                                     </p-dropdown>
                                 </div>
@@ -59,7 +59,7 @@
                                         [(ngModel)]="ordenDeCargaFason.ProductoSeleccionado"
                                         [options]="listaProductos"
                                         (ngModelChange)="selectProducto()"
-                                        [disabled]="esEdicionDeOrden"
+                                        [disabled]="esEdicionDeOrden || disableForm()"
                                         optionLabel="Descripcion" placeholder="Seleccione un producto" [filter]="true">
                                     </p-dropdown>
                                 </div>
@@ -72,7 +72,7 @@
                                 <div class="styled-select">
                                     <textarea id="DestinoMercaderia"
                                         [(ngModel)]="ordenDeCargaFason.DestinoMercaderia"
-                                        [disabled]="esEdicionDeOrden"
+                                        [disabled]="esEdicionDeOrden || disableForm()"
                                         rows="2" [maxLength]="40" placeholder="Localidad - Provincia">
                                     </textarea>
                                 </div>
@@ -97,7 +97,7 @@
                                             <input type="text" pInputText
                                                 [(ngModel)]="ordenDeCargaFason.CUITDestinatario" mask="00-00000000-0"
                                                 (change)="validarSisaDestinatario()"
-                                                [disabled]="noPuedeEditarCuitsTerceros||null">
+                                                [disabled]="noPuedeEditarCuitsTerceros||null || disableForm()">
                                             <span
                                                 *ngIf="ordenDeCargaFason.CUITDestinatario != ordenDeCargaFason.CUITCliente.toString()"
                                                 class="pt-2 pointer pi pi-copy"
@@ -135,7 +135,7 @@
                                         <div class="ui-inputgroup">
                                             <input type="text" pInputText [(ngModel)]="ordenDeCargaFason.CUITDestino"
                                                 mask="00-00000000-0" (change)="validarSisaDestino()"
-                                                [disabled]="noPuedeEditarCuitsTerceros||null">
+                                                [disabled]="noPuedeEditarCuitsTerceros||null || disableForm()">
                                             <span
                                                 *ngIf="ordenDeCargaFason.CUITDestino != ordenDeCargaFason.CUITCliente.toString()"
                                                 class="pt-2 pointer pi pi-copy"
@@ -174,7 +174,7 @@
                                             [options]="listaPlantas" optionLabel="Codigo"
                                             placeholder="Seleccione una planta"
                                             (ngModelChange)="onPlantaSeleccionadaChanged()" [filter]="true"
-                                            filterBy="value.Codigo" [disabled]="noPuedeEditarCuitsTerceros||null">
+                                            filterBy="value.Codigo" [disabled]="noPuedeEditarCuitsTerceros||null || disableForm()">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -187,7 +187,7 @@
                                             [options]="listaDomicilios" optionLabel="Descripcion"
                                             placeholder="Seleccione un domicilio"
                                             (ngModelChange)="onDomicilioSeleccionadoChanged()" [filter]="true"
-                                            filterBy="value.Descripcion" [disabled]="noPuedeEditarCuitsTerceros||null">
+                                            filterBy="value.Descripcion" [disabled]="noPuedeEditarCuitsTerceros||null || disableForm()">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -391,7 +391,7 @@
 
                         <div class="col-xs-12 col-md-11" *ngIf="!esEdicionDeOrden" style="margin-left: 3em; margin-bottom: 2em; margin-top: 2em;">
                             <div class="formulario-label">
-                                Unidades de transporte:
+                                Unidades de transporte de carga de {{getNombreDeProducto()}}:
                             </div>
                             <div *ngIf="unidadesTransporteAgregadas.length == 0" class="styled-select" style="color: red;">
                                 Aún no se agregó ninguna unidad de transporte
@@ -511,6 +511,19 @@
         </div>
     </div>
 </div>
+
+<p-dialog [header]="'Confirmar envío de orden'" [(visible)]="displayModalConfirmacion" [modal]="true" 
+    [responsive]="true" [style]="{width: '400px', minWidth: '300px', maxWidth:'500px'}" [minY]="70" 
+    [draggable]="false" appendTo="body" [closable]="false">
+    <p>¿Está seguro de que desea enviar la orden de carga para el producto:</p>
+    <p><strong>{{getNombreDeProducto()}}</strong></p>
+    <p-footer>
+        <button type="button" pButton icon="pi pi-check" (click)="confirmarEnvio()" 
+            label="Confirmar" class="ui-button-success"></button>
+        <button type="button" pButton icon="pi pi-times" (click)="cancelarEnvio()" 
+            label="Cancelar" class="ui-button-secondary"></button>
+    </p-footer>
+</p-dialog>
 
 <p-dialog [header]="displayModal ? displayModal.replace('CUIT','') : ''" [(visible)]="displayModal" [modal]="true"
     [responsive]="true" [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false"

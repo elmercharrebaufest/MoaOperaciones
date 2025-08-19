@@ -113,6 +113,7 @@ export class OrdenesDeCargaFasonAltaComponent
     subscriptions = new Subscription();
     escalableCNRT?: boolean;
     errorAlValidarEscalable = false;
+    displayModalConfirmacion: boolean = false;
 
     ngOnInit() {
         this.userEmail = sessionStorage.getItem("username") || "username no encontrado";
@@ -345,6 +346,14 @@ export class OrdenesDeCargaFasonAltaComponent
         if (!this.validarCabecera()) {
             return;
         }
+        
+        // Mostrar modal de confirmación
+        this.displayModalConfirmacion = true;
+    }
+
+    confirmarEnvio() {
+        this.displayModalConfirmacion = false;
+        
         try {
             if (this.esEdicionDeOrden) {
                 this.guardarEdicionOrdenDeCargaFason();
@@ -355,6 +364,10 @@ export class OrdenesDeCargaFasonAltaComponent
             this.mensajeComponent.setErrorMsg(e);
             this.spinnerComponent.hideIt();
         }
+    }
+
+    cancelarEnvio() {
+        this.displayModalConfirmacion = false;
     }
 
     guardarNuevaOrdenDeCargaFason() {
@@ -1377,5 +1390,23 @@ export class OrdenesDeCargaFasonAltaComponent
 
     scrollAMensaje() {
         if (this.messagesContainer) { this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' }); }
+    }
+
+    disableForm(): boolean {
+        return this.unidadesTransporteAgregadas.length > 0;
+    }
+
+    getNombreDeProducto(): string {
+        let productId = this.ordenDeCargaFason.Producto_Id;
+        if (!productId) {
+            return '';
+        }
+        
+        let producto = this.listaProductos.find(item => item.MaterialId === productId);
+        if (producto && producto.Descripcion) {
+            let splited = producto.Descripcion.split('-');
+            return splited.length > 1 ? splited[1].trim().toUpperCase() : producto.Descripcion.toUpperCase();
+        }
+        return '';
     }
 }
