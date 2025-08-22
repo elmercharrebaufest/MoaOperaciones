@@ -36,6 +36,8 @@ namespace SustitucionMOAUtils.Services
         private readonly IEmailCertificationService emailCertificationService;
         private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
         private readonly IReporteESService _reporteESService;
+        private readonly ILogicaDerivacionAutomaticaService logicaDerivacionAutomaticaService;
+
         private readonly string EmailEnvioErrores = ConfigurationManager.AppSettings["EmailEnvioErrores"];
 
         public EntradaServicioService(
@@ -44,7 +46,8 @@ namespace SustitucionMOAUtils.Services
             IComprasService comprasService,
             IEmailCertificationService emailCertificationService,
             IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA,
-            IReporteESService reporteESService)
+            IReporteESService reporteESService,
+            ILogicaDerivacionAutomaticaService logicaDerivacionAutomaticaService)
         {
             this.obtenerOrdenDeCompraConsumerMOA = obtenerOrdenDeCompraConsumerMOA;
             this.repositorioEntradaServicio = repositorioEntradaServicio;
@@ -52,6 +55,7 @@ namespace SustitucionMOAUtils.Services
             this.comprasService = comprasService;
             this.emailCertificationService = emailCertificationService;
             this._reporteESService = reporteESService;
+            this.logicaDerivacionAutomaticaService = logicaDerivacionAutomaticaService;
         }
 
         public async Task<List<EntradaServicioCabeceraDto>> ObtenerEntradasServicioCompleta(EntradaServicioParamsDto parametros, UsuarioDto usuario)
@@ -760,7 +764,7 @@ namespace SustitucionMOAUtils.Services
             var usuarioSuplente = repositorioEntradaServicio.Obtener<Usuario>(x => x.Mail == suplente);
 
             var aprobacionesNotificar = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nro_es_local);
-            
+
             _ = NotifyCreation(aprobacionesNotificar, proveedor, usuarioSuplente.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS);
 
             repositorioEntradaServicio.GuardarCambios();
@@ -1567,23 +1571,6 @@ namespace SustitucionMOAUtils.Services
             }
             #endregion
 
-            //MMSN-1066 - Derivación automatica del suplente.
-            #region DerivacionAutomatica
-            if (!auto && user != null && user.Id != 0 && !string.IsNullOrEmpty(user.Suplente))
-            {
-                UsuarioReasignacion periodo = repositorioEntradaServicio.Listar<UsuarioReasignacion>(x => x.Usuario_Id == user.Id).ToList().LastOrDefault();
-                if (periodo != null)
-                {
-                    //Comprobar fechaDesde y fechaHasta
-                    if (periodo.FechaDesde <= DateTime.Today && periodo.FechaHasta >= DateTime.Today)
-                    {
-                        temp.Aprobador_CDS = user.Suplente;
-                        temp.Suplente = temp.Fiscal_SOLPED;
-                    }
-                }
-            }
-            #endregion
-
             if (user != null && user.Id != 0 && user.Externo == true && !string.IsNullOrEmpty(user.Suplente))
             {
                 var usuarioSuplente = repositorioEntradaServicio.Obtener<Usuario>(x => x.Mail == user.Suplente);
@@ -1690,6 +1677,13 @@ namespace SustitucionMOAUtils.Services
                 try
                 {
                     repositorioEntradaServicio.GuardarCambios();
+
+                    #region DerivacionAutomatica
+                    foreach (Aprobaciones ap in toSave)
+                    {
+                        ReasignarSuplente(ap.NRO_ES_LOCAL, ap.Aprobador_CDS);
+                    }
+                    #endregion
                 }
                 catch (Exception e)
                 {
@@ -1987,7 +1981,7 @@ namespace SustitucionMOAUtils.Services
             {
                 suplentesYaEvaluados.Add(mailUsuario);
             }
-            
+
             var mailSuplente = repositorioEntradaServicio.ObtenerMailSuplenteSegunFecha(mailUsuario, DateTime.Today);
 
             if (!string.IsNullOrEmpty(mailSuplente))
