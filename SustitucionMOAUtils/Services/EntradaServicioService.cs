@@ -36,7 +36,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IEmailCertificationService emailCertificationService;
         private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
         private readonly IReporteESService _reporteESService;
-        private readonly ILogicaDerivacionAutomaticaService logicaDerivacionAutomaticaService;
 
         private readonly string EmailEnvioErrores = ConfigurationManager.AppSettings["EmailEnvioErrores"];
 
@@ -46,8 +45,7 @@ namespace SustitucionMOAUtils.Services
             IComprasService comprasService,
             IEmailCertificationService emailCertificationService,
             IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA,
-            IReporteESService reporteESService,
-            ILogicaDerivacionAutomaticaService logicaDerivacionAutomaticaService)
+            IReporteESService reporteESService)
         {
             this.obtenerOrdenDeCompraConsumerMOA = obtenerOrdenDeCompraConsumerMOA;
             this.repositorioEntradaServicio = repositorioEntradaServicio;
@@ -55,7 +53,6 @@ namespace SustitucionMOAUtils.Services
             this.comprasService = comprasService;
             this.emailCertificationService = emailCertificationService;
             this._reporteESService = reporteESService;
-            this.logicaDerivacionAutomaticaService = logicaDerivacionAutomaticaService;
         }
 
         public async Task<List<EntradaServicioCabeceraDto>> ObtenerEntradasServicioCompleta(EntradaServicioParamsDto parametros, UsuarioDto usuario)
