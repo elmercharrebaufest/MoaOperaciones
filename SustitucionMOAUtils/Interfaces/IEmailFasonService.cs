@@ -11,7 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
         void EnviarMailAltaTempranaCuit(OrdenDeCargaFason orden, string ordenId, bool gestionaDestino, bool gestionaDestinatario);
         void EnviarMailCamionAutorizadoEnVariasOrdenes(string patenteChasis, List<string> cuitsClientesOrdenes);
         void EnviarMailIntentoAnulacionActiva(OrdenDeCargaFason orden);
-        void EnviarMailIntentoEdicionActiva(OrdenDeCargaFason orden, OrdenDeCargaFasonRequest request);
+        void EnviarMailIntentoEdicionActiva(OrdenDeCargaFason orden, EditarOrdenDeCargaFasonRequest request);
         void EnviarMailNotificacionEdicion(OrdenDeCargaFason orden, List<Variance> listaValoresDiferentes);
         void EnviarMailTransporteNoExiste(OrdenDeCargaFason ordenDeCarga);
         void EnviarMailVencieronOrdenesDeCarga(List<OrdenDeCargaFason> ordenes);

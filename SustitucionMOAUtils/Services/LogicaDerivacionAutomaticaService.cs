@@ -99,42 +99,9 @@ namespace SustitucionMOAUtils.Services
 
             try
             {
-                string transformacionReasignar(Usuario user, Aprobaciones ap)
-                {
-                    if (ap.Aprobador_CDS == user.Suplente)
-                    {
-                        // no se debe hacer el cambio.
-                        // se hace para evitar que se envíe la notificación de reasignación
-                        return null;
-                    }
-                    ap.Aprobador_CDS = user.Suplente;
-                    ap.Suplente = user.Mail;
-                    return ap.NRO_ES_LOCAL;
-                }
+                ReasignarAprobacionesEnRango(usuariosEnRango);
 
-                string transformacionRevertirAsignacion(Usuario user, Aprobaciones ap)
-                {
-                    if (string.IsNullOrWhiteSpace(user.Suplente))
-                    {
-                        //no es posible hacer el cambio
-                        return null;
-                    }
-                    if (ap.Aprobador_CDS == user.Mail)
-                    {
-                        // no se debe hacer el cambio.
-                        // se hace para evitar que se envíe la notificación de reasignación
-                        return null;
-                    }
-                    ap.Aprobador_CDS = user.Mail;
-                    ap.Suplente = null;
-                    return ap.NRO_ES_LOCAL;
-                }
-
-                // Reasignar aprobaciones a los suplentes correspondientes
-                ReasignarAprobaciones(usuariosEnRango, transformacionReasignar);
-
-                // Revertir aprobaciones a los aprobadores originales
-                ReasignarAprobaciones(usuariosVencidos.Union(usuariosFuturos), transformacionRevertirAsignacion);
+                RevertirAsignacionesFueraDeRango(usuariosVencidos.Union(usuariosFuturos));
 
                 // Adicionalmente, remover los registros vencidos
                 foreach (var registro in registrosVencidos)
@@ -150,6 +117,53 @@ namespace SustitucionMOAUtils.Services
             }
 
             return "Éxito";
+        }
+
+        /// <summary>
+        /// Reasigna las aprobaciones de los usuarios que se encuentren en el rango de fechas de reasignación.
+        /// </summary>
+        private void ReasignarAprobacionesEnRango(IEnumerable<Usuario> usuariosAReasignar)
+        {
+            string reasignarASuplente(Usuario usuario, Aprobaciones ap)
+            {
+                var suplenteMail = ResolverSuplenteReasignacion(usuario, usuariosAReasignar);
+
+                if (suplenteMail == null || ap.Aprobador_CDS == suplenteMail)
+                {
+                    // No se debe hacer el cambio. Se devuelve null para evitar que se envíe la notificación de reasignación
+                    return null;
+                }
+                ap.Aprobador_CDS = suplenteMail;
+                ap.Suplente = usuario.Mail;
+                return ap.NRO_ES_LOCAL;
+            }
+
+            ReasignarAprobaciones(usuariosAReasignar, reasignarASuplente);
+        }
+
+        /// <summary>
+        /// Revierte las asignaciones en las aprobaciones de los usuarios que se encuentren fuera del rango de reasignación.
+        /// </summary>
+        private void RevertirAsignacionesFueraDeRango(IEnumerable<Usuario> usuariosARevertir)
+        {
+            string reasignarAAprobadorOriginal(Usuario usuario, Aprobaciones ap)
+            {
+                if (string.IsNullOrWhiteSpace(usuario.Suplente))
+                {
+                    // No es posible hacer el cambio
+                    return null;
+                }
+                if (ap.Aprobador_CDS == usuario.Mail)
+                {
+                    // No se debe hacer el cambio. Se devuelve null para evitar que se envíe la notificación de reasignación
+                    return null;
+                }
+                ap.Aprobador_CDS = usuario.Mail;
+                ap.Suplente = null;
+                return ap.NRO_ES_LOCAL;
+            }
+
+            ReasignarAprobaciones(usuariosARevertir, reasignarAAprobadorOriginal);
         }
 
         /// <summary>
@@ -188,6 +202,44 @@ namespace SustitucionMOAUtils.Services
             {
                 repositorio.GuardarCambios();
                 Notificar(esLocalModificada);
+            }
+        }
+
+        private string ResolverSuplenteReasignacion(Usuario usuario, IEnumerable<Usuario> usuariosEnRangoReasignacion, HashSet<string> suplentesYaEvaluados = null)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(usuario.Suplente))
+                {
+                    Logger.Log.Info($"Error: reasignación de usuario sin suplente ({usuario.Mail})");
+                    return null;
+                }
+
+                suplentesYaEvaluados = suplentesYaEvaluados ?? new HashSet<string>();
+                if (suplentesYaEvaluados.Contains(usuario.Suplente))
+                {
+                    Logger.Log.Info($"Error: Referencia circular al intentar resolver suplente: {string.Join(", ", suplentesYaEvaluados)}");
+                    return null;
+                }
+                else
+                {
+                    suplentesYaEvaluados.Add(usuario.Suplente);
+                }
+
+                var siguienteSuplente = usuariosEnRangoReasignacion.FirstOrDefault(x => x.Mail.Equals(usuario.Suplente, StringComparison.OrdinalIgnoreCase));
+                if (siguienteSuplente != null)
+                {
+                    return ResolverSuplenteReasignacion(siguienteSuplente, usuariosEnRangoReasignacion, suplentesYaEvaluados);
+                }
+                else
+                {
+                    return usuario.Suplente;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error($"Error al resolver suplente de reasignación para el usuario {(usuario != null ? usuario.Mail : "NULO")}", ex);
+                return null;
             }
         }
 

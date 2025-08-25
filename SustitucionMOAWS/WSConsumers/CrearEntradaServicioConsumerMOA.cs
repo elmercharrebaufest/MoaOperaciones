@@ -7,6 +7,7 @@ using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MLBO;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -37,7 +38,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
                 {
-                    var headers = GenerateEntrySheetHeaderXmlSinPI(parametros.EntrySheetHeader);                   
+                    var headers = GenerateEntrySheetHeaderXmlSinPI(parametros.EntrySheetHeader);
                     var services = GenerateEntrySheetServicesXmlSinPI(parametros.EntrySheetServices.Items);
                     var agent = new Z_WS_BAPI_DIRECT_MLBOClient();
                     agent.ClientCredentials.UserName.UserName = UserSap;
@@ -48,8 +49,8 @@ namespace SustitucionMOAWS.WSConsumers
                         ENTRYSHEETSERVICESTEXTS = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] { },
                         ENTRYSHEETSRVACCASSVALUES = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKLC[] { },
                         ENTRYSHEETSERVICES = services.ToArray(),
-                        RETURN = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRET2[] {},
-                        ENTRYSHEETACCOUNTASSIGNMENT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKNC[] {},
+                        RETURN = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRET2[] { },
+                        ENTRYSHEETACCOUNTASSIGNMENT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKNC[] { },
                         ENTRYSHEETHEADERTEXT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] { },
                     };
                     Log.Info($"SAP sin PI BAPI_ENTRYSHEET_CREATE request");
@@ -292,7 +293,7 @@ namespace SustitucionMOAWS.WSConsumers
             return ENTRYSHEETHEADER;
         }
         private List<WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLC> GenerateEntrySheetServicesXmlSinPI(List<EntrySheetServiceItemSection> entrySheetServices)
-        {          
+        {
             List<WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLC> resultado = new List<WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLC>();
 
             var entrySheetServicesCabeceraFija = new EntrySheetServiceItemSection
@@ -337,8 +338,8 @@ namespace SustitucionMOAWS.WSConsumers
             bapiesllc.SUBPCKG_NO = item.SubPackageNumber;
             bapiesllc.EXT_LINE = item.ExternalLineNumber;
             bapiesllc.SERVICE = ((item.Service ?? "0").Trim() == "0" ? "" : item.Service);
-            bapiesllc.QUANTITY = Convert.ToDecimal(item.Quantity.Replace(",", "."));
-            bapiesllc.GR_PRICE = Math.Round(Convert.ToDecimal(item.GrossPrice.ToString().Replace(",", ".")), 4);
+            bapiesllc.QUANTITY = decimal.Parse(item.Quantity.Replace(",", "."), CultureInfo.InvariantCulture);
+            bapiesllc.GR_PRICE = item.GrossPrice;
             bapiesllc.SHORT_TEXT = item.ShortText;
             bapiesllc.PLN_PCKG = item.PlannedPackage;
             bapiesllc.PLN_LINE = item.PlannedLine;
@@ -352,9 +353,9 @@ namespace SustitucionMOAWS.WSConsumers
             EntradaServicioCreateRespuestaDto returnInfo = new EntradaServicioCreateRespuestaDto();
             foreach (var item in response.RETURN)
             {
-                returnInfo.Type    = item.TYPE;
-                returnInfo.Id      = item.ID;
-                returnInfo.Number  = item.NUMBER;
+                returnInfo.Type = item.TYPE;
+                returnInfo.Id = item.ID;
+                returnInfo.Number = item.NUMBER;
                 returnInfo.Message = item.MESSAGE;
             }
             return returnInfo;

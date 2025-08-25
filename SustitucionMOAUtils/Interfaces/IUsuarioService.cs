@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.UsuarioDtos;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
@@ -40,7 +41,6 @@ namespace SustitucionMOAUtils.Interfaces
         IEnumerable<string> ListarFiscalesSolp();
         ProveedorDto TraerProveedorEnSAP(string codigoProveedor, string codigoCorredor);
         string EliminarCuitNoHabilitado(int proveedorId, string mailUsuarioSesion);
-        ProveedorDto GetProveedorAprobadoPorCuit(string cuit, string mailUsuarioSesion);
         void AsignarNuevaCUIT(AsignarNuevaCuitDto datosAsignar, string mailUsuarioSesion);
         List<DestinatarioDto> ObtenerDestinatariosConsulta(int proveedorId);
         List<ProveedorDto> GetProveedoresUsuario(int usuarioId);
@@ -55,5 +55,6 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<UsuarioComprasDto> ListarUsuarioCompras();
         void GuardarSuplente(int idUsuario, string suplente, string fechaDesde, string fechaHasta, bool esExterno);
+        List<ProveedorARelacionar> GetProveedoresARelacionar(string cuit, string mailUsuario);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCargaCommon;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using System;
@@ -116,6 +117,7 @@ namespace SustitucionMOAModel.Entities
         {
             return CodigoVerificacionSap == ResponseConverter.GetCodigoControlCarga(controlCargaRes);
         }
+
         public bool EsFacturaAnticipada
         {
             get
@@ -123,6 +125,7 @@ namespace SustitucionMOAModel.Entities
                 return TipoContrato == TipoContratoFAS.Anticipado;
             }
         }
+
         public bool SinSeleccionarFactura
         {
             get
@@ -151,10 +154,6 @@ namespace SustitucionMOAModel.Entities
                 var slash = (!(DestinoExisteScato ?? false) && !(DestinatarioExisteScato ?? false)) ? "/" : "";
                 return $"No se pudo generar la entrega. No existe {msgDestinatario}{slash}{msgDestino}.";
             }
-        }
-        public string ObtenerKeyHashPatentes()
-        {
-            return $"{PatenteAcoplado}.{ChasisAcoplado}";
         }
 
         /// <summary>
@@ -218,6 +217,74 @@ namespace SustitucionMOAModel.Entities
             }
             logCambioEstado += $" Estado final:{Estado.ToFriendlyString()}";
             return logCambioEstado;
+        }
+
+        public OrdenDeCarga() { }
+
+        public OrdenDeCarga(OrdenDeCarga orden, UnidadTransporteCarga unidadTransporte)
+        {
+            AprobadoCredito = orden.AprobadoCredito;
+            Cantidad = orden.Cantidad;
+            Cliente = orden.Cliente;
+            Cliente_Id = orden.Cliente_Id;
+            CodigoCorredor = orden.CodigoCorredor;
+            CodigoVerificacionSap = orden.CodigoVerificacionSap;
+            ContratoIngresado = orden.ContratoIngresado;
+            ContratoSAP = orden.ContratoSAP;
+            ContratoSinCantidadPendiente = orden.ContratoSinCantidadPendiente;
+            ContratosRespuesta = orden.ContratosRespuesta;
+            Corredor = orden.Corredor;
+            Corredor_Id = orden.Corredor_Id;
+            CorredorSeleccionado = orden.CorredorSeleccionado;
+            CUITCliente = orden.CUITCliente;
+            CUITCorredor = orden.CUITCorredor;
+            CUITDestinatario = orden.CUITDestinatario;
+            CUITDestino = orden.CUITDestino;
+            DescripcionCodigoVerificacionSap = orden.DescripcionCodigoVerificacionSap;
+            DescripcionErrorInterno = orden.DescripcionErrorInterno;
+            DestinatarioExisteScato = orden.DestinatarioExisteScato;
+            DestinoExisteScato = orden.DestinoExisteScato;
+            DestinoMercaderia = orden.DestinoMercaderia;
+            DomicilioDescr = orden.DomicilioDescr;
+            DomicilioOrden = orden.DomicilioOrden;
+            DomicilioTipo = orden.DomicilioTipo;
+            EdicionRechazada = orden.EdicionRechazada;
+            Escalable = orden.Escalable;
+            Estado = orden.Estado;
+            FechaCarga = orden.FechaCarga;
+            FechaEntregaGenerada = orden.FechaEntregaGenerada;
+            FechaVencimiento = orden.FechaVencimiento;
+            FechaVencimientoAmpliada = orden.FechaVencimientoAmpliada;
+            FleteMOA = orden.FleteMOA;
+            InformadaSAP = orden.InformadaSAP;
+            KmsARecorrer = orden.KmsARecorrer;
+            NumeroEntrega = orden.NumeroEntrega;
+            NumeroFactura = orden.NumeroFactura;
+            NumeroFacturaSeleccionada = orden.NumeroFacturaSeleccionada;
+            NumeroPedido = orden.NumeroPedido;
+            NumeroPedidoIngresado = orden.NumeroPedidoIngresado;
+            Observacion = orden.Observacion;
+            PedidoSAP = orden.PedidoSAP;
+            PedidosRespuesta = orden.PedidosRespuesta;
+            PlantaCodigo = orden.PlantaCodigo;
+            Producto = orden.Producto;
+            Producto_Id = orden.Producto_Id;
+            RazonSocialDestinatario = orden.RazonSocialDestinatario;
+            RazonSocialDestino = orden.RazonSocialDestino;
+            Reventa = orden.Reventa;
+            TipoContrato = orden.TipoContrato;
+            TransporteExiste = orden.TransporteExiste;
+            UsuarioCreacion = orden.UsuarioCreacion;
+            UsuarioCreacion_Id = orden.UsuarioCreacion_Id;
+
+            PatenteAcoplado = unidadTransporte.PatenteAcoplado;
+            ChasisAcoplado = unidadTransporte.PatenteChasis;
+            NombreChofer = unidadTransporte.NombreChofer;
+            CUITChofer = unidadTransporte.CUILChofer;
+            RazonSocialTransporte = unidadTransporte.RazonSocialTransporte;
+            CUITTransporte = unidadTransporte.CUITTransporte;
+            CUITIntermediarioFlete = unidadTransporte.CUITIntermediarioFlete;
+            RazonSocialIntermediarioFlete = unidadTransporte.RazonSocialIntermediarioFlete;
         }
 
         public override bool Equals(object obj)

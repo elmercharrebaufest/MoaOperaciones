@@ -6,8 +6,6 @@ using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOAUtils.Email;
@@ -342,6 +340,12 @@ namespace SustitucionMOAUtils.Services
             {
                 var ordenDeCompraSAP = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra(ordenDeCompraEncontrada.Value);
 
+                if (ordenDeCompraSAP.Cabecera == null)
+                {
+                    result.Add(new ValidationResult(false, $"Orden de compra {ordenDeCompraEncontrada.Value} no encontrada", typeof(OrdenCompraValidationCommand).Name, "", ""));
+                    return result;
+                }
+
                 if (ordenDeCompraSAP.Cabecera.CodigoProveedor != codigoProveedor)
                 {
                     result.Add(new ValidationResult(false, "La orden de compra pertenece a otro proveedor", typeof(OrdenCompraValidationCommand).Name, "", ""));
@@ -488,14 +492,14 @@ namespace SustitucionMOAUtils.Services
 
             var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(archivo)).Result;
             Thread.Sleep(2000);
-            
+
             Log.Info("ObtenerResultadoOCRAsync: " + archivo.FileName);
-            
+
             var elementosLeidos = Task.Run(async () => await azureService.ObtenerResultadoOCRAsync(operacionOCRId)).Result;
             var resultadoOcrs = elementosLeidos.Select(a => new ValidationResult { Input = a, FileName = archivo.FileName });
-            
+
             Log.Info("Fin ObtenerResultadoOCRAsync: " + archivo.FileName);
-            
+
             return resultadoOcrs;
         }
     }

@@ -4,7 +4,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
-using SustitucionMOARepositorio;
+using SustitucionMOAModel.Util.EntitiesExtensions;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.WSConsumers;
@@ -34,12 +34,9 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<DetalleOrdenDeCompraDto> result = ServicioSAP_OrdenesCompraCabeceras(parametros, userMail);
+                ListaPaginada<DetalleOrdenDeCompraDto> result = ServicioSAP_OrdenesCompraCabeceras(parametros, userMail);
 
-                if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
-                    result = OrdenarOrdenesCompra(result, parametros.ColumnaOrden, parametros.OrdenAscendente);
-
-                return PaginarResultados(result, parametros.pagina, parametros.elementosPorPagina);
+                return result;
             }
             catch (Exception e) when (e is InfoCustomException || e is ValidationCustomException)
             {
@@ -54,7 +51,7 @@ namespace SustitucionMOAUtils.Services
         /// <summary>
         /// Realiza ordenamiento del objeto OrdenCompraDto según la columna y el tipo de orden especificados
         /// </summary>
-        public List<DetalleOrdenDeCompraDto> OrdenarOrdenesCompra(List<DetalleOrdenDeCompraDto> ordenes, string columnaOrden, bool ordenAscendente)
+        private List<DetalleOrdenDeCompraDto> OrdenarOrdenesCompra(List<DetalleOrdenDeCompraDto> ordenes, string columnaOrden, bool ordenAscendente)
         {
             if (string.IsNullOrEmpty(columnaOrden))
                 return ordenes; // Sin ordenación si no se especifica una columna
@@ -76,17 +73,17 @@ namespace SustitucionMOAUtils.Services
         /// <summary>
         /// Pagina los resultados de la lista de ordenes de compra
         /// </summary>
-        public ListaPaginada<DetalleOrdenDeCompraDto> PaginarResultados(List<DetalleOrdenDeCompraDto> resultados, int pagina, int? elementosPorPagina)
+        private ListaPaginada<DetalleOrdenDeCompraDto> PaginarResultados(List<DetalleOrdenDeCompraDto> resultados, OrderParamsDto parametros)
         {
             // Establecer valores predeterminados si son nulos o inválidos
             int itemsTotales = resultados.Count();
 
-            int paginaValida = pagina > 0 ? pagina : 1;
-            int elementosPorPaginaValidos = (elementosPorPagina.HasValue && elementosPorPagina.Value > 0) ? elementosPorPagina.Value : 5;
+            int paginaValida = parametros.pagina > 0 ? parametros.pagina : 1;
+            int elementosPorPaginaValidos = (parametros.elementosPorPagina > 0) ? parametros.elementosPorPagina : 10;
 
             int indiceInicial = (paginaValida - 1) * elementosPorPaginaValidos;
-
-            return new ListaPaginada<DetalleOrdenDeCompraDto>(resultados.ToList(), paginaValida, elementosPorPaginaValidos, itemsTotales);
+            var items = resultados.Skip(indiceInicial).Take(elementosPorPaginaValidos).ToList();
+            return new ListaPaginada<DetalleOrdenDeCompraDto>(items, paginaValida, elementosPorPaginaValidos, itemsTotales);
 
         }
 
@@ -94,9 +91,7 @@ namespace SustitucionMOAUtils.Services
         // Buscar nombre de proveedor para agregarlo a la ES.
         public Proveedor BuscarProveedor(OrderParamsDto parametros)
         {
-            List<OrdenCompraDto> ordenesCompra = new List<OrdenCompraDto>();
-
-            ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
+            List<OrdenCompraDto> ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
 
             Proveedor _proveedor = new Proveedor();
 
@@ -128,26 +123,20 @@ namespace SustitucionMOAUtils.Services
         }
 
         // Consultas a servicio SAP con distintos criterios de busqueda
-        public List<DetalleOrdenDeCompraDto> ServicioSAP_OrdenesCompraCabeceras(OrderParamsDto parametros, string userMail)
+        private ListaPaginada<DetalleOrdenDeCompraDto> ServicioSAP_OrdenesCompraCabeceras(OrderParamsDto parametros, string userMail)
         {
-            List<DetalleOrdenDeCompraDto> result = new List<DetalleOrdenDeCompraDto>();
-            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio);
+            ListaPaginada<DetalleOrdenDeCompraDto> result = new ListaPaginada<DetalleOrdenDeCompraDto>(new List<DetalleOrdenDeCompraDto>(), parametros.pagina, parametros.elementosPorPagina, 0);
+            ObtenerOrdenDeCompraConsumerMOA obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio);
 
             if (parametros.vendedor == "-")
                 return result;
 
             var esUsuarioSolp = userMail != null && repositorioEntradaServicio.Obtener<Usuario>(x => x.Mail == userMail).Roles.Any(rol => rol.Nombre == "SOLP");
 
-            var ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros, esUsuarioSolp);
+            List<OrdenCompraDto> ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros, esUsuarioSolp);
 
             //Se filtran por las OC tomando las que empiezan con 412
             ordenesCompra = ordenesCompra.Where(x => x.Id.ToString().StartsWith("412")).ToList();
-
-            List<TablaSap> centros = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Centro");
-            List<TablaSap> almacenes = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Almacen");
-
-            //Recorro las ordenes de compra y obtengo el detalle de cada una
-
             string today = DateTime.Now.ToString(dateTimeFormat);
             DateTime fechaHasta = DateTime.ParseExact(today, dateTimeFormat, CultureInfo.InvariantCulture);
             DateTime fechaInicio = DateTime.ParseExact(today, dateTimeFormat, CultureInfo.InvariantCulture);
@@ -162,6 +151,15 @@ namespace SustitucionMOAUtils.Services
                 fechaInicio = DateTime.ParseExact(parametros.fechaInicio, dateTimeFormat, CultureInfo.InvariantCulture);
             }
 
+            List<OrdenCompraDto> ocFiltradas = new List<OrdenCompraDto>();
+            foreach (var oc in ordenesCompra)
+            {
+                DateTime fechaOC = DateTime.ParseExact(oc.Fecha, dateTimeFormat, CultureInfo.InvariantCulture);
+                if (fechaOC <= fechaHasta)
+                {
+                    ocFiltradas.Add(oc);
+                }
+            }
 
             if (!string.IsNullOrEmpty(parametros.vendedor))
             {
@@ -173,30 +171,40 @@ namespace SustitucionMOAUtils.Services
                 DateTime dateEnd = fechaHasta;
 
 
-                ordenesCompra = ordenesCompra
+                ocFiltradas = ocFiltradas
                     .Where(oc => Convert.ToDateTime(oc.Fecha) >= dateInit && Convert.ToDateTime(oc.Fecha) <= dateEnd)
                     .ToList();
             }
 
-            List<OrdenCompraDto> ocFiltradas = new List<OrdenCompraDto>();
-            foreach (var oc in ordenesCompra)
+            List<DetalleOrdenDeCompraDto> ordenesCompraDto = ocFiltradas.Select(x => new DetalleOrdenDeCompraDto
             {
-                DateTime fechaOC = DateTime.ParseExact(oc.Fecha, dateTimeFormat, CultureInfo.InvariantCulture);
-                if (DateTime.Compare(fechaOC, fechaHasta) != 1)
-                {
-                    ocFiltradas.Add(oc);
-                }
-            }
+                NumeroOrdenDeCompra = x.Id.ToString(),
+                FechaCreacion = x.Fecha,
+                NombreProveedor = x.ProveedorNombre,
+                MonedaDescripcion = x.MonedaDescripcion,
+                SubjToR = x.SUBJ_TO_R,
+                Proveedor = x.ProveedorNumero,
+            }).ToList();
 
-            foreach (var ordenCompra in ocFiltradas)
+
+            if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
+                ordenesCompraDto = OrdenarOrdenesCompra(ordenesCompraDto, parametros.ColumnaOrden, parametros.OrdenAscendente);
+
+
+            ListaPaginada<DetalleOrdenDeCompraDto> ordenesCompraDtoPaginada = PaginarResultados(ordenesCompraDto, parametros);
+
+
+            List<TablaSap> centros = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Centro");
+            List<TablaSap> almacenes = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+            result = new ListaPaginada<DetalleOrdenDeCompraDto>(new List<DetalleOrdenDeCompraDto>(), ordenesCompraDtoPaginada.Pagina, ordenesCompraDtoPaginada.ItemsPorPagina, ordenesCompraDtoPaginada.ItemsTotales);
+            //Recorro las ordenes de compra y obtengo el detalle de cada una
+            foreach (DetalleOrdenDeCompraDto ordenCompra in ordenesCompraDtoPaginada.Items)
             {
-                string nroOC = ordenCompra.Id.ToString();
+                var detalleOrdenDeCompraDto = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(ordenCompra.NumeroOrdenDeCompra, centros, almacenes, esUsuarioSolp);
 
-                var detalleOrdenDeCompraDto = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes, esUsuarioSolp);
-
-                detalleOrdenDeCompraDto.NombreProveedor = ordenCompra.ProveedorNombre;
+                detalleOrdenDeCompraDto.NombreProveedor = ordenCompra.NombreProveedor;
                 detalleOrdenDeCompraDto.MonedaDescripcion = ordenCompra.MonedaDescripcion;
-                detalleOrdenDeCompraDto.SubjToR = ordenCompra.SUBJ_TO_R;
+                detalleOrdenDeCompraDto.SubjToR = ordenCompra.SubjToR;
 
 
                 var numeroSolpList = detalleOrdenDeCompraDto.Posiciones
@@ -216,11 +224,11 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                var adjudicacion = repositorioEntradaServicio.ObtenerUltimaAdjudicacionOC(nroOC);
+                Adjudicacion adjudicacion = repositorioEntradaServicio.ObtenerUltimaAdjudicacionOC(ordenCompra.NumeroOrdenDeCompra);
                 detalleOrdenDeCompraDto.AdmiteCertificacionesParciales = adjudicacion?.AdmiteCertificacionesParciales ?? true;
 
-                var aprobaciones = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_OC == nroOC && (x.Estado_certificacion == "Pendiente Aprobación" || x.Estado_certificacion == "Aprobada"));
-                foreach (var aprobacion in aprobaciones)
+                List<Aprobaciones> aprobaciones = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_OC == ordenCompra.NumeroOrdenDeCompra && (x.Estado_certificacion == "Pendiente Aprobación" || x.Estado_certificacion == "Aprobada"));
+                foreach (Aprobaciones aprobacion in aprobaciones)
                 {
                     int nroLinea = int.Parse(aprobacion.Nro_linea);
                     long nroPosicion = long.Parse(aprobacion.NRO_POS);
@@ -230,7 +238,7 @@ namespace SustitucionMOAUtils.Services
                     //Buscar posición correspondiente a ES Temporal
                     var position = detalleOrdenDeCompraDto.Posiciones.First(x => x.NumeroPosicion == nroPosicion);
 
-                    if (aprobacion.Estado_certificacion == "Aprobada")
+                    if (aprobacion.EstaAprobada())
                     {
                         var itemPosicion = position.Items.First(x => x.NumeroLinea == nroLinea);
 
@@ -247,7 +255,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
-                    if (aprobacion.Estado_certificacion == "Pendiente Aprobación" && position != null)
+                    if (aprobacion.EstaPendienteAprobacion() && position != null)
                     {
                         List<SolicitantesSolpedDto> solicitante = GetSolicitantes(new List<string> { position.NumeroSolp }).GetAwaiter().GetResult();
 
@@ -263,7 +271,7 @@ namespace SustitucionMOAUtils.Services
 
                             //Recalcular Porcentaje y C. Real
                             item.CantidadReal += entradaServicioDto.Cantidad;
-                            
+
                             double porcentaje = Convert.ToDouble((item.CantidadReal * 100) / item.Cantidad);
                             item.Porcentaje = porcentaje.ToString("0.##", CultureInfo.InvariantCulture);
 
@@ -276,10 +284,16 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                result.Add(detalleOrdenDeCompraDto);
+                result.Items.Add(detalleOrdenDeCompraDto);
 
             }
+            if (result.Items.Count > 0)
+            {
+                result.Items.FirstOrDefault().ItemsTotales = ordenesCompraDtoPaginada.ItemsTotales;
+                result.Items.FirstOrDefault().Pagina = ordenesCompraDtoPaginada.Pagina;
+                result.Items.FirstOrDefault().ItemPorPagina = ordenesCompraDtoPaginada.ItemsPorPagina;
 
+            }
             return result;
         }
 

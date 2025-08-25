@@ -666,13 +666,16 @@ namespace SustitucionMOA.Controllers
             string mailUsuarioSesion = SessionPersister.Mail;
             return JsonCustom(new { data = _usuarioService.EliminarCuitNoHabilitado(proveedorId, mailUsuarioSesion) });
         }
+        
         #region AsignarNuevoCUIT
-        [System.Web.Http.HttpGet]
-        public ActionResult GetProveedorAprobadoPorCuit(string cuit)
+        [HttpGet]
+        public ActionResult GetProveedoresARelacionar(string cuit)
         {
-            string mailUsuarioSesion = SessionPersister.Mail;
-            return JsonCustom(new { data = _usuarioService.GetProveedorAprobadoPorCuit(cuit, mailUsuarioSesion) });
+            var mailUsuario = SessionPersister.Mail;
+            var proveedores = _usuarioService.GetProveedoresARelacionar(cuit, mailUsuario);
+            return JsonCustom(new { data = proveedores });
         }
+
         [System.Web.Http.HttpPost]
         public ActionResult AsignarNuevaCUIT(string datosAAsignar)
         {

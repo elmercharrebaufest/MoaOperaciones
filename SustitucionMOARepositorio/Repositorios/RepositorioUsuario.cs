@@ -1,6 +1,9 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.UsuarioDtos;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SqlClient;
@@ -59,6 +62,44 @@ namespace SustitucionMOARepositorio.Repositorios
                 }).ToList();
 
             return usuariosDto;
+        }
+
+        public Usuario ObtenerSuplenteEnPeriodo(string mailUsuario, DateTime fechaDesde, DateTime fechaHasta)
+        {
+            fechaDesde = fechaDesde.Date;
+            fechaHasta = fechaHasta.Date;
+
+            var qrySuplente =
+                from usuario in Set<Usuario>()
+                join reasignacion in Set<UsuarioReasignacion>() on usuario.Id equals reasignacion.Usuario_Id
+                where
+                    usuario.Mail == mailUsuario &&
+                    fechaDesde <= reasignacion.FechaHasta &&
+                    fechaHasta >= reasignacion.FechaDesde
+                select usuario;
+
+            return qrySuplente.FirstOrDefault();
+        }
+
+        public List<ProveedorARelacionar> GetProveedoresARelacionar(string cuit)
+        {
+            var proveedoresARelacionar = (
+                from prov in Set<Proveedor>()
+                where
+                    prov.CUIT == cuit &&
+                    prov.EstadoAprobacion == EstadoAprobacion.Aprobado
+                select new ProveedorARelacionar
+                {
+                    Id = prov.Id,
+                    CodigoProveedor = prov.CodigoProveedor,
+                    CUIT = prov.CUIT,
+                    IdTipoProveedor = prov.TipoProveedor.Id,
+                    RazonSocial = prov.RazonSocial,
+                    TipoProveedor = prov.TipoProveedor.Nombre
+                })
+                .ToList();
+
+            return proveedoresARelacionar;
         }
 
         public bool VerificarActividadUsuario(Usuario usuario)
