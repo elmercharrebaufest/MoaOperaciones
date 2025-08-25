@@ -12,6 +12,7 @@ import { AsignarNuevaCuit } from '../common/models/asignarNuevaCuit';
 import { SeleccionarVendedorResponse } from '../common/models/SeleccionarVendedorResponse';
 import { TipoConfiguracionUsuario } from '../common/enums/TipoConfiguracionUsuario';
 import { ReqGuardarConfiguracionUsuario } from '../common/models/ReqGuardarConfiguracionUsuario';
+import { ProveedorARelacionar } from '../common/models/usuario/proveedorARelacionar';
 
 @Injectable()
 export class UsuarioService extends BaseService {
@@ -280,11 +281,12 @@ export class UsuarioService extends BaseService {
             .get('/api/usuario/getProvedoresEmail', { params: params, headers: this.headers });
     }
 
-    public getProveedorAprobadoPorCuit(cuit: string): Observable<ApiResponse<Proveedor>> {
+    public getProveedoresARelacionar(cuit: string): Observable<ApiResponse<ProveedorARelacionar[]>> {
         let params = new HttpParams().append("cuit", cuit);
 
-        return this.http.get('/api/usuario/GetProveedorAprobadoPorCuit', { params, headers: this.headers })
+        return this.http.get('/api/usuario/GetProveedoresARelacionar', { params, headers: this.headers })
     }
+
     public asignarNuevaCuit(datosAAsignar: AsignarNuevaCuit): Observable<ApiResponse<void>> {
         let jsonDatosAAsignar = JSON.stringify(datosAAsignar);
         const payload = new FormData();

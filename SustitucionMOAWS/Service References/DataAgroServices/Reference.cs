@@ -743,6 +743,12 @@ namespace SustitucionMOAWS.DataAgroServices {
         private string DolarizadoExpressField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EPAField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EUDRField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string EspecialField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -894,6 +900,9 @@ namespace SustitucionMOAWS.DataAgroServices {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string SelCargoVendField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string SinBoletoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string SustentableField;
@@ -1413,6 +1422,32 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((object.ReferenceEquals(this.DolarizadoExpressField, value) != true)) {
                     this.DolarizadoExpressField = value;
                     this.RaisePropertyChanged("DolarizadoExpress");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string EPA {
+            get {
+                return this.EPAField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EPAField, value) != true)) {
+                    this.EPAField = value;
+                    this.RaisePropertyChanged("EPA");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string EUDR {
+            get {
+                return this.EUDRField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EUDRField, value) != true)) {
+                    this.EUDRField = value;
+                    this.RaisePropertyChanged("EUDR");
                 }
             }
         }
@@ -2076,6 +2111,19 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((object.ReferenceEquals(this.SelCargoVendField, value) != true)) {
                     this.SelCargoVendField = value;
                     this.RaisePropertyChanged("SelCargoVend");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string SinBoleto {
+            get {
+                return this.SinBoletoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SinBoletoField, value) != true)) {
+                    this.SinBoletoField = value;
+                    this.RaisePropertyChanged("SinBoleto");
                 }
             }
         }
@@ -4148,6 +4196,1143 @@ namespace SustitucionMOAWS.DataAgroServices {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="SISA", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities")]
+    [System.SerializableAttribute()]
+    public partial class SISA : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CBUField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CUITField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CategoriaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int CodCategoriaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int EstadoCuitField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> FechaActCBUField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> FechaGeneracionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> FechaNotifDFECategoriaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> FechaNotifDFEEstadoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> FechaVigenciaCategoriaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> FechaVigenciaEstadoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ObservacionesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string RazonSocialField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string SituacionCategoriaField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CBU {
+            get {
+                return this.CBUField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CBUField, value) != true)) {
+                    this.CBUField = value;
+                    this.RaisePropertyChanged("CBU");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CUIT {
+            get {
+                return this.CUITField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CUITField, value) != true)) {
+                    this.CUITField = value;
+                    this.RaisePropertyChanged("CUIT");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Categoria {
+            get {
+                return this.CategoriaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CategoriaField, value) != true)) {
+                    this.CategoriaField = value;
+                    this.RaisePropertyChanged("Categoria");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int CodCategoria {
+            get {
+                return this.CodCategoriaField;
+            }
+            set {
+                if ((this.CodCategoriaField.Equals(value) != true)) {
+                    this.CodCategoriaField = value;
+                    this.RaisePropertyChanged("CodCategoria");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int EstadoCuit {
+            get {
+                return this.EstadoCuitField;
+            }
+            set {
+                if ((this.EstadoCuitField.Equals(value) != true)) {
+                    this.EstadoCuitField = value;
+                    this.RaisePropertyChanged("EstadoCuit");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> FechaActCBU {
+            get {
+                return this.FechaActCBUField;
+            }
+            set {
+                if ((this.FechaActCBUField.Equals(value) != true)) {
+                    this.FechaActCBUField = value;
+                    this.RaisePropertyChanged("FechaActCBU");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> FechaGeneracion {
+            get {
+                return this.FechaGeneracionField;
+            }
+            set {
+                if ((this.FechaGeneracionField.Equals(value) != true)) {
+                    this.FechaGeneracionField = value;
+                    this.RaisePropertyChanged("FechaGeneracion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> FechaNotifDFECategoria {
+            get {
+                return this.FechaNotifDFECategoriaField;
+            }
+            set {
+                if ((this.FechaNotifDFECategoriaField.Equals(value) != true)) {
+                    this.FechaNotifDFECategoriaField = value;
+                    this.RaisePropertyChanged("FechaNotifDFECategoria");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> FechaNotifDFEEstado {
+            get {
+                return this.FechaNotifDFEEstadoField;
+            }
+            set {
+                if ((this.FechaNotifDFEEstadoField.Equals(value) != true)) {
+                    this.FechaNotifDFEEstadoField = value;
+                    this.RaisePropertyChanged("FechaNotifDFEEstado");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> FechaVigenciaCategoria {
+            get {
+                return this.FechaVigenciaCategoriaField;
+            }
+            set {
+                if ((this.FechaVigenciaCategoriaField.Equals(value) != true)) {
+                    this.FechaVigenciaCategoriaField = value;
+                    this.RaisePropertyChanged("FechaVigenciaCategoria");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> FechaVigenciaEstado {
+            get {
+                return this.FechaVigenciaEstadoField;
+            }
+            set {
+                if ((this.FechaVigenciaEstadoField.Equals(value) != true)) {
+                    this.FechaVigenciaEstadoField = value;
+                    this.RaisePropertyChanged("FechaVigenciaEstado");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Observaciones {
+            get {
+                return this.ObservacionesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ObservacionesField, value) != true)) {
+                    this.ObservacionesField = value;
+                    this.RaisePropertyChanged("Observaciones");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string RazonSocial {
+            get {
+                return this.RazonSocialField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.RazonSocialField, value) != true)) {
+                    this.RazonSocialField = value;
+                    this.RaisePropertyChanged("RazonSocial");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string SituacionCategoria {
+            get {
+                return this.SituacionCategoriaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SituacionCategoriaField, value) != true)) {
+                    this.SituacionCategoriaField = value;
+                    this.RaisePropertyChanged("SituacionCategoria");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ApoderadoSapDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
+    [System.SerializableAttribute()]
+    public partial class ApoderadoSapDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ApellidoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CuitApoderadoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FechaDesdeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FechaHastaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NombresField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string PuestoField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Apellido {
+            get {
+                return this.ApellidoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ApellidoField, value) != true)) {
+                    this.ApellidoField = value;
+                    this.RaisePropertyChanged("Apellido");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CuitApoderado {
+            get {
+                return this.CuitApoderadoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CuitApoderadoField, value) != true)) {
+                    this.CuitApoderadoField = value;
+                    this.RaisePropertyChanged("CuitApoderado");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FechaDesde {
+            get {
+                return this.FechaDesdeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FechaDesdeField, value) != true)) {
+                    this.FechaDesdeField = value;
+                    this.RaisePropertyChanged("FechaDesde");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FechaHasta {
+            get {
+                return this.FechaHastaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FechaHastaField, value) != true)) {
+                    this.FechaHastaField = value;
+                    this.RaisePropertyChanged("FechaHasta");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Nombres {
+            get {
+                return this.NombresField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NombresField, value) != true)) {
+                    this.NombresField = value;
+                    this.RaisePropertyChanged("Nombres");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Puesto {
+            get {
+                return this.PuestoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PuestoField, value) != true)) {
+                    this.PuestoField = value;
+                    this.RaisePropertyChanged("Puesto");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="CupoSapTerceroDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
+    [System.SerializableAttribute()]
+    public partial class CupoSapTerceroDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CUITField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CalidadField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CentroField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ComercialAsignadoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ComercialCreadorField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool ConDescargaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ContratoSapField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CupoSapField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int CupoStopField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EPAField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EUDRField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EstadoCupoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool FasonField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FechaGeneracionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FechaIngresoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool FleteProcedenciaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdDataAgroField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MaterialField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string OrigenDeCupoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string RazonSocialField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool SustentableField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TipoDeCupoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TipoNegocioField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ZonaCupoField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CUIT {
+            get {
+                return this.CUITField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CUITField, value) != true)) {
+                    this.CUITField = value;
+                    this.RaisePropertyChanged("CUIT");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Calidad {
+            get {
+                return this.CalidadField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CalidadField, value) != true)) {
+                    this.CalidadField = value;
+                    this.RaisePropertyChanged("Calidad");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Centro {
+            get {
+                return this.CentroField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CentroField, value) != true)) {
+                    this.CentroField = value;
+                    this.RaisePropertyChanged("Centro");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ComercialAsignado {
+            get {
+                return this.ComercialAsignadoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ComercialAsignadoField, value) != true)) {
+                    this.ComercialAsignadoField = value;
+                    this.RaisePropertyChanged("ComercialAsignado");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ComercialCreador {
+            get {
+                return this.ComercialCreadorField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ComercialCreadorField, value) != true)) {
+                    this.ComercialCreadorField = value;
+                    this.RaisePropertyChanged("ComercialCreador");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool ConDescarga {
+            get {
+                return this.ConDescargaField;
+            }
+            set {
+                if ((this.ConDescargaField.Equals(value) != true)) {
+                    this.ConDescargaField = value;
+                    this.RaisePropertyChanged("ConDescarga");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ContratoSap {
+            get {
+                return this.ContratoSapField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ContratoSapField, value) != true)) {
+                    this.ContratoSapField = value;
+                    this.RaisePropertyChanged("ContratoSap");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CupoSap {
+            get {
+                return this.CupoSapField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CupoSapField, value) != true)) {
+                    this.CupoSapField = value;
+                    this.RaisePropertyChanged("CupoSap");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int CupoStop {
+            get {
+                return this.CupoStopField;
+            }
+            set {
+                if ((this.CupoStopField.Equals(value) != true)) {
+                    this.CupoStopField = value;
+                    this.RaisePropertyChanged("CupoStop");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool EPA {
+            get {
+                return this.EPAField;
+            }
+            set {
+                if ((this.EPAField.Equals(value) != true)) {
+                    this.EPAField = value;
+                    this.RaisePropertyChanged("EPA");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool EUDR {
+            get {
+                return this.EUDRField;
+            }
+            set {
+                if ((this.EUDRField.Equals(value) != true)) {
+                    this.EUDRField = value;
+                    this.RaisePropertyChanged("EUDR");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string EstadoCupo {
+            get {
+                return this.EstadoCupoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EstadoCupoField, value) != true)) {
+                    this.EstadoCupoField = value;
+                    this.RaisePropertyChanged("EstadoCupo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Fason {
+            get {
+                return this.FasonField;
+            }
+            set {
+                if ((this.FasonField.Equals(value) != true)) {
+                    this.FasonField = value;
+                    this.RaisePropertyChanged("Fason");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FechaGeneracion {
+            get {
+                return this.FechaGeneracionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FechaGeneracionField, value) != true)) {
+                    this.FechaGeneracionField = value;
+                    this.RaisePropertyChanged("FechaGeneracion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FechaIngreso {
+            get {
+                return this.FechaIngresoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FechaIngresoField, value) != true)) {
+                    this.FechaIngresoField = value;
+                    this.RaisePropertyChanged("FechaIngreso");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool FleteProcedencia {
+            get {
+                return this.FleteProcedenciaField;
+            }
+            set {
+                if ((this.FleteProcedenciaField.Equals(value) != true)) {
+                    this.FleteProcedenciaField = value;
+                    this.RaisePropertyChanged("FleteProcedencia");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int IdDataAgro {
+            get {
+                return this.IdDataAgroField;
+            }
+            set {
+                if ((this.IdDataAgroField.Equals(value) != true)) {
+                    this.IdDataAgroField = value;
+                    this.RaisePropertyChanged("IdDataAgro");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Material {
+            get {
+                return this.MaterialField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MaterialField, value) != true)) {
+                    this.MaterialField = value;
+                    this.RaisePropertyChanged("Material");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string OrigenDeCupo {
+            get {
+                return this.OrigenDeCupoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.OrigenDeCupoField, value) != true)) {
+                    this.OrigenDeCupoField = value;
+                    this.RaisePropertyChanged("OrigenDeCupo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string RazonSocial {
+            get {
+                return this.RazonSocialField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.RazonSocialField, value) != true)) {
+                    this.RazonSocialField = value;
+                    this.RaisePropertyChanged("RazonSocial");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Sustentable {
+            get {
+                return this.SustentableField;
+            }
+            set {
+                if ((this.SustentableField.Equals(value) != true)) {
+                    this.SustentableField = value;
+                    this.RaisePropertyChanged("Sustentable");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TipoDeCupo {
+            get {
+                return this.TipoDeCupoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TipoDeCupoField, value) != true)) {
+                    this.TipoDeCupoField = value;
+                    this.RaisePropertyChanged("TipoDeCupo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TipoNegocio {
+            get {
+                return this.TipoNegocioField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TipoNegocioField, value) != true)) {
+                    this.TipoNegocioField = value;
+                    this.RaisePropertyChanged("TipoNegocio");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ZonaCupo {
+            get {
+                return this.ZonaCupoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ZonaCupoField, value) != true)) {
+                    this.ZonaCupoField = value;
+                    this.RaisePropertyChanged("ZonaCupo");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ResultEstadoProveedores", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
+    [System.SerializableAttribute()]
+    public partial class ResultEstadoProveedores : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private SustitucionMOAWS.DataAgroServices.ResultProveedoresIni[] ContactosField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int TotalContactosField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int TotalHabilitadoContactosField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int TotalLegajoIrregularContactosField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int TotalNoHabilitadoContactosField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public SustitucionMOAWS.DataAgroServices.ResultProveedoresIni[] Contactos {
+            get {
+                return this.ContactosField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ContactosField, value) != true)) {
+                    this.ContactosField = value;
+                    this.RaisePropertyChanged("Contactos");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int TotalContactos {
+            get {
+                return this.TotalContactosField;
+            }
+            set {
+                if ((this.TotalContactosField.Equals(value) != true)) {
+                    this.TotalContactosField = value;
+                    this.RaisePropertyChanged("TotalContactos");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int TotalHabilitadoContactos {
+            get {
+                return this.TotalHabilitadoContactosField;
+            }
+            set {
+                if ((this.TotalHabilitadoContactosField.Equals(value) != true)) {
+                    this.TotalHabilitadoContactosField = value;
+                    this.RaisePropertyChanged("TotalHabilitadoContactos");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int TotalLegajoIrregularContactos {
+            get {
+                return this.TotalLegajoIrregularContactosField;
+            }
+            set {
+                if ((this.TotalLegajoIrregularContactosField.Equals(value) != true)) {
+                    this.TotalLegajoIrregularContactosField = value;
+                    this.RaisePropertyChanged("TotalLegajoIrregularContactos");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int TotalNoHabilitadoContactos {
+            get {
+                return this.TotalNoHabilitadoContactosField;
+            }
+            set {
+                if ((this.TotalNoHabilitadoContactosField.Equals(value) != true)) {
+                    this.TotalNoHabilitadoContactosField = value;
+                    this.RaisePropertyChanged("TotalNoHabilitadoContactos");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ResultProveedoresIni", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
+    [System.SerializableAttribute()]
+    public partial class ResultProveedoresIni : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> CalificacionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ComercialCargoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CuitField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EstadoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EstadoHomeDescripcionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> EstadoHomeIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EstadoHomeMensajeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MailField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool OperandoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int ProveedorIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string RazonSocialField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TelefonoField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> Calificacion {
+            get {
+                return this.CalificacionField;
+            }
+            set {
+                if ((this.CalificacionField.Equals(value) != true)) {
+                    this.CalificacionField = value;
+                    this.RaisePropertyChanged("Calificacion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ComercialCargo {
+            get {
+                return this.ComercialCargoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ComercialCargoField, value) != true)) {
+                    this.ComercialCargoField = value;
+                    this.RaisePropertyChanged("ComercialCargo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Cuit {
+            get {
+                return this.CuitField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CuitField, value) != true)) {
+                    this.CuitField = value;
+                    this.RaisePropertyChanged("Cuit");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Estado {
+            get {
+                return this.EstadoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EstadoField, value) != true)) {
+                    this.EstadoField = value;
+                    this.RaisePropertyChanged("Estado");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string EstadoHomeDescripcion {
+            get {
+                return this.EstadoHomeDescripcionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EstadoHomeDescripcionField, value) != true)) {
+                    this.EstadoHomeDescripcionField = value;
+                    this.RaisePropertyChanged("EstadoHomeDescripcion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> EstadoHomeId {
+            get {
+                return this.EstadoHomeIdField;
+            }
+            set {
+                if ((this.EstadoHomeIdField.Equals(value) != true)) {
+                    this.EstadoHomeIdField = value;
+                    this.RaisePropertyChanged("EstadoHomeId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string EstadoHomeMensaje {
+            get {
+                return this.EstadoHomeMensajeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EstadoHomeMensajeField, value) != true)) {
+                    this.EstadoHomeMensajeField = value;
+                    this.RaisePropertyChanged("EstadoHomeMensaje");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Mail {
+            get {
+                return this.MailField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MailField, value) != true)) {
+                    this.MailField = value;
+                    this.RaisePropertyChanged("Mail");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Operando {
+            get {
+                return this.OperandoField;
+            }
+            set {
+                if ((this.OperandoField.Equals(value) != true)) {
+                    this.OperandoField = value;
+                    this.RaisePropertyChanged("Operando");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ProveedorId {
+            get {
+                return this.ProveedorIdField;
+            }
+            set {
+                if ((this.ProveedorIdField.Equals(value) != true)) {
+                    this.ProveedorIdField = value;
+                    this.RaisePropertyChanged("ProveedorId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string RazonSocial {
+            get {
+                return this.RazonSocialField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.RazonSocialField, value) != true)) {
+                    this.RazonSocialField = value;
+                    this.RaisePropertyChanged("RazonSocial");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Telefono {
+            get {
+                return this.TelefonoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TelefonoField, value) != true)) {
+                    this.TelefonoField = value;
+                    this.RaisePropertyChanged("Telefono");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="DataAgroServices.IDataAgroServices")]
     public interface IDataAgroServices {
@@ -4249,10 +5434,10 @@ namespace SustitucionMOAWS.DataAgroServices {
         System.Threading.Tasks.Task<bool> ProveedorApocrifoAsync(string cuit);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/TraerTipoDeCambio", ReplyAction="http://tempuri.org/IDataAgroServices/TraerTipoDeCambioResponse")]
-        decimal TraerTipoDeCambio(System.Nullable<System.DateTime> fecha);
+        decimal TraerTipoDeCambio(System.Nullable<System.DateTime> fecha, string moneda, string typeOfRate);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/TraerTipoDeCambio", ReplyAction="http://tempuri.org/IDataAgroServices/TraerTipoDeCambioResponse")]
-        System.Threading.Tasks.Task<decimal> TraerTipoDeCambioAsync(System.Nullable<System.DateTime> fecha);
+        System.Threading.Tasks.Task<decimal> TraerTipoDeCambioAsync(System.Nullable<System.DateTime> fecha, string moneda, string typeOfRate);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ActualizarCesionContratoSAP", ReplyAction="http://tempuri.org/IDataAgroServices/ActualizarCesionContratoSAPResponse")]
         SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCesionContratoSAP(string contratoSAP, bool cesion);
@@ -4265,6 +5450,36 @@ namespace SustitucionMOAWS.DataAgroServices {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/AltaCampoSustentable", ReplyAction="http://tempuri.org/IDataAgroServices/AltaCampoSustentableResponse")]
         System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable> AltaCampoSustentableAsync(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/BuscarProveedorEnSisa", ReplyAction="http://tempuri.org/IDataAgroServices/BuscarProveedorEnSisaResponse")]
+        SustitucionMOAWS.DataAgroServices.SISA[] BuscarProveedorEnSisa(string cuit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/BuscarProveedorEnSisa", ReplyAction="http://tempuri.org/IDataAgroServices/BuscarProveedorEnSisaResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.SISA[]> BuscarProveedorEnSisaAsync(string cuit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ConfirmarFijacionSAP", ReplyAction="http://tempuri.org/IDataAgroServices/ConfirmarFijacionSAPResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap ConfirmarFijacionSAP(string fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ConfirmarFijacionSAP", ReplyAction="http://tempuri.org/IDataAgroServices/ConfirmarFijacionSAPResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ConfirmarFijacionSAPAsync(string fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ListarApoderadosPorProveedor", ReplyAction="http://tempuri.org/IDataAgroServices/ListarApoderadosPorProveedorResponse")]
+        SustitucionMOAWS.DataAgroServices.ApoderadoSapDto[] ListarApoderadosPorProveedor(string cuit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ListarApoderadosPorProveedor", ReplyAction="http://tempuri.org/IDataAgroServices/ListarApoderadosPorProveedorResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ApoderadoSapDto[]> ListarApoderadosPorProveedorAsync(string cuit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/DatosCupoSap", ReplyAction="http://tempuri.org/IDataAgroServices/DatosCupoSapResponse")]
+        SustitucionMOAWS.DataAgroServices.CupoSapTerceroDto DatosCupoSap(string cupoSap);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/DatosCupoSap", ReplyAction="http://tempuri.org/IDataAgroServices/DatosCupoSapResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.CupoSapTerceroDto> DatosCupoSapAsync(string cupoSap);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ObtenerEstadoProveedores", ReplyAction="http://tempuri.org/IDataAgroServices/ObtenerEstadoProveedoresResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultEstadoProveedores ObtenerEstadoProveedores(string[] listaCuits);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ObtenerEstadoProveedores", ReplyAction="http://tempuri.org/IDataAgroServices/ObtenerEstadoProveedoresResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultEstadoProveedores> ObtenerEstadoProveedoresAsync(string[] listaCuits);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -4422,12 +5637,12 @@ namespace SustitucionMOAWS.DataAgroServices {
             return base.Channel.ProveedorApocrifoAsync(cuit);
         }
         
-        public decimal TraerTipoDeCambio(System.Nullable<System.DateTime> fecha) {
-            return base.Channel.TraerTipoDeCambio(fecha);
+        public decimal TraerTipoDeCambio(System.Nullable<System.DateTime> fecha, string moneda, string typeOfRate) {
+            return base.Channel.TraerTipoDeCambio(fecha, moneda, typeOfRate);
         }
         
-        public System.Threading.Tasks.Task<decimal> TraerTipoDeCambioAsync(System.Nullable<System.DateTime> fecha) {
-            return base.Channel.TraerTipoDeCambioAsync(fecha);
+        public System.Threading.Tasks.Task<decimal> TraerTipoDeCambioAsync(System.Nullable<System.DateTime> fecha, string moneda, string typeOfRate) {
+            return base.Channel.TraerTipoDeCambioAsync(fecha, moneda, typeOfRate);
         }
         
         public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCesionContratoSAP(string contratoSAP, bool cesion) {
@@ -4444,6 +5659,46 @@ namespace SustitucionMOAWS.DataAgroServices {
         
         public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable> AltaCampoSustentableAsync(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo) {
             return base.Channel.AltaCampoSustentableAsync(campo);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.SISA[] BuscarProveedorEnSisa(string cuit) {
+            return base.Channel.BuscarProveedorEnSisa(cuit);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.SISA[]> BuscarProveedorEnSisaAsync(string cuit) {
+            return base.Channel.BuscarProveedorEnSisaAsync(cuit);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap ConfirmarFijacionSAP(string fijacionSAP) {
+            return base.Channel.ConfirmarFijacionSAP(fijacionSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ConfirmarFijacionSAPAsync(string fijacionSAP) {
+            return base.Channel.ConfirmarFijacionSAPAsync(fijacionSAP);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ApoderadoSapDto[] ListarApoderadosPorProveedor(string cuit) {
+            return base.Channel.ListarApoderadosPorProveedor(cuit);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ApoderadoSapDto[]> ListarApoderadosPorProveedorAsync(string cuit) {
+            return base.Channel.ListarApoderadosPorProveedorAsync(cuit);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.CupoSapTerceroDto DatosCupoSap(string cupoSap) {
+            return base.Channel.DatosCupoSap(cupoSap);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.CupoSapTerceroDto> DatosCupoSapAsync(string cupoSap) {
+            return base.Channel.DatosCupoSapAsync(cupoSap);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultEstadoProveedores ObtenerEstadoProveedores(string[] listaCuits) {
+            return base.Channel.ObtenerEstadoProveedores(listaCuits);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultEstadoProveedores> ObtenerEstadoProveedoresAsync(string[] listaCuits) {
+            return base.Channel.ObtenerEstadoProveedoresAsync(listaCuits);
         }
     }
 }

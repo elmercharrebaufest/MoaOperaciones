@@ -2,6 +2,7 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Util.EntitiesExtensions;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
@@ -26,7 +27,6 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult Index(string nroESLocal)
         {
-            string nulled = "Anulada";
             string ES = "";
             string User = "";
             bool oldES = false;
@@ -57,7 +57,7 @@ namespace SustitucionMOA.Controllers
                 if (!string.IsNullOrEmpty(User))
                 {
                     var Usuario = usuarioService.GetUsuarioPorId(int.Parse(User));
-                    if (aprobacionesListdb[0].Aprobador_CDS == Usuario.Mail && aprobacionesListdb[0].Estado_certificacion != nulled)
+                    if (aprobacionesListdb[0].Aprobador_CDS == Usuario.Mail && !aprobacionesListdb[0].EstaAnulada())
                     {
                         isApprover = true;
                     }

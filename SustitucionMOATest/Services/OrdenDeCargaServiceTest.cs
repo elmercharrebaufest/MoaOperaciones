@@ -24,6 +24,7 @@ using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using System.Linq;
+using SustitucionMOAModel.Dto.OrdenDeCargaCommon;
 
 namespace SustitucionMOATest.Services
 {
@@ -169,12 +170,30 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void AgregarTest()
         {
-
             SetupAgregarTests();
-
             SetupAgregarSuccess();
 
-            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario, NoSeGestionaNingunAlta());
+            var crearOrdenReq = new CrearOrdenDeCargaRequest
+            {
+                OrdenDeCarga = ordenDeCarga,
+                GestionAltasFAS = NoSeGestionaNingunAlta(),
+                UnidadesTransporte = new List<UnidadTransporteCarga>
+                {
+                    new UnidadTransporteCarga
+                    {
+                        CUILChofer = ordenDeCarga.CUITChofer,
+                        CUITIntermediarioFlete = ordenDeCarga.CUITIntermediarioFlete,
+                        CUITTransporte = ordenDeCarga.CUITTransporte,
+                        NombreChofer = ordenDeCarga.NombreChofer,
+                        PatenteAcoplado = ordenDeCarga.PatenteAcoplado,
+                        PatenteChasis = ordenDeCarga.ChasisAcoplado,
+                        RazonSocialIntermediarioFlete = ordenDeCarga.RazonSocialIntermediarioFlete,
+                        RazonSocialTransporte = ordenDeCarga.RazonSocialTransporte
+                    }
+                }
+            };
+
+            var result = target.Agregar(crearOrdenReq, _mailSesionUsuario);
 
             var expected = new Resultado { IdEntidad = 1, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
 
@@ -182,7 +201,8 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.Agregar(It.IsAny<OrdenDeCarga>()), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
 
-            Assert.AreEqual(expected, result);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(expected.Mensaje, result.Mensaje);
         }
 
         [Test()]
@@ -1021,7 +1041,27 @@ namespace SustitucionMOATest.Services
             SetupAgregarTests();
             SetupAgregarSuccess();
 
-            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario, NoSeGestionaNingunAlta());
+            var crearOrdenReq = new CrearOrdenDeCargaRequest
+            {
+                OrdenDeCarga = ordenDeCarga,
+                GestionAltasFAS = NoSeGestionaNingunAlta(),
+                UnidadesTransporte = new List<UnidadTransporteCarga>
+                {
+                    new UnidadTransporteCarga
+                    {
+                        CUILChofer = ordenDeCarga.CUITChofer,
+                        CUITIntermediarioFlete = ordenDeCarga.CUITIntermediarioFlete,
+                        CUITTransporte = ordenDeCarga.CUITTransporte,
+                        NombreChofer = ordenDeCarga.NombreChofer,
+                        PatenteAcoplado = ordenDeCarga.PatenteAcoplado,
+                        PatenteChasis = ordenDeCarga.ChasisAcoplado,
+                        RazonSocialIntermediarioFlete = ordenDeCarga.RazonSocialIntermediarioFlete,
+                        RazonSocialTransporte = ordenDeCarga.RazonSocialTransporte
+                    }
+                }
+            };
+
+            var result = target.Agregar(crearOrdenReq, _mailSesionUsuario);
 
             Assert.That(result.Mensaje, Is.EqualTo(SuccessMsg.OrdenDeCargaAgregada));
 

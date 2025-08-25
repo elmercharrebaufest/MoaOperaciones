@@ -125,7 +125,7 @@
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="formulario-label">
-                                        Razon social
+                                        Razón social
                                     </div>
                                     <div class="styled-select">
                                         <input type="text" class="form-control" formControlName="razonSocial" />
@@ -136,8 +136,8 @@
                                         Tipo de Proveedor
                                     </div>
                                     <div class="styled-select">
-                                        <select formControlName="tipoProveedorId">
-                                            <option *ngFor="let tipo of tipoUsuario" [ngValue]="tipo.Id">{{tipo.Nombre}}
+                                        <select formControlName="tipoProveedorId" [(ngModel)]="proveedorAsignarCuitSeleccionado" (ngModelChange)="onProveedorAsignarCuitChanged()">
+                                            <option *ngFor="let prov of proveedoresAsignarCuit" [ngValue]="prov">{{prov.TipoProveedor}}
                                             </option>
                                         </select>
                                     </div>

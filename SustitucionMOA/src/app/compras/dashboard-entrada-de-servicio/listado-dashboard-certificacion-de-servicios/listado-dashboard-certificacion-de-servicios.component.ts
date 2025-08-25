@@ -465,9 +465,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.tablaPO = result.data;
                         this.obtenerSolicitantes(result.data);
                         this.cargarArrayProcesosSpinners(this.tablaPO);
-                        this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
+                        this.length = result.data.length > 0 ? result.data[0].ItemsTotales : 0;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+                        //this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
 
                     }
                     if (this.expandedPositionRow) {
@@ -501,6 +502,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         }
 
         return false; //<-- Prevent Refresh
+    }
+
+    handlePageEvent(e: any) {
+        this.pageSize = e.rows;
+        this.pageIndex = e.page + 1;        
+        this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }
 
     esPosicionCompleta(posicion): boolean {
@@ -1327,9 +1334,19 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
           ColumnaEditar: columnaEditar,
           NuevoValor: valor
         }
-        this.service.enviarEdicionIngresante(data).subscribe( 
+        this.service.enviarEdicionIngresante(data).subscribe(
         resp => {
-            this.setearNuevoValorDeCelda(valor, columnaEditar, id, nroOc);
+            if (resp.error) {
+                this.confirmationService.confirm({
+                    message: resp.error,
+                    rejectVisible: false,
+                    acceptLabel: "Aceptar"
+                });
+                this.procesandoCelda[columnaEditar][id] = false;
+            }
+            else {
+                this.setearNuevoValorDeCelda(valor, columnaEditar, id, nroOc);
+            }
         }, error => {
             console.error(error)
         }

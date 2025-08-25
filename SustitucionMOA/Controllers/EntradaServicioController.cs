@@ -72,27 +72,6 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(new { data = result });
         }
 
-
-        //public ActionResult Create(EntradaServicioCreateParamsDto parametros)
-        //{
-        //    try
-        //    {
-        //        // Este debe combinarse con permisos de usuario.
-        //        //if (parametros.vendedor == "" || parametros.vendedor == null)
-        //        //{
-        //        //    parametros.vendedor = SessionPersister.Proveedor;
-        //        //}
-
-        //        string result = EntradaServicioService.CrearEntradaServicio(parametros);
-
-        //        return JsonCustom(new { data = result });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return JsonCustom(new { error = ex.Message });
-        //    }
-        //}
-
         [ValidateInput(false)]
         public ActionResult CrearEntradaServicio(string request)
         {

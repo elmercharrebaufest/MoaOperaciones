@@ -19,8 +19,9 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProveedorDto> GetCorredores();
         List<ProveedorDto> GetClientesDeCorredor(string codigoCorredor);
         OrdenDeCargaFasonDto AnularOrden(int ordenId, string mailUsuario);
-        List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCargaFasonRequest ordenDeCarga, string mailUsuario);
-        List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCargaFasonRequest orden, string mailUsuario);
+        //List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCargaFasonRequest ordenDeCarga, string mailUsuario);
+        List<AutoCompleteDropdownElement> ObtenerCuilsChofer(int clienteId, string patenteAcoplado, string mailUsuario);
+        List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(int clienteId, string patenteAcoplado, string mailUsuario);
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCargaFasonRequest orden, string mailUsuario);
         bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId);
         OrdenDeCargaFasonDto VerificarCuitsTerceros(int ordenId, string mailUsuario);
