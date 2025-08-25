@@ -169,9 +169,9 @@ namespace SustitucionMOAUtils.Services
                             x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             x.SERIAL_NO == SERVICE_ACCOUNT_SERIAL_NUMBER && //SERIAL_NO	DZEKKN	Número actual de la imputación
                             x.GL_ACCOUNT == getCodigoTablaSap(posicion.CuentaMayorSap) &&//GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            x.COSTCENTER == getCodigoTablaSap(posicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
+                            x.COSTCENTER == "" && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(posicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
-                            x.PROFIT_CTR == getCodigoTablaSap(posicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
+                            x.PROFIT_CTR == ""
                     );
 
                     if (imputacionPosicionMateriales is null)
@@ -181,9 +181,9 @@ namespace SustitucionMOAUtils.Services
                             PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER, //SERIAL_NO	DZEKKN	Número actual de la imputación
                             GL_ACCOUNT = getCodigoTablaSap(posicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
+                            COSTCENTER = "", //COSTCENTER	KOSTL	Centro de coste
                             ORDERID = getCodigoTablaSap(posicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
-                            PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
+                            PROFIT_CTR = "",
                             BUS_AREA = "GENE",
                             CO_AREA = "MOA"
                         };
@@ -197,9 +197,9 @@ namespace SustitucionMOAUtils.Services
                             PREQ_ITEMX = "X",
                             SERIAL_NOX = "X",
                             GL_ACCOUNT = "X",
-                            COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
+                            COSTCENTER = "",
                             ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
-                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : "",
+                            PROFIT_CTR = "",
                             BUS_AREA = "X",
                             CO_AREA = "X"
                         });
@@ -395,9 +395,9 @@ namespace SustitucionMOAUtils.Services
                     BAPIMEREQACCOUNT imputacionPosicion = solpSAP.IM_PRACCOUNTList.Find(x =>
                             x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             x.GL_ACCOUNT == getCodigoTablaSap(subPosicion.CuentaMayorSap) && //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            x.COSTCENTER == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
+                            x.COSTCENTER == "" && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
-                            x.PROFIT_CTR == getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
+                            x.PROFIT_CTR == ""
                         );
 
                     if (imputacionPosicion is null)
@@ -410,9 +410,9 @@ namespace SustitucionMOAUtils.Services
                             SERIAL_NO = $"{numeroSerialNumberItem:00}",//indiceImputacion, //SERIAL_NO    DZEKKN  Número actual de la imputación
                             QUANTITY = subPosicion.Cantidad.Value, //QUANTITY	MENGE_D	Cantidad
                             GL_ACCOUNT = getCodigoTablaSap(subPosicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            COSTCENTER = getCodigoTablaSap(subPosicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
+                            COSTCENTER = "", //COSTCENTER	KOSTL	Centro de coste
                             ORDERID = getCodigoTablaSap(subPosicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
-                            PROFIT_CTR = getCodigoTablaSap(subPosicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
+                            PROFIT_CTR = "",
                             BUS_AREA = "GENE"
                         };
 
@@ -427,9 +427,9 @@ namespace SustitucionMOAUtils.Services
                             QUANTITY = "X",
                             GL_ACCOUNT = "X",
                             BUS_AREA = "X",
-                            COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
+                            COSTCENTER = "",
                             ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
-                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : ""
+                            PROFIT_CTR = ""
                         });
                     }
 
@@ -578,7 +578,7 @@ namespace SustitucionMOAUtils.Services
                     //IM_PRITEM.QUANTITYSpecified = true;
                     IM_PRITEM.UNIT = unidadesMedidaSap?.Find(u => u.Item1 == posicion.Unidad.CodigoSap).Item2; //UNIT BAMEI - Cambia el código de la unidad solicitada por su equivalente 'UM' de la tabla UnidadMedidaSap
                     //IM_PRITEM.PREQ_UNIT_ISO = null; //PREQ_UNIT_ISO BAMEI_ISO   Código ISO p.la unidad de medida en la solicitud de pedido
-                    IM_PRITEM.PREQ_PRICE = Math.Round((Decimal)posicion.PrecioBruto,4); //PREQ_PRICE  BAPICUREXT Importe de moneda para BAPIs(con 9 decimales)
+                    IM_PRITEM.PREQ_PRICE = Math.Round((Decimal)posicion.PrecioBruto, 4); //PREQ_PRICE  BAPICUREXT Importe de moneda para BAPIs(con 9 decimales)
                     //IM_PRITEM.PREQ_PRICESpecified = true;
                     //IM_PRITEM.PRICE_UNIT = null; //PRICE_UNIT EPEIN Cantidad base  
                     //IM_PRITEM.PRICE_UNITSpecified = true;
@@ -588,9 +588,12 @@ namespace SustitucionMOAUtils.Services
                             x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             x.SERIAL_NO == SERVICE_ACCOUNT_SERIAL_NUMBER && //SERIAL_NO	DZEKKN	Número actual de la imputación
                             x.GL_ACCOUNT == getCodigoTablaSap(posicion.CuentaMayorSap) &&//GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            x.COSTCENTER == getCodigoTablaSap(posicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
-                            x.ORDERID == getCodigoTablaSap(posicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
-                            x.PROFIT_CTR == getCodigoTablaSap(posicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
+                            x.COSTCENTER == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ?
+                                getCodigoTablaSap(posicion.TipoImputacionSap) : "") &&
+                            x.ORDERID == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ?
+                                getCodigoTablaSap(posicion.TipoImputacionSap) : "") &&
+                            x.PROFIT_CTR == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestroBeneficio") ?
+                                getCodigoTablaSap(posicion.TipoImputacionSap) : "")
                     );
 
                     if (imputacionPosicionMateriales is null)
@@ -600,9 +603,12 @@ namespace SustitucionMOAUtils.Services
                             PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER, //SERIAL_NO	DZEKKN	Número actual de la imputación
                             GL_ACCOUNT = getCodigoTablaSap(posicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
-                            ORDERID = getCodigoTablaSap(posicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
-                            PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
+                            COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ?
+                                getCodigoTablaSap(posicion.TipoImputacionSap) : "",// COSTCENTER     Centro de costo
+                            ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ?
+                                getCodigoTablaSap(posicion.TipoImputacionSap) : "", //ORDERID	AUFNR	Número de orden
+                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestroBeneficio") ?
+                                getCodigoTablaSap(posicion.TipoImputacionSap) : "",
                             BUS_AREA = "GENE",
                             CO_AREA = "MOA"
                         };
@@ -618,7 +624,7 @@ namespace SustitucionMOAUtils.Services
                             GL_ACCOUNT = "X",
                             COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
                             ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
-                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : "",
+                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestroBeneficio") ? "X" : "",
                             BUS_AREA = "X",
                             CO_AREA = "X"
                         });
@@ -790,7 +796,7 @@ namespace SustitucionMOAUtils.Services
                     //IM_SERVICELINE.QUANTITYSpecified = true;
                     IM_SERVICELINE.UOM = unidadesMedidaSap?.Find(u => u.Item1 == subPosicion.Unidad.CodigoSap).Item2; //UOM MEINS - Cambia el código de la unidad solicitada por su equivalente 'UM' de la tabla UnidadMedidaSap
                     //IM_SERVICELINE.UOM_ISO = null; //UOM_ISO MEINS_ISO   Unidad medida base en código ISO
-                    IM_SERVICELINE.GROSS_PRICE = Math.Round(subPosicion.PrecioBruto.Value,4); //GROSS_PRICE SBRTWR Precio bruto Unitario
+                    IM_SERVICELINE.GROSS_PRICE = Math.Round(subPosicion.PrecioBruto.Value, 4); //GROSS_PRICE SBRTWR Precio bruto Unitario
                     //IM_SERVICELINE.GROSS_PRICESpecified = true;
                     IM_SERVICELINE.CURRENCY = posicion.Moneda.CodigoSap; //CURRENCY WAERS   Clave de moneda
                     IM_SERVICELINE.HR_START_TIME = string.Empty;
@@ -815,9 +821,12 @@ namespace SustitucionMOAUtils.Services
                     SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEREQACCOUNT imputacionPosicion = solpSAP.IM_PRACCOUNTList.Find(x =>
                             x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             x.GL_ACCOUNT == getCodigoTablaSap(subPosicion.CuentaMayorSap) && //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            x.COSTCENTER == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
-                            x.ORDERID == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
-                            x.PROFIT_CTR == getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
+                            x.COSTCENTER == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ?
+                                getCodigoTablaSap(subPosicion.TipoImputacionSap) : "") &&
+                            x.ORDERID == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ?
+                                getCodigoTablaSap(subPosicion.TipoImputacionSap) : "") &&
+                            x.PROFIT_CTR == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestroBeneficio") ?
+                                getCodigoTablaSap(subPosicion.TipoImputacionSap) : "")
                         );
 
                     if (imputacionPosicion is null)
@@ -830,9 +839,12 @@ namespace SustitucionMOAUtils.Services
                             SERIAL_NO = $"{numeroSerialNumberItem:00}",//indiceImputacion, //SERIAL_NO    DZEKKN  Número actual de la imputación
                             QUANTITY = subPosicion.Cantidad.Value, //QUANTITY	MENGE_D	Cantidad
                             GL_ACCOUNT = getCodigoTablaSap(subPosicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            COSTCENTER = getCodigoTablaSap(subPosicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
-                            ORDERID = getCodigoTablaSap(subPosicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
-                            PROFIT_CTR = getCodigoTablaSap(subPosicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
+                            COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ?
+                                getCodigoTablaSap(subPosicion.TipoImputacionSap) : "",
+                            ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ?
+                                getCodigoTablaSap(subPosicion.TipoImputacionSap) : "",
+                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestroBeneficio") ?
+                                getCodigoTablaSap(subPosicion.TipoImputacionSap) : "",
                             BUS_AREA = "GENE"
                         };
 
@@ -849,7 +861,7 @@ namespace SustitucionMOAUtils.Services
                             BUS_AREA = "X",
                             COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
                             ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
-                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : ""
+                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestroBeneficio") ? "X" : ""
                         });
                     }
 
@@ -1762,7 +1774,8 @@ namespace SustitucionMOAUtils.Services
             return false;
         }
 
-        private ResultadoGenerico ModificarOrdenDeCompraSinPIOLD(AdjudicacionDto adjudicacionDto) {
+        private ResultadoGenerico ModificarOrdenDeCompraSinPIOLD(AdjudicacionDto adjudicacionDto)
+        {
             var adjudicacion = ConvertirAjudicacionDtoEnAdjudicacionSAP(adjudicacionDto);
             var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFCSinPI(adjudicacion.NumeroOrdenDeCompra);
             ResultadoGenerico resultadoEditarOC = new ResultadoGenerico();
@@ -1774,11 +1787,11 @@ namespace SustitucionMOAUtils.Services
             var listPOCOND = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCOND>();
             var listPOCONDX = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCONDX>();
 
-            var listPOITEM      = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEM>();
-            var listPOITEMX     = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEMX   >();
-            var listPOSCHEDULE  = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULE>();
+            var listPOITEM = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEM>();
+            var listPOITEMX = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEMX>();
+            var listPOSCHEDULE = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULE>();
             var listPOSCHEDULEX = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX>();
-            var listPOSERVICES  = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX>();
+            var listPOSERVICES = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOSCHEDULX>();
 
 
             foreach (var item in ocSap.POACCOUNT)
@@ -1794,7 +1807,7 @@ namespace SustitucionMOAUtils.Services
             //{
             //    PO_ITEM = a.PO_ITEM
             //}).ToList(),
-            
+
             foreach (var item in ocSap.POADDRDELIVERY)
             {
                 listPOADDRDELIVERY.Add(new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOADDRDELIVERY()
@@ -1971,7 +1984,7 @@ namespace SustitucionMOAUtils.Services
             modificarPedidoSAP.POTEXTHEADER = new List<SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOTEXTHEADER>();
             modificarPedidoSAP.PURCHASEORDER = adjudicacion.NumeroOrdenDeCompra;
 
-            
+
             //foreach (var bAPIESLLC in modificarPedidoSAP.POSERVICES)
             //{
             //    bAPIESLLC.GR_PRICESpecified = true;
@@ -2034,7 +2047,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var header = new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOHEADER();
 
-                header.PMNTTRMS  = ocSap.POHEADER.PMNTTRMS;
+                header.PMNTTRMS = ocSap.POHEADER.PMNTTRMS;
                 header.DSCNT1_TO = ocSap.POHEADER.DSCNT1_TO;
                 header.DSCNT2_TO = ocSap.POHEADER.DSCNT2_TO;
                 header.DSCNT3_TO = ocSap.POHEADER.DSCNT3_TO;
@@ -2154,7 +2167,7 @@ namespace SustitucionMOAUtils.Services
                             subPosicionSap.QUANTITY = subPosAdj.Cantidad;
                             //imputacionSubPos.QUANTITY = subPosAdj.Cantidad;
                             //Importe 1/2                            
-                            subPosicionSap.GR_PRICE  = Math.Round(subPosAdj.PrecioUnitario,4);
+                            subPosicionSap.GR_PRICE = Math.Round(subPosAdj.PrecioUnitario, 4);
                             subPosicionSap.NET_VALUE = Math.Round(subPosAdj.PrecioUnitario * subPosAdj.Cantidad, 4);
                             //imputacionSubPos.NET_VALUE = subPosAdj.PrecioUnitario * subPosAdj.Cantidad;
 
@@ -2162,12 +2175,12 @@ namespace SustitucionMOAUtils.Services
 
                         //Importe 2/2                        
                         var totalPosicion = posAdj.SubPosiciones.Where(a => !a.Eliminado).Sum(a => a.Cantidad * a.PrecioUnitario);
-                        condicionSap.COND_VALUE = Math.Round(totalPosicion,4);
+                        condicionSap.COND_VALUE = Math.Round(totalPosicion, 4);
                         //condicionSap.COND_VALUESpecified = true;
                         condicionSap.CURRENCY = adjudicacion.MonedaCodigo;
                         condicionSap.COND_TYPE = condicionSap.COND_TYPE == "ZP01" ? "ZP01" : condicionSap.COND_TYPE;
 
-                        posicionSap.NET_PRICE = Math.Round(totalPosicion,4);
+                        posicionSap.NET_PRICE = Math.Round(totalPosicion, 4);
                         //posicionSap.NET_PRICESpecified = true;
                         posicionSapX.NET_PRICE = "X";
                         //imputacionSap.NET_VALUE = totalPosicion;
@@ -2211,11 +2224,12 @@ namespace SustitucionMOAUtils.Services
             {
                 resultadoEditarOC.Error(item.TYPE, item.MESSAGE);
             }
-            
+
 
             return resultadoEditarOC;
         }
-        private ResultadoGenerico ModificarOrdenDeCompra(AdjudicacionDto adjudicacionDto) {
+        private ResultadoGenerico ModificarOrdenDeCompra(AdjudicacionDto adjudicacionDto)
+        {
 
             var adjudicacion = ConvertirAjudicacionDtoEnAdjudicacionSAP(adjudicacionDto);
             var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(adjudicacion.NumeroOrdenDeCompra);
@@ -2597,7 +2611,7 @@ namespace SustitucionMOAUtils.Services
                     PO_ITEM = x.PO_ITEM,
                     PCKG_NO = x.PCKG_NO
                 }).ToList(),
-                POITEMX = ocSap.POITEM.Select(x => new  SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEMX
+                POITEMX = ocSap.POITEM.Select(x => new SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOITEMX
                 {
                     PO_ITEM = x.PO_ITEM,
                 }).ToList(),
@@ -2637,7 +2651,7 @@ namespace SustitucionMOAUtils.Services
                 {"F07", !string.IsNullOrEmpty(adjudicacion.CondicionesDePago) ? adjudicacion.CondicionesDePago.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
                 {"F08", !string.IsNullOrEmpty(adjudicacion.Garantias) ? adjudicacion.Garantias.SplitParagraph(131).Where(x => x != null).ToArray() : listaVaciaTexto},
             };
-            int MAX_LENGTH_TEXT_LINE = 122; 
+            int MAX_LENGTH_TEXT_LINE = 122;
             foreach (var grupos in textosDiccionario)
             {
                 bool todosVacios = grupos.Value.All(string.IsNullOrEmpty);
