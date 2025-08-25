@@ -79,11 +79,11 @@ namespace SustitucionMOAUtils.Services
             int itemsTotales = resultados.Count();
 
             int paginaValida = parametros.pagina > 0 ? parametros.pagina : 1;
-            int elementosPorPaginaValidos = (parametros.elementosPorPagina > 0) ? parametros.elementosPorPagina : 5;
+            int elementosPorPaginaValidos = (parametros.elementosPorPagina > 0) ? parametros.elementosPorPagina : 10;
 
             int indiceInicial = (paginaValida - 1) * elementosPorPaginaValidos;
-
-            return new ListaPaginada<DetalleOrdenDeCompraDto>(resultados.ToList(), paginaValida, elementosPorPaginaValidos, itemsTotales);
+            var items = resultados.Skip(indiceInicial).Take(elementosPorPaginaValidos).ToList();
+            return new ListaPaginada<DetalleOrdenDeCompraDto>(items, paginaValida, elementosPorPaginaValidos, itemsTotales);
 
         }
 
@@ -155,7 +155,7 @@ namespace SustitucionMOAUtils.Services
             foreach (var oc in ordenesCompra)
             {
                 DateTime fechaOC = DateTime.ParseExact(oc.Fecha, dateTimeFormat, CultureInfo.InvariantCulture);
-                if (DateTime.Compare(fechaOC, fechaHasta) != 1)
+                if (fechaOC <= fechaHasta)
                 {
                     ocFiltradas.Add(oc);
                 }
@@ -196,7 +196,7 @@ namespace SustitucionMOAUtils.Services
 
             List<TablaSap> centros = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Centro");
             List<TablaSap> almacenes = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Almacen");
-
+            result = new ListaPaginada<DetalleOrdenDeCompraDto>(new List<DetalleOrdenDeCompraDto>(), ordenesCompraDtoPaginada.Pagina, ordenesCompraDtoPaginada.ItemsPorPagina, ordenesCompraDtoPaginada.ItemsTotales);
             //Recorro las ordenes de compra y obtengo el detalle de cada una
             foreach (DetalleOrdenDeCompraDto ordenCompra in ordenesCompraDtoPaginada.Items)
             {

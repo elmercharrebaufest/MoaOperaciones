@@ -35,20 +35,6 @@ namespace SustitucionMOA.Controllers
             //descomentar
             ListaPaginada<DetalleOrdenDeCompraDto> result = orderService.ObtenerOrdenesCompraConDetalle(parametros, userMail);
 
-            ////inicio datos de pruebas
-            //List<DetalleOrdenDeCompraDto> items = new List<DetalleOrdenDeCompraDto>();
-            //for (int i = 0; i < 100; i++)
-            //{
-            //    items.Add(new DetalleOrdenDeCompraDto { NumeroOrdenDeCompra = i.ToString() });
-            //}
-            //ListaPaginada<DetalleOrdenDeCompraDto> result = new ListaPaginada<DetalleOrdenDeCompraDto>(
-            //     items.Skip(parametros.pagina * parametros.elementosPorPagina).Take(10).ToList(),
-            //     parametros.pagina,
-            //     parametros.elementosPorPagina,
-            //     items.Count
-            // );
-            ////fin datos de pruebas
-
             if (result.Items.Count > 0)
             {
                 result.Items.FirstOrDefault().ItemsTotales = result.ItemsTotales;
