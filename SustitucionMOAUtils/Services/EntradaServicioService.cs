@@ -1678,7 +1678,10 @@ namespace SustitucionMOAUtils.Services
                     #region DerivacionAutomatica
                     foreach (Aprobaciones ap in toSave)
                     {
-                        ReasignarSuplente(ap.NRO_ES_LOCAL, ap.Aprobador_CDS);
+                        if (ap.EstaPendienteAprobacion())
+                        {
+                            ReasignarSuplente(ap.NRO_ES_LOCAL, ap.Aprobador_CDS);
+                        }
                     }
                     #endregion
                 }
