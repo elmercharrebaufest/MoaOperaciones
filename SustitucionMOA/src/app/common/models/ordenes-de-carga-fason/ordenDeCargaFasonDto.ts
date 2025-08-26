@@ -6,45 +6,48 @@ import { EstadoOrdenDeCargaFason } from "./estadoOrdenDeCargaFason";
 export class OrdenDeCargaFasonDto extends OrdenesBase {
 
     public Id: number;
-    public CUITTercero: number;
     public Estado: EstadoOrdenDeCargaFason;
-    public Producto_Id: number;
-    public ProductoSeleccionado: Material;
-    public Material: string;
-    public ValidaSisaRuca: boolean;
-
-    public CUITCliente: number;
-    public Cliente: string;
-    public RazonSocialCliente: string;
 
     public Corredor: string;
     public CUITCorredor?: string;
     public RazonSocialCorredor: string;
     public CorredorId?: number;
+    public CodigoCorredor?: string;
+    
+    public CUITCliente: number;
+    public Cliente: string;
+    public RazonSocialCliente: string;
+
+    public Producto_Id: number;
+    public ProductoSeleccionado: Material;
+    public Material: string;
+    public ValidaSisaRuca: boolean;
+    
+    public CUITTercero: number;
+    public Cantidad: number;
+    public Destino: DestinoFason;
+    public LocalidadDescripcion: string;
+    
+    public PatenteChasis: string;
+    public PatenteAcoplado: string;
+    public NombreChofer: string;
+    public ApellidoChofer: string;
+    public RazonSocialTransporte: string;
+    public CantidadDeViajes: number;
+
+    public Observacion: string;
 
     public FechaCreacion: string;
     public FechaRetiro: Date;
     public FechaRetiroReal?: Date;
     public FechaIngresoPlanta?: Date;
-    public Cantidad: number;
     public CantidadDescargada: number;
-    public PatenteAcoplado: string;
-    public PatenteChasis: string;
-    public NombreChofer: string;
-    public ApellidoChofer: string;
-    public CUILChofer: string;
-    public RazonSocialTransporte: string;
-    public CantidadDeViajes: number;
-    public Destino: DestinoFason;
     public TransporteExiste: boolean;
-    public Observacion: string;
-    public LocalidadDescripcion: string;
     public TienePatentesRepetidas?: boolean;
     public TienePatenteMultiplesAutorizaciones?: boolean;
     public RemitenteComercial?: boolean;
 
     public OrdenesConPatentesRepetidas?: number[];
-    public CodigoCorredor?: string;
     
     constructor() {
         super();

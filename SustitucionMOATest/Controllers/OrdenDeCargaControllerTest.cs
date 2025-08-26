@@ -64,10 +64,19 @@ namespace SustitucionMOATest.Controllers
                 }
             };
 
-            var ordenDeCargaJson = JsonConvert.SerializeObject(ordenDeCarga);
-            var gestionAltaFASJson = JsonConvert.SerializeObject(NoSeGestionaNingunAlta());
-            ordenDeCargaServiceMock.Setup(s => s.Agregar(It.IsAny<OrdenDeCarga>(), It.Is<string>(i => i == mailUsuario), It.IsAny<GestionAltasFAS>())).Returns(expected.data);
-            var result = (JsonResult)target.Agregar(ordenDeCargaJson, gestionAltaFASJson);
+            ordenDeCargaServiceMock.Setup(s => s.Agregar(It.IsAny<CrearOrdenDeCargaRequest>(), It.Is<string>(i => i == mailUsuario))).Returns(expected.data);
+            
+            var crearOrdenDeCargaReq = new CrearOrdenDeCargaRequest
+            {
+                OrdenDeCarga = ordenDeCarga,
+                GestionAltasFAS = NoSeGestionaNingunAlta()
+            };
+            var crearOrdenDeCargaReqJson = JsonConvert.SerializeObject(crearOrdenDeCargaReq);
+            //var ordenDeCargaJson = JsonConvert.SerializeObject(ordenDeCarga);
+            //var gestionAltaFASJson = JsonConvert.SerializeObject(NoSeGestionaNingunAlta());
+
+            var result = (JsonResult)target.Agregar(crearOrdenDeCargaReqJson);
+            
             expectedJson = JsonConvert.SerializeObject(expected);
             resultJson = JsonConvert.SerializeObject(result.Data);
 

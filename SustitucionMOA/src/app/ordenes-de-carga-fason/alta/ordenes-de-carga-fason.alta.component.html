@@ -25,11 +25,12 @@
                                     Corredor:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="cmbCorredores" [(ngModel)]="corredorSeleccionado"
-                                        [options]="listaCorredores" placeholder="Seleccione un Corredor"
-                                        [disabled]="editando||null" optionLabel="RazonSocial"
-                                        (ngModelChange)="onCorredorSeleccionado()" [filter]="true"
-                                        filterBy="value.RazonSocial">
+                                    <p-dropdown name="cmbCorredores"
+                                        [(ngModel)]="corredorSeleccionado"
+                                        [options]="listaCorredores"
+                                        (ngModelChange)="onCorredorSeleccionado()"
+                                        [disabled]="esEdicionDeOrden || disableForm()"
+                                        [filter]="true" placeholder="Seleccione un Corredor" optionLabel="RazonSocial" filterBy="value.RazonSocial">
                                     </p-dropdown>
                                 </div>
                             </div>
@@ -39,10 +40,12 @@
                                     Cliente:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="clientesFason" [(ngModel)]="clienteSeleccionado"
-                                        [disabled]="editando||null" (ngModelChange)="onClienteSeleccionado()"
-                                        [options]="listaClientes" optionLabel="RazonSocial"
-                                        placeholder="Seleccione un Cliente" [filter]="true">
+                                    <p-dropdown name="clientesFason"
+                                        [(ngModel)]="clienteSeleccionado"
+                                        [options]="listaClientes"
+                                        (ngModelChange)="onClienteSeleccionado()"
+                                        [disabled]="esEdicionDeOrden || disableForm()"
+                                        optionLabel="RazonSocial" placeholder="Seleccione un Cliente" [filter]="true">
                                     </p-dropdown>
                                 </div>
                             </div>
@@ -53,8 +56,10 @@
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
                                     <p-dropdown name="productosFason"
-                                        [(ngModel)]="ordenDeCargaFason.ProductoSeleccionado" [disabled]="editando||null"
-                                        (ngModelChange)="selectProducto()" [options]="listaProductos"
+                                        [(ngModel)]="ordenDeCargaFason.ProductoSeleccionado"
+                                        [options]="listaProductos"
+                                        (ngModelChange)="selectProducto()"
+                                        [disabled]="esEdicionDeOrden || disableForm()"
                                         optionLabel="Descripcion" placeholder="Seleccione un producto" [filter]="true">
                                     </p-dropdown>
                                 </div>
@@ -65,9 +70,11 @@
                                     Destino mercadería (localidad - provincia):
                                 </div>
                                 <div class="styled-select">
-                                    <textarea id="DestinoMercaderia" placeholder="Localidad - Provincia"
-                                        [(ngModel)]="ordenDeCargaFason.DestinoMercaderia" rows="2" [maxLength]="40"
-                                        [disabled]="editando || null"></textarea>
+                                    <textarea id="DestinoMercaderia"
+                                        [(ngModel)]="ordenDeCargaFason.DestinoMercaderia"
+                                        [disabled]="esEdicionDeOrden || disableForm()"
+                                        rows="2" [maxLength]="40" placeholder="Localidad - Provincia">
+                                    </textarea>
                                 </div>
                             </div>
 
@@ -78,7 +85,7 @@
                                     </div>
                                     <div class="styled-select">
                                         <input [disabled]="true" type="text"
-                                            [value]="ordenDeCargaFason.RemitenteComercial? clienteSeleccionado.RazonSocial: ''">
+                                            [value]="ordenDeCargaFason.RemitenteComercial ? clienteSeleccionado.RazonSocial : ''">
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-md-12">
@@ -90,7 +97,7 @@
                                             <input type="text" pInputText
                                                 [(ngModel)]="ordenDeCargaFason.CUITDestinatario" mask="00-00000000-0"
                                                 (change)="validarSisaDestinatario()"
-                                                [disabled]="noPuedeEditarCuitsTerceros||null">
+                                                [disabled]="noPuedeEditarCuitsTerceros||null || disableForm()">
                                             <span
                                                 *ngIf="ordenDeCargaFason.CUITDestinatario != ordenDeCargaFason.CUITCliente.toString()"
                                                 class="pt-2 pointer pi pi-copy"
@@ -128,7 +135,7 @@
                                         <div class="ui-inputgroup">
                                             <input type="text" pInputText [(ngModel)]="ordenDeCargaFason.CUITDestino"
                                                 mask="00-00000000-0" (change)="validarSisaDestino()"
-                                                [disabled]="noPuedeEditarCuitsTerceros||null">
+                                                [disabled]="noPuedeEditarCuitsTerceros||null || disableForm()">
                                             <span
                                                 *ngIf="ordenDeCargaFason.CUITDestino != ordenDeCargaFason.CUITCliente.toString()"
                                                 class="pt-2 pointer pi pi-copy"
@@ -167,7 +174,7 @@
                                             [options]="listaPlantas" optionLabel="Codigo"
                                             placeholder="Seleccione una planta"
                                             (ngModelChange)="onPlantaSeleccionadaChanged()" [filter]="true"
-                                            filterBy="value.Codigo" [disabled]="noPuedeEditarCuitsTerceros||null">
+                                            filterBy="value.Codigo" [disabled]="noPuedeEditarCuitsTerceros||null || disableForm()">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -180,7 +187,7 @@
                                             [options]="listaDomicilios" optionLabel="Descripcion"
                                             placeholder="Seleccione un domicilio"
                                             (ngModelChange)="onDomicilioSeleccionadoChanged()" [filter]="true"
-                                            filterBy="value.Descripcion" [disabled]="noPuedeEditarCuitsTerceros||null">
+                                            filterBy="value.Descripcion" [disabled]="noPuedeEditarCuitsTerceros||null || disableForm()">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -225,12 +232,13 @@
                                     Patente chasis:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input [(ngModel)]="ordenDeCargaFason.PatenteChasis"
-                                        (ngModelChange)="patenteChasisSelected($event);validarCNRT()" auto-complete
-                                        [source]="patentesChasis" [min-chars]="2"
-                                        [no-match-found-text]="'No se encontraron resultados'"
-                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter"
-                                        maxlength="7" mask="AAAAAAA" />
+                                    <input auto-complete
+                                        [(ngModel)]="unidadTransporte.PatenteChasis"
+                                        [source]="patentesChasis"
+                                        (ngModelChange)="patenteChasisSelected($event);validarCNRT()"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
+                                        [no-match-found-text]="'No se encontraron patentes de chasis'"
+                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [min-chars]="2" maxlength="7" mask="AAAAAAA" />
                                 </div>
                             </div>
 
@@ -239,11 +247,13 @@
                                     Patente acoplado:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input auto-complete [(ngModel)]="ordenDeCargaFason.PatenteAcoplado"
-                                        (ngModelChange)="patenteAcopladoSelected($event);validarCNRT()" maxlength="7"
-                                        mask="AAAAAAA" [source]="patentesAcoplados" [min-chars]="2"
-                                        [no-match-found-text]="'No se encontraron resultados'"
-                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" />
+                                    <input auto-complete
+                                        [(ngModel)]="unidadTransporte.PatenteAcoplado"
+                                        [source]="patentesAcoplados"
+                                        (ngModelChange)="patenteAcopladoSelected($event);validarCNRT()"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
+                                        [no-match-found-text]="'No se encontraron patentes de acoplado'"
+                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [min-chars]="2" maxlength="7" mask="AAAAAAA" />
                                 </div>
                             </div>
 
@@ -252,8 +262,9 @@
                                     Nombre del chofer:
                                 </div>
                                 <div class="styled-select">
-                                    <input [(ngModel)]="ordenDeCargaFason.NombreChofer"
-                                        (ngModelChange)="ordenDeCargaFason.NombreChofer = $event.toUpperCase()"
+                                    <input [(ngModel)]="unidadTransporte.NombreChofer"
+                                        (ngModelChange)="unidadTransporte.NombreChofer = pasarAMayusculas($event)"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
                                         type="text" maxlength="17">
                                 </div>
                             </div>
@@ -262,8 +273,9 @@
                                     Apellido del chofer:
                                 </div>
                                 <div class="styled-select">
-                                    <input [(ngModel)]="ordenDeCargaFason.ApellidoChofer"
-                                        (ngModelChange)="ordenDeCargaFason.ApellidoChofer = $event.toUpperCase()"
+                                    <input [(ngModel)]="unidadTransporte.ApellidoChofer"
+                                        (ngModelChange)="unidadTransporte.ApellidoChofer = pasarAMayusculas($event)"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
                                         type="text" maxlength="17">
                                 </div>
                             </div>
@@ -273,12 +285,13 @@
                                     CUIL chofer:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input type="text" auto-complete mask="00-00000000-0"
-                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter"
-                                        [min-chars]="2" [no-match-found-text]="'No se encontraron resultados'"
+                                    <input type="text" auto-complete
+                                        [(ngModel)]="unidadTransporte.CUILChofer"
                                         [source]="cuilsChofer"
-                                        [(ngModel)]="ordenDeCargaFason.CUILChofer"
-                                        (change)="validarCuilChofer()">
+                                        (change)="validarCuilChofer()"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
+                                        [no-match-found-text]="'No se encontraron CUILs chofer'"
+                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [min-chars]="2" mask="00-00000000-0" >
                                     <div *ngIf="validando.CUILChofer">
                                         <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
                                     </div>
@@ -290,8 +303,9 @@
                                     Raz&oacute;n social transporte:
                                 </div>
                                 <div class="styled-select">
-                                    <input [(ngModel)]="ordenDeCargaFason.RazonSocialTransporte"
-                                        (ngModelChange)="ordenDeCargaFason.RazonSocialTransporte = $event.toUpperCase()"
+                                    <input [(ngModel)]="unidadTransporte.RazonSocialTransporte"
+                                        (ngModelChange)="unidadTransporte.RazonSocialTransporte = pasarAMayusculas($event)"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
                                         type="text" maxlength="50">
                                 </div>
                             </div>
@@ -301,12 +315,14 @@
                                     CUIT transporte:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input auto-complete type="text" [(ngModel)]="ordenDeCargaFason.CUITTransporte"
-                                        mask="00-00000000-0" [placeholder]="descripcionTransporte"
-                                        (change)="validarCuitTransporte()" [source]="cuitsTransporte" [min-chars]="2"
-                                        [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
-                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter"
-                                        [placeholder]="descripcionTransporte">
+                                    <input auto-complete type="text"
+                                        [(ngModel)]="unidadTransporte.CUITTransporte"
+                                        [source]="cuitsTransporte"
+                                        (change)="validarCuitTransporte()"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
+                                        [no-match-found-text]="'No se encontraron CUITs transporte'"
+                                        [placeholder]="descripcionTransporte"
+                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [min-chars]="2" mask="00-00000000-0" >
                                     <div *ngIf="validando.CUITTransporte">
                                         <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
                                     </div>
@@ -318,7 +334,9 @@
                                     Cantidad de viajes:
                                 </div>
                                 <div class="styled-select">
-                                    <input type="number" max="3" [(ngModel)]="ordenDeCargaFason.CantidadDeViajes">
+                                    <input type="number" max="3" 
+                                        [(ngModel)]="unidadTransporte.CantidadDeViajes"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()" >
                                 </div>
                             </div>
                             <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
@@ -327,9 +345,12 @@
                                 </div>
                                 <div class="styled-select">
                                     <div class="ui-inputgroup">
-                                        <input type="text" [(ngModel)]="ordenDeCargaFason.CUITIntermediarioFlete"
-                                            mask="00-00000000-0" [placeholder]="descripcionIntermediarioFlete"
-                                            (change)="validarIntermediarioFlete()">
+                                        <input type="text"
+                                            [(ngModel)]="unidadTransporte.CUITIntermediarioFlete"
+                                            (change)="validarIntermediarioFlete()"
+                                            [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
+                                            [placeholder]="descripcionIntermediarioFlete"
+                                            mask="00-00000000-0">
                                         <span class="ui-inputgroup-addon" *ngIf="validando.CUITIntermediarioFlete">
                                             <p-progressSpinner
                                                 [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
@@ -339,13 +360,84 @@
                                 <div *ngIf="mensajesOrdenDeCargaFason.CUITIntermediarioFlete">
                                     {{mensajesOrdenDeCargaFason.CUITIntermediarioFlete}}
                                 </div>
-                                <div class="styled-select" *ngIf="ordenDeCargaFason.RazonSocialIntermediarioFlete">
+                                <div class="styled-select" *ngIf="unidadTransporte.RazonSocialIntermediarioFlete">
                                     <input [disabled]="true" type="text"
-                                        [(ngModel)]="ordenDeCargaFason.RazonSocialIntermediarioFlete">
+                                        [(ngModel)]="unidadTransporte.RazonSocialIntermediarioFlete">
                                 </div>
                                 <p *ngIf="mensajesGestionCuit.CUITIntermediarioFlete">
                                     {{ mensajesGestionCuit.CUITIntermediarioFlete }}
                                 </p>
+                            </div>
+
+                            <div class="containerBotones">
+                                <div class="col-xs-12 col-md-12" *ngIf="!esEdicionDeOrden" style="margin-top: 1em;">
+                                    <div *ngIf="!estaAgregandoUnidadTransporte">
+                                        <div class="col-xs-6 col-md-6">
+                                            <a (click)="agregarNuevaUnidadTransporte();" href="#">+ Añadir nueva unidad</a>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="estaAgregandoUnidadTransporte">
+                                        <div class="col-xs-6 col-md-6">
+                                            <input type="button" value="Agregar" (click)="guardarUnidadTransporte()" class="btn-custom btn-add btn-mediano" />
+                                        </div>
+                                        <div class="col-xs-6 col-md-6">
+                                            <input type="button" value="Cancelar" (click)="resetearUnidadTransporte()"
+                                                *ngIf="unidadesTransporteAgregadas.length > 0" class="btn-custom btn-cerrar btn-mediano" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-md-11" *ngIf="!esEdicionDeOrden" style="margin-left: 3em; margin-bottom: 2em; margin-top: 2em;">
+                            <div class="formulario-label">
+                                Unidades de transporte de carga de {{getNombreDeProducto()}}:
+                            </div>
+                            <div *ngIf="unidadesTransporteAgregadas.length == 0" class="styled-select" style="color: red;">
+                                Aún no se agregó ninguna unidad de transporte
+                            </div>
+                            <div *ngIf="unidadesTransporteAgregadas.length > 0" class="row myRow">
+                                <div class="clearfix myTables" style="overflow-x:auto;">
+                                    <table #tablaUnidades *ngIf="unidadesTransporteAgregadas.length > 0" id="tableModal"
+                                        class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" role="grid"
+                                        aria-describedby="tableModal_info" style="width: 100%; padding:10px 0; background: white !important;">
+                                        <thead>
+                                            <tr role="row">
+                                                <th>Chasis</th>
+                                                <th>Acoplado</th>
+                                                <th>Nombre</th>
+                                                <th>Apellido</th>
+                                                <th>CUIL chofer</th>
+                                                <th>Razón social</th>
+                                                <th>CUIT transporte</th>
+                                                <th>Viajes</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let unidad of unidadesTransporteAgregadas"
+                                                role="row" style="font-weight: normal;"
+                                                [class.filaTransporteSeleccionada]="unidad === unidadTransporte">
+                                                <td>{{ unidad.PatenteChasis }}</td>
+                                                <td>{{ unidad.PatenteAcoplado }}</td>
+                                                <td>{{ unidad.NombreChofer }}</td>
+                                                <td>{{ unidad.ApellidoChofer }}</td>
+                                                <td>{{ unidad.CUILChofer | mask: '00-00000000-0' }}</td>
+                                                <td>{{ unidad.RazonSocialTransporte }}</td>
+                                                <td>{{ unidad.CUITTransporte | mask: '00-00000000-0' }}</td>
+                                                <td>{{ unidad.CantidadDeViajes }}</td>
+                                                <td>
+                                                    <i pTooltip="Editar">
+                                                        <img (click)="editarUnidadTransporte(unidad)" src="../../../../Content/images/icons/editar.svg" />
+                                                    </i>
+                                                    <i pTooltip="Eliminar">
+                                                        <img (click)="removerUnidadTransporte(unidad)" src="../../../../Content/images/icons/trash.svg" />
+                                                    </i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
@@ -378,8 +470,8 @@
                                     <button type="button" id="openModalNotificacion" data-toggle="modal"
                                         style="display:none" data-target="#modalNotificación"
                                         class="btn-custom btn-azul"></button>
-                                    <input type="submit" (click)="guardarOrdenDeCargaFason()"
-                                        class="btn-custom btn-guardar btn-mediano" value="Enviar">
+                                    <input type="submit" (click)="guardarOrdenDeCargaFason()" [disabled]="!puedeGuardarOrden()" [pTooltip]="getTooltipBotonGuardarOrden()"
+                                        class="btn-custom btn-guardar btn-mediano" value="Enviar" tooltipPosition="bottom">
                                 </div>
                             </div>
 
@@ -420,6 +512,19 @@
     </div>
 </div>
 
+<p-dialog [header]="'Confirmar envío de orden'" [(visible)]="displayModalConfirmacion" [modal]="true" 
+    [responsive]="true" [style]="{width: '400px', minWidth: '300px', maxWidth:'500px'}" [minY]="70" 
+    [draggable]="false" appendTo="body" [closable]="false">
+    <p>¿Está seguro de que desea enviar la orden de carga para el producto:</p>
+    <p><strong>{{getNombreDeProducto()}}</strong></p>
+    <p-footer>
+        <button type="button" pButton icon="pi pi-check" (click)="confirmarEnvio()" 
+            label="Confirmar" class="ui-button-success"></button>
+        <button type="button" pButton icon="pi pi-times" (click)="cancelarEnvio()" 
+            label="Cancelar" class="ui-button-secondary"></button>
+    </p-footer>
+</p-dialog>
+
 <p-dialog [header]="displayModal ? displayModal.replace('CUIT','') : ''" [(visible)]="displayModal" [modal]="true"
     [responsive]="true" [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false"
     appendTo="body" (onHide)="focusRazonSocialParaGestion=true; razonSocialParaGestion=''">
@@ -456,3 +561,10 @@
             class="ui-button-secondary"></button>
     </p-footer>
 </p-dialog>
+
+<p-confirmDialog #dialogoConfirmar key="confirmarAccion" header="Confirmar" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="No" class="ui-button-info botonModal" (click)="dialogoConfirmar.reject()"></button>
+        <button type="button" pButton label="Sí" class="ui-button-success botonModal" (click)="dialogoConfirmar.accept()"></button>
+    </p-footer>
+</p-confirmDialog>

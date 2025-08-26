@@ -40,7 +40,7 @@ namespace SustitucionMOAWS.WSConsumers
             string vendedor = parametros.vendedor;
             string OC = parametros.OrdenCompraId;
             //MMSN - 574: Si ingresa OC o proveedor, son independientes de la fecha. De no coincidir OC y vendedor, retornar el error. 
-            if(!String.IsNullOrEmpty(OC) || !String.IsNullOrEmpty(vendedor))
+            if (!String.IsNullOrEmpty(OC) || !String.IsNullOrEmpty(vendedor))
             {
                 fechaInicio = "";
             }
@@ -147,7 +147,7 @@ namespace SustitucionMOAWS.WSConsumers
                     ProveedorNumero = item.VENDOR
                 });
             }
-            
+
             return result;
         }
 

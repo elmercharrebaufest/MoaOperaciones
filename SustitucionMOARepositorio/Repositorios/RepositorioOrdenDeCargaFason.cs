@@ -28,5 +28,21 @@ namespace SustitucionMOARepositorio.Repositorios
 
             return cuilsChoferes;
         }
+
+        public List<string> ObtenerCuitsTransporte(int clienteId, string patenteAcoplado)
+        {
+            var cuitsTransporte =
+                (
+                    from o in Set<OrdenDeCargaFason>()
+                    where
+                        o.Cliente_Id == clienteId &&
+                        o.PatenteAcoplado == patenteAcoplado
+                    select o.CUITTransporte
+                )
+                .Distinct()
+                .ToList();
+
+            return cuitsTransporte;
+        }
     }
 }

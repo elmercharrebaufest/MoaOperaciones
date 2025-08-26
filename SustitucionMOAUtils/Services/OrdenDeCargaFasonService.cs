@@ -53,8 +53,6 @@ namespace SustitucionMOAUtils.Services
 
         public ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request)
         {
-            Log.Debug($"Listar(request: {request.ToJson()})");
-
             var fechaIncioDateTime = DataFormatter.StringToDateTime(request.FechaDesde, "");
             var fechaFinDateTime = DataFormatter.StringToDateTime(request.FechaHasta, "");
 
@@ -62,13 +60,12 @@ namespace SustitucionMOAUtils.Services
             var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaFasonAdmin);
             fechaFinDateTime = fechaFinDateTime.AddDays(1);
 
-
             var codigoProveedorClientesRelacionados = usuario.Proveedores.Select(c => c.CodigoProveedor);
 
             Expression<Func<OrdenDeCargaFason, bool>> filtro = x =>
-            (esInterno || codigoProveedorClientesRelacionados.Contains(x.Cliente.CodigoProveedor))
-            && x.FechaCreacion >= fechaIncioDateTime && x.FechaCreacion <= fechaFinDateTime
-            && (esInterno || (request.EsCorredor ? x.CorredorId != null : x.CorredorId == null));
+                (esInterno || codigoProveedorClientesRelacionados.Contains(x.Cliente.CodigoProveedor))
+                && x.FechaCreacion >= fechaIncioDateTime && x.FechaCreacion <= fechaFinDateTime
+                && (esInterno || (request.EsCorredor ? x.CorredorId != null : x.CorredorId == null));
 
             var listadoConFiltro = repositorioFason.ListarConsultable(filtro);
 
@@ -79,7 +76,7 @@ namespace SustitucionMOAUtils.Services
 
             var hashPatentesCargadas = ObtenerHashPatentesCargadas(listadoConFiltro.AsEnumerable());
 
-            var listado = listadoConFiltro.ToList().OrderByDescending(x => x.FechaCreacion)
+            var listado = listadoConFiltro.AsEnumerable().OrderByDescending(x => x.FechaCreacion)
                 .Select(x => new OrdenDeCargaFasonDto(x, esInterno)
                 {
                     TienePatentesRepetidas = VerificarOrdenConPatentesRepetidas(x, hashPatentesCargadas),
@@ -90,8 +87,6 @@ namespace SustitucionMOAUtils.Services
             var response = new ListarOrdenDeCargaFasonResponse { Response = listado };
 
             return response;
-
-
         }
 
         public DetalleOrdenDeCargaFasonResponse ObtenerDetalle(int IdOrdenCargaFason, DetalleOrdenDeCargaFasonRequest mailUsuario)
@@ -215,8 +210,6 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorioFason.Obtener<Usuario>(us => us.Mail == mailUsuario);
             ValidarRequest(request, usuario);
             SetearCorredor(request, usuario);
-            var existeTransporte = TransporteExiste(request.CUITTransporte);
-            var existeIntermediarioFlete = string.IsNullOrEmpty(request.CUITIntermediarioFlete) || TransporteExiste(request.CUITIntermediarioFlete);
 
             var cliente = repositorioFason.Obtener<Proveedor>(request.Cliente);
             var producto = repositorioFason.Obtener<Material>(request.Producto_Id);
@@ -227,29 +220,36 @@ namespace SustitucionMOAUtils.Services
 
             var distanciaARecorrer = ObtenerDistanciaARecorrer(request.DomicilioDescr);
 
-            long ultimoId = 0;
-            for (int i = 0; i < request.CantidadDeViajes; i++)
-            {
-                var ordenEntity = new OrdenDeCargaFason(request)
-                {
-                    Producto = producto,
-                    LocalidadId = localidad?.LocalidadId,
-                    LocalidadDescripcion = localidad?.LocalidadDescripcion,
-                    KmARecorrer = distanciaARecorrer.HasValue ? distanciaARecorrer.ToString() : localidad?.KmARecorrer
-                };
-                var detalleActualizar = ObtenerDetallesActualizar(ordenEntity, existeTransporte, existeIntermediarioFlete);
-                var enviaNotificacion = i == 0;
-                ActualizarOrdenDeCarga(detalleActualizar, enviaNotificacion);
-                if (enviaNotificacion)
-                {
-                    ordenEntity.Cliente = cliente;
-                    NotificacionCamionAutorizadoMultiplesOrdenes(ordenEntity);
-                }
-                repositorioFason.Agregar(ordenEntity);
+            var ordenEntity = new OrdenDeCargaFason { Id = 0 };
 
-                repositorioFason.GuardarCambios();
-                ultimoId = ordenEntity.Id;
+            foreach (var unidadTransporte in request.UnidadesTransporte)
+            {
+                var existeTransporte = TransporteExiste(unidadTransporte.CUITTransporte);
+                var existeIntermediarioFlete = string.IsNullOrEmpty(unidadTransporte.CUITIntermediarioFlete) || TransporteExiste(unidadTransporte.CUITIntermediarioFlete);
+
+                for (int i = 0; i < unidadTransporte.CantidadDeViajes; i++)
+                {
+                    ordenEntity = new OrdenDeCargaFason(request, unidadTransporte)
+                    {
+                        Producto = producto,
+                        LocalidadId = localidad?.LocalidadId,
+                        LocalidadDescripcion = localidad?.LocalidadDescripcion,
+                        KmARecorrer = distanciaARecorrer.HasValue ? distanciaARecorrer.ToString() : localidad?.KmARecorrer
+                    };
+
+                    var detalleActualizar = ObtenerDetallesActualizar(ordenEntity, existeTransporte, existeIntermediarioFlete);
+                    var enviaNotificacion = i == 0;
+                    ActualizarOrdenDeCarga(detalleActualizar, enviaNotificacion);
+                    if (enviaNotificacion)
+                    {
+                        ordenEntity.Cliente = cliente;
+                        NotificacionCamionAutorizadoMultiplesOrdenes(ordenEntity);
+                    }
+                    repositorioFason.Agregar(ordenEntity);
+                }
             }
+            repositorioFason.GuardarCambios();
+            var ultimoId = ordenEntity.Id;
 
             var resultado = new Resultado { Mensaje = SuccessMsg.OrdenDeCargaAgregada, IdEntidad = (int)ultimoId };
             return resultado;
@@ -274,18 +274,18 @@ namespace SustitucionMOAUtils.Services
                 orden.Cantidad = request.Cantidad;
                 orden.Cliente_Id = request.Cliente;
                 orden.CorredorId = request.CorredorId;
-                orden.CUILChofer = request.CUILChofer;
-                orden.CUITTransporte = request.CUITTransporte;
-                orden.NombreChofer = request.NombreChofer;
-                orden.ApellidoChofer = request.ApellidoChofer;
+                orden.CUILChofer = request.UnidadTransporte.CUILChofer;
+                orden.CUITTransporte = request.UnidadTransporte.CUITTransporte;
+                orden.NombreChofer = request.UnidadTransporte.NombreChofer;
+                orden.ApellidoChofer = request.UnidadTransporte.ApellidoChofer;
                 orden.Observacion = request.Observacion;
-                orden.PatenteAcoplado = request.PatenteAcoplado;
-                orden.PatenteChasis = request.PatenteChasis;
+                orden.PatenteAcoplado = request.UnidadTransporte.PatenteAcoplado;
+                orden.PatenteChasis = request.UnidadTransporte.PatenteChasis;
                 orden.Producto_Id = request.Producto_Id;
-                orden.RazonSocialTransporte = request.RazonSocialTransporte;
+                orden.RazonSocialTransporte = request.UnidadTransporte.RazonSocialTransporte;
                 orden.FleteMOA = request.FleteMOA;
-                orden.CUITIntermediarioFlete = request.CUITIntermediarioFlete;
-                orden.RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
+                orden.CUITIntermediarioFlete = request.UnidadTransporte.CUITIntermediarioFlete;
+                orden.RazonSocialIntermediarioFlete = request.UnidadTransporte.RazonSocialIntermediarioFlete;
                 orden.ClienteComoRemitenteComercial = !string.IsNullOrEmpty(request.CUITDestino) &&
                     request.CUITDestino != request.CUITCliente.ToString();
                 orden.PlantaCodigo = request.PlantaCodigo;
@@ -351,29 +351,29 @@ namespace SustitucionMOAUtils.Services
             return OrdenDeCargaFasonDto(orden, usuario);
         }
 
-        public List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCargaFasonRequest orden, string mailUsuario)
+        public List<AutoCompleteDropdownElement> ObtenerCuilsChofer(int clienteId, string patenteAcoplado, string mailUsuario)
         {
-            if (orden.Cliente == 0 && string.IsNullOrEmpty(orden.PatenteAcoplado))
+            if (clienteId == 0 || string.IsNullOrEmpty(patenteAcoplado))
             {
-                return new List<AutoCompleteDropdownElement> { new AutoCompleteDropdownElement { label = " ", value = " " } };
+                return new List<AutoCompleteDropdownElement> { new AutoCompleteDropdownElement { label = "", value = "" } };
             }
 
-            var cliente = repositorioFason.Obtener<Proveedor>(x =>
-                x.Id == orden.Cliente &&
-                x.EstadoAprobacion == EstadoAprobacion.Aprobado &&
-                x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
+            //var cliente = repositorioFason.Obtener<Proveedor>(x =>
+            //    x.Id == clienteId &&
+            //    x.EstadoAprobacion == EstadoAprobacion.Aprobado &&
+            //    x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
 
-            if (cliente == null)
-            {
-                return new List<AutoCompleteDropdownElement>();
-            }
+            //if (cliente == null)
+            //{
+            //    return new List<AutoCompleteDropdownElement>();
+            //}
 
             var cuilsElements = repositorioFason
-                .ObtenerCuilsChofer(cliente.Id, orden.PatenteAcoplado)
+                .ObtenerCuilsChofer(clienteId, patenteAcoplado)
                 .Select(x =>
                     new AutoCompleteDropdownElement
                     {
-                        label = x.Substring(0, 2) + "-" + x.Substring(2, 8) + "-" + x.Substring(10, 1),
+                        label = x.Length >= 11 ? x.Substring(0, 2) + "-" + x.Substring(2, 8) + "-" + x.Substring(10, 1) : "",
                         value = x
                     })
                 .ToList();
@@ -381,29 +381,35 @@ namespace SustitucionMOAUtils.Services
             return cuilsElements;
         }
 
-        public List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCargaFasonRequest orden, string mailUsuario)
+        public List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(int clienteId, string patenteAcoplado, string mailUsuario)
         {
-            List<AutoCompleteDropdownElement> cuits = new List<AutoCompleteDropdownElement>();
-            Proveedor cliente;
-            if (orden.Cliente == null && orden.PatenteAcoplado == null)
-            {
-                cuits.Add(new AutoCompleteDropdownElement() { label = " ", value = " " });
-                return cuits;
-            }
-            cliente = repositorioFason.Obtener<Proveedor>(
-            x => x.Id == orden.Cliente &&
-            x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
-            if (cliente == null)
-            {
-                return cuits;
-            }
-            cuits = repositorioFason.Listar<OrdenDeCargaFason, AutoCompleteDropdownElement>(x => new AutoCompleteDropdownElement
-            {
-                label = x.CUITTransporte.Substring(0, 2) + "-" + x.CUITTransporte.Substring(2, 8) + "-" + x.CUITTransporte.Substring(10, 1),
-                value = x.CUITTransporte
-            }, x => x.Cliente_Id == cliente.Id && x.PatenteAcoplado == orden.PatenteAcoplado);
+            //List<AutoCompleteDropdownElement> cuits = new List<AutoCompleteDropdownElement>();
+            //Proveedor cliente;
 
-            return cuits.Distinct().ToList();
+            if (clienteId == 0 || string.IsNullOrEmpty(patenteAcoplado))
+            {
+                return new List<AutoCompleteDropdownElement> { new AutoCompleteDropdownElement { label = "", value = "" } };
+            }
+
+            //cliente = repositorioFason.Obtener<Proveedor>(
+            //    x => x.Id == orden.Cliente &&
+            //    x.EstadoAprobacion == EstadoAprobacion.Aprobado && x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
+            //if (cliente == null)
+            //{
+            //    return cuits;
+            //}
+
+            var cuits = repositorioFason //.Listar<OrdenDeCargaFason, AutoCompleteDropdownElement>(
+                .ObtenerCuitsTransporte(clienteId, patenteAcoplado)
+                .Select(x =>
+                    new AutoCompleteDropdownElement
+                    {
+                        label = x.Length >= 11 ? x.Substring(0, 2) + "-" + x.Substring(2, 8) + "-" + x.Substring(10, 1) : "",
+                        value = x
+                    })
+                .ToList();
+
+            return cuits;
         }
 
         public OrdenDeCargaDto ObtenerPatentes(OrdenDeCargaFasonRequest orden, string mailUsuario)
@@ -617,21 +623,52 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        private void ValidarRequest(CrearOrdenDeCargaFasonRequest request, Usuario usuario)
+        {
+            if (request.UnidadesTransporte == null || request.UnidadesTransporte.Count == 0)
+            {
+                throw new ValidationCustomException("No se ingresaron unidades de transporte");
+            }
+            if (request.UnidadesTransporte.Any(ut => ut.CantidadDeViajes > 3))
+            {
+                throw new ValidationCustomException("No puede generar más de 3 (tres) viajes.");
+            }
+            if (!request.ProductoSeleccionado.ValidaSisaRuca)
+            {
+                request.UnidadesTransporte.ForEach(ut =>
+                {
+                    ut.CUITIntermediarioFlete = null;
+                    ut.RazonSocialIntermediarioFlete = null;
+                });
+            }
+            ValidarRequest((OrdenDeCargaFasonRequest)request, usuario);
+        }
+
+        private void ValidarRequest(EditarOrdenDeCargaFasonRequest request, Usuario usuario)
+        {
+            if (request.UnidadTransporte == null)
+            {
+                throw new ValidationCustomException("No se ingresó unidad de transporte");
+            }
+            if (request.UnidadTransporte.CantidadDeViajes > 3)
+            {
+                throw new ValidationCustomException("No puede generar más de 3 (tres) viajes.");
+            }
+            if (!request.ProductoSeleccionado.ValidaSisaRuca)
+            {
+                request.UnidadTransporte.CUITIntermediarioFlete = null;
+                request.UnidadTransporte.RazonSocialIntermediarioFlete = null;
+            }
+            ValidarRequest((OrdenDeCargaFasonRequest)request, usuario);
+        }
+
         private void ValidarRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
         {
-            if (request.CantidadDeViajes > 3)
-            {
-                throw new ValidationCustomException("No puede generar más de 3(tres) viajes.");
-            }
-
             var fleteMOA = usuario.TieneRol(RolEnum.FleteMOA);
-            Log.Info($"FASON - Validar Request {request.ToJson()}. Usuario: {usuario.Mail}. RolFleteMOA={fleteMOA}");
 
             request.FleteMOA = fleteMOA && request.FleteMOA;
             if (!request.ProductoSeleccionado.ValidaSisaRuca)
             {
-                request.CUITIntermediarioFlete = null;
-                request.RazonSocialIntermediarioFlete = null;
                 request.DomicilioDescr = null;
                 request.DomicilioOrden = null;
                 request.DomicilioTipo = null;
@@ -706,7 +743,6 @@ namespace SustitucionMOAUtils.Services
 
         private void NotificacionCamionAutorizadoMultiplesOrdenes(OrdenDeCargaFason ordenDeCarga)
         {
-
             if (!estadosParaNoNotificarChasisRepetido.Contains(ordenDeCarga.Estado))
             {
                 var ordenesConPatentesRepetidas = OrdenesConPatentesRepetidas(ordenDeCarga.PatenteChasis);
@@ -730,18 +766,18 @@ namespace SustitucionMOAUtils.Services
                 Cantidad = request.Cantidad,
                 Cliente_Id = request.Cliente,
                 CorredorId = request.CorredorId,
-                CUILChofer = request.CUILChofer,
-                CUITTransporte = request.CUITTransporte,
-                NombreChofer = request.NombreChofer,
-                ApellidoChofer = request.ApellidoChofer,
+                CUILChofer = request.UnidadTransporte.CUILChofer,
+                CUITTransporte = request.UnidadTransporte.CUITTransporte,
+                NombreChofer = request.UnidadTransporte.NombreChofer,
+                ApellidoChofer = request.UnidadTransporte.ApellidoChofer,
                 Observacion = request.Observacion,
-                PatenteAcoplado = request.PatenteAcoplado,
-                PatenteChasis = request.PatenteChasis,
+                PatenteAcoplado = request.UnidadTransporte.PatenteAcoplado,
+                PatenteChasis = request.UnidadTransporte.PatenteChasis,
                 Producto_Id = request.Producto_Id,
-                RazonSocialTransporte = request.RazonSocialTransporte,
+                RazonSocialTransporte = request.UnidadTransporte.RazonSocialTransporte,
                 FleteMOA = request.FleteMOA,
-                CUITIntermediarioFlete = request.CUITIntermediarioFlete,
-                RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete,
+                CUITIntermediarioFlete = request.UnidadTransporte.CUITIntermediarioFlete,
+                RazonSocialIntermediarioFlete = request.UnidadTransporte.RazonSocialIntermediarioFlete,
                 ClienteComoRemitenteComercial = !string.IsNullOrEmpty(request.CUITDestino) &&
                     request.CUITDestino != request.CUITCliente.ToString(),
                 PlantaCodigo = request.PlantaCodigo,

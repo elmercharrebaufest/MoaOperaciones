@@ -110,7 +110,8 @@ namespace SustitucionMOAUtils.Services
                     estadoMoa = v.EstadoAprobacion == EstadoAprobacion.Aprobado ? (
                         (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true) ? "Habilitado"
                         : "Pendiente de envío documentación original") : v.EstadoAprobacionDescripcion,
-                    idVendedor = v.CodigoProveedor
+                    idVendedor = v.CodigoProveedor,
+                    cuit = v.CUIT
                 });
             response.vendedores.AddRange(vendedoresAprobados);
 
@@ -134,6 +135,20 @@ namespace SustitucionMOAUtils.Services
                         return a;
                     }))
                 .ToList();
+
+            string[] cuits = response.vendedores.Where(a => a.cuit != null && a.cuit != "").Select(a => a.cuit).Distinct().ToArray();
+
+            List<EstadoProveedorDto> estadoProveedores = dataAgroService.ObtenerEstadoProveedores(cuits);
+
+            foreach (var vendedor in response.vendedores.Where(a => a.estadoMoa.Contains("Habilitado")))
+            {
+                var estadoProveedor = estadoProveedores.FirstOrDefault(a => a.CUIT == vendedor.cuit);
+                if (estadoProveedor != null)
+                {
+                    vendedor.estadoMoa = estadoProveedor.EstadoHomeDescripcion;
+                }
+            }
+
             return response;
         }
         public List<ProveedorDto> GetAllClientsByType(int tipoProveedorId)

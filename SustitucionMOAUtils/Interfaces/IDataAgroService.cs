@@ -1,10 +1,7 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Interfaces
 {
@@ -19,5 +16,6 @@ namespace SustitucionMOAUtils.Interfaces
         bool ProveedorApocrifo(string CUIT);
         decimal TraerTipoDeCambio();
         SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(CampoProveedor campo, string kmz);
+        List<EstadoProveedorDto> ObtenerEstadoProveedores(string[] cuits);
     }
 }

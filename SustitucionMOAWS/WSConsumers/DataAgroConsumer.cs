@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SustitucionMOAWS.CredentialService;
+﻿using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.DataAgroServices;
+using System;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -27,7 +23,7 @@ namespace SustitucionMOAWS.WSConsumers
                 return service.ValidarProveedorComercial(CUIT, corredor);
             }
             //Significa que no estamos conectados
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -40,7 +36,7 @@ namespace SustitucionMOAWS.WSConsumers
                 return service.ProveedorApocrifo(CUIT);
             }
             //Significa que no estamos conectados
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -48,7 +44,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public decimal TraerTipoDeCambio()
         {
-            return service.TraerTipoDeCambio(null);
+            return service.TraerTipoDeCambio(DateTime.Now.Date, "", "M");
         }
 
         public SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(SustitucionMOAModel.Entities.CampoProveedor campo, string kmz)
@@ -70,6 +66,13 @@ namespace SustitucionMOAWS.WSConsumers
                 Id = campo.CampoCosecha.Id,
                 Estado = campo.Proveedor.EstadoAprobacion.ToString()
             });
+        }
+
+        public ResultEstadoProveedores ObtenerEstadoProveedores(string[] cuits)
+        {
+
+            return service.ObtenerEstadoProveedores(cuits);
+
         }
 
     }
