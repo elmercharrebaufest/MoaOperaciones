@@ -23,8 +23,8 @@ namespace SustitucionMOAWS.WSConsumers
     /// </summary>
     public class ObtenerOrdenDeCompraConsumerMOA : IObtenerOrdenDeCompraConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
 
         BAPI_PO_GETDETAIL1PortTypeClient service;
         private const string COMP_CODE = "MOA";
@@ -160,18 +160,18 @@ namespace SustitucionMOAWS.WSConsumers
                     out POSCHEDULE, out POADDRDELIVERY, out POCOND, out POACCOUNT, out POSRVACCESSVALUES, out POHISTORY);
 
                 return new ResultBAPI_PO_GETDETAIL1(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POCOND, POACCOUNT, POSRVACCESSVALUES);
-                
+
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
-        
+
         private void ObtenerOcSap(
            string nroOC, out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM, out ObtenerOrdenDeCompraWebServiceMOA.BAPIRET2[] RETURN, out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER POHEADER, out ObtenerOrdenDeCompraWebServiceMOA.BAPIEIKP result,
-          out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER    , out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM, out ObtenerOrdenDeCompraWebServiceMOA.BAPIESLLC[] POSERVICES     , out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE,
-          out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOCOND[] POCOND    , out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT, out ObtenerOrdenDeCompraWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES,
+          out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER, out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM, out ObtenerOrdenDeCompraWebServiceMOA.BAPIESLLC[] POSERVICES, out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE,
+          out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOCOND[] POCOND, out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT, out ObtenerOrdenDeCompraWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES,
           out ObtenerOrdenDeCompraWebServiceMOA.BAPIEKBE[] POHISTORY
            )
         {
@@ -185,15 +185,15 @@ namespace SustitucionMOAWS.WSConsumers
             string SERVICES = "X";
             string VERSION = "X";
 
-            POACCOUNT      = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNT[] { };
+            POACCOUNT = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNT[] { };
             POADDRDELIVERY = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] { };
-            POCOND         = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOCOND[] { };
-            POITEM         = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] { };
-            POTEXTHEADER   = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] { };
-            POTEXTITEM     = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] { };
-            RETURN         = new ObtenerOrdenDeCompraWebServiceMOA.BAPIRET2[] { };
-            POSERVICES     = new ObtenerOrdenDeCompraWebServiceMOA.BAPIESLLC[] { };
-            POHEADER       = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER { };
+            POCOND = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOCOND[] { };
+            POITEM = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] { };
+            POTEXTHEADER = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] { };
+            POTEXTITEM = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] { };
+            RETURN = new ObtenerOrdenDeCompraWebServiceMOA.BAPIRET2[] { };
+            POSERVICES = new ObtenerOrdenDeCompraWebServiceMOA.BAPIESLLC[] { };
+            POHEADER = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER { };
             ObtenerOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER = new ObtenerOrdenDeCompraWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] { };
             ObtenerOrdenDeCompraWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS = new ObtenerOrdenDeCompraWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] { };
             ObtenerOrdenDeCompraWebServiceMOA.BAPIPAREX[] EXTENSIONOUT = new ObtenerOrdenDeCompraWebServiceMOA.BAPIPAREX[] { };
@@ -302,7 +302,7 @@ namespace SustitucionMOAWS.WSConsumers
                 INVOICEPLAN = INVOICEPLAN,
                 ITEM_TEXT = ITEM_TEXT,
                 PURCHASEORDER = PURCHASEORDER,
-                SERIALNUMBERS =SERIALNUMBERS,
+                SERIALNUMBERS = SERIALNUMBERS,
                 SERVICES = SERVICES,
                 VERSION = VERSION,
                 ALLVERSIONS = ALLVERSIONS,
@@ -340,7 +340,7 @@ namespace SustitucionMOAWS.WSConsumers
             return response;
         }
 
-        private OrdenDeCompraSAPDto MapOrdenDeCompraSAPDto(ObtenerOrdenDeCompraWebServiceMOA.BAPIEIKP result, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER POHEADER, 
+        private OrdenDeCompraSAPDto MapOrdenDeCompraSAPDto(ObtenerOrdenDeCompraWebServiceMOA.BAPIEIKP result, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER POHEADER,
             ObtenerOrdenDeCompraWebServiceMOA.BAPIRET2[] RETURN, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER,
             ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM, ObtenerOrdenDeCompraWebServiceMOA.BAPIESLLC[] POSERVICES, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE,
             ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOCOND[] POCOND, ObtenerOrdenDeCompraWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES,
@@ -545,7 +545,7 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
         private AdjudicacionDto MapAdjudicacionDto(ObtenerOrdenDeCompraWebServiceMOA.BAPIEIKP result, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER POHEADER, ObtenerOrdenDeCompraWebServiceMOA.BAPIRET2[] RETURN,
-                                                   ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER,ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM, 
+                                                   ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM,
                                                    ObtenerOrdenDeCompraWebServiceMOA.BAPIESLLC[] POSERVICES, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY,
                                                    ObtenerOrdenDeCompraWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES)
         {
@@ -921,7 +921,7 @@ namespace SustitucionMOAWS.WSConsumers
                 if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
                 {
                     var response = ObtenerDetalleDeOrdenDeCompraSapSinPI(numeroDeOrdenCompra);
-                    return MapSinPI(response, centro,almacen,usuarioSolp);
+                    return MapSinPI(response, centro, almacen, usuarioSolp);
                 }
                 else
                 {
@@ -948,8 +948,8 @@ namespace SustitucionMOAWS.WSConsumers
         /// <summary>
         /// Mapea Detalle de una Orden de Compra
         /// </summary>
-        private DetalleOrdenDeCompraDto Map(ObtenerOrdenDeCompraWebServiceMOA.BAPIEIKP result, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER POHEADER, ObtenerOrdenDeCompraWebServiceMOA.BAPIRET2[] RETURN, 
-                                            ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM , ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER,ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM, 
+        private DetalleOrdenDeCompraDto Map(ObtenerOrdenDeCompraWebServiceMOA.BAPIEIKP result, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER POHEADER, ObtenerOrdenDeCompraWebServiceMOA.BAPIRET2[] RETURN,
+                                            ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM,
                                             ObtenerOrdenDeCompraWebServiceMOA.BAPIESLLC[] POSERVICES, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY,
                                             ObtenerOrdenDeCompraWebServiceMOA.BAPIEKBE[] POHISTORY, List<TablaSap> centros, List<TablaSap> almacenes, bool usuarioSolp)
         {
@@ -1349,8 +1349,8 @@ namespace SustitucionMOAWS.WSConsumers
 
             return itemDto;
         }
-        private void ObtenerDetalleDeOrdenDeCompraSap(string nroOC, out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM, out ObtenerOrdenDeCompraWebServiceMOA.BAPIRET2[] RETURN, 
-                                                  out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER POHEADER, out ObtenerOrdenDeCompraWebServiceMOA.BAPIEIKP result, out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER, 
+        private void ObtenerDetalleDeOrdenDeCompraSap(string nroOC, out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] POITEM, out ObtenerOrdenDeCompraWebServiceMOA.BAPIRET2[] RETURN,
+                                                  out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER POHEADER, out ObtenerOrdenDeCompraWebServiceMOA.BAPIEIKP result, out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER,
                                                   out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM, out ObtenerOrdenDeCompraWebServiceMOA.BAPIESLLC[] POSERVICES, out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE,
                                                   out ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, out ObtenerOrdenDeCompraWebServiceMOA.BAPIEKBE[] POHISTORY
             )
@@ -1762,7 +1762,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ResultBAPI_PO_GETDETAIL1(ObtenerOrdenDeCompraWebServiceMOA.BAPIEIKP result, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOHEADER pOHEADER, ObtenerOrdenDeCompraWebServiceMOA.BAPIRET2[] rETURN,
                                         ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOITEM[] pOITEM, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXTHEADER[] pOTEXTHEADER, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOTEXT[] pOTEXTITEM,
-                                        ObtenerOrdenDeCompraWebServiceMOA.BAPIESLLC[] pOSERVICES, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] pOSCHEDULE, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] pOADDRDELIVERY, 
+                                        ObtenerOrdenDeCompraWebServiceMOA.BAPIESLLC[] pOSERVICES, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOSCHEDULE[] pOSCHEDULE, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOADDRDELIVERY[] pOADDRDELIVERY,
                                         ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOCOND[] pOCOND, ObtenerOrdenDeCompraWebServiceMOA.BAPIMEPOACCOUNT[] pOACCOUNT, ObtenerOrdenDeCompraWebServiceMOA.BAPIESKLC[] pOSRVACCESSVALUES)
         {
             Result = result;

@@ -11,8 +11,8 @@
   <setParameter name="EmailAsuntoPrefijo Config" value="[PRE]" />
   <setParameter name="PasswordSap Config" value="prueba" />
   <setParameter name="SAPsinPI Config" value="1" />
-  <setParameter name="SapUserS4 Config" value="GWEBSRV_GOL" />
-  <setParameter name="SapPassS4 Config" value="prueba" />
+  <setParameter name="SapUserSinPI Config" value="GWEBSRV_GOL" />
+  <setParameter name="SapPassSinPI Config" value="prueba" />
   <setParameter name="SpaUrl Config" value="https://prenuevo.moaoperaciones.com.ar/web" />
 	<setParameter name="Url Config" value="http://gslopidevqa00.molinosagro.ad:50000/" />
   <setParameter name="AzureADTenantId Config" value="moagroQA.onmicrosoft.com" />

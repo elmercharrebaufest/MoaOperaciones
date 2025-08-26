@@ -10,8 +10,8 @@
 
   <setParameter name="PasswordSap Config" value="prueba" />
   <setParameter name="SAPsinPI Config" value="1" />
-  <setParameter name="SapUserS4 Config" value="GWEBSRV_GOL" />
-  <setParameter name="SapPassS4 Config" value="Initial.123456" />
+  <setParameter name="SapUserSinPI Config" value="GWEBSRV_GOL" />
+  <setParameter name="SapPassSinPI Config" value="prueba" />
   
   <setParameter name="EsLocal Config" value="false" />
 
@@ -218,14 +218,14 @@
   <setParameter name="EmailFacturasES Config" value="moaoperaciones@baufest.com" />
   
   <!--sin pi-->
-  <setParameter value="http://vhmgkgaqci.sap.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mlbo/400/z_ws_bapi_direct_mlbo/z_ws_bapi_direct_mlbo" name="Z_WS_BAPI_DIRECT_MLBO Service Endpoint Address" />
-  <setParameter value="http://vhmgkgaqci.sap.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_2012/400/z_ws_bapi_direct_2012/z_ws_bapi_direct_2012" name="Z_WS_BAPI_DIRECT_2012 Service Endpoint Address" />
-  <setParameter value="http://vhmgkgaqci.sap.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mewi/400/z_ws_bapi_direct_mewi/z_ws_bapi_direct_mewi" name="Z_WS_BAPI_DIRECT_MEWI Service Endpoint Address" />
-  <setParameter value="http://vhmgkgaqci.sap.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mewp/400/z_ws_bapi_direct_mewp/z_ws_bapi_direct_mewp" name="Z_WS_BAPI_DIRECT_MEWP Service Endpoint Address" />
-  <setParameter value="http://vhmgkgaqci.sap.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mewq/400/z_ws_bapi_direct_mewq/z_ws_bapi_direct_mewq" name="Z_WS_BAPI_DIRECT_MEWQ Service Endpoint Address" />
-  <setParameter value="http://vhmgkgaqci.sap.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_bapt/400/z_ws_bapi_direct_bapt/z_ws_bapi_direct_bapt" name="Z_WS_BAPI_DIRECT_BAPT Service Endpoint Address" />
-  <setParameter value="http://vhmgkgaqci.sap.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_moaop_compras_direct/400/z_ws_moaop_compras_direct/z_ws_moaop_compras_direct" name="Z_WS_MOAOP_COMPRAS_DIRECT Service Endpoint Address" />
-  <setParameter value="http://vhmgkgaqci.sap.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_moaop_direct/400/z_ws_moaop_direct/z_ws_moaop_direct" name="Z_WS_MOAOP_DIRECT Service Endpoint Address" />
-  <setParameter value="http://vhmgkgaqci.sap.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_panol_direct/400/z_ws_panol_direct/z_ws_panol_direct" name="Z_WS_PANOL_DIRECT Service Endpoint Address" />
+  <setParameter value="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mlbo/400/z_ws_bapi_direct_mlbo/z_ws_bapi_direct_mlbo" name="Z_WS_BAPI_DIRECT_MLBO Service Endpoint Address" />
+  <setParameter value="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_2012/400/z_ws_bapi_direct_2012/z_ws_bapi_direct_2012" name="Z_WS_BAPI_DIRECT_2012 Service Endpoint Address" />
+  <setParameter value="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mewi/400/z_ws_bapi_direct_mewi/z_ws_bapi_direct_mewi" name="Z_WS_BAPI_DIRECT_MEWI Service Endpoint Address" />
+  <setParameter value="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mewp/400/z_ws_bapi_direct_mewp/z_ws_bapi_direct_mewp" name="Z_WS_BAPI_DIRECT_MEWP Service Endpoint Address" />
+  <setParameter value="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mewq/400/z_ws_bapi_direct_mewq/z_ws_bapi_direct_mewq" name="Z_WS_BAPI_DIRECT_MEWQ Service Endpoint Address" />
+  <setParameter value="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_bapi_direct_bapt/400/z_ws_bapi_direct_bapt/z_ws_bapi_direct_bapt" name="Z_WS_BAPI_DIRECT_BAPT Service Endpoint Address" />
+  <setParameter value="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_moaop_compras_direct/400/z_ws_moaop_compras_direct/z_ws_moaop_compras_direct" name="Z_WS_MOAOP_COMPRAS_DIRECT Service Endpoint Address" />
+  <setParameter value="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_moaop_direct/400/z_ws_moaop_direct/z_ws_moaop_direct" name="Z_WS_MOAOP_DIRECT Service Endpoint Address" />
+  <setParameter value="http://gviceccqa.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_panol_direct/400/z_ws_panol_direct/z_ws_panol_direct" name="Z_WS_PANOL_DIRECT Service Endpoint Address" />
 
 </parameters>

@@ -19,15 +19,15 @@
                            /@value" />
   </parameter>
 
-  <parameter name="SapUserS4 Config">
+  <parameter name="SapUserSinPI Config">
     <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='SapUserS4']
+						match="/configuration/appSettings/add[@key='SapUserSinPI']
                            /@value" />
   </parameter>
 
-  <parameter name="SapPassS4 Config">
+  <parameter name="SapPassSinPI Config">
     <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='SapPassS4']
+						match="/configuration/appSettings/add[@key='SapPassSinPI']
                            /@value" />
   </parameter>
 
@@ -971,61 +971,5 @@
                     /endpoint[@name='SI_MMRFC_BAPI_ENTRYSHEET_CREATE']
                     /@address" />
   </parameter>
-
-  <parameter name="Z_WS_BAPI_DIRECT_MLBO Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/system.serviceModel/client
-                    /endpoint[@name='Z_WS_BAPI_DIRECT_MLBO']
-                    /@address" />
-  </parameter>
-  <parameter name="Z_WS_BAPI_DIRECT_2012 Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/system.serviceModel/client
-                    /endpoint[@name='Z_WS_BAPI_DIRECT_2012']
-                    /@address" />
-  </parameter>
-  <parameter name="Z_WS_BAPI_DIRECT_MEWI Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/system.serviceModel/client
-                    /endpoint[@name='Z_WS_BAPI_DIRECT_MEWI']
-                    /@address" />
-  </parameter>
-  <parameter name="Z_WS_BAPI_DIRECT_MEWP Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/system.serviceModel/client
-                    /endpoint[@name='Z_WS_BAPI_DIRECT_MEWP']
-                    /@address" />
-  </parameter>
-  <parameter name="Z_WS_BAPI_DIRECT_MEWQ Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/system.serviceModel/client
-                    /endpoint[@name='Z_WS_BAPI_DIRECT_MEWQ']
-                    /@address" />
-  </parameter>
-  <parameter name="Z_WS_BAPI_DIRECT_BAPT Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/system.serviceModel/client
-                    /endpoint[@name='Z_WS_BAPI_DIRECT_BAPT']
-                    /@address" />
-  </parameter>
-  <parameter name="Z_WS_MOAOP_COMPRAS_DIRECT Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/system.serviceModel/client
-                    /endpoint[@name='Z_WS_MOAOP_COMPRAS_DIRECT']
-                    /@address" />
-  </parameter>
-  <parameter name="Z_WS_MOAOP_DIRECT Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/system.serviceModel/client
-                    /endpoint[@name='Z_WS_MOAOP_DIRECT']
-                    /@address" />
-  </parameter>
-  <parameter name="Z_WS_PANOL_DIRECT Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/system.serviceModel/client
-                    /endpoint[@name='Z_WS_PANOL_DIRECT']
-                    /@address" />
-  </parameter>
-  
 </parameters>
 

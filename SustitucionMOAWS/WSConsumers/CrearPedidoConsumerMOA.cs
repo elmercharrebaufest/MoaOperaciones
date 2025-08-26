@@ -25,8 +25,8 @@ namespace SustitucionMOAWS.WSConsumers
         private readonly IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA;
         private readonly IRepositorio repositorio;
         private readonly IObtenerRegistroInfoConsumerMOA obtenerRegistroInfoConsumerMOA;
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
 
         public CrearPedidoConsumerMOA(IObtenerUnidadesDeMedidaAlternativasConsumerMOA _obtenerUnidadesDeMedidaConsumerMOA, IObtenerTipoCambioConsumerMOA _obtenerTipoCambioConsumerMOA, IRepositorio _repositorio, IObtenerRegistroInfoConsumerMOA _obtenerRegistroInfoConsumerMOA)
         {

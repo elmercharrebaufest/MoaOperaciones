@@ -25,8 +25,8 @@ namespace SustitucionMOAWS.WSConsumers
         /// MMSN-491 - Modificar el formato de fecha. DD/MM/AAAA
         /// </summary>
         private string dateTimeFormat = "dd/MM/yyyy";
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
 
         public ObtenerEntradaDeServicioPorNumeroConsumerMOA()
         {

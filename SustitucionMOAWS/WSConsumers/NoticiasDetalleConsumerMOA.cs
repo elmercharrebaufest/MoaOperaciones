@@ -16,8 +16,8 @@ namespace SustitucionMOAWS.WSConsumers
     public class NoticiasDetalleConsumerMOA
     {
 
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
         SI_MPMF_MOAOP_DETALLES_NOTICIASClient service = new SI_MPMF_MOAOP_DETALLES_NOTICIASClient();
 
         public NoticiasDetallesWSMOAResponse request(string proveedor, string fecha)

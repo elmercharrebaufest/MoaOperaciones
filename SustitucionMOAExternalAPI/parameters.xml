@@ -13,15 +13,15 @@
                            /@value" />
   </parameter>
 
-  <parameter name="SapUserS4 Config">
+  <parameter name="SapUserSinPI Config">
     <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='SapUserS4']
+						match="/configuration/appSettings/add[@key='SapUserSinPI']
                            /@value" />
   </parameter>
 
-  <parameter name="SapPassS4 Config">
+  <parameter name="SapPassSinPI Config">
     <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='SapPassS4']
+						match="/configuration/appSettings/add[@key='SapPassSinPI']
                            /@value" />
   </parameter>
   

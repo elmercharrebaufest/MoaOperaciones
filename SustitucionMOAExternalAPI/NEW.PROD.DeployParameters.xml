@@ -14,8 +14,8 @@
 
   <setParameter name="PasswordSap Config" value="GOL%2016" />
   <setParameter name="SAPsinPI Config" value="0" />
-  <setParameter name="SapUserS4 Config" value="GWEBSRV_GOL" />
-  <setParameter name="SapPassS4 Config" value="#x=X$tZGo\cH" />
+  <setParameter name="SapUserSinPI Config" value="GWEBSRV_GOL" />
+  <setParameter name="SapPassSinPI Config" value="#x=X$tZGo\cH" />
   <setParameter name="AzureADTenantId Config" value="moagro.onmicrosoft.com" />
   <setParameter name="AzureADAppId Config" value="560b50b4-0d0d-42b9-b6ed-792cba10142c" />
   <setParameter name="AzureADAppSecret Config" value="7~1e6GkakqN0_kCpb60r2b7_-EIU5c34MU" />
