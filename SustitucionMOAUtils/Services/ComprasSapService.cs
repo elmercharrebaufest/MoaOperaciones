@@ -169,9 +169,9 @@ namespace SustitucionMOAUtils.Services
                             x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             x.SERIAL_NO == SERVICE_ACCOUNT_SERIAL_NUMBER && //SERIAL_NO	DZEKKN	Número actual de la imputación
                             x.GL_ACCOUNT == getCodigoTablaSap(posicion.CuentaMayorSap) &&//GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            x.COSTCENTER == "" && //COSTCENTER	KOSTL	Centro de coste
+                            x.COSTCENTER == getCodigoTablaSap(posicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(posicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
-                            x.PROFIT_CTR == ""
+                            x.PROFIT_CTR == getCodigoTablaSap(posicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
                     );
 
                     if (imputacionPosicionMateriales is null)
@@ -181,9 +181,9 @@ namespace SustitucionMOAUtils.Services
                             PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER, //SERIAL_NO	DZEKKN	Número actual de la imputación
                             GL_ACCOUNT = getCodigoTablaSap(posicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            COSTCENTER = "", //COSTCENTER	KOSTL	Centro de coste
+                            COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
                             ORDERID = getCodigoTablaSap(posicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
-                            PROFIT_CTR = "",
+                            PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
                             BUS_AREA = "GENE",
                             CO_AREA = "MOA"
                         };
@@ -197,9 +197,9 @@ namespace SustitucionMOAUtils.Services
                             PREQ_ITEMX = "X",
                             SERIAL_NOX = "X",
                             GL_ACCOUNT = "X",
-                            COSTCENTER = "",
+                            COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
                             ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
-                            PROFIT_CTR = "",
+                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : "",
                             BUS_AREA = "X",
                             CO_AREA = "X"
                         });
@@ -395,9 +395,9 @@ namespace SustitucionMOAUtils.Services
                     BAPIMEREQACCOUNT imputacionPosicion = solpSAP.IM_PRACCOUNTList.Find(x =>
                             x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             x.GL_ACCOUNT == getCodigoTablaSap(subPosicion.CuentaMayorSap) && //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            x.COSTCENTER == "" && //COSTCENTER	KOSTL	Centro de coste
+                            x.COSTCENTER == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
-                            x.PROFIT_CTR == ""
+                            x.PROFIT_CTR == getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
                         );
 
                     if (imputacionPosicion is null)
@@ -410,9 +410,9 @@ namespace SustitucionMOAUtils.Services
                             SERIAL_NO = $"{numeroSerialNumberItem:00}",//indiceImputacion, //SERIAL_NO    DZEKKN  Número actual de la imputación
                             QUANTITY = subPosicion.Cantidad.Value, //QUANTITY	MENGE_D	Cantidad
                             GL_ACCOUNT = getCodigoTablaSap(subPosicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            COSTCENTER = "", //COSTCENTER	KOSTL	Centro de coste
+                            COSTCENTER = getCodigoTablaSap(subPosicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
                             ORDERID = getCodigoTablaSap(subPosicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
-                            PROFIT_CTR = "",
+                            PROFIT_CTR = getCodigoTablaSap(subPosicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
                             BUS_AREA = "GENE"
                         };
 
@@ -427,9 +427,9 @@ namespace SustitucionMOAUtils.Services
                             QUANTITY = "X",
                             GL_ACCOUNT = "X",
                             BUS_AREA = "X",
-                            COSTCENTER = "",
+                            COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
                             ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
-                            PROFIT_CTR = ""
+                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : ""
                         });
                     }
 
@@ -592,7 +592,7 @@ namespace SustitucionMOAUtils.Services
                                 getCodigoTablaSap(posicion.TipoImputacionSap) : "") &&
                             x.ORDERID == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ?
                                 getCodigoTablaSap(posicion.TipoImputacionSap) : "") &&
-                            x.PROFIT_CTR == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestroBeneficio") ?
+                            x.PROFIT_CTR == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ?
                                 getCodigoTablaSap(posicion.TipoImputacionSap) : "")
                     );
 
@@ -607,7 +607,7 @@ namespace SustitucionMOAUtils.Services
                                 getCodigoTablaSap(posicion.TipoImputacionSap) : "",// COSTCENTER     Centro de costo
                             ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ?
                                 getCodigoTablaSap(posicion.TipoImputacionSap) : "", //ORDERID	AUFNR	Número de orden
-                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestroBeneficio") ?
+                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ?
                                 getCodigoTablaSap(posicion.TipoImputacionSap) : "",
                             BUS_AREA = "GENE",
                             CO_AREA = "MOA"
@@ -624,7 +624,7 @@ namespace SustitucionMOAUtils.Services
                             GL_ACCOUNT = "X",
                             COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
                             ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
-                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestroBeneficio") ? "X" : "",
+                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : "",
                             BUS_AREA = "X",
                             CO_AREA = "X"
                         });
@@ -825,7 +825,7 @@ namespace SustitucionMOAUtils.Services
                                 getCodigoTablaSap(subPosicion.TipoImputacionSap) : "") &&
                             x.ORDERID == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ?
                                 getCodigoTablaSap(subPosicion.TipoImputacionSap) : "") &&
-                            x.PROFIT_CTR == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestroBeneficio") ?
+                            x.PROFIT_CTR == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ?
                                 getCodigoTablaSap(subPosicion.TipoImputacionSap) : "")
                         );
 
@@ -843,7 +843,7 @@ namespace SustitucionMOAUtils.Services
                                 getCodigoTablaSap(subPosicion.TipoImputacionSap) : "",
                             ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ?
                                 getCodigoTablaSap(subPosicion.TipoImputacionSap) : "",
-                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestroBeneficio") ?
+                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ?
                                 getCodigoTablaSap(subPosicion.TipoImputacionSap) : "",
                             BUS_AREA = "GENE"
                         };
@@ -861,7 +861,7 @@ namespace SustitucionMOAUtils.Services
                             BUS_AREA = "X",
                             COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
                             ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
-                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestroBeneficio") ? "X" : ""
+                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : ""
                         });
                     }
 
