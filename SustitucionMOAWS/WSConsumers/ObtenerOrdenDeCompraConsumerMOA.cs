@@ -26,18 +26,12 @@ namespace SustitucionMOAWS.WSConsumers
         private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
         private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
 
-        BAPI_PO_GETDETAIL1PortTypeClient service;
-        private const string COMP_CODE = "MOA";
+        readonly BAPI_PO_GETDETAIL1PortTypeClient service;
         private readonly IRepositorio repositorio;
-        /// <summary>
-        /// MMSN-491 - Modificar el formato de fecha. DD/MM/AAAA
-        /// </summary>
-        private string dateTimeFormat = "dd/MM/yyyy";
-
-        /// <summary>
-        /// //MMSN-491 - Ponerle separador de miles a la columna “Monto Total”. - Separador de miles ( , ) coma - Separador decimal ( . ) punto
-        /// </summary>
-        private string currencyFormat = "#,##0.00";
+        private readonly string dateTimeFormat = "dd/MM/yyyy";
+        private readonly string currencyFormat = "#,##0.00";
+        private readonly string tipoPosicionOcServicio = "SERVICIO";
+        private readonly string tipoPosicionOcMateriales = "MATERIALES";
 
         public ObtenerOrdenDeCompraConsumerMOA(IRepositorio repositorio)
         {
@@ -83,7 +77,8 @@ namespace SustitucionMOAWS.WSConsumers
             }
             catch (Exception e)
             {
-                throw e;
+                Log.Error(e, "Error al obtener la Orden de compra de SAP");
+                throw;
             }
         }
 
@@ -348,16 +343,13 @@ namespace SustitucionMOAWS.WSConsumers
         {
             OrdenDeCompraSAPDto resultado = new OrdenDeCompraSAPDto();
 
-            if (RETURN != null)
+            if (RETURN != null && RETURN.Length > 0)
             {
-                if (RETURN.Length > 0)
+                resultado.Error = new ErrorOC
                 {
-                    resultado.Error = new ErrorOC
-                    {
-                        Mensaje = RETURN[0].MESSAGE,
-                        Tipo = RETURN[0].TYPE
-                    };
-                }
+                    Mensaje = RETURN[0].MESSAGE,
+                    Tipo = RETURN[0].TYPE
+                };
             }
             if (resultado.Error == null)
             {
@@ -385,7 +377,7 @@ namespace SustitucionMOAWS.WSConsumers
                         IndiceSolp = pos.PREQ_ITEM,
                         RegistroInfo = pos.INFO_REC,
                         NroSolp = pos.PREQ_NO,
-                        TipoPosicion = pos.ITEM_CAT == "9" ? "SERVICIO" : "MATERIALES",
+                        TipoPosicion = pos.ITEM_CAT == "9" ? tipoPosicionOcServicio : tipoPosicionOcMateriales,
                         DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
                         {
                             RegionSap = region?.REGION
@@ -396,34 +388,39 @@ namespace SustitucionMOAWS.WSConsumers
                     });
                 }
 
-                //Certificaciones
-                foreach (var poh in POHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D"))
-                {
-                    resultado.Certificaciones.Add(new OrdenDeCompraSAPCertificacion
-                    {
-                        NroCertificacion = poh.MAT_DOC,
-                        Saldo = poh.VAL_FORCUR,
-                        Moneda = poh.CURRENCY,
-                        MontoFormateado = SAPFormatter.FormatearMonto(poh.VAL_FORCUR, poh.CURRENCY)
-                        //importe = poh.importe // Nos tienen que decir el nombre de este campo
-                    });
-                }
+                var esOcServicio = !resultado.Posiciones.Any() || resultado.Posiciones[0].TipoPosicion == tipoPosicionOcServicio;
 
-                foreach (var poh in POHISTORY.Where(x => (x.PROCESS_ID == "2" && x.HIST_TYPE == "Q") || (x.PROCESS_ID == "3" && x.HIST_TYPE == "N")))
+                if (esOcServicio)
                 {
-                    var certificacion = resultado.Certificaciones.First(x => x.NroCertificacion == poh.REF_DOC);
-                    switch (poh.HIST_TYPE)
+                    //Certificaciones
+                    foreach (var poh in POHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D"))
                     {
-                        case "Q":
-                            certificacion.Saldo -= poh.VAL_LOCCUR;
-                            certificacion.MontoFormateado = SAPFormatter.FormatearMonto(certificacion.Saldo, certificacion.Moneda);
-                            break;
-                        case "N":
-                            certificacion.Saldo += poh.VAL_LOCCUR;
-                            certificacion.MontoFormateado = SAPFormatter.FormatearMonto(certificacion.Saldo, certificacion.Moneda);
-                            break;
-                        default:
-                            break;
+                        resultado.Certificaciones.Add(new OrdenDeCompraSAPCertificacion
+                        {
+                            NroCertificacion = poh.MAT_DOC,
+                            Saldo = poh.VAL_FORCUR,
+                            Moneda = poh.CURRENCY,
+                            MontoFormateado = SAPFormatter.FormatearMonto(poh.VAL_FORCUR, poh.CURRENCY)
+                            //importe = poh.importe // Nos tienen que decir el nombre de este campo
+                        });
+                    }
+
+                    foreach (var poh in POHISTORY.Where(x => (x.PROCESS_ID == "2" && x.HIST_TYPE == "Q") || (x.PROCESS_ID == "3" && x.HIST_TYPE == "N")))
+                    {
+                        var certificacion = resultado.Certificaciones.First(x => x.NroCertificacion == poh.REF_DOC);
+                        switch (poh.HIST_TYPE)
+                        {
+                            case "Q":
+                                certificacion.Saldo -= poh.VAL_LOCCUR;
+                                certificacion.MontoFormateado = SAPFormatter.FormatearMonto(certificacion.Saldo, certificacion.Moneda);
+                                break;
+                            case "N":
+                                certificacion.Saldo += poh.VAL_LOCCUR;
+                                certificacion.MontoFormateado = SAPFormatter.FormatearMonto(certificacion.Saldo, certificacion.Moneda);
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
                 //resultado.Certificaciones = resultado.Certificaciones.Where(x => x.Saldo > 0).ToList();
@@ -435,16 +432,13 @@ namespace SustitucionMOAWS.WSConsumers
         {
             OrdenDeCompraSAPDto resultado = new OrdenDeCompraSAPDto();
 
-            if (response.RETURN != null)
+            if (response.RETURN != null && response.RETURN.Length > 0)
             {
-                if (response.RETURN.Length > 0)
+                resultado.Error = new ErrorOC
                 {
-                    resultado.Error = new ErrorOC
-                    {
-                        Mensaje = response.RETURN[0].MESSAGE,
-                        Tipo = response.RETURN[0].TYPE
-                    };
-                }
+                    Mensaje = response.RETURN[0].MESSAGE,
+                    Tipo = response.RETURN[0].TYPE
+                };
             }
             if (resultado.Error == null)
             {
@@ -472,7 +466,7 @@ namespace SustitucionMOAWS.WSConsumers
                         IndiceSolp = pos.PREQ_ITEM,
                         RegistroInfo = pos.INFO_REC,
                         NroSolp = pos.PREQ_NO,
-                        TipoPosicion = pos.ITEM_CAT == "9" ? "SERVICIO" : "MATERIALES",
+                        TipoPosicion = pos.ITEM_CAT == "9" ? tipoPosicionOcServicio : tipoPosicionOcMateriales,
                         DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
                         {
                             RegionSap = region?.REGION
@@ -483,31 +477,36 @@ namespace SustitucionMOAWS.WSConsumers
                     });
                 }
 
-                //Certificaciones
-                foreach (var poh in response.POHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D"))
-                {
-                    resultado.Certificaciones.Add(new OrdenDeCompraSAPCertificacion
-                    {
-                        NroCertificacion = poh.MAT_DOC,
-                        Saldo = poh.VAL_LOCCUR,
-                        Moneda = poh.CURRENCY,
-                        //importe = poh.importe // Nos tienen que decir el nombre de este campo
-                    });
-                }
+                var esOcServicio = !resultado.Posiciones.Any() || resultado.Posiciones[0].TipoPosicion == tipoPosicionOcServicio;
 
-                foreach (var poh in response.POHISTORY.Where(x => (x.PROCESS_ID == "2" && x.HIST_TYPE == "Q") || (x.PROCESS_ID == "3" && x.HIST_TYPE == "N")))
+                if (esOcServicio)
                 {
-                    var certificacion = resultado.Certificaciones.First(x => x.NroCertificacion == poh.REF_DOC);
-                    switch (poh.HIST_TYPE)
+                    //Certificaciones
+                    foreach (var poh in response.POHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D"))
                     {
-                        case "Q":
-                            certificacion.Saldo -= poh.VAL_LOCCUR;
-                            break;
-                        case "N":
-                            certificacion.Saldo += poh.VAL_LOCCUR;
-                            break;
-                        default:
-                            break;
+                        resultado.Certificaciones.Add(new OrdenDeCompraSAPCertificacion
+                        {
+                            NroCertificacion = poh.MAT_DOC,
+                            Saldo = poh.VAL_LOCCUR,
+                            Moneda = poh.CURRENCY,
+                            //importe = poh.importe // Nos tienen que decir el nombre de este campo
+                        });
+                    }
+
+                    foreach (var poh in response.POHISTORY.Where(x => (x.PROCESS_ID == "2" && x.HIST_TYPE == "Q") || (x.PROCESS_ID == "3" && x.HIST_TYPE == "N")))
+                    {
+                        var certificacion = resultado.Certificaciones.First(x => x.NroCertificacion == poh.REF_DOC);
+                        switch (poh.HIST_TYPE)
+                        {
+                            case "Q":
+                                certificacion.Saldo -= poh.VAL_LOCCUR;
+                                break;
+                            case "N":
+                                certificacion.Saldo += poh.VAL_LOCCUR;
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
@@ -575,7 +574,7 @@ namespace SustitucionMOAWS.WSConsumers
             adjudicacion.Solp_Id = solp;
 
             adjudicacion.Id = 0;
-            adjudicacion.TipoPosicionCodigo = POITEM.First().ITEM_CAT == "9" ? "SERVICIO" : "MATERIALES";
+            adjudicacion.TipoPosicionCodigo = POITEM[0].ITEM_CAT == "9" ? tipoPosicionOcServicio : tipoPosicionOcMateriales;
             adjudicacion.NumeroOrdenDeCompra = POHEADER.PO_NUMBER;
             adjudicacion.Proveedor = POHEADER.VENDOR;
             adjudicacion.Centro = POADDRDELIVERY.FirstOrDefault()?.NAME;
@@ -752,7 +751,7 @@ namespace SustitucionMOAWS.WSConsumers
             adjudicacion.Solp_Id = solp;
 
             adjudicacion.Id = 0;
-            adjudicacion.TipoPosicionCodigo = response.POITEM.First().ITEM_CAT == "9" ? "SERVICIO" : "MATERIALES";
+            adjudicacion.TipoPosicionCodigo = response.POITEM[0].ITEM_CAT == "9" ? tipoPosicionOcServicio : tipoPosicionOcMateriales;
             adjudicacion.NumeroOrdenDeCompra = response.POHEADER.PO_NUMBER;
             adjudicacion.Proveedor = response.POHEADER.VENDOR;
             adjudicacion.Centro = response.POADDRDELIVERY.FirstOrDefault()?.NAME;

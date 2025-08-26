@@ -352,31 +352,34 @@ namespace SustitucionMOAUtils.Services
                     return result;
                 }
 
-                if (ordenDeCompraSAP.Cabecera.SaldoDisponible <= 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIO")
+                if (ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIO")
                 {
-                    result.Add(new ValidationResult(false, $"La orden de compra {ordenDeCompraEncontrada.Value} no tiene saldo disponible. Factura no enviada. Deberá certificar y volver a cargarla nuevamente.", typeof(OrdenCompraValidationCommand).Name, "", ordenDeCompraEncontrada.Value));
-                    return result;
-                }
-
-                // Validar si tiene certificaciones
-                if (ordenDeCompraSAP.Certificaciones.Count == 0)
-                {
-                    result.Add(new ValidationResult(false, "La orden de compra no tiene certificaciones pendientes de facturar", typeof(OrdenCompraValidationCommand).Name, "", ""));
-                    return result;
-                }
-
-                if (ordenDeCompraSAP.Cabecera.SaldoDisponible > 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIO")
-                {
-                    result.Add(new ValidationResult
+                    if (ordenDeCompraSAP.Cabecera.SaldoDisponible <= 0)
                     {
-                        IsValid = true,
-                        Message = $"Seleccione las certificaciones para la orden de compra {ordenDeCompraEncontrada.Value}.",
-                        ValidataionType = typeof(OrdenCompraValidationCommand).Name,
-                        Value = ordenDeCompraEncontrada.Value,
-                        Certificaciones = ordenDeCompraSAP.Certificaciones,
-                        EsMonedaExtranjera = ordenDeCompraSAP.Cabecera.Moneda != nameof(Currency.ARP)
-                    });
-                    return result;
+                        result.Add(new ValidationResult(false, $"La orden de compra {ordenDeCompraEncontrada.Value} no tiene saldo disponible. Factura no enviada. Deberá certificar y volver a cargarla nuevamente.", typeof(OrdenCompraValidationCommand).Name, "", ordenDeCompraEncontrada.Value));
+                        return result;
+                    }
+
+                    // Validar si tiene certificaciones
+                    if (ordenDeCompraSAP.Certificaciones.Count == 0)
+                    {
+                        result.Add(new ValidationResult(false, "La orden de compra no tiene certificaciones pendientes de facturar", typeof(OrdenCompraValidationCommand).Name, "", ""));
+                        return result;
+                    }
+
+                    if (ordenDeCompraSAP.Cabecera.SaldoDisponible > 0)
+                    {
+                        result.Add(new ValidationResult
+                        {
+                            IsValid = true,
+                            Message = $"Seleccione las certificaciones para la orden de compra {ordenDeCompraEncontrada.Value}.",
+                            ValidataionType = typeof(OrdenCompraValidationCommand).Name,
+                            Value = ordenDeCompraEncontrada.Value,
+                            Certificaciones = ordenDeCompraSAP.Certificaciones,
+                            EsMonedaExtranjera = ordenDeCompraSAP.Cabecera.Moneda != nameof(Currency.ARP)
+                        });
+                        return result;
+                    }
                 }
             }
 
