@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using System.Text;
 using SustitucionMOAModel.Util;
+using System.Linq;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -15,8 +16,6 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionToAltaTransporteCuitFason = ConfigurationManager.AppSettings["EmailAltaTransporteFasonTo"];
         private static readonly string DireccionCCAltaTransporteCuitFason = ConfigurationManager.AppSettings["EmailAltaTransporteFasonCC"];
         
-        private static readonly string DireccionEmailAltaDistanciaFasonTo = ConfigurationManager.AppSettings["EmailAltaDistanciaFasonTo"];
-
         private static readonly string DireccionComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
         private static readonly string DireccionMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
         private static readonly string DireccionAuditoriaOrdenesVencidas = ConfigurationManager.AppSettings["EmailToAuditoriaOrdenesVencidas"];
@@ -66,7 +65,7 @@ namespace SustitucionMOAUtils.Services.Email
             emailService.EnviarMail(emailSenderData);
         }
         
-        public void EnviarMailIntentoEdicionActiva(OrdenDeCargaFason orden, OrdenDeCargaFasonRequest request)
+        public void EnviarMailIntentoEdicionActiva(OrdenDeCargaFason orden, EditarOrdenDeCargaFasonRequest request)
         {
             var tablaInformacionOrden = CrearTablaDetalleOrden(
                 orden,
@@ -135,8 +134,7 @@ namespace SustitucionMOAUtils.Services.Email
         
         public void EnviarMailNotificacionEdicion(OrdenDeCargaFason orden, List<Variance> listaValoresDiferentes)
         {
-            var descripcion = $"Se informa que el día {DateTime.Now} "+
-                $"se han realizado las siguientes modificaciones para la orden fason {orden.Id}";
+            var descripcion = $"Se informa que el día {DateTime.Now} se han realizado las siguientes modificaciones para la orden fason {orden.Id}:";
             var tablaCambios = CrearTablaCambios(listaValoresDiferentes);
             var cuerpo = CrearCuerpoMail(descripcion, tablaCambios);
 
@@ -161,8 +159,8 @@ namespace SustitucionMOAUtils.Services.Email
                 "<br />" +
                (!string.IsNullOrEmpty(texto) ? $"{texto} <br />" : "") +
                (!string.IsNullOrEmpty(contenido) ? $"{contenido} <br />" : "") +
-                "<p > Saludos,</p>" +
-                "<p > Moa Operaciones </p>" +
+                "<p> Saludos,</p>" +
+                "<p> Moa Operaciones </p>" +
                 "</body>\r\n</html>";
             return cuerpo;
         }
@@ -204,17 +202,17 @@ namespace SustitucionMOAUtils.Services.Email
             return tablaBuilder.ToString();
         }
         
-        private string CrearTablaDetalleOrden(OrdenDeCargaFason orden, OrdenDeCargaFasonRequest request)
+        private string CrearTablaDetalleOrden(OrdenDeCargaFason orden, EditarOrdenDeCargaFasonRequest request)
         {
             var detalleCorredor = orden.Corredor != null ? orden.Corredor.CUIT + " - " + orden.Corredor.RazonSocial : "---";
             return InicioTablaDetalle() + CrearFilaTablaDetalleOrden(
                 ordenId: orden.Id,
                 cliente: $"{orden.Cliente.CUIT} - {orden.Cliente.RazonSocial}",
                 corredor: $"{detalleCorredor}",
-                chofer: $"{request.CUILChofer} - {request.ApellidoChofer}, {request.NombreChofer}",
-                transporte: $"{request.CUITTransporte} - {request.RazonSocialTransporte}",
-                patenteChasis: request.PatenteChasis,
-                patenteAcoplado: request.PatenteAcoplado,
+                chofer: $"{request.UnidadTransporte.CUILChofer} - {request.UnidadTransporte.ApellidoChofer}, {request.UnidadTransporte.NombreChofer}",
+                transporte: $"{request.UnidadTransporte.CUITTransporte} - {request.UnidadTransporte.RazonSocialTransporte}",
+                patenteChasis: request.UnidadTransporte.PatenteChasis,
+                patenteAcoplado: request.UnidadTransporte.PatenteAcoplado,
                 fecha: orden.FechaCreacion.ToString("dd/MM/yyyy")
                 ) + FinalTabla();
         }
@@ -257,36 +255,36 @@ namespace SustitucionMOAUtils.Services.Email
         
         private string FinalTabla()
         {
-
             return "</tbody>" +
             "</table>";
         }
-        
+
         private string CrearTablaCambios(List<Variance> listaValoresDiferentes)
         {
             var tablaBuilder = new StringBuilder();
             var ahora = DateTime.Now;
             tablaBuilder.Append("<table cellspacing = \"5\" cellpadding = \"5\" border = \"3\">" +
-              "<caption >Cambios</caption>" +
+              "<caption>Cambios</caption>" +
               "<thead style = \"background-color: #adacac;\">" +
               "<tr>" +
-              "<td scope=\"col\">Nombre de la Columna</td>" +
+              "<td scope=\"col\">Nombre de la columna</td>" +
               "<td scope=\"col\">Antes del cambio</td>" +
-              "<td scope=\"col\">Despues del cambio</td>" +
+              "<td scope=\"col\">Después del cambio</td>" +
               "<td scope=\"col\">Fecha</td>" +
               "</tr>" +
               "</thead>" +
               "<tbody>");
+
             foreach (var diferencia in listaValoresDiferentes)
             {
                 tablaBuilder.Append("<tr>" +
                 $"<td>{diferencia.PropertyName}</td>" +
-                $"<td>{diferencia.valA}</td>" +
-                $"<td>{diferencia.valB}</td>" +
+                $"<td>{diferencia.ValorAnterior}</td>" +
+                $"<td>{diferencia.ValorNuevo}</td>" +
                 $"<td>{ahora}</td>" +
                 "</tr>");
             }
-            tablaBuilder.Append(FinalTabla());
+            tablaBuilder.Append("</tbody></table>");
             return tablaBuilder.ToString();
         }
     }

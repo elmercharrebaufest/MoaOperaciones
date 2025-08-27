@@ -107,9 +107,7 @@
                  dataKey="NumeroOrdenDeCompra"
                  [columns]="columns"
                  [customSort]="true"
-                 (sortFunction)="sortFunction($event, 'Ordenes')"
-                 [paginator]="true"
-                 [alwaysShowPaginator]="false"
+                 (sortFunction)="sortFunction($event, 'Ordenes')"                
                  [loading]="loading"
                  [rows]="10"
                  [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor', 'NombreProveedor']"
@@ -443,6 +441,8 @@
                 </tr>
             </ng-template>
         </p-table>
+        <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
+
         <div class="container-button">
             <button (click)="openModal()" class="btn btn-certificar" [attr.disabled]="itemSelected.length === 0? true : null">
                 Certificar ES - Ítem

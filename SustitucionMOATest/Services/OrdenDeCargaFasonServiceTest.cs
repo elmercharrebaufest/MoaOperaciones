@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.Dto.OrdenDeCargaCommon;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -12,6 +13,7 @@ using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using ScatoConsumerWS = SustitucionMOAWS.ScatoWebService;
 
@@ -70,7 +72,7 @@ namespace SustitucionMOATest.Services
                 ValidaSisaRuca = false,
             };
             orden.Producto_Id = productoId;
-            orden.CUITTransporte = cuitTransporte;
+            orden.UnidadesTransporte.First().CUITTransporte = cuitTransporte;
             var clientes = new ScatoConsumerWS.ClienteDto[] { };
             var usuario = new Usuario { Mail = mailUsuario, Roles = new List<Rol>() { new Rol { Nombre = "FLETE MOA", Codigo = "FLETE MOA" } } };
             ordenCargaConsumer
@@ -91,18 +93,6 @@ namespace SustitucionMOATest.Services
             Assert.That(result.Mensaje, Is.EqualTo(SuccessMsg.OrdenDeCargaAgregada));
         }
 
-        private CrearOrdenDeCargaFasonRequest ObtenerCrearRequest()
-        {
-            return new CrearOrdenDeCargaFasonRequest
-            {
-                Cantidad = 30000,
-                CantidadDeViajes = 3,
-                CUITCliente = 22001100553,
-                Producto_Id = 4,
-                PatenteAcoplado = "",
-                PatenteChasis = "",
-            };
-        }
         [Test]
         public void VerificarVencimientoOrdenDeCargaFason_OrdenesVencidas_CorrectlyUpdated()
         {
@@ -163,6 +153,25 @@ namespace SustitucionMOATest.Services
             Assert.IsEmpty(result);
             emailFasonService.Verify(e => e.EnviarMailVencieronOrdenesDeCarga(It.IsAny<List<OrdenDeCargaFason>>()), Times.Once);
             repositorioOrdenDeCargaFason.Verify(r => r.GuardarCambios(), Times.Never);
+        }
+
+        private CrearOrdenDeCargaFasonRequest ObtenerCrearRequest()
+        {
+            return new CrearOrdenDeCargaFasonRequest
+            {
+                Cantidad = 30000,
+                CUITCliente = 22001100553,
+                Producto_Id = 4,
+                UnidadesTransporte = new List<UnidadTransporteCarga>
+                {
+                    new UnidadTransporteCarga
+                    {
+                        CantidadDeViajes = 3,
+                        PatenteAcoplado = "",
+                        PatenteChasis = ""
+                    }
+                }
+            };
         }
     }
 }

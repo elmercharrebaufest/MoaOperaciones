@@ -496,6 +496,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
                     else {
                         if (result.error != undefined && result.error != "") {
                             this.mensajeComponent.setErrorMsg(result.error);
+                            document.getElementById("closeModalSuplente").click();
                         }
                         else {
                             if (result.info != undefined) {

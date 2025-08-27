@@ -718,3 +718,5 @@ WHERE
 	R.Nombre in (
 		'VER TODOS LOS ESTADOS DE ES',
 		'ADMINISTRACION')
+
+IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'NO GRANOS' and PermisoPorRol.Permiso = 'CARGAR FACT PROV') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'NO GRANOS'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'CARGAR FACT PROV')) END

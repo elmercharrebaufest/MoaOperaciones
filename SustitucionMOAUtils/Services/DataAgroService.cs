@@ -1,11 +1,11 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
-using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -225,7 +225,7 @@ namespace SustitucionMOAUtils.Services
 
                 return respuesta;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -421,6 +421,30 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+
+        public List<EstadoProveedorDto> ObtenerEstadoProveedores(string[] cuits)
+        {
+            try
+            {
+                var ResultEstadoProveedores = new DataAgroConsumer().ObtenerEstadoProveedores(cuits);
+                List<EstadoProveedorDto> proveedores = new List<EstadoProveedorDto>();
+                foreach (var item in ResultEstadoProveedores.Contactos)
+                {
+                    proveedores.Add(new EstadoProveedorDto
+                    {
+                        CUIT = item.Cuit,
+                        EstadoHomeDescripcion = item.EstadoHomeDescripcion
+                    });
+                }
+                return proveedores.Distinct().ToList();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+
+        }
     }
 
 }

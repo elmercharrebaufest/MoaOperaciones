@@ -9,5 +9,7 @@ namespace SustitucionMOARepositorio.Repositorios.Interfaces
     public interface IRepositorioOrdenDeCargaFason : IRepositorio
     {
         List<string> ObtenerCuilsChofer(int clienteId, string patenteAcoplado);
+        
+        List<string> ObtenerCuitsTransporte(int clienteId, string patenteAcoplado);
     }
 }
