@@ -276,9 +276,6 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (var registro in registros)
             {
                 string unidadMedidaCodigo = unidadesDeMedia.First(x => x.Comercial == registro.Unidad).UM;
-                registro.FechaVigencia = "2025-01-01";
-                registro.FechaVigenciaFormateada = new DateTime(2025, 01, 01);
-
 
                 var registroInfoSAP = new RegistroInfoSAPSinPI
                 {
