@@ -74,21 +74,37 @@ namespace SustitucionMOAUtils.Services
                     List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName);
                     List<ValidationResult> resultado = AnalizarResultados(resultadoAnalisis, codigo);
                     // Flujo nuevo
-                    if (resultado[0].IsValid && resultado[0].Certificaciones?.Count > 0)
+                    if (resultado[0].IsValid)
                     {
-                        resultado.ForEach(r => r.FileName = file.FileName);
-                        // Buscamos los archivos relacionados a ese nro de certificacion
-                        resultado[0].Certificaciones.ForEach((certificacion) =>
+                        var ordenDeCompraValidationResult = resultadoAnalisis.Find(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name);
+                        var certificacionesRegistradasOC = repositorio.Listar<CertificacionRegistrada>(cr => cr.NRO_OC == ordenDeCompraValidationResult.Value);
+
+                        if (resultado[0].Certificaciones?.Count > 0)
                         {
-                            List<CertificacionRegistrada> certificacionesRegistradas = repositorio.Listar<CertificacionRegistrada>(c => c.NRO_Certificacion == certificacion.NroCertificacion).ToList();
-                            if (certificacionesRegistradas != null && certificacionesRegistradas.Any())
+                            resultado.ForEach(r => r.FileName = file.FileName);
+                            // Buscamos los archivos relacionados a ese nro de certificacion
+                            resultado[0].Certificaciones.ForEach((certificacion) =>
                             {
-                                certificacionesRegistradas.ForEach(certificacionRegistrada =>
+                                var certificacionesRegistradas = certificacionesRegistradasOC.Where(c => c.NRO_Certificacion == certificacion.NroCertificacion).ToList();
+                                if (certificacionesRegistradas != null && certificacionesRegistradas.Any())
                                 {
-                                    certificacion.Archivo.Add(certificacionRegistrada.Archivo);
-                                });
-                            }
-                        });
+                                    certificacionesRegistradas.ForEach(certificacionRegistrada =>
+                                    {
+                                        certificacion.Archivo.Add(certificacionRegistrada.Archivo);
+                                    });
+                                }
+                            });
+                        }
+
+                        resultado[0].Certificaciones = resultado[0].Certificaciones ?? new List<SustitucionMOAModel.Dto.OrdenDeCompraSAPCertificacion>();
+                        if (certificacionesRegistradasOC.Any(x => x.Archivo.FileKey == FileKeys.FacturaDiferenciaTasaDeCambio))
+                        {
+                            resultado[0].Certificaciones.Add(new SustitucionMOAModel.Dto.OrdenDeCompraSAPCertificacion
+                            {
+                                NroCertificacion = "Factura por diferencia de tasa de cambio",
+                                Archivo = new List<Archivo>(certificacionesRegistradasOC.Where(cr => cr.Archivo.FileKey == FileKeys.FacturaDiferenciaTasaDeCambio).Select(x => x.Archivo))
+                            });
+                        }
                     }
                     // Flujo anterior a registro de certificaciones
                     else
@@ -132,7 +148,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (grupo.EsFacturaPorDiferenciaTasaDeCambio)
                 {
-                    GuardarFacturaPorDiferenciaTasaDeCambio(archivo, cuit, codigoProveedor, usuario);
+                    certificacionesRegistradas.Add(GuardarFacturaPorDiferenciaTasaDeCambio(grupo, archivo, proveedorId, cuit, codigoProveedor, usuario));
                 }
                 else
                 {
@@ -190,11 +206,11 @@ namespace SustitucionMOAUtils.Services
                 GuardarResultadosYArchivo(elementosLeidos, resultadoAnalisis, ruta, usuarioId);
             }
             repositorio.AgregarTodos(certificacionRegistradas);
-            var resp = repositorio.GuardarCambios();
+            repositorio.GuardarCambios();
             return certificacionRegistradas;
         }
 
-        private void GuardarFacturaPorDiferenciaTasaDeCambio(HttpPostedFileBase archivoFactura, string cuit, string codigoProveedor, Usuario usuario)
+        private CertificacionRegistrada GuardarFacturaPorDiferenciaTasaDeCambio(GrupoCertificaciones grupoCertificaciones, HttpPostedFileBase archivoFactura, int proveedorId, string cuit, string codigoProveedor, Usuario usuario)
         {
             var resultadoOcrs = ObtenerElementosArchivoPorOCR(archivoFactura).ToList();
 
@@ -211,6 +227,20 @@ namespace SustitucionMOAUtils.Services
 
             var archivo = new Archivo { Ruta = rutaArchivo, FileKey = FileKeys.FacturaDiferenciaTasaDeCambio };
             repositorio.Agregar(archivo);
+
+            var certificacionRegistrada = new CertificacionRegistrada
+            {
+                Archivo = archivo,
+                FechaDeRegistro = DateTime.Now,
+                NombreDeArchivo = archivoFactura.FileName,
+                NRO_OC = grupoCertificaciones.OrdenDeCompra,
+                ProveedorId = proveedorId,
+                UsuarioId = usuarioId,
+                NRO_Certificacion = string.Empty,
+                Importe = 0,
+                Moneda = string.Empty
+            };
+            repositorio.Agregar(certificacionRegistrada);
             repositorio.GuardarCambios();
 
             if (resultado.Exists(r => r.IsValid))
@@ -218,6 +248,7 @@ namespace SustitucionMOAUtils.Services
                 EnviarMail(archivoFactura);
             }
             GuardarResultadosYArchivo(elementosLeidos, resultadoAnalisis, rutaArchivo, usuarioId);
+            return certificacionRegistrada;
         }
 
         private void GuardarResultadosYArchivo(List<string> elementosLeidos, List<ValidationResult> resultadoAnalisis, string ruta, int usuarioId)
@@ -460,7 +491,7 @@ namespace SustitucionMOAUtils.Services
                     c.Id,
                     c.Proveedor.RazonSocial,
                     c.NRO_OC,
-                    c.NRO_Certificacion,
+                    NRO_Certificacion = c.Archivo.FileKey != FileKeys.FacturaDiferenciaTasaDeCambio ? c.NRO_Certificacion : "Por diferencia de tasa de cambio",
                     c.Importe,
                     c.Archivo,
                     c.FechaDeRegistro,

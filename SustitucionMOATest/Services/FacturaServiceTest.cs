@@ -108,19 +108,24 @@ namespace SustitucionMOATest.Services
             var elementosLeidos = new List<string> { "element1", "element2" };
             var validationResult = new ValidationResult { IsValid = true, FileName = "test.pdf" };
 
-            repositorioMock.Setup(r => r.Obtener<Usuario>(It.IsAny<System.Linq.Expressions.Expression<System.Func<Usuario, bool>>>())).Returns(usuario);
+            repositorioMock.Setup(r => r.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
+            repositorioMock
+                .Setup(r => r.Listar(It.IsAny<Expression<Func<CertificacionRegistrada, bool>>>(), 0, null, DirOrden.Asc, null))
+                .Returns(new List<CertificacionRegistrada>());
             azureServiceMock.Setup(a => a.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>())).ReturnsAsync(operacionOCRId);
             azureServiceMock.Setup(a => a.ObtenerResultadoOCRAsync(operacionOCRId)).ReturnsAsync(elementosLeidos);
             analisisDocumentoServiceMock.Setup(a => a.AnalizarFacturaCertificacionServicios(It.IsAny<List<string>>(), cuit, It.IsAny<string>())).Returns(new List<ValidationResult> { validationResult });
 
             // Act
-            target.SubirPDF(files, cuit, codigo, mail);
+            var resultados = target.SubirPDF(files, cuit, codigo, mail);
 
             // Assert
-            repositorioMock.Verify(r => r.Agregar(It.IsAny<Archivo>()), Times.Once);
-            repositorioMock.Verify(r => r.GuardarCambios(), Times.Once);
-            emailServiceMock.Verify(e => e.EnviarMail(It.IsAny<SustitucionMOAUtils.Email.EmailSenderData>()), Times.Once);
+            Assert.IsNotNull(resultados);
+            Assert.AreEqual(1, resultados.Count);
+            Assert.True(resultados[0].IsValid);
+            Assert.AreEqual("El documento se envió a para su análisis.", resultados[0].Message);
         }
+
         [Test]
         public void EliminarFacturasAntiguasTest()
         {

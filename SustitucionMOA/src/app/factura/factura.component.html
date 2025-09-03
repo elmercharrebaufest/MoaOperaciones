@@ -92,7 +92,7 @@
                                             <input type="checkbox"
                                                 [(ngModel)]="certificacion.Seleccionada"
                                                 (change)="onCheckCertificacion(certificacion, grupo.nombreArchivo)"
-                                                [disabled]="grupo.esFacturaPorDiferenciaTasaDeCambio">
+                                                [disabled]="grupo.esFacturaPorDiferenciaTasaDeCambio || certificacion.NRO_Certificacion == textoNroCertifFacturaDiferenciaTasaCambio">
                                         </td>
                                         <td>{{ certificacion.NRO_OC }}</td>
                                         <td>{{ certificacion.NRO_Certificacion }}</td>
