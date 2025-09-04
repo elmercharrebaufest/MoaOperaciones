@@ -8,6 +8,8 @@ import { FiltroFechaComponent } from '../../common/view-child/filtro-fecha/filtr
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { FacturaService } from '../../factura/factura.service';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
+import { SecurityService } from '../../common/services/SecurityService';
+import { Permiso } from '../../common/enums/Permisos';
 
 @Component({
   selector: 'app-reporte-facturas-certificaciones',
@@ -36,15 +38,19 @@ export class ReporteFacturasCertificacionesComponent implements OnInit {
   ordenActual: string = "DESC";
   columnaActual: string = "FechaDeRegistro";
 
+  esUsuarioInternoMoa: boolean = false;
+
   constructor(
     private facturaService: FacturaService,
     protected sessionDataService: SessionDataService,
     private reporteFacturasCertificacionesService: ReporteFacturasCertificacionesService,
-    protected floatMsgService: FloatMsgService,) {
+    protected floatMsgService: FloatMsgService,
+    protected securityService: SecurityService) {
     this.facturasCertificacionFilterModel = new FacturasCertificacionFilter();
   }
 
   ngOnInit() {
+    this.esUsuarioInternoMoa = this.securityService.tienePermiso(Permiso.ReporteFacturasCertificaciones);
     this.itemsPerPage = sessionStorage.getItem("itemsPerPage") ? sessionStorage.getItem("itemsPerPage") : "10";
     this.onChangeFecha();
   }

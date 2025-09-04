@@ -317,6 +317,7 @@ namespace SustitucionMOAModel.Entities
                 case "DESCARGAR PAGOS NG": return PermisoEnum.DescargarPagosNg;
                 case "PESIFICACION": return PermisoEnum.Pesificacion;
                 case "REGISTRAR PESADA": return PermisoEnum.RegistrarPesada;
+                case "REPORTE FACTURAS CERTIFICACIONES": return PermisoEnum.ReporteFacturasCertificaciones;
                 case "SELECCIONAR VENDEDOR": return PermisoEnum.SeleccionarVendedor;
                 case "ALTA EMPRESA GRANOS": return PermisoEnum.AltaEmpresaGranos;
                 case "ABM EMPRESAS": return PermisoEnum.AbmEmpresas;

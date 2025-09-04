@@ -457,8 +457,9 @@ namespace SustitucionMOAUtils.Services
         public object ObtenerReporteFacturasCertificaciones(
             string fechaInicio,
             string fechaFin,
+            string mailUsuario,
             string ordenDeCompra = null,
-            string proveedor = null,
+            string proveedorRazonSocial = null,
             int? itemsPorPagina = null,
             int? pagina = null,
             string orden = null,
@@ -467,24 +468,25 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                // Preparar objeto de paginación si se especifican los parámetros
                 Paginacion paginacion = null;
                 if (pagina.HasValue || itemsPorPagina.HasValue)
                 {
                     var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
                     paginacion = new Paginacion(
-                    (!string.IsNullOrEmpty(columna) ? columna : null),
-                    ordenar,
+                        (!string.IsNullOrEmpty(columna) ? columna : null),
+                        ordenar,
                         (pagina == null) ? 0 : pagina.Value,
                         (itemsPorPagina == null || itemsPorPagina == 0) ? 10 : itemsPorPagina.Value
                     );
                 }
 
-                // Validar las fechas
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+                var esUsuarioInternoMoa = usuario.TienePermiso(PermisoEnum.ReporteFacturasCertificaciones);
+                var cuitProveedor = esUsuarioInternoMoa ? null : usuario.ObtenerProveedor().CUIT;
+
                 var fechaInicioParsed = DateTime.Parse(fechaInicio);
                 var fechaFinParsed = DateTime.Parse(fechaFin);
-                var pag = new Paginacion("FechaDeRegistro", DirOrden.Desc, 1, 10);
-                var consulta = new ListarCertificacionRegistradaConsulta(paginacion, ordenDeCompra, proveedor, fechaInicioParsed, fechaFinParsed);
+                var consulta = new ListarCertificacionRegistradaConsulta(paginacion, ordenDeCompra, proveedorRazonSocial, cuitProveedor, fechaInicioParsed, fechaFinParsed);
                 var resultado = repositorio.ListarConsultaPaginada(consulta);
                 var certificacionesSinAreas = resultado.Select(c => new
                 {
@@ -507,15 +509,15 @@ namespace SustitucionMOAUtils.Services
                 return new
                 {
                     certificaciones = certificacionesSinAreas,
-                    totalItems = totalItems,
-                    totalPaginas = totalPaginas,
-                    paginaActual = paginaActual
+                    totalItems,
+                    totalPaginas,
+                    paginaActual
                 };
 
             }
             catch (Exception ex)
             {
-                Log.Error($"Error en ObtenerReporteFacturasCertificaciones: {ex.Message}", ex);
+                Log.Error($"Error en ObtenerReporteFacturasCertificaciones", ex);
                 throw;
             }
         }

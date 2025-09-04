@@ -20,7 +20,7 @@
     </div>
     
     <!-- Input para código de proveedor -->
-    <div id="searchCodigoProveedor" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
+    <div *ngIf="esUsuarioInternoMoa" id="searchCodigoProveedor" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
       <p>Proveedor</p>
       <div class="styled-select">
         <input type="search" [(ngModel)]="facturasCertificacionFilterModel.proveedor"
