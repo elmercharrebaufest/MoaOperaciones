@@ -22,7 +22,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
-        public object request()
+        public object request(string codigo)
         {
             try
             {
@@ -36,6 +36,14 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_SERVICESELECTION = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASNRAN[] { },
                         IM_SRVSHORTTEXTSELECTION = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASKRAN[] { }
                     };
+
+                    if (!string.IsNullOrEmpty(codigo))
+                    {
+                        var IM_ServiceSelectionList = new List<WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASNRAN>();
+                        IM_ServiceSelectionList.Add(new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASNRAN { SIGN = "I", OPTION = "EQ", SERVICE_LOW = codigo });
+                        WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASNRAN[] IM_SERVICESELECTION = IM_ServiceSelectionList.ToArray();
+                        request.IM_SERVICESELECTION = IM_SERVICESELECTION;
+                    }
 
                     Log.Info($"SAP sin PI Z_MMRFC_OBTENER_SERVICIOS request");
                     Log.Info(request.ToXml());
@@ -55,6 +63,14 @@ namespace SustitucionMOAWS.WSConsumers
                     service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
                     ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN[] EX_SERVICESELECTION = new ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN[] { };
+
+                    if (!string.IsNullOrEmpty(codigo))
+                    {
+                        var IM_ServiceSelectionList = new List<ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN>();
+                        IM_ServiceSelectionList.Add(new ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN { SIGN = "I", OPTION = "EQ", SERVICE_LOW = codigo });
+                        EX_SERVICESELECTION = IM_ServiceSelectionList.ToArray();
+                    }
+
                     ObtenerServiciosSolpWebServiceMOA.BAPIASKRAN[] EX_SRVSHORTTEXTSELECTION = new ObtenerServiciosSolpWebServiceMOA.BAPIASKRAN[] { };
                     ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] IM_RETURN = new ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] { };
                     ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] IM_SERVICELIST = new ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] { };

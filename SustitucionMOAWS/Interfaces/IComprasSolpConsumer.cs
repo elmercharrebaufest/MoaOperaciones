@@ -24,12 +24,12 @@ namespace SustitucionMOAWS.Interfaces
 
     public interface IObtenerServiciosSolpConsumerMOA
     {
-        object request();
+        object request(string codigo = "");
     }
 
     public interface IObtenerMaterialesSolpConsumerMOA
     {
-        MaterialWSMOAResponse request(List<string> CentroCodigo, string NombreDeMaterial);
+        MaterialWSMOAResponse request(List<string> CentroCodigo, string NombreDeMaterial, string CodigoMaterial);
     }
 
     public interface IObtenerSolpConsumerMOA
