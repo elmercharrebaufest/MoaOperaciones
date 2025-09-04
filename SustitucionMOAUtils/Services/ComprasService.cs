@@ -1943,6 +1943,15 @@ namespace SustitucionMOAUtils.Services
              }
              , e => e.CodigoSap.ToString().Contains(valor));
 
+            if((lista == null || !lista.Any()) && valor.Length >= 7 && valor.All(char.IsDigit))
+            {
+                string codServicio = valor.PadLeft(18, '0');
+                this.ActualizarServicioSolpDadoCodigo(codServicio);
+                var servicioAgregado = this.repositorio.Obtener<ServicioSolp>(s => s.Codigo == valor);
+                if (servicioAgregado != null)
+                    lista.Add(new ServicioSolpDto(servicioAgregado));
+            }
+
             return lista;
         }
 
@@ -2289,51 +2298,63 @@ namespace SustitucionMOAUtils.Services
 
         public void ActualizarServiciosSolp()
         {
-            List<Servicio> servicios = comprasServiceSap.ObtenerServiciosSapRaw();
-            if (servicios.Any())
+            var servicios = comprasServiceSap.ObtenerServiciosSapRaw();
+            ProcesarServiciosSolp(servicios);
+        }
+
+        public void ActualizarServicioSolpDadoCodigo(string codigo)
+        {
+            var servicios = comprasServiceSap.ObtenerServicioSapRawPorCodigo(codigo);
+            ProcesarServiciosSolp(servicios);
+        }
+
+        private void ProcesarServiciosSolp(List<Servicio> servicios)
+        {
+            if (servicios == null || !servicios.Any())
             {
-                List<ServicioSolp> listaBase = repositorio.Listar<ServicioSolp>();
-                int agregados = 0;
-                int actualizados = 0;
-                foreach (Servicio servicio in servicios)
-                {
-                    int codigoNum = 0;
-                    if (int.TryParse(servicio.Codigo, out codigoNum))
-                    {
-                        var serv = listaBase.FirstOrDefault(x => x.CodigoSap == codigoNum);
-                        if (serv == null)
-                        {
-                            repositorio.Agregar(new ServicioSolp
-                            {
-                                Codigo = servicio.Codigo,
-                                CodigoSap = codigoNum,
-                                Descripcion = servicio.Descripcion,
-                                GrupoArticulos = int.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
-                                TipoServicio = servicio.Serv,
-                                AmbitoServicio = servicio.Ser,
-                                Edicion = int.TryParse(servicio.Edit, out int edicion) ? edicion : 0,
-                                UnidadMedidaBase = servicio.Bas,
-                                SSCItem = servicio.SSCItem
-                            });
-                            agregados++;
-                        }
-                        else
-                        {
-                            serv.Descripcion = servicio.Descripcion;
-                            serv.GrupoArticulos = int.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null;
-                            serv.TipoServicio = servicio.Serv;
-                            serv.AmbitoServicio = servicio.Ser;
-                            serv.Edicion = int.TryParse(servicio.Edit, out int edicion) ? edicion : 0;
-                            serv.UnidadMedidaBase = servicio.Bas;
-                            serv.SSCItem = servicio.SSCItem;
-                            actualizados++;
-                        }
-                    }
-                }
-                Log.Info($"items agregados: {agregados}");
-                Log.Info($"items actualizados: {actualizados}");
+                return;
             }
 
+            List<ServicioSolp> listaBase = repositorio.Listar<ServicioSolp>();
+            int agregados = 0;
+            int actualizados = 0;
+
+            foreach (Servicio servicio in servicios)
+            {
+                if (int.TryParse(servicio.Codigo, out int codigoNum))
+                {
+                    var serv = listaBase.FirstOrDefault(x => x.CodigoSap == codigoNum);
+                    if (serv == null)
+                    {
+                        repositorio.Agregar(new ServicioSolp
+                        {
+                            Codigo = servicio.Codigo,
+                            CodigoSap = codigoNum,
+                            Descripcion = servicio.Descripcion,
+                            GrupoArticulos = int.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
+                            TipoServicio = servicio.Serv,
+                            AmbitoServicio = servicio.Ser,
+                            Edicion = int.TryParse(servicio.Edit, out int edicion) ? edicion : 0,
+                            UnidadMedidaBase = servicio.Bas,
+                            SSCItem = servicio.SSCItem
+                        });
+                        agregados++;
+                    }
+                    else
+                    {
+                        serv.Descripcion = servicio.Descripcion;
+                        serv.GrupoArticulos = int.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null;
+                        serv.TipoServicio = servicio.Serv;
+                        serv.AmbitoServicio = servicio.Ser;
+                        serv.Edicion = int.TryParse(servicio.Edit, out int edicion) ? edicion : 0;
+                        serv.UnidadMedidaBase = servicio.Bas;
+                        serv.SSCItem = servicio.SSCItem;
+                        actualizados++;
+                    }
+                }
+            }
+            Log.Info($"items agregados: {agregados}");
+            Log.Info($"items actualizados: {actualizados}");
             repositorio.GuardarCambios();
         }
 

@@ -28,7 +28,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
-        public MaterialWSMOAResponse request(List<string> CentroCodigo, string NombreDeMaterial)
+        public MaterialWSMOAResponse request(List<string> CentroCodigo, string NombreDeMaterial, string CodigoMaterial)
         {
             try
             {
@@ -56,6 +56,15 @@ namespace SustitucionMOAWS.WSConsumers
                             IM_MAX = Convert.ToByte(IM_MAX),
                             IM_PLANT = IM_PLANT
                         };
+
+                        if (CodigoMaterial != null && CodigoMaterial != "")
+                        {
+                            var IM_MaterialList = new List<WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5800>();
+                            IM_MaterialList.Add(new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5800 { SIGN = "I", OPTION = "EQ", LOW = CodigoMaterial });
+                            WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5800[] IM_MATERIAL = IM_MaterialList.ToArray();
+                            request.IM_MATERIAL = IM_MATERIAL;
+                        }
+
                         Log.Info($"SAP sin PI Z_MMRFC_OBTENER_MATERIALES request");
                         Log.Info(request.ToXml());
                         var response = agent.Z_MMRFC_OBTENER_MATERIALES(request);
@@ -78,6 +87,12 @@ namespace SustitucionMOAWS.WSConsumers
                     service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
                     ObtenerMaterialesSolpWebServiceMOA.ZMPES5800[] IM_MATERIAL   = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5800[] { };
+                    if(CodigoMaterial != null && CodigoMaterial != "")
+                    {
+                        var IM_MaterialList = new List<ObtenerMaterialesSolpWebServiceMOA.ZMPES5800>();
+                        IM_MaterialList.Add(new ObtenerMaterialesSolpWebServiceMOA.ZMPES5800 { SIGN = "I", OPTION = "EQ", LOW = CodigoMaterial });
+                        IM_MATERIAL = IM_MaterialList.ToArray();
+                    }
                     ObtenerMaterialesSolpWebServiceMOA.ZMPES5810[] IM_MATL_DESC  = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5810[] { };
                     ObtenerMaterialesSolpWebServiceMOA.ZMPES5830[] IM_MATL_GROUP = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5830[] { };
 

@@ -900,7 +900,7 @@ namespace SustitucionMOATest.Services
             };
 
             this.serviciosConsumerMock
-                .Setup(x => x.request())
+                .Setup(x => x.request(string.Empty))
                 .Returns(servicioWSMOAResponseTest);
 
             List<ServicioSolp> listadoServiciosSolp = new List<ServicioSolp>
@@ -946,7 +946,7 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(3, listadoServiciosSolp[4].CodigoSap);
 
-            this.serviciosConsumerMock.Verify(x => x.request(), Times.Once);
+            this.serviciosConsumerMock.Verify(x => x.request(string.Empty), Times.Once);
             this.repositorioComprasMock.Verify(x => x.GuardarCambios(), Times.Once);
         }
 
