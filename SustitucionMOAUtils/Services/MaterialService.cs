@@ -31,8 +31,8 @@ namespace SustitucionMOAUtils.Services
             List<string> centrosLista = centros.ConvertAll(a => a.CodigoSap);
 
             WSMapMOAModel.MaterialWSMOAResponse resultSap = obtenerMaterialesSolpConsumerMOA.request(centrosLista, materialFiltro, null);
-
-            ProcesarMateriales(resultSap.Materiales);
+            List<MaterialSolp> listaBase = repositorio.Listar<MaterialSolp>();
+            ProcesarMateriales(resultSap.Materiales, listaBase);
         }
 
         public void ActualizarMaterialSolpDadoCentroYCod(int centroId, string codMaterial)
@@ -44,18 +44,18 @@ namespace SustitucionMOAUtils.Services
             };
 
             WSMapMOAModel.MaterialWSMOAResponse resultSap = obtenerMaterialesSolpConsumerMOA.request(centrosLista, "", codMaterial);
+            List<string> materialesCodigo = resultSap.Materiales.Select(a => a.NroMaterial).Distinct().ToList();
+            List<MaterialSolp> listaBase = repositorio.Listar<MaterialSolp>(x => materialesCodigo.Contains(x.CodigoSap));
 
-            ProcesarMateriales(resultSap.Materiales);
+            ProcesarMateriales(resultSap.Materiales, listaBase);
         }
 
-        private void ProcesarMateriales(List<WSMapMOAModel.Material> Materiales)
+        private void ProcesarMateriales(List<WSMapMOAModel.Material> Materiales, List<MaterialSolp> listaBase)
         {
             if (Materiales == null || !Materiales.Any())
             {
                 return;
             }
-
-            List<MaterialSolp> listaBase = repositorio.Listar<MaterialSolp>();
 
             List<string> tablasSapAConsultar = new List<string>
             {
