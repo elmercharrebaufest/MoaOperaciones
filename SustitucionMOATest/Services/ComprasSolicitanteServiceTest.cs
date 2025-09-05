@@ -33,6 +33,7 @@ namespace SustitucionMOATest.Services
             comprasServiceSapMock = new Mock<IComprasSapService>();
             registroInfoServiceMock = new Mock<IRegistroInfoService>();
             unidadMedidaServiceMock = new Mock<IUnidadMedidaService>();
+            materialServiceMock = new Mock<IMaterialService>();
             target = new ComprasSolicitanteService(repositorioMock.Object,
                                                    comprasServiceMock.Object,
                                                    comprasServiceSapMock.Object,
