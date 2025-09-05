@@ -275,7 +275,10 @@ namespace SustitucionMOAUtils.Services.Email
               "</thead>" +
               "<tbody>");
 
-            foreach (var diferencia in listaValoresDiferentes)
+            // Filter out boolean values before processing
+            var valoresNoBooleanos = listaValoresDiferentes.Where(diferencia =>
+                !(diferencia.ValorAnterior is bool) && !(diferencia.ValorNuevo is bool)).ToList();
+            foreach (var diferencia in valoresNoBooleanos)
             {
                 tablaBuilder.Append("<tr>" +
                 $"<td>{diferencia.PropertyName}</td>" +
