@@ -1947,7 +1947,7 @@ namespace SustitucionMOAUtils.Services
             {
                 string codServicio = valor.PadLeft(18, '0');
                 this.ActualizarServicioSolpDadoCodigo(codServicio);
-                var servicioAgregado = this.repositorio.Obtener<ServicioSolp>(s => s.Codigo == valor);
+                var servicioAgregado = this.repositorio.Obtener<ServicioSolp>(s => s.Codigo == codServicio);
                 if (servicioAgregado != null)
                     lista.Add(new ServicioSolpDto(servicioAgregado));
             }
