@@ -55,6 +55,8 @@ export class CotizacionComponent extends ListBaseComponent {
     condicionEspecial: boolean;
     condicionEspecialOriginal: boolean;
     ajustePolinomicaDisabled: boolean;
+    infoBoxText: string;
+    mostrarInfoBox: boolean = false;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
@@ -685,7 +687,8 @@ export class CotizacionComponent extends ListBaseComponent {
         this.adjustFormControlsBasedOnConditions();
         if(this.condicionEspecial){
             this.verificarMismoProveedor();
-        } 
+        }
+        this.evaluarMostrarInfoBox();
     }
 
     verificarMismoProveedor(){
@@ -747,6 +750,56 @@ export class CotizacionComponent extends ListBaseComponent {
         }
         else {
             this.formularioCotizacion.controls[control].disable();
+        }
+    }
+
+    evaluarMostrarInfoBox(): void {
+        this.infoBoxText = "";
+        this.mostrarInfoBox = false;
+
+        let textos: string[] = [];
+
+        // SOLP donde ya se tiene el precio (Si se marca Trabajo hecho o Con Presupuesto) 
+        if(this.model.trabajoHecho == true && this.model.thServicioPermanente == true){
+            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, rutinario con un proceso de licitación ya ejecutado con anterioridad y que no queda bajo las condiciones de un Acuerdo Marco (AM). El fiscal podrá recibir desde compras el presupuesto, para la carga de la solp; O de tener el fiscal la oferta procederá a cargar la SOLP.")
+        }
+        if(this.model.trabajoHecho == true && this.model.thAjustePolinomica == true){
+            textos.push("Referencia la necesidad de un ajuste por condiciones comerciales (Polinómica de ajuste). El fiscal recibirá el control económico realizado desde compras, generará su propio control y gestionará la carga de la Solp.");
+        }
+        if(this.model.trabajoHecho == true && this.model.thProveedorDirecto == true){
+            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado. Define un proveedor directo técnicamente por sus condiciones especiales o particularidad del trabajo; y la carga de la Solp contra un presupuesto que recibe desde compras o que él tiene.");
+        }
+        if(this.model.conPresupuesto == true){
+            textos.push("Para aquellos servicios a realizar o materiales por entregar donde el pedido de presupuesto no se gestionó por los canales de cotización estandarizado en el proceso de compras, se emitirá una petición de oferta (PO) interna que no saldrá a publicar cuando se libera la SOLP. La solp, su alcance cantidad, precio unitario, monto total, justificaciones y presupuesto recibido será vinculada a un proveedor definido, no requerirá aprobación técnica ya que sus instancias ya fueron validadas en la carga de la solp . Podrán emitirse circulares comerciales, validadas estas,  se avanzará con la orden de compra, caso contrario se harán las revisiones comerciales necesarias.");
+        }
+
+        // SOLP donde hay que salir a buscar la Oferta
+        if(this.model.proveedorAsignado_Id != null && this.model.conPresupuesto == false && this.model.trabajoHecho == false){
+            textos.push("El fiscal al momento de la carga de la solp solicita que se pida precio.");
+            textos.push("SOLP asignada a un proveedor definido técnicamente por sus condiciones especiales o particularidad del trabajo, material, insumo o equipo.");
+        }
+        if(this.model.adicional == true){
+            textos.push("Estas SOLPS nuevas se agregarán a una OC ya existente.");
+        }
+        if(this.model.urgencia == true){
+            textos.push("SOLP por una compra urgente de un servicio, material, insumo o equipo.");
+        }
+
+        // En caso hay tilde de certificación automática
+        if (this.model.certificacionAutomatica == true) {
+            textos.push("LA CERTIFICACION DEL SERVICIO SE HARA DE FORMA AUTOMATICA. EL PROVEEDOR QUEDA AUTORIZADO A COBRAR EL SERVICIO.");
+        }
+        else {
+            textos.push("VA A REQUERIR DEFINIR DESDE COMPRAS SI ADMITE O NO CERTIFICACIONES PARCIALES EN LOS SERVICIOS.");
+        }
+
+
+        // Si hay condiciones especiales, mostrar el info box
+        if (textos.length > 0) {
+            this.infoBoxText = "Información:\n" + textos.join("\n");
+            this.mostrarInfoBox = true;
+        } else {
+            this.mostrarInfoBox = false;
         }
     }
 };

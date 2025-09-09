@@ -410,3 +410,8 @@
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
     </p-footer>
 </p-confirmDialog>
+
+<!-- Rectángulo flotante en esquina inferior derecha -->
+<div *ngIf="mostrarInfoBox" class="info-box-bottom-right">
+    <p>{{infoBoxText}}</p>
+</div>

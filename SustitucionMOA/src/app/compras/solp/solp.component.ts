@@ -122,6 +122,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     pliegoMultipleIdSolpsSeleccionadas: number[] = [];
     existingCheckedSolps: SolpDto[] = [];
+    displayModalConfirmacionFinalizar: boolean = false;
+    modalMessage: string = '';
 
 
     set pasoActual(value: Paso) {
@@ -1505,8 +1507,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Abre el modal del boton finalizar
     showFinalizarDialog() {
+        this.displayModalConfirmacionFinalizar = true;
+    }
+
+    // Nuevo método para continuar al modal de finalizar
+    continuarAFinalizar() {
+        this.displayModalConfirmacionFinalizar = false;
         this.obtenerUsuarioCompras();
         this.displayFinalizar = true;
+    }
+
+    // Nuevo método para cancelar
+    cancelarConfirmacionFinalizar() {
+        this.displayModalConfirmacionFinalizar = false;
     }
 
     cancelarFinalizar() {
@@ -1879,5 +1892,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
+    }
+
+    selectModalMessageBasedOnSolpConditions() {
+
+        if(this.solpActual.certificacionAutomatica == true){
+            this.modalMessage = "LA CERTIFICACION DEL SERVICIO SE HARA DE FORMA AUTOMATICA. EL PROVEEDOR QUEDA AUTORIZADO A COBRAR EL SERVICIO.";
+        }
+        else {
+            this.modalMessage = "VA A REQUERIR DEFINIR DESDE COMPRAS SI ADMITE O NO CERTIFICACIONES PARCIALES EN LOS SERVICIOS.";
+        }
     }
 }
