@@ -27,7 +27,7 @@ namespace SustitucionMOA.Jobs
             try
             {
                 Log.Info("Inicia ejecución EnviarMailReporteTrabajoYaHechoJob");
-                if (repositorio.Obtener<HabilitacionJob>(hj => hj.Nombre == "EnviarMailReporteTrabajoYaHechoJob").Habilitado)
+                if (!repositorio.Obtener<HabilitacionJob>(hj => hj.Nombre == "EnviarMailReporteTrabajoYaHechoJob").Habilitado)
                 {
                     return;
                 }
