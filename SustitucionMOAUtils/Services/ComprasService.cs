@@ -7581,6 +7581,7 @@ namespace SustitucionMOAUtils.Services
 
             if (!ordenesDeCompraUltimaSemana.Any() || !solpsTrabajosHechos.Any())
             {
+                Log.Info($"No se encontraron registros para reportar Trabajo ya hecho. OCs: {ordenesDeCompraUltimaSemana.Count}. SOLPs: {solpsTrabajosHechos.Count}");
                 return;
             }
 
@@ -7609,6 +7610,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+            Log.Info("Trabajos hechos a reportar: " + trabajosHechosAReportar.Count);
             var excelMemStream = ExcelExport.CreateExcelFileMs(trabajosHechosAReportar, new string[] { "Nro solp", "Creador solp", "Fecha solp", "Liberación OC", "Nro OC", "Creador OC", "Fecha OC" });
             var nombreArchivoXls = $"Reporte OCs trabajos ya hechos {DateTime.Today:yyyy-MM-dd}.xlsx";
 

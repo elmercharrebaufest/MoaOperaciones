@@ -68,8 +68,6 @@ namespace SustitucionMOAWS.WSConsumers
                         Log.Info($"SAP sin PI Z_MMRFC_OBTENER_MATERIALES request");
                         Log.Info(request.ToXml());
                         var response = agent.Z_MMRFC_OBTENER_MATERIALES(request);
-                        Log.Info($"SAP sin PI Z_MMRFC_OBTENER_MATERIALES response");
-                        Log.Info(response.ToXml());
 
                         var resultado = MapSinPI(response);
                         result.Materiales.AddRange(resultado.Materiales);
