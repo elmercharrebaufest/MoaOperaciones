@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -62,11 +61,11 @@ namespace SustitucionMOAModel.Entities
 
         public string Referencia { get; set; }
 
-        public double? Cantidad { get; set; }
+        public decimal? Cantidad { get; set; }
 
         public string Descripcion_ES { get; set; }
 
-        public double? Importe { get; set; }
+        public decimal? Importe { get; set; }
 
         public string Estado_certificacion { get; set; }
 
@@ -102,22 +101,22 @@ namespace SustitucionMOAModel.Entities
 
         public string UM { get; set; }
 
-        public double? Monto { get; set; }
+        public decimal? Monto { get; set; }
 
-        public double? Cantidad_Anterior { get; set; }
+        public decimal? Cantidad_Anterior { get; set; }
 
         public string Cantidad_a_certificar { get; set; }
 
         public string Porcentaje_a_certificar { get; set; }
 
-        public double? Monto_a_certificar { get; set; }
+        public decimal? Monto_a_certificar { get; set; }
 
-        public double? Monto_total { get; set; }
+        public decimal? Monto_total { get; set; }
 
         public string Planned_package { get; set; }
 
         public string Planned_line { get; set; }
         public string Proveedor { get; set; }
-        public string Anulado_por {  get; set; }
+        public string Anulado_por { get; set; }
     }
 }

@@ -5,7 +5,7 @@
     [FechaCreacion]          DATETIME2 (7)  NOT NULL,
     [UsuarioCreador_Id] INT            NOT NULL,
     [Moneda_Id] INT            NOT NULL,
-    [MontoTotal] DECIMAL(18, 6) NULL, 
+    [MontoTotal] DECIMAL(18, 2) NULL, 
     [TextoDeCabecera]          NVARCHAR(MAX) NULL,
     [CondicionesDeEntrega]          NVARCHAR(MAX) NULL,
     [CondicionesDePago]          NVARCHAR(MAX) NULL,
