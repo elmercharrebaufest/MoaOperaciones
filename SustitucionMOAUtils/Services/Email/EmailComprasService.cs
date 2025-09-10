@@ -13,11 +13,13 @@ using System.Net.Mail;
 using System.Text;
 using System.Web.Security;
 using SustitucionMOAUtils.Services.Email.Dto;
+using SustitucionMOAUtils.Email;
 
 namespace SustitucionMOAUtils.Services.Email
 {
     public class EmailComprasService : IEmailComprasService
     {
+        private static readonly string DestinatariosReporteTrabajoYaHecho = ConfigurationManager.AppSettings["EmailToReporteTrabajoHecho"];
         private readonly IEmailService emailService;
         private readonly IHttpContextService httpContextService;
 
@@ -163,6 +165,18 @@ namespace SustitucionMOAUtils.Services.Email
             var cuerpo = GenerarCuerpoMailPeticionDeOferta(peticion, req.EsProveedor, req.ListaArchivosParaMailPO, req.EsEdicionPO, req.Proveedores);
 
             emailService.EnviarMail(req.Destinatarios, asunto, "", null, cuerpo, null, null, null, null, req.ArchivosAdjuntos);
+        }
+
+        public void EnviarMailReporteTrabajoYaHecho(byte[] reporteExcel, string nombreArchivo)
+        {
+            var asunto = "Reporte trabajos ya hechos";
+
+            var htmlBody = $"En el presente mail se informan los trabajos aprobados bajo el concepto de \"trabajo ya hecho\".<br /><br/>Equipo Compras";
+            var alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+
+            emailService.EnviarMail(
+                emailService.ObtenerListaDestinatarios(new string[] { DestinatariosReporteTrabajoYaHecho }),
+                asunto, "", null, alternateView, reporteExcel, nombreArchivo);
         }
 
         private AlternateView ObtenerCuerpoCotizacionCreada(Cotizacion cotizacion)

@@ -11,5 +11,6 @@ namespace SustitucionMOAUtils.Interfaces
         void EnviarMailSolpLiberada(Solp solp);
         void EnviarMailFinalizacionPliegoMultiple(Pliego pliego,List<Solp> solps);
         void EnviarMailPeticionDeOferta(MailPeticionDeOfertaRequest req);
+        void EnviarMailReporteTrabajoYaHecho(byte[] reporteExcel, string nombreArchivo);
     }
 }

@@ -1618,6 +1618,13 @@ namespace SustitucionMOAUtils.Services
             return ordenesDeCompraSap.Distinct().ToList();
         }
 
+        public List<OrdenCompraDto> ObtenerOrdenesDeCompra(DateTime fechaDesde)
+        {
+            var orderParams = new OrderParamsDto { fechaInicio = fechaDesde.ToString("yyyy-MM-dd") };
+            var ordenesDeCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(orderParams);
+            return ordenesDeCompra;
+        }
+
         private AdjudicacionEditarDto ConvertirAjudicacionDtoEnAdjudicacionSAP(AdjudicacionDto adjudicacionDto)
         {
             return new AdjudicacionEditarDto
@@ -2884,7 +2891,5 @@ namespace SustitucionMOAUtils.Services
             return resultadoEditarOC;
 
         }
-
-
     }
 }

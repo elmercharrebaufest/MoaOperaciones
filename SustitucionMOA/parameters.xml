@@ -181,6 +181,12 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="EmailToReporteTrabajoHecho Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToReporteTrabajoHecho']
+                           /@value" />
+	</parameter>
+
 	<parameter name="EmailToCobranzas Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailToCobranzas']

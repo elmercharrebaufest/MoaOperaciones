@@ -4,6 +4,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.WSConsumers;
+using System;
 using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -70,5 +71,7 @@ namespace SustitucionMOAUtils.Interfaces
         byte[] TraerArchivosDeSAP(string docId);
 
         List<OrdenDeCompraSAPDto> ObtenerOrdenesCompraSapParaSolpPosicion(List<SolpPosicionDto> solpPosiciones);
+
+        List<OrdenCompraDto> ObtenerOrdenesDeCompra(DateTime fechaDesde);
     }
 }

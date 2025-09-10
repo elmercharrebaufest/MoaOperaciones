@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.Compras.POMultiple;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
@@ -75,6 +76,48 @@ namespace SustitucionMOARepositorio.Repositorios
                 .ToList();
 
             return peticionesDesvinculables;
+        }
+
+        public List<TrabajoYaHechoReporte> ObtenerSolpsReporteTrabajoYaHecho(ICollection<string> nrosSolps)
+        {
+            var trabajosHechos =
+                Set<Solp>()
+                .Where(solp =>
+                    solp.TrabajoYaHecho == true &&
+                    nrosSolps.Contains(solp.NroSolp))
+                .Select(solp => new
+                {
+                    solp.NroSolp,
+                    solp.UsuarioCreacion.Mail,
+                    solp.FechaCreacion
+                })
+                .AsEnumerable()
+                .Select(solp => new TrabajoYaHechoReporte
+                {
+                    SolpNro = solp.NroSolp,
+                    SolpCreador = solp.Mail,
+                    SolpFecha = solp.FechaCreacion.ToString("dd/MM/yyyy")
+                })
+                .ToList();
+
+            return trabajosHechos;
+        }
+
+        public Dictionary<string, DateTime> ObtenerFechasLiberacionOcs(ICollection<string> nrosOcs)
+        {
+            var fechasLiberacionPorOc =
+                Set<Adjudicacion>()
+                .Where(adj =>
+                    adj.FechaLiberacionSap.HasValue &&
+                    nrosOcs.Contains(adj.NumeroOrdenDeCompra))
+                .Select(adj => new
+                {
+                    adj.NumeroOrdenDeCompra,
+                    adj.FechaLiberacionSap
+                })
+                .ToDictionary(adj => adj.NumeroOrdenDeCompra, adj => adj.FechaLiberacionSap.Value);
+
+            return fechasLiberacionPorOc;
         }
     }
 }

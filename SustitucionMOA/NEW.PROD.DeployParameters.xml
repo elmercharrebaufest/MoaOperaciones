@@ -145,6 +145,7 @@
 
 	<setParameter name="EmailToMesaENTSL Config" value="Mesaentsl@molinosagro.com.ar" />
 	<setParameter name="EmailToMesaVentaFas Config" value="mesafassanlorenzo@molinosagro.com.ar" />
+	<setParameter name="EmailToReporteTrabajoHecho Config" value="MariadelRosario.Lattini@molinosagro.com.ar; Liza.Molina@molinosagro.com.ar; guillermo.ayuso@molinosagro.com.ar" />
 	<setParameter name="EmailToGestionAltaCuit Config" value="Mesaentsl@molinosagro.com.ar" />
 	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="mesafassanlorenzo@molinosagro.com.ar" />
 	<setParameter name="EmailAltaTempranaCuitFasonTo Config" value="Mesaentsl@molinosagro.com.ar"/>
