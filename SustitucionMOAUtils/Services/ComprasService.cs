@@ -7590,9 +7590,9 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var detalleOc in detallesOCs)
             {
-                foreach (var posOc in detalleOc.Posiciones)
+                foreach (var nroSolp in detalleOc.Posiciones?.Select(x => x.NroSolp).Distinct())
                 {
-                    var solpTh = solpsTrabajosHechos.FirstOrDefault(s => s.SolpNro == posOc.NroSolp);
+                    var solpTh = solpsTrabajosHechos.FirstOrDefault(s => s.SolpNro == nroSolp);
                     if (solpTh != null)
                     {
                         trabajosHechosAReportar.Add(new TrabajoYaHechoReporte

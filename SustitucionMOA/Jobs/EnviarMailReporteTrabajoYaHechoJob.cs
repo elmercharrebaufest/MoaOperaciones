@@ -9,14 +9,14 @@ using System.Web;
 
 namespace SustitucionMOA.Jobs
 {
-    public interface IEnviarMailReporteTrabajoYaHecho : IHangfireJob { }
+    public interface IEnviarMailReporteTrabajoYaHechoJob : IHangfireJob { }
 
-    public class EnviarMailReporteTrabajoYaHecho : IEnviarMailReporteTrabajoYaHecho
+    public class EnviarMailReporteTrabajoYaHechoJob : IEnviarMailReporteTrabajoYaHechoJob
     {
         private readonly IRepositorio repositorio;
         private readonly IComprasService comprasService;
 
-        public EnviarMailReporteTrabajoYaHecho(IRepositorio repositorio, IComprasService comprasService)
+        public EnviarMailReporteTrabajoYaHechoJob(IRepositorio repositorio, IComprasService comprasService)
         {
             this.repositorio = repositorio;
             this.comprasService = comprasService;
@@ -26,7 +26,7 @@ namespace SustitucionMOA.Jobs
         {
             try
             {
-                if (repositorio.Obtener<HabilitacionJob>(hj => hj.Nombre == "EnviarMailReporteTrabajoYaHecho").Habilitado)
+                if (repositorio.Obtener<HabilitacionJob>(hj => hj.Nombre == "EnviarMailReporteTrabajoYaHechoJob").Habilitado)
                 {
                     return;
                 }
