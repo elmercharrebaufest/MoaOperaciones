@@ -8,6 +8,7 @@ using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Util.EntitiesExtensions;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
+using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services.Email.Dto;
 using SustitucionMOAWS.Interfaces;
@@ -128,31 +129,26 @@ namespace SustitucionMOAUtils.Services
                     (!debeFiltrarPorFecha || !x.Fecha_Carga_ES.HasValue || (x.Fecha_Carga_ES >= fechaDesde && x.Fecha_Carga_ES <= fechaHasta)));
             }
 
-            try
-            {
-                Dictionary<string, EntradaServicioCabeceraDto> diccionarioES = aprobacionesTemporales
-                .GroupBy(temporal => temporal.NRO_ES_LOCAL)
-                .ToDictionary(
-                    grupo => grupo.Key,
-                    grupo =>
-                    {
-                        ordenParams.OrdenCompraId = grupo.First().NRO_OC;
-                        var entradaServicioTemp = MapEntradaServicioCabecera(grupo.First(), ordenParams);
-                        entradaServicioTemp.entradaServicioDetalle = grupo
-                            .Select(MapEntradaServicioDetalle)
-                            .ToList();
-                        return entradaServicioTemp;
-                    });
 
-                foreach (var kvp in diccionarioES)
+            Dictionary<string, EntradaServicioCabeceraDto> diccionarioES = aprobacionesTemporales
+            .GroupBy(temporal => temporal.NRO_ES_LOCAL)
+            .ToDictionary(
+                grupo => grupo.Key,
+                grupo =>
                 {
-                    entradasServicio.Add(kvp.Value);
-                }
-            }
-            catch (Exception e)
+                    ordenParams.OrdenCompraId = grupo.First().NRO_OC;
+                    var entradaServicioTemp = MapEntradaServicioCabecera(grupo.First(), ordenParams);
+                    entradaServicioTemp.entradaServicioDetalle = grupo
+                        .Select(MapEntradaServicioDetalle)
+                        .ToList();
+                    return entradaServicioTemp;
+                });
+
+            foreach (var kvp in diccionarioES)
             {
-                throw e;
+                entradasServicio.Add(kvp.Value);
             }
+
 
             entradasServicio = OrdenarEntradasServicio(entradasServicio);
 
@@ -168,44 +164,37 @@ namespace SustitucionMOAUtils.Services
         {
             string email = "";
 
-            try
-            {
-                Solp solp = repositorioEntradaServicio.Obtener<Solp>(s => s.NroSolp == nroSolp);
 
-                if (solp != null)
+            Solp solp = repositorioEntradaServicio.Obtener<Solp>(s => s.NroSolp == nroSolp);
+
+            if (solp != null)
+            {
+                if (!string.IsNullOrEmpty(solp.Pliego.Email) && solp.Pliego.Email.Contains("@"))
                 {
-                    if (!string.IsNullOrEmpty(solp.Pliego.Email) && solp.Pliego.Email.Contains("@"))
+                    email = solp.Pliego.Email;
+                }
+                else if (!string.IsNullOrEmpty(solp.Pliego.SupervisorTrabajo) && solp.Pliego.SupervisorTrabajo.Contains("@"))
+                {
+                    email = solp.Pliego.SupervisorTrabajo;
+                }
+                else if (solp.Posiciones.Count > 0)
+                {
+                    foreach (var pos in solp.Posiciones)
                     {
-                        email = solp.Pliego.Email;
-                    }
-                    else if (!string.IsNullOrEmpty(solp.Pliego.SupervisorTrabajo) && solp.Pliego.SupervisorTrabajo.Contains("@"))
-                    {
-                        email = solp.Pliego.SupervisorTrabajo;
-                    }
-                    else if (solp.Posiciones.Count > 0)
-                    {
-                        foreach (var pos in solp.Posiciones)
+                        if (!pos.Solicitante.IsNullOrWhiteSpace())
                         {
-                            if (!pos.Solicitante.IsNullOrWhiteSpace())
+                            string solicitante = pos.Solicitante.Replace(" ", "");
+                            var usuario = repositorioEntradaServicio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap.ToUpper() == solicitante.ToUpper());
+                            if (usuario != null)
                             {
-                                string solicitante = pos.Solicitante.Replace(" ", "");
-                                var usuario = repositorioEntradaServicio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap.ToUpper() == solicitante.ToUpper());
-                                if (usuario != null)
+                                if (!string.IsNullOrEmpty(usuario.Mail))
                                 {
-                                    if (!string.IsNullOrEmpty(usuario.Mail))
-                                    {
-                                        email = usuario.Mail;
-                                    }
+                                    email = usuario.Mail;
                                 }
                             }
                         }
                     }
                 }
-
-            }
-            catch (Exception e)
-            {
-                throw (e);
             }
 
             return email;
@@ -698,17 +687,7 @@ namespace SustitucionMOAUtils.Services
 
         public List<Aprobaciones> GetESTemporaria(string nroESLocal)
         {
-            List<Aprobaciones> toReturn = new List<Aprobaciones>();
-            try
-            {
-                toReturn = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nroESLocal).ToList();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-
-
+            List<Aprobaciones> toReturn = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nroESLocal).ToList();
             return toReturn;
         }
 
@@ -1325,17 +1304,6 @@ namespace SustitucionMOAUtils.Services
 
                 item.CantidadReal = Convert.ToDecimal(ap.Cantidad_Anterior);
 
-                //if (totalACertificar > cantidadACertificar)
-                //{
-                //    item.CantidadReal = item.CantidadReal + (totalACertificar - cantidadACertificar);
-                //} else if(totalACertificar < cantidadACertificar)
-                //{
-                //    item.CantidadReal = item.CantidadReal + (cantidadACertificar - totalACertificar);
-                //} else if(totalACertificar == cantidadACertificar)
-                //{
-                //    item.CantidadReal = item.CantidadReal + totalACertificar;
-                //}
-
                 double res = Convert.ToDouble((item.CantidadReal * 100) / item.Cantidad);
                 item.Porcentaje = res.ToString("0.##", CultureInfo.InvariantCulture);
                 if (item.Porcentaje.EndsWith(".00"))
@@ -1580,10 +1548,7 @@ namespace SustitucionMOAUtils.Services
             temp.NRO_OC = posicion.EntrySheetHeader.OrdenCompraNumero;
             temp.NRO_POS = posicion.EntrySheetHeader.OrdenCompraPosicionNumero;
             //Monto Total
-            if (!string.IsNullOrEmpty(posicion.EntrySheetHeader.MontoTotalACertificar))
-            {
-                temp.Monto = double.Parse(posicion.EntrySheetHeader.MontoTotalACertificar, CultureInfo.InvariantCulture);
-            }
+            temp.Monto = posicion.EntrySheetHeader.MontoTotalACertificar.ToNullableDecimal();
 
             //Obtener último registro para nuevo número
             // Aprobaciones ultimoRegistro = new Aprobaciones();
@@ -1591,8 +1556,6 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 ultimoRegistro = repositorioEntradaServicio.ExecuteQuery<long>("EXEC ObtenerSiguienteValorSecuencia").Single();
-
-                //ultimoRegistro = repositorio.Listar<Aprobaciones>().LastOrDefault();
             }
             catch (Exception e)
             {
@@ -1615,7 +1578,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             //MontoTotal = Suma de los montos a certificar de cada ES A APROBAR
-            double monto_total = 0;
+            decimal monto_total = 0;
             List<Aprobaciones> toSave = new List<Aprobaciones>();
 
             #region CargaDeDatosPorItem
@@ -1628,8 +1591,10 @@ namespace SustitucionMOAUtils.Services
                 var aprobacion = DeepCopy(temp);
                 try
                 {
-                    if (!string.IsNullOrEmpty(esItem.ItemQuantity)) aprobacion.Cantidad = double.Parse(esItem.ItemQuantity, CultureInfo.InvariantCulture);
-                    if (!string.IsNullOrEmpty(esItem.ItemGrossPrice)) aprobacion.Monto = double.Parse(esItem.ItemGrossPrice, CultureInfo.InvariantCulture);
+                    aprobacion.Cantidad = esItem.ItemQuantity.ToNullableDecimal();
+                    aprobacion.Monto = esItem.ItemGrossPrice.ToNullableDecimal();
+
+
 
                     aprobacion.Nro_linea = esItem.ExternalLineNumber;
                     aprobacion.Nro_servicio = esItem.Service;
@@ -1643,19 +1608,19 @@ namespace SustitucionMOAUtils.Services
                     ReporteDto itemReport = reporte.Find(report => report.Id == esItem.PlannedPackage && report.LINE_NO.ToString() == esItem.PlannedLine);
                     if (itemReport != null)
                     {
-                        aprobacion.Cantidad_Anterior = Decimal.ToDouble(itemReport.CantidadReal);
+                        aprobacion.Cantidad_Anterior = itemReport.CantidadReal;
                     }
 
                     if (!string.IsNullOrEmpty(esItem.CertificationAmount))
                     {
-                        aprobacion.Monto_a_certificar = double.Parse(esItem.Quantity, CultureInfo.InvariantCulture) * double.Parse(esItem.ItemGrossPrice, CultureInfo.InvariantCulture);
-                        monto_total = (double)(monto_total + aprobacion.Monto_a_certificar);
+                        aprobacion.Monto_a_certificar = esItem.Quantity.ToNullableDecimal();
+                        monto_total = (monto_total + (aprobacion.Monto_a_certificar ?? 0));
                     }
                 }
                 catch (Exception e)
                 {
                     Logger.Log.Error(e);
-                    throw e;
+                    throw;
                 }
 
                 toSave.Add(aprobacion);
@@ -1688,7 +1653,7 @@ namespace SustitucionMOAUtils.Services
                 catch (Exception e)
                 {
                     Logger.Log.Error(e);
-                    throw e;
+                    throw;
                 }
             }
 

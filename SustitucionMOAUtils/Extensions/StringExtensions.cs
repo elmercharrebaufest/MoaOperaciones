@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace SustitucionMOAUtils.Extensions
 {
@@ -32,7 +28,17 @@ namespace SustitucionMOAUtils.Extensions
             {
                 return str;
             }
-            return $"{str.Substring(0,2)}.{str.Substring(2, 3)}.{str.Substring(5, 1)}.{str.Substring(6, 5)}/{str.Substring(11, 2)}";
+            return $"{str.Substring(0, 2)}.{str.Substring(2, 3)}.{str.Substring(5, 1)}.{str.Substring(6, 5)}/{str.Substring(11, 2)}";
+        }
+
+        public static decimal? ToNullableDecimal(this string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+
+            return decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result)
+                ? result
+                : 0;
         }
     }
 }

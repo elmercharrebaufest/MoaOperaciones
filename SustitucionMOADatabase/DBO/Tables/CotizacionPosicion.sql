@@ -5,7 +5,7 @@
     [Cantidad] DECIMAL(18, 2)            NULL DEFAULT 0,
     [UnidadDeMedida_Id] INT            NULL,   
     [Moneda_Id] INT            NULL,
-    [Precio] DECIMAL(18, 4) NULL DEFAULT 0, 
+    [Precio] DECIMAL(18, 2) NULL DEFAULT 0, 
     [FechaDeEntrega]          DATETIME2 (7)  NULL,
     [NoDisponible] BIT NULL, 
     [FechaDeVigencia] DATETIME2 NULL, 

@@ -5,7 +5,7 @@
     [Cantidad] DECIMAL(18, 2)            NULL DEFAULT 0,
     [UnidadDeMedida_Id] INT            NULL,   
     [Moneda_Id] INT            NULL,
-    [Precio] DECIMAL(18, 4) NULL DEFAULT 0, 
+    [Precio] DECIMAL(18, 2) NULL DEFAULT 0, 
     CONSTRAINT [PK_CotizacionSubPosicion] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.CotizacionSubPosicion_CotizacionPosicion_CotizacionPosicion_Id] FOREIGN KEY ([CotizacionPosicion_Id]) REFERENCES [CotizacionPosicion]([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK.CotizacionSubPosicion_SolpSubPosicion_SolpSubPosicion_Id] FOREIGN KEY ([SolpSubPosicion_Id]) REFERENCES [SolpSubposicion]([Id]),
