@@ -141,7 +141,9 @@ namespace SustitucionMOAUtils.Services
                 IM_PRITEM.PREQ_ITEM = numeroPosicion.AsPreqItem(); //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
                 IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP EKGRP Grupo de compras
                 IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion != null ? solpActual.UsuarioCreacion.UsuarioSap : usuarioService.GetUsuarioPorId(solpActual.UsuarioCreacion_Id ?? 0).UsuarioSap; //CREATED_BY ERNAM Nombre del responsable que ha añadido el objeto
-                IM_PRITEM.PREQ_NAME = posicion.Solicitante; //PREQ_NAME AFNAM Nombre del solicitante
+                IM_PRITEM.PREQ_NAME = !string.IsNullOrEmpty(posicion.Solicitante) && posicion.Solicitante.Length > 10
+                                    ? posicion.Solicitante.Substring(0, 10)
+                                    : posicion.Solicitante; //PREQ_NAME AFNAM Nombre del solicitante
                 IM_PRITEM.SHORT_TEXT = posicion.Tarea; //SHORT_TEXT TXZ01 Texto breve
                 IM_PRITEM.PLANT = posicion.Centro.CodigoSap.ToString(); //PLANT EWERK   Centro
                 IM_PRITEM.STORE_LOC = solpActual.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ? "" : posicion.Almacen.CodigoSap.ToString(); //STORE_LOC   LGORT_D Almacén
@@ -560,8 +562,9 @@ namespace SustitucionMOAUtils.Services
                 IM_PRITEM.PREQ_ITEM = numeroPosicion.AsPreqItem(); //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
                 IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP EKGRP Grupo de compras
                 IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion != null ? solpActual.UsuarioCreacion.UsuarioSap : usuarioService.GetUsuarioPorId(solpActual.UsuarioCreacion_Id ?? 0).UsuarioSap; //CREATED_BY ERNAM Nombre del responsable que ha añadido el objeto
-                IM_PRITEM.PREQ_NAME = posicion.Solicitante; //PREQ_NAME AFNAM Nombre del solicitante
-                IM_PRITEM.SHORT_TEXT = posicion.Tarea; //SHORT_TEXT TXZ01 Texto breve
+                IM_PRITEM.PREQ_NAME = !string.IsNullOrEmpty(posicion.Solicitante) && posicion.Solicitante.Length > 10
+                                                    ? posicion.Solicitante.Substring(0, 10)
+                                                    : posicion.Solicitante; //PREQ_NAME AFNAM Nombre del solicitante                IM_PRITEM.SHORT_TEXT = posicion.Tarea; //SHORT_TEXT TXZ01 Texto breve
                 IM_PRITEM.PLANT = posicion.Centro.CodigoSap.ToString(); //PLANT EWERK   Centro
                 IM_PRITEM.STORE_LOC = solpActual.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ? "" : posicion.Almacen.CodigoSap.ToString(); //STORE_LOC   LGORT_D Almacén
                 IM_PRITEM.TRACKINGNO = posicion.NroNecesidad; //TRACKINGNO BEDNR   Número de necesidad

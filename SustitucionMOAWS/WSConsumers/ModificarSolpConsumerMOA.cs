@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
@@ -423,7 +422,7 @@ namespace SustitucionMOAWS.WSConsumers
                     DELIV_DATE = a.DELIV_DATE,
                     DES_VENDOR = a.DES_VENDOR,
                     FIXED_VEND = a.FIXED_VEND,
-                    GR_PR_TIME = Math.Round(a.GR_PR_TIME,4),
+                    GR_PR_TIME = Math.Round(a.GR_PR_TIME, 4),
                     //GR_PR_TIMESpecified = a.GR_PR_TIMESpecified,
                     INFO_REC = a.INFO_REC,
                     ITEM_CAT = a.ITEM_CAT,
@@ -431,14 +430,16 @@ namespace SustitucionMOAWS.WSConsumers
                     MATL_GROUP = a.MATL_GROUP,
                     PCKG_NO = a.PCKG_NO,
                     PLANT = a.PLANT,
-                    PLND_DELRY = Math.Round(a.PLND_DELRY,4),
+                    PLND_DELRY = Math.Round(a.PLND_DELRY, 4),
                     //PLND_DELRYSpecified = a.PLND_DELRYSpecified,
                     PREQ_DATE = a.PREQ_DATE,
-                    PREQ_NAME = a.PREQ_NAME,
-                    PREQ_PRICE = Math.Round(a.PREQ_PRICE,4),
+                    PREQ_NAME = !string.IsNullOrEmpty(a.PREQ_NAME) && a.PREQ_NAME.Length > 10
+                                    ? a.PREQ_NAME.Substring(0, 10)
+                                    : a.PREQ_NAME,
+                    PREQ_PRICE = Math.Round(a.PREQ_PRICE, 4),
                     //PREQ_PRICESpecified = a.PREQ_PRICESpecified,
                     PREQ_UNIT_ISO = a.PREQ_UNIT_ISO,
-                    PRICE_UNIT = Math.Round(a.PRICE_UNIT,4),
+                    PRICE_UNIT = Math.Round(a.PRICE_UNIT, 4),
                     //PRICE_UNITSpecified = a.PRICE_UNITSpecified,
                     PURCH_ORG = a.PURCH_ORG,
                     PUR_GROUP = a.PUR_GROUP,
@@ -507,7 +508,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     DEL_IND = a.DEL_IND,
                     DOC_ITEM = a.DOC_ITEM,
-                    NET_VALUE = Math.Round(a.NET_VALUE,4),
+                    NET_VALUE = Math.Round(a.NET_VALUE, 4),
                     //NET_VALUESpecified = a.NET_VALUESpecified,
                     QUANTITY = a.QUANTITY,
                     OUTLINE = a.OUTLINE,
@@ -543,10 +544,10 @@ namespace SustitucionMOAWS.WSConsumers
                     CURRENCY = a.CURRENCY,
                     DEL_IND = a.DEL_IND,
                     DOC_ITEM = a.DOC_ITEM,
-                    GROSS_PRICE = Math.Round(a.GROSS_PRICE,4),
+                    GROSS_PRICE = Math.Round(a.GROSS_PRICE, 4),
                     //GROSS_PRICESpecified = a.GROSS_PRICESpecified,
                     MATL_GROUP = a.MATL_GROUP,
-                    NET_PRICE = Math.Round(a.NET_PRICE,4),
+                    NET_PRICE = Math.Round(a.NET_PRICE, 4),
                     //NET_PRICESpecified = a.NET_PRICESpecified,
                     SERVICE = a.SERVICE,
                     SHORT_TEXT = a.SHORT_TEXT,
