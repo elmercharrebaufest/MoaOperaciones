@@ -14,8 +14,13 @@
     [RazonSocial] NVARCHAR(500) NULL, 
     [HectareasTotalesUcropit] FLOAT NULL DEFAULT NULL,
     [HectareasSojaUcropit] FLOAT NULL DEFAULT NULL,
+    [BSVS2] BIT NOT NULL DEFAULT 1, 
+    [EPA] BIT NOT NULL DEFAULT 0, 
+    [EUDER] BIT NOT NULL DEFAULT 0, 
+    [EvidenciaEPA_Id] INT NULL, 
     PRIMARY KEY(CampoCosecha_Id, Proveedor_Id),
     CONSTRAINT [FK_CampoProveedor_ToArchivo] FOREIGN KEY ([Archivo_Id]) REFERENCES [Archivo]([Id]),
     CONSTRAINT [FK_CampoProveedor_ToCampoCosecha] FOREIGN KEY ([CampoCosecha_Id]) REFERENCES [CampoCosecha]([Id]),
     CONSTRAINT [FK_CampoProveedor_ToProveedor] FOREIGN KEY ([Proveedor_Id]) REFERENCES [Proveedor]([Id]),
+    CONSTRAINT [FK_CampoProveedor_ToArchivoEPA] FOREIGN KEY ([EvidenciaEPA_Id]) REFERENCES [Archivo]([Id]),
 )

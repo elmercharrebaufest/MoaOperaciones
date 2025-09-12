@@ -266,6 +266,9 @@
     <Build Include="DBO\Tables\SolpDatosPreviosPliegoMultiple.sql" />
     <Build Include="DBO\Tables\CertificacionRegistrada.sql" />
     <Build Include="DBO\Tables\RelacionSolicitanteExternoJefeMoa.sql" />
+    <Build Include="DBO\Tables\TipoNormativa.sql" />
+    <Build Include="DBO\Tables\CampoCosechaNormativa.sql" />
+    <Build Include="DBO\Tables\CarpetasUCROPIT.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -294,6 +297,7 @@
     <None Include="scripts\Insert Rol EstadoES.sql" />
     <None Include="scripts\PostDeployment\ReemplazosEnDomicilios.sql" />
     <None Include="scripts\PostDeployment\RelacionSolicitanteExternoJefeMoa.sql" />
+    <None Include="scripts\PostDeployment\CampoSustentable.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />
