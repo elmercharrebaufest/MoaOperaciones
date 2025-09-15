@@ -57,7 +57,7 @@ namespace SustitucionMOAUtils.Services
             this.campoSustentablePdfGenerator = campoSustentablePdfGenerator;
         }
 
-        public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz, bool UsarArchivoId)
+        public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz, bool UsarArchivoId, HttpPostedFileBase archivoEPA)
         {
             var ruta = "";
             var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
@@ -85,9 +85,14 @@ namespace SustitucionMOAUtils.Services
 
             var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
 
-            campoProveedor.RazonSocial = declaracion.RazonSocial;
+            if(campoProveedor.BSVS2 && declaracion != null)
+            {
+                campoProveedor.RazonSocial = declaracion.RazonSocial;
+            }
+
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
+            
             if (campoProveedor.Archivo_Id == 0)
             {
                 campoProveedor.Archivo = (new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" });
@@ -97,6 +102,14 @@ namespace SustitucionMOAUtils.Services
                 var archivoCampo = repositorio.ObtenerArchivo(campoProveedor.Archivo_Id);
                 ruta = archivoCampo.Ruta;
             }
+
+            if (campoProveedor.EPA && archivoEPA != null)
+            {
+                campoProveedor.EvidenciaEPA = (new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" });
+                campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoCampoSustentable(campoProveedor, archivoEPA, rutaArch => campoProveedor.EvidenciaEPA.Ruta = rutaArch);
+            }
+
+            //TODO linea 113 borrar dps
             campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
 
             campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
@@ -104,10 +117,13 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.Agregar(campoProveedor);
 
+            this.AgregarNormativas(campoProveedor);
+
             repositorio.GuardarCambios();
             if (!UsarArchivoId)
             {
-                ruta = GuardarArchivoKMZ(campoProveedor, archivoKmz);
+                ruta = GuardarArchivoCampoSustentable(campoProveedor, archivoKmz, rutaArch => campoProveedor.Archivo.Ruta = rutaArch);
+
                 repositorio.GuardarCambios();
             }
 
@@ -117,6 +133,32 @@ namespace SustitucionMOAUtils.Services
             InformarCampoSustentable(campoProveedor, archivo);
             return new Resultado { IdEntidad = campoProveedor.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
         }
+
+        private void AgregarNormativas(CampoProveedor campoProveedor)
+        {
+            var normativas = new List<string>();
+
+            if (campoProveedor.BSVS2)
+                normativas.Add("BSVS2");
+
+            if (campoProveedor.EPA)
+                normativas.Add("EPA");
+
+            if (campoProveedor.EUDER)
+                normativas.Add("EUDER");
+
+            foreach (var normativa in normativas)
+            {
+                var tipoNormativa = this.repositorio.Obtener<TipoNormativa>(n => n.Descripcion == normativa);
+                this.repositorio.Agregar(new CampoCosechaNormativa
+                {
+                    CampoCosecha = campoProveedor.CampoCosecha,
+                    TipoNormativa = tipoNormativa,
+                    ToneladasAprobadas = -1,
+                });
+            }
+        }
+
 
         public Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz)
         {
@@ -716,7 +758,7 @@ namespace SustitucionMOAUtils.Services
                         campoProveedor.Archivo = new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" };
                         if (archivoNuevoKmz != null)
                         {
-                            rutaArchivo = GuardarArchivoKMZ(campoProveedor, archivoNuevoKmz);
+                            rutaArchivo = GuardarArchivoCampoSustentable(campoProveedor, archivoNuevoKmz, rutaArch => campoProveedor.Archivo.Ruta = rutaArch);
                         }
                         repositorio.Agregar(campoProveedor);
                         repositorio.GuardarCambios();
@@ -798,7 +840,7 @@ namespace SustitucionMOAUtils.Services
 
         private void ValidarCampo(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
-            if (!VerificarDeclaracion(campoProveedor.Proveedor_Id, campoProveedor.CampoCosecha.Cosecha_Id, campoProveedor.CUIT).DeclaracionFirmada)
+            if (campoProveedor.BSVS2 && !VerificarDeclaracion(campoProveedor.Proveedor_Id, campoProveedor.CampoCosecha.Cosecha_Id, campoProveedor.CUIT).DeclaracionFirmada)
             {
                 throw new ValidationCustomException("El proveedor seleccionado no tiene firmada la declaración.");
             }
@@ -809,9 +851,10 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private string GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
+
+        private string GuardarArchivoCampoSustentable(CampoProveedor campoProveedor, HttpPostedFileBase archivo, Action<string> setRutaArch)
         {
-            var extension = Path.GetExtension(archivoKmz.FileName);
+            var extension = Path.GetExtension(archivo.FileName);
             var fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, ".", extension);
             var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.CUIT);
             var rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
@@ -822,9 +865,9 @@ namespace SustitucionMOAUtils.Services
             {
                 File.Delete(rutaArchivo);
             }
-            archivoKmz.SaveAs(rutaArchivo);
+            archivo.SaveAs(rutaArchivo);
 
-            campoProveedor.Archivo.Ruta = rutaArchivo;
+            setRutaArch(rutaArchivo);
             return rutaArchivo;
         }
 

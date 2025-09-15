@@ -39,5 +39,6 @@
         public const string PeticionDeOfertaVisualizacionPrecio = "PeticionDeOfertaVisualizacionPrecio";
         public const string FacturaEntradaDeServicios = "FacturaEntradaDeServicios";
         public const string FacturaDiferenciaTasaDeCambio = "FacturaDiferenciaTasaDeCambio";
+        public const string ArchivoEPA = "ArchivoEPA";
     }
 }

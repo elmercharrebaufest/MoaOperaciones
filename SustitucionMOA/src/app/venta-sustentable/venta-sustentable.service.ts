@@ -23,13 +23,14 @@ export class VentaSustentableService extends BaseService {
         return this.getCosechas(false);
     }
 
-    campoProveedorAgregar(campoProveedor: CampoProveedor, archivoKmz: File, UsarArchivo_Id: boolean) {
+    campoProveedorAgregar(campoProveedor: CampoProveedor, archivoKmz: File, UsarArchivo_Id: boolean, archivoEpa) {
         var payload = new FormData();
         let camp = JSON.stringify(campoProveedor);
 
         payload.append('archivoKmz', archivoKmz);
         payload.append('campoProveedorJson', camp);
         payload.append('UsarArchivoId', UsarArchivo_Id.toString());
+        payload.append('archivoEpa', archivoEpa);
         return this.http
             .post('/api/CampoSustentable/CampoProveedorAgregar', payload, { headers: this.headersPost });
     }

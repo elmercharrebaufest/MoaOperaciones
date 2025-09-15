@@ -22,6 +22,6 @@ namespace SustitucionMOAModel.Entities
         public string MotivoRechazo { get; set; }
         public bool Validado { get; set; }
         public int ValidadoPor { get; set; }
-        public DateTime ValidadoFecha { get; set; }
+        public DateTime? ValidadoFecha { get; set; }
     }
 }

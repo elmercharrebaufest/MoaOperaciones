@@ -157,7 +157,10 @@ export class EdicionComponent extends BaseComponent implements OnInit {
       CampoCosecha_Id: this.campoCosechaId,
       CUIT: this.campoProveedor.CUIT,
       RazonSocial: this.campoProveedor.ProveedorNombre,
-      Archivo_Id: 0
+      Archivo_Id: 0,
+      BSVS2: false,
+      EPA: false,
+      EUDER: false
     }
 
     this.mensajeComponent.setMsgsEmpty();

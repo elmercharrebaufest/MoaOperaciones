@@ -39,40 +39,55 @@
                         <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="!ingresarProveedorPorCUIT">
                             <p class="crearConsultaTitulos">Titular de la CP<span class="requerido">*</span></p>
                             <app-seleccionar-proveedor (onProveedorSeleccionado)="onselectProveedor($event)"
-                                                       [(valorInicial)]="CodigoProveedorEdit"
-                                                       (onProveedorPreSeleccionado)="onSePreseleccionaProveedor()"
-                                                       (onBlur)="revisarProveedorSeleccionado()" (onFocus)="sePreseleccionoProveedor=false"
-                                                       (onQuery)="onQuery($event)">
+                                [(valorInicial)]="CodigoProveedorEdit" (onProveedorPreSeleccionado)="onSePreseleccionaProveedor()"
+                                (onBlur)="revisarProveedorSeleccionado()" (onFocus)="sePreseleccionoProveedor=false"
+                                (onQuery)="onQuery($event)">
                             </app-seleccionar-proveedor>
                         </div>
-
-                        <div class="col-xs-12 col-sm-12 col-md-6"
-                             *ngIf="ingresarProveedorPorCUIT || corredorDebeCargarCuit">
+                    
+                        <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="ingresarProveedorPorCUIT || corredorDebeCargarCuit">
                             <p class="crearConsultaTitulos">
                                 CUIT
                                 <ng-container *ngIf="!corredorDebeCargarCuit">
                                     titular de la CP
                                 </ng-container>
-
+                    
                                 <span class="requerido">*</span>
                             </p>
                             <div class="styled-select" style="overflow: initial;">
-                                <input type="search" [(ngModel)]="CUIT" class="fourRounded" mask="00-00000000-0"
-                                       maxlength="13" (change)="verificarCUITIngresado(); renspaChanged();" aria-controls="tableModal">
+                                <input type="search" [(ngModel)]="CUIT" class="fourRounded" mask="00-00000000-0" maxlength="13"
+                                    (change)="verificarCUITIngresado(); renspaChanged();" aria-controls="tableModal">
                             </div>
                         </div>
-
+                    
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Cosecha <span class="requerido">*</span></p>
                             <div class="styled-select">
                                 <!-- <p-dropdown placeholder="Elegir cosecha" [options]="cosechas" [(ngModel)]="cosecha"
-                                    optionLabel="Nombre">
-                                </p-dropdown> -->
-
+                                                        optionLabel="Nombre">
+                                                    </p-dropdown> -->
+                    
                                 <select [(ngModel)]="cosechaId" (change)="onChangeCosecha()">
                                     <option *ngFor="let x of cosechas" value="{{x.Id}}">{{x.Nombre}}</option>
                                 </select>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p class="crearConsultaTitulos">Normativa<span class="requerido">*</span></p>
+                            <label style="margin-right: 40px; color: #818A91;">
+                                <input type="checkbox" [(ngModel)]="normBSVS2" name="normBSVS2" (change)="onCheck2BSVS()">
+                                2BSVS
+                            </label>
+                            <label style="margin-right: 40px; color: #818A91;">
+                                <input type="checkbox" [(ngModel)]="normEPA" name="normEPA">
+                                EPA
+                            </label>
+                            <label style="color:#818A91;">
+                                <input type="checkbox" [(ngModel)]="normEUDER" name="normBSVS2">
+                                EUDER
+                            </label>
                         </div>
                     </div>
 
@@ -172,6 +187,15 @@
                         <p class="crearConsultaTitulos">Archivo KMZ<span class="requerido">*</span></p>
                         <div class="styled-select">
                             <input #fileInput type="file" (change)="cargarArchivo($event)" placeholder="Cargar Archivo">
+                        </div>
+                        <br />
+                    </div>
+
+                     <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="normEPA">
+                        <p class="crearConsultaTitulos">Evidencia EPA<span class="requerido">*</span></p>
+                        <div class="styled-select">
+                            <input #fileInput type="file" (change)="cargarArchivoEpa($event)" placeholder="Cargar Archivo"
+                            accept=".pdf,.doc,.docx,.jpg,.jpeg,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg">
                         </div>
                         <br />
                     </div>

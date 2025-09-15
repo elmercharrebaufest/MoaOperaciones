@@ -89,6 +89,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
     myLocalidades = <any>[];
     localidades: any = [];
 
+    normBSVS2: boolean = false;    
+    normEPA: boolean = false;
+    normEUDER: boolean = false;
+
     cosechas: any[];
     cosechaId: any;
 
@@ -107,6 +111,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     CUIT: string = "";
     CUITInicial: string = "";
     file: any;
+    fileEPA: any;
     Archivo_Id: number;
     UsarArchivo_Id: boolean = false;
     Proveedor_Id: number;
@@ -236,6 +241,13 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }
     }
 
+    cargarArchivoEpa(event: any) {
+        let fileList: FileList = event.target.files;
+        if (fileList.length > 0) {
+            this.fileEPA = fileList[0];
+        }
+    }
+
     onselectProveedor(proveedor?: VendedorProveedor) {
         if (proveedor) {
             if (this.codigoProveedor == proveedor.idVendedor) {
@@ -301,10 +313,16 @@ export class AltaComponent extends BaseComponent implements OnInit {
                 }
             }
 
-            this.validarModalDeclaracion();
+            if(this.normBSVS2){
+                this.validarModalDeclaracion();
+            }
 
             this.renspaChanged();
         }
+    }
+
+    onCheck2BSVS() {
+        this.validarModalDeclaracion();
     }
 
     private validarModalDeclaracion() {
@@ -366,14 +384,17 @@ export class AltaComponent extends BaseComponent implements OnInit {
             Longitud: this.longitud,
             Proveedor_Id: this.proveedorId,
             CampoCosecha: campoCosecha,
-            Archivo_Id: this.UsarArchivo_Id ? this.Archivo_Id : 0
+            Archivo_Id: this.UsarArchivo_Id ? this.Archivo_Id : 0,
+            EPA: this.normEPA,
+            EUDER: this.normEUDER,
+            BSVS2: this.normBSVS2
         }
 
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         try {
             this.unsubscribe();
-            this.subscription = this.service.campoProveedorAgregar(campoProveedor, this.file, this.UsarArchivo_Id).subscribe(
+            this.subscription = this.service.campoProveedorAgregar(campoProveedor, this.file, this.UsarArchivo_Id, this.fileEPA).subscribe(
                 (result: any) => {
                     this.spinnerComponent.hideIt();
                     this.blockUI.stop();
@@ -527,12 +548,15 @@ export class AltaComponent extends BaseComponent implements OnInit {
             return true;
         }
 
+        if (this.normEPA && (!this.fileEPA || this.fileEPA.length < 1)) {
+            this.mensajeComponent.setErrorMsg("Falta adjuntar el archivo de evidencia EPA.");
+            return true;
+        }
         return false
     }
 
     redirigirAListado() {
         this.goToSeccion('/sustentable/listado-campos');
-
     }
 
     onResultadoDeclaracion(result: boolean) {

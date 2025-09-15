@@ -6,6 +6,9 @@ export interface DetallesCampo {
     Proveedor_Id: number;
     CUIT: string;
     Archivo_Id: number;
+    BSVS2: boolean;
+    EPA: boolean;
+    EUDER: boolean;
 }
 export interface CampoProveedor extends DetallesCampo {
     CampoCosecha?: CampoCosecha;
