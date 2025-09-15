@@ -32,7 +32,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
-        public EntradaServicioCreateRespuestaDto CrearEntradaServicio(EntradaServicioCreateParamsDto parametros)
+        public virtual EntradaServicioCreateRespuestaDto CrearEntradaServicio(EntradaServicioCreateParamsDto parametros)
         {
             try
             {

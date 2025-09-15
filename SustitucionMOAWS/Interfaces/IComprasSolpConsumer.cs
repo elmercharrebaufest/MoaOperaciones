@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenesCompra;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAWS.WSConsumers;
+using System.Collections.Generic;
 
 namespace SustitucionMOAWS.Interfaces
 {
@@ -57,6 +58,7 @@ namespace SustitucionMOAWS.Interfaces
         AdjudicacionDto ObtenerOrdenDeCompraAdjudicacion(string nroOC);
         ResultBAPI_PO_GETDETAIL1 ObtenerOrdenDeCompraRFC(string nroOC);
         ResultBAPI_PO_GETDETAIL1SinPI ObtenerOrdenDeCompraRFCSinPI(string nroOC);
+        DetalleOrdenDeCompraDto ObtenerDetalleDeOrdenDeCompra(string numeroDeOrdenCompra, List<TablaSap> centro, List<TablaSap> almacen, bool usuarioSolp);
     }
     public interface IObtenerProveedorConsumerMOA
     {
