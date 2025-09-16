@@ -470,28 +470,55 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            var resultado = ListarCampos(usuario, cp => new CampoProveedorListadoDto()
+            var campos = ListarCampos(usuario, cp => cp); // Trae los CampoProveedor completos
+
+            var resultado = new List<CampoProveedorListadoDto>();
+
+            foreach (var cp in campos)
             {
-                IdScato = cp.CampoCosecha.Campo.IdScato,
-                NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
-                HectareasSoja = cp.HectareasSoja,
-                HectareasTotales = cp.HectareasTotales,
-                NombreCampo = cp.CampoCosecha.Campo.Nombre,
-                ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
-                CampoCosechaId = cp.CampoCosecha_Id,
-                Proveedor = new ProveedorDto()
+                var normativas = new List<(bool flag, string descripcion)>
                 {
-                    Id = cp.Proveedor.Id,
-                    CodigoProveedor = cp.Proveedor.CodigoProveedor,
-                    RazonSocial = cp.Proveedor.RazonSocial
-                },
-                CodigoProveedor = cp.Proveedor.CodigoProveedor,
-                CUITProveedor = cp.CUIT,
-                RazonSocialProveedor = cp.RazonSocial,
-                CosechaId = cp.CampoCosecha.Cosecha_Id,
-                MotivoRechazo = cp.CampoCosecha.MotivoRechazo,
-                FechaCreacion = cp.FechaCreacion
-            });
+                    (cp.BSVS2, "BSVS2"),
+                    (cp.EPA, "EPA"),
+                    (cp.EUDER, "EUDER")
+                };
+
+                foreach (var (flag, descripcion) in normativas.Where(n => n.flag))
+                {
+                    // Busca la normativa correspondiente
+                    var normativa = cp.CampoCosecha.CampoCosechaNormativas?
+                        .FirstOrDefault(n => n.TipoNormativa.Descripcion == descripcion);
+
+                    if (normativa != null)
+                    {
+                        resultado.Add(new CampoProveedorListadoDto
+                        {
+                            IdScato = cp.CampoCosecha.Campo.IdScato,
+                            NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
+                            HectareasSoja = cp.HectareasSoja,
+                            HectareasTotales = cp.HectareasTotales,
+                            NombreCampo = cp.CampoCosecha.Campo.Nombre,
+                            ToneladasAprobadas = normativa.ToneladasAprobadas,
+                            CampoCosechaId = cp.CampoCosecha_Id,
+                            Proveedor = new ProveedorDto
+                            {
+                                Id = cp.Proveedor.Id,
+                                CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                                RazonSocial = cp.Proveedor.RazonSocial
+                            },
+                            CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                            CUITProveedor = cp.CUIT,
+                            RazonSocialProveedor = cp.RazonSocial,
+                            CosechaId = cp.CampoCosecha.Cosecha_Id,
+                            MotivoRechazo = normativa.MotivoRechazo,
+                            FechaCreacion = cp.FechaCreacion,
+                            TipoNormativa = normativa.TipoNormativa.Descripcion,
+                            Validado = normativa.Validado,
+                            ValidadoPor = normativa.ValidadoPor,
+                        });
+                    }
+                }
+            }
 
             return resultado;
         }
@@ -1195,6 +1222,11 @@ namespace SustitucionMOAUtils.Services
 
                 return outputStream.ToArray();
             }
+        }
+
+        public List<TipoNormativa> ObtenerNormativas()
+        {
+            return repositorio.Listar<TipoNormativa>();
         }
     }
 }

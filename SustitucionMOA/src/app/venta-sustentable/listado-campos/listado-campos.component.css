@@ -42,3 +42,7 @@ input:disabled,
 ::ng-deep .ui-autocomplete-input {
     width: calc(99% - 33px) !important;
 }
+
+.styled-select p-dropdown {
+    width: 100%;
+}

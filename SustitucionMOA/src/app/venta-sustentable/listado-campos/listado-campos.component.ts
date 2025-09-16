@@ -43,20 +43,22 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     borrarCampos: boolean = this.isAuthorized('BORRAR CAMPOS CREADOS')
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esComercial: boolean = this.isAuthorized(Permiso.ComercialCamposSustentables);
-    opcionesProveedores: any;
+    selectedProveedor: any = null; // Cambia el nombre para el dropdown
+    selectedCuit: any = null; // Cambia el nombre para el dropdown
+    opcionesProveedores: any[] = []; // Ya lo tienes
+    opcionesCuit: any[] = []; // Nueva variable para los CUIT
     cosechas: any;
+    normativas: any;
 
     filtroId: string = "";
     filtroNombreCampo: string = "";
     filtroProveedor: string = "";
+    filtroCuit: string = "";
     filtroCosechaId: string = "";
     orderedByColumn: string = "Nombre";
     orderDirection: number = 1;
     itemsPerPage = 20;
-
-    selectedCountryAdvanced: any[];
-    filteredProveedor: any[];
-    countries: any[];
+    checkRevision: boolean = false;
 
     tituloArchivo: string = "Reporte de Campos Sustentables.xls";
 
@@ -78,11 +80,18 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.data = result;
+                    console.log(this.data);
+                    this.getNormativas();
 
                     if (result.length > 0) {
                         let allProveedores = result.map(cp => { return { value: cp.Proveedor.CodigoProveedor, label: cp.Proveedor.RazonSocial } });
-                        this.opcionesProveedores = [...new Map(allProveedores.map(item => [item.value, item])).values()]
-                        // this.opcionesProveedores.unshift({ value: "", label: "Todos" })
+                        this.opcionesProveedores = [...new Map(allProveedores.map(item => [item.value, item])).values()];
+                    
+                        let allCuitProveedores = result.map(cp => { 
+                        return { value: cp.CUITProveedor, label: cp.CUITProveedor } 
+                        });
+                        this.opcionesCuit = [...new Map(allCuitProveedores.map(item => [item.value, item])).values()];
+
                     }
                     else {
                         this.mensajeComponent.setInfoMsg("No hay campos sustentables cargados.");
@@ -97,63 +106,15 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         return false;
     }
 
-    proveedorSeleccionado(event) {
-        this.filtroProveedor = event.value;
+    proveedorSeleccionado(event: any) {
+        // event.value contiene el value seleccionado
+        this.filtroProveedor = event.value || "";
     }
 
-
-    filterProveedor(event) {
-
-        let filtered: any[] = [];
-        let query = event.query;
-
-        for (let i = 0; i < this.opcionesProveedores.length; i++) {
-            let proveedor = this.opcionesProveedores[i];
-            if (proveedor.label.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-                filtered.push(proveedor);
-            }
-        }
-
-        //ordenar alfabeticamente
-        filtered = filtered.sort(function (a, b) {
-            if (a.label > b.label) {
-                return 1;
-            }
-            if (a.label < b.label) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        });
-
-        this.filteredProveedor = filtered;
-
-        /*    this.opcionesProveedores.getResults(event.query).then(data => {
-               this.results = data;
-           });
-          var lista2 = new Array;
-   
-           for (var i = 0; i < this.opcionesProveedores.length; i++) {
-               lista2.push({ label: this.opcionesProveedores[i].label, value: this.opcionesProveedores[i].value });
-           }
-   
-           lista2 = lista2.sort(function (a, b) {
-               if (a.label > b.label) {
-                   return 1;
-               }
-               if (a.label < b.label) {
-                   return -1;
-               }
-               // a must be equal to b
-               return 0;
-           });
-   
-           this.opcionesProveedores = lista2;*/
-
-
+    cuitSeleccionado(event: any) {
+        // event.value contiene el value seleccionado
+        this.filtroCuit = event.value || "";
     }
-
-
 
     eliminarCampo(campoCosechaId: number, proveedorId: number) {
         this.mensajeComponent.setMsgsEmpty();
@@ -293,4 +254,44 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
 
         return false; //<-- Prevent Refresh
     }
+
+     getNormativas() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        try {
+            this.subscription = this.service.getNormativas().subscribe(
+                (result: any) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.normativas = result;
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    getCamposFiltrados(): any[] {
+    if (this.checkRevision) {
+        return this.data.filter(campo =>
+            (campo.Validado === null || campo.Validado === false) &&
+            campo.TipoNormativa === "EPA"
+        );
+    }
+    return this.data;
+}
 }

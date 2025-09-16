@@ -29,5 +29,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<SugerenciaCampoDto> ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int cosechaId, string cuitTitularCP);
         void AgregarCamposSugeridos(List<SugerenciaCampoDto> camposProveedorDto, List<HttpPostedFileBase> archivosKmz, string mailUsuario);
         string ExportarCamposSugeridos(int proveedorId, int cosechaId, string cuitTitularCP);
+        List<TipoNormativa> ObtenerNormativas();
     }
 }

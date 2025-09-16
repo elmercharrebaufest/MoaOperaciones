@@ -43,6 +43,11 @@ namespace SustitucionMOAModel.Dto
             }
         }
 
+        public string TipoNormativa { get; set; }
+
+        public bool? Validado { get; set; }
+        public int? ValidadoPor { get; set; }
+
         public override bool Equals(object obj)
         {
             return obj is CampoProveedorListadoDto dto &&
@@ -50,6 +55,7 @@ namespace SustitucionMOAModel.Dto
                    NombreCosecha == dto.NombreCosecha &&
                    HectareasTotales == dto.HectareasTotales &&
                    HectareasSoja == dto.HectareasSoja &&
+                   TipoNormativa ==dto.TipoNormativa &&
                    ToneladasAprobadas == dto.ToneladasAprobadas;
         }
 

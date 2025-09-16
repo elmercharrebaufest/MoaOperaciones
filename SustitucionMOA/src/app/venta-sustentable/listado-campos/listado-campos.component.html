@@ -62,7 +62,7 @@
 
                 </div>
 
-                <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esInterno || esComercial">
+                <div class="col-xs-12 col-sm-12 col-md-3" *ngIf="esInterno || esComercial">
 
                     Id
 
@@ -74,7 +74,7 @@
 
                 </div>
 
-                <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="col-xs-12 col-sm-12 col-md-3">
 
                     Nombre
 
@@ -86,7 +86,7 @@
 
                 </div>
 
-                <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="col-xs-12 col-sm-12 col-md-3">
 
                     Por Cosecha
 
@@ -103,19 +103,56 @@
                     </div>
 
                 </div>
-
-                <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esCorredor || esInterno || esComercial">
-                    <p>Por Vendedor</p>
-                    <p-autoComplete [(ngModel)]="selectedCountryAdvanced" [dropdown]="true" field="label"
-                        [suggestions]="filteredProveedor" (completeMethod)="filterProveedor($event)" appendTo="body"
-                        placeholder="Seleccionar" appendTo="body" (onSelect)="proveedorSeleccionado($event)">
-                        <ng-template let-country pTemplate="item">
-                            <div class="country-item">
-                                <div>{{country.label}}</div>
-                            </div>
-                        </ng-template>
-                    </p-autoComplete>
+        
+<div class="col-xs-12 col-sm-12 col-md-3">
+                    Por Estado
+                    <div class="styled-select">
+                        <select [(ngModel)]="estadoSeleccionado" name="estadoSeleccionado">
+                            <option value="">Todos</option>
+                            <option value="Aprobado">Aprobado</option>
+                            <option value="Desaprobado">Desaprobado</option>
+                            <option value="En gestión">En gestión</option>
+                        </select>
+                    </div>
                 </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-3">
+                    Por Normativa
+                    <div class="styled-select">
+                        <select [(ngModel)]="filtroNormativa">
+                            <option value="">Todas</option>
+                            <option *ngFor="let n of normativas" value="{{n.Descripcion}}">{{n.Descripcion}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-3" *ngIf="esCorredor || esInterno || esComercial">
+                    Por Vendedor
+                    <div class="styled-select">
+                        <p-dropdown [(ngModel)]="selectedProveedor" [options]="opcionesProveedores" optionLabel="label"
+                            placeholder="Seleccionar" [filter]="true" (onChange)="proveedorSeleccionado($event)"
+                            [showClear]="true" appendTo="body">
+                        </p-dropdown>
+                    </div>
+                </div>
+
+
+                
+                <div class="col-xs-12 col-sm-12 col-md-3" *ngIf="esCorredor || esInterno || esComercial">
+                    Por CUIT Proveedor
+                    <div class="styled-select">
+                        <p-dropdown [(ngModel)]="selectedCuit" [options]="opcionesCuit" optionLabel="label"
+                            placeholder="Seleccionar" [filter]="true" (onChange)="cuitSeleccionado($event)"
+                            [showClear]="true" appendTo="body">
+                        </p-dropdown>
+                    </div>
+                </div>
+                
+                <div class="col-xs-12 col-sm-12 col-md-3">
+                    <input type="checkbox" [(ngModel)]="checkRevision" name="miCheckbox">
+                    Pendiente Revisión
+                </div>
+
             </div>
         </div>
 
@@ -190,6 +227,12 @@
 
                             </th>
 
+                            <th tabindex="0" rowspan="1" colspan="1">
+
+                                Normativa
+
+                            </th>
+
                             <!--<th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
 
                                 Hectares pendientes
@@ -210,13 +253,19 @@
 
                     <tbody>
 
-                        <tr *ngFor="let campo of data
+                        <tr *ngFor="let campo of getCamposFiltrados()
 
                                 | customNumericFilter : 'IdScato' : filtroId : ''
 
                                 | customFilter : 'NombreCampo' : filtroNombreCampo
 
-                                | customFilter : 'CodigoProveedor' : filtroProveedor
+                                | customFilter : 'CodigoProveedor' : filtroProveedor.value
+
+                                | customFilter : 'Estado' : estadoSeleccionado
+
+                                | customFilter : 'TipoNormativa' : filtroNormativa
+
+                                | customFilter : 'CUITProveedor' : filtroCuit.value
 
                                 | customFilter : 'NombreCosecha' : filtroCosechaId
 
@@ -266,17 +315,21 @@
 
                             <td>{{campo.ToneladasAprobadas == -1 ? 0: campo.ToneladasAprobadas }}</td>
 
+                            <td>{{campo.TipoNormativa}}</td>
                             <!--<td>NO VIENE</td>-->
 
                             <td width="100px">
 
                                 <div class="col-sm-2">
+                                
+                                    <button *ngIf="campo.TipoNormativa == 'EPA'" type="button" class="btn-custom btn-mediano btn-guardar" (click)="descargarEvidencia(campo)">
+                                        Descargar evidencia
+                                    </button>
 
-                                    <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
-                                        [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId"
-                                        [habilitado]="campo.ToneladasAprobadas != -1 || esInterno">
+                                    <app-impresion-declaracion *ngIf="campo.TipoNormativa == 'BSVS2'" [proveedorId]="campo.Proveedor.Id" [CUIT]="campo.CUITProveedor"
+                                        [cosechaId]="campo.CosechaId" [habilitado]="campo.ToneladasAprobadas != -1 || esInterno">
                                     </app-impresion-declaracion>
-
+                                
                                 </div>
 
                             </td>
@@ -327,6 +380,19 @@
                                             (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
                                         </button>
 
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <button
+                                            *ngIf="campo.TipoNormativa == 'EPA'"
+                                            type="button" class="btn-sin-fondo btn-borrar fa fa-check" title="Aprobar"
+                                            >
+                                        </button>
+                                      <button
+                                            *ngIf="campo.TipoNormativa == 'EPA'"
+                                            type="button" class="btn-sin-fondo btn-borrar fa fa-times" title="Rechazar"
+                                            >
+                                        </button>
                                     </div>
 
                                 </div>

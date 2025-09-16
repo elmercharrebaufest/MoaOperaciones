@@ -34,7 +34,8 @@ import { ToastModule } from 'primeng/toast';
     NgxMaskModule.forRoot(),
     DialogModule,
     ButtonModule,
-    ToastModule
+    ToastModule,
+    DropdownModule,
   ],
   declarations: [
     ListadoCamposComponent,

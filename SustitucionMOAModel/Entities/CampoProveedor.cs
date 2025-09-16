@@ -34,5 +34,6 @@ namespace SustitucionMOAModel.Entities
         public bool BSVS2 { get; set; }
         public bool EPA { get; set; }
         public bool EUDER { get; set; } 
+
     }
 }

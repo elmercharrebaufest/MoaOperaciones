@@ -18,10 +18,10 @@ namespace SustitucionMOAModel.Entities
         public int TipoNormativa_Id { get; set; }
         [ForeignKey("TipoNormativa_Id")]
         public virtual TipoNormativa TipoNormativa { get; set; }
-        public float ToneladasAprobadas { get; set; }   
+        public double ToneladasAprobadas { get; set; }   
         public string MotivoRechazo { get; set; }
-        public bool Validado { get; set; }
-        public int ValidadoPor { get; set; }
+        public bool? Validado { get; set; }
+        public int? ValidadoPor { get; set; }
         public DateTime? ValidadoFecha { get; set; }
     }
 }

@@ -166,5 +166,11 @@ namespace SustitucionMOA.Controllers
             campoSustentableService.AgregarCamposSugeridos(campos, archivosKmz, mailUsuario);
             return ContentCustom(new SustitucionMOAApiResponse<string> { Data = "Los campos se han guardado correctamente" });
         }
+
+        [HttpGet]
+        public JsonResult ObtenerNormativas()
+        {
+            return JsonCustom(campoSustentableService.ObtenerNormativas());
+        }
     }
 }

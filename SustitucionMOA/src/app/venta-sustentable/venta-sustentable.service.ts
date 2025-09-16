@@ -209,4 +209,9 @@ export class VentaSustentableService extends BaseService {
         return this.http
             .get('/api/CampoSustentable/Cosechas', { params: params, headers: this.headers });
     }
+
+    public getNormativas() {
+        return this.http
+            .get('/api/CampoSustentable/ObtenerNormativas', { headers: this.headers });
+    }
 }
