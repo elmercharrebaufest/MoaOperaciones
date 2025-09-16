@@ -1,0 +1,40 @@
+<div class="users-container">
+    <div class="users-header">
+        <h1>Users Management</h1>
+        <p>Manage users with reactive Signal-based state</p>
+    </div>
+
+    @if (isLoading()) {
+    <div class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading users...</p>
+    </div>
+    } @else {
+    <div class="users-grid">
+        @for (user of dataService.users(); track user.id) {
+        <mat-card class="user-card">
+            <mat-card-header>
+                <mat-card-title>{{ user.name }}</mat-card-title>
+                <mat-card-subtitle>{{ user.email }}</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <div class="user-info">
+                    <p><strong>Phone:</strong> {{ user.phone }}</p>
+                    <p><strong>Website:</strong> {{ user.website }}</p>
+                    <p><strong>Company:</strong> {{ user.company.name }}</p>
+                    <p><strong>City:</strong> {{ user.address.city }}</p>
+                </div>
+            </mat-card-content>
+
+            <mat-card-actions>
+                <button mat-button (click)="selectUser(user.id)">
+                    <mat-icon>person</mat-icon>
+                    View Posts
+                </button>
+            </mat-card-actions>
+        </mat-card>
+        }
+    </div>
+    }
+</div>

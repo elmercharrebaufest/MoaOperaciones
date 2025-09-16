@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAAssets;
+using SustitucionMOAModel.Dto;
 using System;
 
 namespace SustitucionMOAWS.Logger
@@ -10,6 +11,7 @@ namespace SustitucionMOAWS.Logger
         private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
         private static readonly NLog.Logger ComprasRegistroInfoLogger = NLog.LogManager.GetLogger("comprasRegistroInfoLogger");
         private static readonly NLog.Logger RequestLogger = NLog.LogManager.GetLogger("requestLogger");
+        private static readonly NLog.Logger QrLogger = NLog.LogManager.GetLogger("qrLogger");
 
         public static void Error(string ip, string usuario, string controller, string method, string error)
         {
@@ -163,6 +165,21 @@ namespace SustitucionMOAWS.Logger
             catch (Exception e)
             {
                 Console.WriteLine("ERROR en LogService:" + e.Message);
+            }
+        }
+        public static void QrError(FrontLoggerRequestDto frontData)
+        {
+            QrError(frontData.ToString());
+        }
+        public static void QrError(string message)
+        {
+            try
+            {
+                QrLogger.Error(message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en front:" + e.Message);
             }
         }
     }

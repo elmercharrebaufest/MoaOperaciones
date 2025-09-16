@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
+﻿using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace SustitucionMOAExternalAPI
 {
@@ -9,6 +7,9 @@ namespace SustitucionMOAExternalAPI
     {
         public static void Register(HttpConfiguration config)
         {
+            // Habilita CORS para todos los orígenes, métodos y headers
+            var cors = new EnableCorsAttribute("*", "*", "*");
+            config.EnableCors(cors);
             // Web API configuration and services
 
             // Web API routes

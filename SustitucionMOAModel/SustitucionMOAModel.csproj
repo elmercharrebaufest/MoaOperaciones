@@ -113,6 +113,7 @@
     <Compile Include="Dto\FrontLoggerRequestDto.cs" />
     <Compile Include="Dto\LiberadorSapDto.cs" />
     <Compile Include="Dto\LocalidadDto.cs" />
+    <Compile Include="Dto\LogQrRequestDto.cs" />
     <Compile Include="Dto\LogTableDto.cs" />
     <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\NotificacionEsPendientesDiariasDto.cs" />
