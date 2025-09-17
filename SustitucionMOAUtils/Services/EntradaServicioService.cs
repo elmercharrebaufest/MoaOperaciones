@@ -713,7 +713,7 @@ namespace SustitucionMOAUtils.Services
         /// <param name="nro_es_local"></param>
         /// <param name="suplenteOriginal"></param>
         /// <returns></returns>
-        public EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string suplenteOriginal)
+        public EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string suplenteOriginal, bool notificarAprobacionPendiente)
         {
             var esTemporalPendienteAprobacionList = ObtenerEntradasServicioPendientesParaReasignacion(nro_es_local);
 
@@ -743,7 +743,10 @@ namespace SustitucionMOAUtils.Services
 
             var aprobacionesNotificar = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nro_es_local);
 
-            _ = NotifyCreation(aprobacionesNotificar, proveedor, usuarioSuplente.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS);
+            if (notificarAprobacionPendiente)
+            {
+                _ = NotifyCreation(aprobacionesNotificar, proveedor, usuarioSuplente.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS);
+            }
 
             repositorioEntradaServicio.GuardarCambios();
 
@@ -1575,7 +1578,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         if (ap.EstaPendienteAprobacion())
                         {
-                            ReasignarSuplente(ap.NRO_ES_LOCAL, ap.Aprobador_CDS);
+                            ReasignarSuplente(ap.NRO_ES_LOCAL, ap.Aprobador_CDS, false);
                         }
                     }
                     #endregion
