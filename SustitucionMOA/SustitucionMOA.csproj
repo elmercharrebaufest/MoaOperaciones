@@ -2158,4 +2158,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="CopyAngularDist" AfterTargets="Build">
+    <Message Text="Copiando Angular dist al PackageTmp" Importance="high" />
+    <ItemGroup>
+      <AngularFiles Include="$(Build.SourcesDirectory)\SustitucionMOAQRCamionesWeb\dist\**\*" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(AngularFiles)"
+      DestinationFolder="$(MSBuildProjectDirectory)\obj\Package\PackageTmp\QRCamiones\%(RecursiveDir)"
+      SkipUnchangedFiles="true" />
+  </Target>
 </Project>
