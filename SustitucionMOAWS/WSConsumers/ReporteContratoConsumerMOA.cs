@@ -1,5 +1,4 @@
 ﻿using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
@@ -11,8 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -52,9 +49,9 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_CONTRATO = request.Contrato,
                         IM_CORREDOR = request.Corredor,
                         IM_FECHA = fechasSAPArray,
-                        IM_MATERIAL = request.Material,
-                        IM_PENDIENTE = request.Pendiente,
-                        IM_TIPO_CONTRATO = request.TipoContrato
+                        IM_MATERIAL = request.Material ?? "",
+                        IM_PENDIENTE = request.Pendiente ?? "",
+                        IM_TIPO_CONTRATO = request.TipoContrato ?? ""
                     };
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_VISUALIZAR_ZFAS request");
                     Log.Info(request.ToXml());
@@ -94,7 +91,7 @@ namespace SustitucionMOAWS.WSConsumers
                     return response;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -104,7 +101,7 @@ namespace SustitucionMOAWS.WSConsumers
         {
             var response = new ReporteContratoWSMOAResponse();
             var resultados = new List<Result>();
-      
+
             foreach (var item in result)
             {
                 var resultado = new Result()
