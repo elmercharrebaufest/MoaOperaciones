@@ -605,22 +605,49 @@
     margin-bottom: 1rem;
 }
 
-/* Agregar al archivo cotizacion.component.css o en los estilos del componente */
-
-.info-box-bottom-right {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+/* Estilo para el cuadro de información lateral */
+.info-box-side {
     background-color: #f8f9fa;
-    border: 2px solid #dee2e6;
+    border: 1px solid #dee2e6;
     border-radius: 8px;
     padding: 15px;
+    margin-top: 2em;
+    margin-bottom: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 300px;
-    z-index: 1000;
+    width: 100%;
+    position: sticky;
+    top: 20px;
     font-family: "Roboto", Arial, sans-serif;
     font-size: 14px;
     line-height: 1.4;
+}
+
+.info-box-side p {
+    margin: 0;
+    color: #495057;
+    white-space: pre-line;
+}
+
+.info-box-header {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #212529;
+}
+
+/* Hacer el rectángulo responsivo */
+@media (max-width: 768px) {
+    .info-box-side {
+        max-width: 100%;
+        font-size: 12px;
+        padding: 10px;
+        margin-top: 15px;
+        position: relative;
+    }
+}
+
+/* Agregar efecto hover */
+.info-box-side:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .info-box-bottom-right p {
@@ -629,13 +656,16 @@
     white-space: pre-line;
 }
 
+.info-box-header {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #212529;
+}
+
 /* Opcional: Hacer el rectángulo responsivo */
 @media (max-width: 768px) {
     .info-box-bottom-right {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        max-width: 250px;
+        max-width: 100%;
         font-size: 12px;
         padding: 10px;
     }

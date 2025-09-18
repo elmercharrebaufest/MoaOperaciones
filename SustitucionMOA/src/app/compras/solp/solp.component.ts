@@ -1507,6 +1507,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Abre el modal del boton finalizar
     showFinalizarDialog() {
+        this.selectModalMessageBasedOnSolpConditions();
         this.displayModalConfirmacionFinalizar = true;
     }
 

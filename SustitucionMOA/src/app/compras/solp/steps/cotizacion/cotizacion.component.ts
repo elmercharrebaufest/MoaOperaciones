@@ -548,6 +548,8 @@ export class CotizacionComponent extends ListBaseComponent {
         if(value == "Proveedor directo"){
             this.model.thProveedorDirecto = true;
         }
+        // Evaluamos el mensaje a mostrar
+        this.evaluarMostrarInfoBox();
     }
 
     habilitarOC() {
@@ -561,6 +563,7 @@ export class CotizacionComponent extends ListBaseComponent {
         if (!this.model.condEspProveedorAsignado && !this.model.urgencia && !this.model.adicional && !this.model.trabajoHecho && !this.model.conPresupuesto) {
             this.borrarArchivosCargados();
         }
+        this.evaluarMostrarInfoBox();
     }
   
     borrarArchivosCargados(): void {
@@ -774,7 +777,7 @@ export class CotizacionComponent extends ListBaseComponent {
         }
 
         // SOLP donde hay que salir a buscar la Oferta
-        if(this.model.proveedorAsignado_Id != null && this.model.conPresupuesto == false && this.model.trabajoHecho == false){
+        if(this.model.condEspProveedorAsignado == true){
             textos.push("El fiscal al momento de la carga de la solp solicita que se pida precio.");
             textos.push("SOLP asignada a un proveedor definido técnicamente por sus condiciones especiales o particularidad del trabajo, material, insumo o equipo.");
         }
@@ -789,14 +792,14 @@ export class CotizacionComponent extends ListBaseComponent {
         if (this.model.certificacionAutomatica == true) {
             textos.push("LA CERTIFICACION DEL SERVICIO SE HARA DE FORMA AUTOMATICA. EL PROVEEDOR QUEDA AUTORIZADO A COBRAR EL SERVICIO.");
         }
-        else {
+        if (this.model.certificacionAutomatica == false) {
             textos.push("VA A REQUERIR DEFINIR DESDE COMPRAS SI ADMITE O NO CERTIFICACIONES PARCIALES EN LOS SERVICIOS.");
         }
 
 
         // Si hay condiciones especiales, mostrar el info box
         if (textos.length > 0) {
-            this.infoBoxText = "Información:\n" + textos.join("\n");
+            this.infoBoxText = textos.join("\n");
             this.mostrarInfoBox = true;
         } else {
             this.mostrarInfoBox = false;
