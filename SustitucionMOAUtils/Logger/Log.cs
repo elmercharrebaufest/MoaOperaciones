@@ -43,7 +43,6 @@ namespace SustitucionMOAUtils.Logger
         private static readonly NLog.Logger AzureLogger = NLog.LogManager.GetLogger("azureLogger");
         private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
         private static readonly NLog.Logger FrontLogger = NLog.LogManager.GetLogger("frontLogger");
-        private static readonly NLog.Logger ComprasRegistroInfoLogger = NLog.LogManager.GetLogger("comprasRegistroInfoLogger");
         private static readonly NLog.Logger RequestLogger = NLog.LogManager.GetLogger("requestLogger");
         private static readonly NLog.Logger QrLogger = NLog.LogManager.GetLogger("qrLogger");
 
@@ -248,18 +247,6 @@ namespace SustitucionMOAUtils.Logger
             catch (Exception e)
             {
                 Console.WriteLine("ERROR en front:" + e.Message);
-            }
-        }
-        public static void ComprasRegistroInfo(string message)
-        {
-            try
-            {
-                ComprasRegistroInfoLogger.Info(message);
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-                Console.WriteLine("ERROR en ComprasRegistroInfo:" + e.Message);
             }
         }
         public static void LogRequest(string mensaje)

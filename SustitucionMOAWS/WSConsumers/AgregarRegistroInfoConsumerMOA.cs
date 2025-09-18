@@ -43,7 +43,6 @@ namespace SustitucionMOAWS.WSConsumers
                 WS_GAQ_sin_PI_DIRECT_MOAOP.MEWISCALEVAL[] MEWISCALEVALE;
 
                 var registrosSap = DevolverDatosSapRegistroSinPI(registrosInfo);
-                string xml = "";
                 foreach (var item in registrosSap)
                 {
                     BAPIRETURNE = new WS_GAQ_sin_PI_DIRECT_MOAOP.BAPIRETURN[] { };
@@ -73,13 +72,6 @@ namespace SustitucionMOAWS.WSConsumers
                     var response = agent.Z_MMRFC_MANTENER_REGINFO(request);
                     Log.Info($"SAP sin PI Z_MMRFC_MANTENER_REGINFO response");
                     Log.Info(response.ToXml());
-
-                    var serxml = new System.Xml.Serialization.XmlSerializer(item.GetType());
-                    var ms = new MemoryStream();
-                    serxml.Serialize(ms, item);
-                    var xmlReturn = new System.Xml.Serialization.XmlSerializer(response.RETURN.GetType());
-                    xmlReturn.Serialize(ms, response.RETURN);
-                    xml += Encoding.UTF8.GetString(ms.ToArray());
                 }
 
                 var respuesta = new CrearSolpConsumerMOAResponse();
@@ -97,7 +89,6 @@ namespace SustitucionMOAWS.WSConsumers
                     respuesta.Errores.Add(error);
                 }
 
-                Log.ComprasRegistroInfo(xml);
                 return respuesta;
 
             }
@@ -151,7 +142,7 @@ namespace SustitucionMOAWS.WSConsumers
                     respuesta.Errores.Add(error);
                 }
 
-                Log.ComprasRegistroInfo(xml);
+                Log.Info(xml);
                 return respuesta;
             }
         }
