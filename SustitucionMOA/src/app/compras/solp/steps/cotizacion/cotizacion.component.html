@@ -82,6 +82,8 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                         <ng-container *ngIf="!model.EsPliegoMultiple">
 
                             <div style="margin-top: 2em;">
@@ -106,8 +108,8 @@
                                                 formControlName="trabajoHecho"
                                                 binary="true"
                                                 [disabled]="!puedeSeleccionarCondicionEspecial()"
-                                                (click)="validarChecks(); limpiarCheck();"
-                                                (ngModelChange)="resetearFecha(); verificarCondicionesEspeciales(); onConditionChange();">
+                                                (click)="validarChecks(); limpiarCheck(); evaluarMostrarInfoBox();"
+                                                (ngModelChange)="resetearFecha(); verificarCondicionesEspeciales(); onConditionChange();evaluarMostrarInfoBox();">
                                     </p-checkbox>
                                 </div>
                                 <div style="margin-top: 2em;">
@@ -301,8 +303,8 @@
                                             formControlName="condEspProveedorAsignado"
                                             binary="true"
                                             [disabled]="!puedeSeleccionarCondicionEspecial()"
-                                            (click)="validarChecks(); limpiarCheckProveedorAsignado()"
-                                            (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
+                                            (click)="validarChecks(); limpiarCheckProveedorAsignado(); evaluarMostrarInfoBox();"
+                                            (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange(); evaluarMostrarInfoBox();">
                                 </p-checkbox>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.condEspProveedorAsignado && !model.adicional && !model.trabajoHecho">
@@ -333,6 +335,17 @@
                                 </div>
                             </div>
                         </ng-container>
+                            </div>
+                            <!-- Columna para el infoBoxText -->
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <div *ngIf="mostrarInfoBox" class="info-box-side">
+                                    <div class="info-box-header">Información:</div>
+                                    <p>{{infoBoxText}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput" *ngIf="model.condEspProveedorAsignado || model.urgencia || model.adicional || model.trabajoHecho || model.conPresupuesto">
                         <label class="labelCompras" for="checkbox">Justificación y Adjuntos de Condiciones Especiales</label>
@@ -410,8 +423,3 @@
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
     </p-footer>
 </p-confirmDialog>
-
-<!-- Rectángulo flotante en esquina inferior derecha -->
-<div *ngIf="mostrarInfoBox" class="info-box-bottom-right">
-    <p>{{infoBoxText}}</p>
-</div>
