@@ -511,7 +511,7 @@ namespace SustitucionMOAUtils.Services
                         serviceDetailDto.UM = ES.UM;
                         serviceDetailDto.Descripcion = ES.Descripcion_ES;
                         serviceDetailDto.Porcentaje = ES.Porcentaje_a_certificar;
-                        serviceDetailDto.Cantidad = ES.Cantidad.ToString();
+                        serviceDetailDto.Cantidad = ES.Cantidad_a_certificar.ToString();
                         serviceDetailDto.Monto = Moneda == "ARP" ? "$ " + ES.Monto_a_certificar.ToString() : Moneda + " " + ES.Monto_a_certificar.ToString();
 
 
