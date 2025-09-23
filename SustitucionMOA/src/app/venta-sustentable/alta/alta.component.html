@@ -455,3 +455,23 @@
     </p-footer>
 </p-dialog>
 
+<p-dialog
+    header="Campo sugerido con normativa 2BSVS"
+    [(visible)]="mostrarConfirmacionSugeridos"
+    [modal]="true"
+    [closable]="false"
+    [responsive]="true"
+    [style]="{width: '400px'}"
+    appendTo="body"
+>
+    <div style="text-align:center;">
+        <p>Se encontraron campos sugeridos, ¿Confirma registrar un campo con la normativa 2BSVS? En caso de confirmar se le solicitara la declaracion jurada.</p>
+    </div>
+    <p-footer>
+        <button type="button" pButton icon="pi pi-check" label="Sí"
+            (click)="onConfirmarSugeridos(true)"></button>
+        <button type="button" pButton icon="pi pi-times" label="No"
+            class="ui-button-secondary" (click)="onConfirmarSugeridos(false)"></button>
+    </p-footer>
+</p-dialog>
+

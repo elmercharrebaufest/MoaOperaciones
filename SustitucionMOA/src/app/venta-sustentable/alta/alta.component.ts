@@ -139,6 +139,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     mostrarSugerenciasCamposNuevos: boolean = false;
     camposNuevosSugeridos: SugerenciaCampo[] = [];
+    mostrarConfirmacionSugeridos2BSVS: boolean = false;
     camposSugeridosSeleccionaTodos: boolean = false;
 
     mostrarEdicionSugerencia: boolean = false;
@@ -574,6 +575,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
     onResultadoDeclaracion(result: boolean) {
         if (!result) {
             this.cosechaId = 0;
+        }else{
+        this.mostrarSugerenciasCamposNuevos = true;
         }
         /*else {
             this.consultarCamposAnterioresParaSugerir();
@@ -642,7 +645,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
                             x.CosechaId = cosechaId;
                             return x;
                         });
-                        this.mostrarSugerenciasCamposNuevos = true;
+                        this.mostrarConfirmacionSugeridos2BSVS = true;
+                        //this.mostrarSugerenciasCamposNuevos = true;
                     }
                 },
                 error => {
@@ -686,11 +690,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         this.mensajeCamposSugeridos.setMsgsEmpty();
 
-        if(this.campoCosechaId > 0 &&  this.declaracionComformidad.cosechaId ==0){
-            this.validarModalDeclaracion();
-            return;
-        }
-
         let camposAGuardar = this.camposNuevosSugeridos.filter(x => x.Seleccionado);
 
         for (let campo of camposAGuardar) {
@@ -698,10 +697,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
                 this.mensajeCamposSugeridos.setErrorMsg(`Falta completar RENSPA o el formato es incorrecto en el campo: ${campo.NombreCampo}.`);
                 this.blockUI.stop();
                 return;
-            }
-
-            if(campo.BSVS2){
-            //validar declaracion jurada
             }
         }
 
@@ -715,10 +710,13 @@ export class AltaComponent extends BaseComponent implements OnInit {
                     setTimeout(() => {
                         this.redirigirAListado();
                     }, 3000);
+                }else{
+                    this.cosechaId = 0;
                 }
             },
             error => {
                 this.blockUI.stop();
+                this.cosechaId = 0;
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         );
@@ -990,4 +988,12 @@ export class AltaComponent extends BaseComponent implements OnInit {
         )
     }
 
+    onConfirmarSugeridos(respuesta: boolean) {
+    this.mostrarConfirmacionSugeridos2BSVS = false;
+    if (respuesta) {
+        this.validarModalDeclaracion();
+    } else {
+        this.mostrarSugerenciasCamposNuevos = true;
+    }
+}
 }
