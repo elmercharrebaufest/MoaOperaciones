@@ -28,7 +28,7 @@ namespace SustitucionMOAModel.Dto
         [ForeignKey("EvidenciaEPA_Id")]
         public bool BSVS2 { get; set; }
         public bool EPA { get; set; }
-        public bool EUDER { get; set; }
+        public bool EUDR { get; set; }
         public byte[] ArchivoEPA { get; set; }
         public string NombreArchivoEPA { get; set; }
 

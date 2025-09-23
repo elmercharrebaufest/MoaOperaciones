@@ -111,8 +111,8 @@ namespace SustitucionMOARepositorio.Repositorios
                     CodigoProveedor = campoProveedor.Proveedor.CodigoProveedor,
                     CampoYaPresentado = (campoPresentado != null && campoPresentado.CUIT == cuitTitularCP && !campoPresentado.Borrado),
                     EPA = campoProveedor.CampoCosecha.CampoCosechaNormativas.Any(n => n.TipoNormativa.Descripcion == "EPA" && n.ToneladasAprobadas > 0),
-                    EUDER = campoProveedor.CampoCosecha.CampoCosechaNormativas.Any(n => n.TipoNormativa.Descripcion == "EUDER" && n.ToneladasAprobadas > 0),
-                    BSVS2 = campoProveedor.CampoCosecha.CampoCosechaNormativas.Any(n => n.TipoNormativa.Descripcion == "BSVS2" && n.ToneladasAprobadas > 0),
+                    EUDR = campoProveedor.CampoCosecha.CampoCosechaNormativas.Any(n => n.TipoNormativa.Descripcion == "EUDR" && n.ToneladasAprobadas > 0),
+                    BSVS2 = campoProveedor.CampoCosecha.CampoCosechaNormativas.Any(n => n.TipoNormativa.Descripcion == "2BSVS" && n.ToneladasAprobadas > 0),
                     Normativas = campoProveedor.CampoCosecha.CampoCosechaNormativas.Where(y => y.ToneladasAprobadas > 0).Select(x => new CampoCosechaNormativaDto
                     {
                         Id = x.Id,

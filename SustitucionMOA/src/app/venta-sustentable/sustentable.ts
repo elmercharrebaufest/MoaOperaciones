@@ -9,7 +9,7 @@ export interface DetallesCampo {
     EvidenciaEPA_Id: number;
     BSVS2: boolean;
     EPA: boolean;
-    EUDER: boolean;
+    EUDR: boolean;
 }
 export interface CampoProveedor extends DetallesCampo {
     CampoCosecha?: CampoCosecha;

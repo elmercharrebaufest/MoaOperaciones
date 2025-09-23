@@ -33,7 +33,7 @@ namespace SustitucionMOAModel.Entities
         public virtual Archivo EvidenciaEPA { get; set; }
         public bool BSVS2 { get; set; }
         public bool EPA { get; set; }
-        public bool EUDER { get; set; } 
+        public bool EUDR { get; set; } 
 
     }
 }

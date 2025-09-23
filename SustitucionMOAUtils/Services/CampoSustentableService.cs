@@ -140,13 +140,13 @@ namespace SustitucionMOAUtils.Services
             var normativas = new List<string>();
 
             if (campoProveedor.BSVS2)
-                normativas.Add("BSVS2");
+                normativas.Add("2BSVS");
 
             if (campoProveedor.EPA)
                 normativas.Add("EPA");
 
-            if (campoProveedor.EUDER)
-                normativas.Add("EUDER");
+            if (campoProveedor.EUDR)
+                normativas.Add("EUDR");
 
             foreach (var normativa in normativas)
             {
@@ -186,7 +186,7 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.CampoCosecha.Campo.Localidad_Id = campoProveedorObj.CampoCosecha.Campo.Localidad_Id;
             campoProveedor.BSVS2 = campoProveedorObj.BSVS2;
             campoProveedor.EPA = campoProveedorObj.EPA;
-            campoProveedor.EUDER = campoProveedor.EUDER;
+            campoProveedor.EUDR = campoProveedor.EUDR;
 
             this.ActualizarNormativas(campoProveedor, archivoEPA);
 
@@ -206,8 +206,8 @@ namespace SustitucionMOAUtils.Services
         {
             var normativasSeleccionadas = new List<string>();
             if (campoProveedor.EPA) normativasSeleccionadas.Add("EPA");
-            if (campoProveedor.EUDER) normativasSeleccionadas.Add("EUDER");
-            if (campoProveedor.BSVS2) normativasSeleccionadas.Add("BSVS2");
+            if (campoProveedor.EUDR) normativasSeleccionadas.Add("EUDR");
+            if (campoProveedor.BSVS2) normativasSeleccionadas.Add("2BSVS");
 
             // Obtiene las normativas actuales asociadas al CampoCosecha
             var normativasActuales = campoProveedor.CampoCosecha.CampoCosechaNormativas?.ToList() ?? new List<CampoCosechaNormativa>();
@@ -543,9 +543,9 @@ namespace SustitucionMOAUtils.Services
             {
                 var normativas = new List<(bool flag, string descripcion)>
                 {
-                    (cp.BSVS2, "BSVS2"),
+                    (cp.BSVS2, "2BSVS"),
                     (cp.EPA, "EPA"),
-                    (cp.EUDER, "EUDER")
+                    (cp.EUDR, "EUDR")
                 };
 
                 foreach (var (flag, descripcion) in normativas.Where(n => n.flag))
@@ -617,7 +617,7 @@ namespace SustitucionMOAUtils.Services
                                 CodigoProveedor = cp.Proveedor.CodigoProveedor,
                                 BSVS2 = cp.BSVS2,
                                 EPA = cp.EPA,
-                                EUDER = cp.EUDER,
+                                EUDR = cp.EUDR,
                                 EvidenciaEPA_Id = cp.EvidenciaEPA_Id,
                             });
 
@@ -821,7 +821,7 @@ namespace SustitucionMOAUtils.Services
                     Borrado = false,
                     BSVS2 = campoSugeridoDto.BSVS2,
                     EPA = campoSugeridoDto.EPA,
-                    EUDER = campoSugeridoDto.EUDER
+                    EUDR = campoSugeridoDto.EUDR
                 };
 
                 this.AgregarNormativas(campoProveedor);

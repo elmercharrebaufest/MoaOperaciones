@@ -326,7 +326,7 @@
                                         Descargar evidencia
                                     </button>
 
-                                    <app-impresion-declaracion *ngIf="campo.TipoNormativa == 'BSVS2'" [proveedorId]="campo.Proveedor.Id" [CUIT]="campo.CUITProveedor"
+                                    <app-impresion-declaracion *ngIf="campo.TipoNormativa == '2BSVS'" [proveedorId]="campo.Proveedor.Id" [CUIT]="campo.CUITProveedor"
                                         [cosechaId]="campo.CosechaId" [habilitado]="campo.ToneladasAprobadas != -1 || esInterno">
                                     </app-impresion-declaracion>
                                 

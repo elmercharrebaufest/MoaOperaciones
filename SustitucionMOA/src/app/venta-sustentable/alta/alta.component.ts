@@ -42,7 +42,7 @@ export interface DatosCopiar {
     info?: string;
     logout?: boolean;
     EPA: boolean;
-    EUDER: boolean;
+    EUDR: boolean;
     BSVS2: boolean;
 }
 
@@ -97,7 +97,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     normBSVS2: boolean = false;    
     normEPA: boolean = false;
-    normEUDER: boolean = false;
+    normEUDR: boolean = false;
 
     cosechas: any[];
     cosechaId: any;
@@ -212,7 +212,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
                         this.declaracionComformidad.cargarDatosCopiar(result)
                         this.normEPA = result.EPA;
                         this.normBSVS2 = result.BSVS2;
-                        this.normEUDER = result.EUDER;
+                        this.normEUDR = result.EUDR;
 
                         if (this.esCorredor) {
                             if (this.Proveedor_Id != this.proveedorId) {
@@ -398,7 +398,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             CampoCosecha: campoCosecha,
             Archivo_Id: this.UsarArchivo_Id ? this.Archivo_Id : 0,
             EPA: this.normEPA,
-            EUDER: this.normEUDER,
+            EUDR: this.normEUDR,
             BSVS2: this.normBSVS2,
             EvidenciaEPA_Id: 0
         }
@@ -816,7 +816,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             campoEditado.EvidenciaEPA_Id = this.campoSugeridoEnEdicion.EvidenciaEPA_Id;
             campoEditado.Renspa = this.campoSugeridoEnEdicion.Renspa;
             campoEditado.EPA = this.campoSugeridoEnEdicion.EPA;
-            campoEditado.EUDER = this.campoSugeridoEnEdicion.EUDER;
+            campoEditado.EUDR = this.campoSugeridoEnEdicion.EUDR;
             campoEditado.BSVS2 = this.campoSugeridoEnEdicion.BSVS2;
             campoEditado.NombreNuevaEvidenciaEPA = this.campoSugeridoEnEdicion.NombreNuevaEvidenciaEPA;
         }
@@ -860,8 +860,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.mensajeEdicionSugerencia.setErrorMsg(`Falta completar RENSPA o el formato es incorrecto en el campo: ${this.campoSugeridoEnEdicion.NombreCampo}.`);
             return false;
         }
-        if(!this.campoSugeridoEnEdicion.EPA && !this.campoSugeridoEnEdicion.EUDER && !this.campoSugeridoEnEdicion.BSVS2){
-            this.mensajeEdicionSugerencia.setErrorMsg(`Es obligatorio seleccionar al menos una norma (EPA, EUDER o BSVS2) en el campo: ${this.campoSugeridoEnEdicion.NombreCampo}.`);
+        if(!this.campoSugeridoEnEdicion.EPA && !this.campoSugeridoEnEdicion.EUDR && !this.campoSugeridoEnEdicion.BSVS2){
+            this.mensajeEdicionSugerencia.setErrorMsg(`Es obligatorio seleccionar al menos una norma (EPA, EUDR o 2BSVS) en el campo: ${this.campoSugeridoEnEdicion.NombreCampo}.`);
             return false;
         }
         return true;

@@ -1,8 +1,8 @@
-﻿-- Insercion tipos de normativas EPA, EUDER, BSVS2
-IF NOT EXISTS (SELECT 1 FROM [dbo].[TipoNormativa] WHERE Descripcion = 'BSVS2')
+﻿-- Insercion tipos de normativas EPA, EUDR, 2BSVS
+IF NOT EXISTS (SELECT 1 FROM [dbo].[TipoNormativa] WHERE Descripcion = '2BSVS')
 BEGIN
     INSERT INTO [dbo].[TipoNormativa] (Descripcion)
-    VALUES ('BSVS2')
+    VALUES ('2BSVS')
 END
 
 IF NOT EXISTS (SELECT 1 FROM [dbo].[TipoNormativa] WHERE Descripcion = 'EPA')
@@ -11,8 +11,8 @@ BEGIN
     VALUES ('EPA')
 END
 
-IF NOT EXISTS (SELECT 1 FROM [dbo].[TipoNormativa] WHERE Descripcion = 'EUDER')
+IF NOT EXISTS (SELECT 1 FROM [dbo].[TipoNormativa] WHERE Descripcion = 'EUDR')
 BEGIN
     INSERT INTO [dbo].[TipoNormativa] (Descripcion)
-    VALUES ('EUDER')
+    VALUES ('EUDR')
 END

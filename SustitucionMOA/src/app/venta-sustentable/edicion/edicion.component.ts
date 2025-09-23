@@ -184,7 +184,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
       Archivo_Id: 0,
       BSVS2: this.campoProveedor.BSVS2,
       EPA: this.campoProveedor.EPA,
-      EUDER: this.campoProveedor.EUDER,
+      EUDR: this.campoProveedor.EUDR,
       EvidenciaEPA_Id: 0
     }
 

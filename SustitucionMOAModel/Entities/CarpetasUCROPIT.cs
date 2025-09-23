@@ -16,7 +16,7 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("Cosecha_Id")]
         public virtual Cosecha Cosecha { get; set; }
         public bool EPA { get; set; }
-        public bool EUDER { get; set; }
+        public bool EUDR { get; set; }
         public bool BSVS2 { get; set; }
         public string UrlSubida { get; set; }
     }

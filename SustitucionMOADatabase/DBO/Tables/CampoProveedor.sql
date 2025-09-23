@@ -16,7 +16,7 @@
     [HectareasSojaUcropit] FLOAT NULL DEFAULT NULL,
     [BSVS2] BIT NOT NULL DEFAULT 1, 
     [EPA] BIT NOT NULL DEFAULT 0, 
-    [EUDER] BIT NOT NULL DEFAULT 0, 
+    [EUDR] BIT NOT NULL DEFAULT 0, 
     [EvidenciaEPA_Id] INT NULL, 
     PRIMARY KEY(CampoCosecha_Id, Proveedor_Id),
     CONSTRAINT [FK_CampoProveedor_ToArchivo] FOREIGN KEY ([Archivo_Id]) REFERENCES [Archivo]([Id]),
