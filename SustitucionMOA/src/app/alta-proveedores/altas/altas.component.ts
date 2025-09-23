@@ -21,6 +21,7 @@ import { ConfirmationService, SelectItem } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
 import { DropdownOption } from '../../common/view-child/dropdown/dropdown.component';
 import { finalize, take } from 'rxjs/operators';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 declare var $: any;
 
 
@@ -52,6 +53,9 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     @ViewChild("spinnerModalVer")
     protected spinnerModalVer: SpinnerSmallComponent;
+    @ViewChild('dialogoExisteCuit')
+    dialogoExisteCuit: ConfirmDialog;
+
 
 
     @ViewChild(FiltroFechaComponent)
@@ -1075,7 +1079,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
                             msjModal = result.data.Mensaje;
                         this.abrirModalVerificarExisteCuit(msjModal);
                     }
-                    console.log(result);
                 }
                 ,
                 (error) => {
@@ -1091,6 +1094,48 @@ export class AltasComponent extends BaseComponent implements OnInit {
             message: mensaje,
             accept: () => {
             },
+        });
+    }
+
+    moverAlCanalDeAltas() {
+        this.dialogoExisteCuit.accept();
+        this.mensajeComponent.setMsgsEmpty();
+        let msjModal = "";
+        this.spinnerComponent.showIt();
+         this.altaEmpresaService.volverProveedorCanalDeAltas(this.cuitIngresado)
+            .subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        if (result.data.error != undefined) {
+                            msjModal = result.data;
+                        } else
+                            msjModal = result.data;
+                        this.abrirModalMoverAlCanalDeAltas(msjModal);
+                    }
+                }
+                ,
+                (error) => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeError = error.message;
+                }
+            );
+
+    }
+
+    abrirModalMoverAlCanalDeAltas(msjModal:string) {
+        this.confirmationService.confirm({
+            key: 'moveToAtlasChannel',
+            message: msjModal,
+            accept: () => {
+                
+            }
         });
     }
 
