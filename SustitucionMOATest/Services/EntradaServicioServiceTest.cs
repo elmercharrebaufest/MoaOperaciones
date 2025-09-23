@@ -27,6 +27,7 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerOrdenDeCompraConsumerMOA> mObtenerOrdenDeCompraConsumerMOA;
         private Mock<IReporteESService> mReporteESService;
         private Mock<OrderService> mOrderService;
+        private Mock<IComprasSapService> mComprasSapService;
 
         private EntradaServicioService target;
 
@@ -39,6 +40,7 @@ namespace SustitucionMOATest.Services
             mObtenerOrdenDeCompraConsumerMOA = new Mock<IObtenerOrdenDeCompraConsumerMOA>();
             mReporteESService = new Mock<IReporteESService>();
             mOrderService = new Mock<OrderService>(mIRepositorioEntradaServicio.Object);
+            mComprasSapService = new Mock<IComprasSapService>();
 
             target = new EntradaServicioService(
                 mIRepositorioEntradaServicio.Object,
@@ -46,7 +48,8 @@ namespace SustitucionMOATest.Services
                 mComprasService.Object,
                 mEmailCertificationService.Object,
                 mObtenerOrdenDeCompraConsumerMOA.Object,
-                mReporteESService.Object
+                mReporteESService.Object,
+                mComprasSapService.Object
             );
         }
 
@@ -230,7 +233,7 @@ namespace SustitucionMOATest.Services
                     It.IsAny<EntradaServicioCreateParamsDto>()))
                 .Returns(sapCrearESResult);
 
-            target.crearEntradaDeServicioConsumer = mCrearEntradaDeServicioConsumerMOA.Object;
+            target.CrearEntradaDeServicioConsumer = mCrearEntradaDeServicioConsumerMOA.Object;
             var respuestasCreacion = target.CrearEntradaServicio(crearEDRequest, mailUsuarioIngresante);
 
             mIRepositorioEntradaServicio

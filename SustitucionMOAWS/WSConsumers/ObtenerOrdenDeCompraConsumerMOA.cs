@@ -383,8 +383,8 @@ namespace SustitucionMOAWS.WSConsumers
                             RegionSap = region?.REGION
                         },
                         PlazoDeOferta = !string.IsNullOrEmpty(plazo?.DELIVERY_DATE) ?
-                             DateTime.ParseExact(plazo.DELIVERY_DATE, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null
-
+                             DateTime.ParseExact(plazo.DELIVERY_DATE, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null,
+                        AcuerdoMarco = pos.AGREEMENT
                     });
                 }
 

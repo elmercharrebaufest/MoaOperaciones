@@ -1422,6 +1422,7 @@
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJob.cs" />
     <Compile Include="Jobs\EliminarFacturasAntiguasJob.cs" />
     <Compile Include="Jobs\EnviarMailReporteTrabajoYaHechoJob.cs" />
+    <Compile Include="Jobs\LiberarOrdenesCompraContratoMarcoJob.cs" />
     <Compile Include="Jobs\NotificacionErroresJob.cs" />
     <Compile Include="Jobs\DerivacionesAutomaticasJob.cs" />
     <Compile Include="Jobs\EnviarCamposUcropitJob.cs" />

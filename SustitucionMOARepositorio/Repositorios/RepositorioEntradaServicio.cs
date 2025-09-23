@@ -34,6 +34,20 @@ namespace SustitucionMOARepositorio.Repositorios
             return solpsQry.ToList();
         }
 
+        public List<Solp> ObtenerSolpsAutocertificablesConAcuerdoMarco(List<string> nroSolps)
+        {
+            var solpsQry =
+                from solp in Set<Solp>()
+                where
+                    nroSolps.Contains(solp.NroSolp)
+                    && solp.CertificacionAutomatica
+                    && solp.TipoSolpSap != 2
+                    && solp.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))
+                select solp;
+
+            return solpsQry.ToList();
+        }
+
         public Adjudicacion ObtenerUltimaAdjudicacionOC(string nroOC)
         {
             var adjudicacionQry =

@@ -7569,7 +7569,7 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var nroOc in nrosOcs)
             {
-                var ordenDeCompra = comprasServiceSap.ObtenerOrdenDeCompra(nroOc.ToString());
+                var ordenDeCompra = comprasServiceSap.ObtenerOrdenDeCompra(nroOc);
                 if (ordenDeCompra.Posiciones?.Any() ?? false)
                 {
                     ordenDeCompra.Posiciones?.ForEach(p => nrosSolps.Add(p.NroSolp));

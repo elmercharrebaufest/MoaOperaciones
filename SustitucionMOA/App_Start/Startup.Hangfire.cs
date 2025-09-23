@@ -122,6 +122,11 @@ namespace SustitucionMOA
                 j => j.Execute(),
                 "0 7 * * 2,4", tz);
 
+            RecurringJob.AddOrUpdate<Jobs.ILiberarOrdenesCompraContratoMarcoJob>(
+                "LiberarOrdenesCompraContratoMarcoJob",
+                j => j.Execute(),
+                "15 6 * * *", tz);
+
             RecurringJob.AddOrUpdate<Jobs.INotificacionErroresJob>(
             "NotificacionErroresJob",
             j => j.Execute(),

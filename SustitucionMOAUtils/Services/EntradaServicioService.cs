@@ -37,10 +37,11 @@ namespace SustitucionMOAUtils.Services
         private readonly IEmailCertificationService emailCertificationService;
         private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
         private readonly IReporteESService _reporteESService;
+        private readonly IComprasSapService comprasSapService;
 
         private readonly string EmailEnvioErrores = ConfigurationManager.AppSettings["EmailEnvioErrores"];
 
-        public CrearEntradaDeServicioConsumerMOA crearEntradaDeServicioConsumer { private get; set; } = null;
+        public CrearEntradaDeServicioConsumerMOA CrearEntradaDeServicioConsumer { private get; set; } = null;
 
         public EntradaServicioService(
             IRepositorioEntradaServicio repositorioEntradaServicio,
@@ -48,7 +49,8 @@ namespace SustitucionMOAUtils.Services
             IComprasService comprasService,
             IEmailCertificationService emailCertificationService,
             IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA,
-            IReporteESService reporteESService)
+            IReporteESService reporteESService,
+            IComprasSapService comprasSapService)
         {
             this.obtenerOrdenDeCompraConsumerMOA = obtenerOrdenDeCompraConsumerMOA;
             this.repositorioEntradaServicio = repositorioEntradaServicio;
@@ -56,6 +58,7 @@ namespace SustitucionMOAUtils.Services
             this.comprasService = comprasService;
             this.emailCertificationService = emailCertificationService;
             this._reporteESService = reporteESService;
+            this.comprasSapService = comprasSapService;
         }
 
         public async Task<List<EntradaServicioCabeceraDto>> ObtenerEntradasServicioCompleta(EntradaServicioParamsDto parametros, UsuarioDto usuario)
@@ -814,13 +817,60 @@ namespace SustitucionMOAUtils.Services
             var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio);
             var centrosSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Centro");
             var almacenesSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Almacen");
-            var solicitudesMailAprobacionES = new List<MailAprobacionESRequest>();
 
+            GenerarCertificacionesAutomaticas(detalleOC, solps, obtenerOrdenConsumer, centrosSap, almacenesSap);
+        }
+
+        public void LiberarOrdenesDeCompraConContratoMarco()
+        {
+            var fechaDesde = DateTime.Today.AddDays(-2);
+            var ordenesDeCompra = comprasSapService.ObtenerOrdenesDeCompra(fechaDesde);
+
+            bool OcFueLiberada(OrdenCompraDto oc) { return string.IsNullOrEmpty(oc.SUBJ_TO_R); }
+
+            var nrosOcs = new HashSet<string>(ordenesDeCompra
+                .Where(oc => OcFueLiberada(oc))
+                .Select(oc => oc.Id.ToString()));
+
+            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio);
+            var centrosSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Centro");
+            var almacenesSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+
+            foreach (var nroOc in nrosOcs)
+            {
+                var ordenDeCompra = comprasSapService.ObtenerOrdenDeCompra(nroOc);
+                if (ordenDeCompra.Posiciones != null && ordenDeCompra.Posiciones.Any())
+                {
+                    List<Solp> solps;
+                    var nrosSolps = ordenDeCompra.Posiciones.Select(p => p.NroSolp).ToList();
+                    
+                    if (ordenDeCompra.Posiciones.Any(pos => !string.IsNullOrEmpty(pos.AcuerdoMarco)))
+                    {
+                        solps = repositorioEntradaServicio.ObtenerSolpsAutocertificablesDeOC(nrosSolps);
+                    }
+                    else
+                    {
+                        solps = repositorioEntradaServicio.ObtenerSolpsAutocertificablesConAcuerdoMarco(nrosSolps);
+                    }
+
+                    if (solps.Any())
+                    {
+                        var detalleOC = ObtenerDetalleOrdenDeCompra(nroOc);
+                        GenerarCertificacionesAutomaticas(detalleOC, solps, obtenerOrdenConsumer, centrosSap, almacenesSap);
+                    }
+                }
+            }
+        }
+
+        private void GenerarCertificacionesAutomaticas(DetalleOrdenDeCompraDto detalleOC, List<Solp> solpsAutocertificables, ObtenerOrdenDeCompraConsumerMOA obtenerOrdenConsumer,
+            List<TablaSap> centrosSap, List<TablaSap> almacenesSap)
+        {
+            var solicitudesMailAprobacionES = new List<MailAprobacionESRequest>();
 
             foreach (var posicionOC in detalleOC.Posiciones)
             {
                 var solpNro = posicionOC.NumeroSolp;
-                var solpACertificar = solps.FirstOrDefault(s => s.NroSolp == solpNro);
+                var solpACertificar = solpsAutocertificables.FirstOrDefault(s => s.NroSolp == solpNro);
 
                 if (posicionOC.Bloqueada || posicionOC.EsConEntregaFinal || solpACertificar == null || !posicionOC.Items.Any())
                 {
@@ -839,7 +889,7 @@ namespace SustitucionMOAUtils.Services
                 catch (Exception ex)
                 {
                     Logger.Log.Error(ex);
-                    emailCertificationService.EnviarMailCertificacionAutomatica(nroOC, solpNro,
+                    emailCertificationService.EnviarMailCertificacionAutomatica(detalleOC.NumeroOrdenDeCompra, solpNro,
                         "No se pudo generar la certificación automática, deberá hacerlo manualmente. Error: " + ex.Message,
                         new string[] { solpACertificar.UsuarioCreacion.Mail, EmailEnvioErrores });
                 }
@@ -1099,7 +1149,7 @@ namespace SustitucionMOAUtils.Services
             SustitucionMOAWS.Logger.Log.Info("EntradaServicioService.CrearEntradaServicio");
 
             // 3 - Si alguna de las validaciones es correcta, alta automatica.
-            EntradaServicioCreateRespuestaDto result = (crearEntradaDeServicioConsumer ?? new CrearEntradaDeServicioConsumerMOA()).CrearEntradaServicio(posicion);
+            EntradaServicioCreateRespuestaDto result = (CrearEntradaDeServicioConsumer ?? new CrearEntradaDeServicioConsumerMOA()).CrearEntradaServicio(posicion);
 
             ////MMSN-602 - Cargar en tabla aprobaciones si se creo la ES.
             if (result.Type == "I" && result.Id == "SE")
