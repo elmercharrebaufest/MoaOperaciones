@@ -41,6 +41,9 @@ export interface DatosCopiar {
     error?: string;
     info?: string;
     logout?: boolean;
+    EPA: boolean;
+    EUDER: boolean;
+    BSVS2: boolean;
 }
 
 @Component({
@@ -68,6 +71,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     @ViewChild('fileInputSugerencia')
     fileInputSugerencia: ElementRef;
+
+    @ViewChild('fileInputSugerencia')
+    fileInputSugerenciaEpa: ElementRef;
 
     @ViewChild('mensajeEdicionSugerencia')
     mensajeEdicionSugerencia: MensajeComponent;
@@ -139,6 +145,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     campoSugeridoEnEdicion: SugerenciaCampo = {} as SugerenciaCampo;
     localidadCampoSugeridoEnEdicion: { IdLocalidad: number, NombreLocalidad: string };
     archivosNuevosSugerencias: File[] = [];
+    archivosNuevosEPA: File[] = [];
 
     ngOnInit() {
         this.renspaExiste = { RenspaExiste: false, MismoCuit: false };
@@ -202,6 +209,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
                         this.UsarArchivo_Id = true;
                         this.Proveedor_Id = result.Proveedor_Id;
                         this.declaracionComformidad.cargarDatosCopiar(result)
+                        this.normEPA = result.EPA;
+                        this.normBSVS2 = result.BSVS2;
+                        this.normEUDER = result.EUDER;
 
                         if (this.esCorredor) {
                             if (this.Proveedor_Id != this.proveedorId) {
@@ -321,8 +331,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }
     }
 
-    onCheck2BSVS() {
-        this.validarModalDeclaracion();
+    onCheck2BSVS(valor: boolean) {
+        if(valor && this.cosechaId > 0){
+            this.validarModalDeclaracion();
+        }
     }
 
     private validarModalDeclaracion() {
@@ -341,7 +353,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
             }
             else {
                 if (this.proveedorId > 0) {
-
                     //Si cambió el CUIT le saco la razón social
                     if (this.CUITInicial != this.CUIT) {
                         this.declaracionComformidad.razonSocialDeclaracion = "";
@@ -387,7 +398,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
             Archivo_Id: this.UsarArchivo_Id ? this.Archivo_Id : 0,
             EPA: this.normEPA,
             EUDER: this.normEUDER,
-            BSVS2: this.normBSVS2
+            BSVS2: this.normBSVS2,
+            EvidenciaEPA_Id: 0
         }
 
         this.mensajeComponent.setMsgsEmpty();
@@ -563,9 +575,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
         if (!result) {
             this.cosechaId = 0;
         }
-        else {
+        /*else {
             this.consultarCamposAnterioresParaSugerir();
-        }
+        }*/
     }
 
     cambiarModoOperacion() {
@@ -659,6 +671,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
         if (this.renspa && this.cosechaId) {
             this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId).subscribe((result: RenspaExiste) => {
                 this.renspaExiste = result;
+                this.consultarCamposAnterioresParaSugerir();
             });
         }
     }
@@ -673,6 +686,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         this.mensajeCamposSugeridos.setMsgsEmpty();
 
+        if(this.campoCosechaId > 0 &&  this.declaracionComformidad.cosechaId ==0){
+            this.validarModalDeclaracion();
+            return;
+        }
+
         let camposAGuardar = this.camposNuevosSugeridos.filter(x => x.Seleccionado);
 
         for (let campo of camposAGuardar) {
@@ -681,10 +699,14 @@ export class AltaComponent extends BaseComponent implements OnInit {
                 this.blockUI.stop();
                 return;
             }
+
+            if(campo.BSVS2){
+            //validar declaracion jurada
+            }
         }
 
         this.mostrarSugerenciasCamposNuevos = false;
-        this.service.guardarSugerenciasCamposNuevaCosecha(camposAGuardar, this.archivosNuevosSugerencias).subscribe(
+        this.service.guardarSugerenciasCamposNuevaCosecha(camposAGuardar, this.archivosNuevosSugerencias, this.archivosNuevosEPA).subscribe(
             (result) => {
                 this.blockUI.stop();
                 let mensajeOk = this.manejarErroresApiResponse(result);
@@ -793,7 +815,12 @@ export class AltaComponent extends BaseComponent implements OnInit {
             campoEditado.Longitud = this.campoSugeridoEnEdicion.Longitud;
             campoEditado.NombreNuevoKmz = this.campoSugeridoEnEdicion.NombreNuevoKmz;
             campoEditado.Archivo_Id = this.campoSugeridoEnEdicion.Archivo_Id;
+            campoEditado.EvidenciaEPA_Id = this.campoSugeridoEnEdicion.EvidenciaEPA_Id;
             campoEditado.Renspa = this.campoSugeridoEnEdicion.Renspa;
+            campoEditado.EPA = this.campoSugeridoEnEdicion.EPA;
+            campoEditado.EUDER = this.campoSugeridoEnEdicion.EUDER;
+            campoEditado.BSVS2 = this.campoSugeridoEnEdicion.BSVS2;
+            campoEditado.NombreNuevaEvidenciaEPA = this.campoSugeridoEnEdicion.NombreNuevaEvidenciaEPA;
         }
     }
 
@@ -835,7 +862,28 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.mensajeEdicionSugerencia.setErrorMsg(`Falta completar RENSPA o el formato es incorrecto en el campo: ${this.campoSugeridoEnEdicion.NombreCampo}.`);
             return false;
         }
+        if(!this.campoSugeridoEnEdicion.EPA && !this.campoSugeridoEnEdicion.EUDER && !this.campoSugeridoEnEdicion.BSVS2){
+            this.mensajeEdicionSugerencia.setErrorMsg(`Es obligatorio seleccionar al menos una norma (EPA, EUDER o BSVS2) en el campo: ${this.campoSugeridoEnEdicion.NombreCampo}.`);
+            return false;
+        }
         return true;
+    }
+
+    cargarArchivoEnSugerenciaEPA(event: any) {
+        let fileList: FileList = event.target.files;
+        if (fileList.length > 0) {
+            let archivo = fileList[0];
+            if (this.archivosNuevosEPA.some(x => x.name == archivo.name)) {
+                const msj: Message = { severity: 'warn', summary: 'Error', detail: 'Archivo ya cargado para otro campo', life: 5000 };
+                this.messageService.add(msj);
+                event.target.value = '';
+            }
+            else {
+                this.campoSugeridoEnEdicion.NombreNuevaEvidenciaEPA = archivo.name;
+                this.archivosNuevosEPA.push(archivo);
+                //this.campoSugeridoEnEdicion.Archivo_Id = 0;
+            }
+        }
     }
 
     cargarArchivoEnSugerencia(event: any) {
@@ -908,4 +956,38 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }
         return response.data;
     }
+
+    descargarEPA(campoCosechaId: number, proveedorId: number) {
+        this.service.descargarArchivoEPA(campoCosechaId, proveedorId).subscribe(
+            (result) => {
+                if (result.logout) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], { type: "application/octet-stream" });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, result.FileDownloadName);
+                    }
+                    else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
+                        return false;
+                    }
+                }
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
+    }
+
 }

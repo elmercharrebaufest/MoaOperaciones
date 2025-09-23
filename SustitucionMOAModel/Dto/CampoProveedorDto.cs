@@ -29,6 +29,8 @@ namespace SustitucionMOAModel.Dto
         public bool BSVS2 { get; set; }
         public bool EPA { get; set; }
         public bool EUDER { get; set; }
+        public byte[] ArchivoEPA { get; set; }
+        public string NombreArchivoEPA { get; set; }
 
         public override bool Equals(object obj)
         {

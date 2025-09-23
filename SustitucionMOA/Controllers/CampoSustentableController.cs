@@ -36,10 +36,10 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public JsonResult CampoProveedorEditar(string campoProveedorJson, HttpPostedFileBase archivoKmz)
+        public JsonResult CampoProveedorEditar(string campoProveedorJson, HttpPostedFileBase archivoKmz, HttpPostedFileBase archivoEPA)
         {
             var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);
-            return JsonCustom(campoSustentableService.Editar(SessionPersister.User.username, campoProveedor, archivoKmz));
+            return JsonCustom(campoSustentableService.Editar(SessionPersister.User.username, campoProveedor, archivoKmz, archivoEPA));
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.BORRAR_CAMPOS_CREADOS)]
@@ -159,11 +159,11 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorize(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpPost]
-        public ActionResult GuardarSugerenciasCamposNuevaCosecha(string camposJson, List<HttpPostedFileBase> archivosKmz)
+        public ActionResult GuardarSugerenciasCamposNuevaCosecha(string camposJson, List<HttpPostedFileBase> archivosKmz, List<HttpPostedFileBase> archivosEPA)
         {
             var campos = JsonConvert.DeserializeObject<List<SugerenciaCampoDto>>(camposJson);
             var mailUsuario = SessionPersister.User.username;
-            campoSustentableService.AgregarCamposSugeridos(campos, archivosKmz, mailUsuario);
+            campoSustentableService.AgregarCamposSugeridos(campos, archivosKmz, archivosEPA, mailUsuario);
             return ContentCustom(new SustitucionMOAApiResponse<string> { Data = "Los campos se han guardado correctamente" });
         }
 
@@ -171,6 +171,16 @@ namespace SustitucionMOA.Controllers
         public JsonResult ObtenerNormativas()
         {
             return JsonCustom(campoSustentableService.ObtenerNormativas());
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
+        [HttpGet]
+        public JsonResult DescargarArchivoEPA(int campoCosechaId, int proveedorId)
+        {
+            string rutaArchivo = campoSustentableService.ObtenerRutaArchivoEPA(campoCosechaId, proveedorId);
+            byte[] fileBytes = fileWrapper.ReadAllBytes(rutaArchivo);
+            string fileName = Path.GetFileName(rutaArchivo);
+            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
         }
     }
 }

@@ -5,6 +5,7 @@ using SustitucionMOARepositorio.Repositorios.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -85,7 +86,7 @@ namespace SustitucionMOARepositorio.Repositorios
                     campoProveedor.Proveedor_Id == proveedorId &&
                     campoProveedor.CUIT == cuitTitularCP &&
                     campoProveedor.CampoCosecha.Cosecha_Id == cosechaAnteriorId &&
-                    campoProveedor.CampoCosecha.ToneladasAprobadas > 0 &&
+                    campoProveedor.CampoCosecha.CampoCosechaNormativas.Any(n => n.ToneladasAprobadas > 0) &&
                     !campoProveedor.Borrado
                 select new SugerenciaCampoDto
                 {
@@ -106,10 +107,25 @@ namespace SustitucionMOARepositorio.Repositorios
                     CUIT = campoProveedor.CUIT,
                     Archivo_Id = campoProveedor.Archivo_Id,
                     Proveedor_Id = campoProveedor.Proveedor_Id,
+                    EvidenciaEPA_Id = campoProveedor.EvidenciaEPA_Id,
                     CodigoProveedor = campoProveedor.Proveedor.CodigoProveedor,
-                    CampoYaPresentado = (campoPresentado != null && campoPresentado.CUIT == cuitTitularCP && !campoPresentado.Borrado)
+                    CampoYaPresentado = (campoPresentado != null && campoPresentado.CUIT == cuitTitularCP && !campoPresentado.Borrado),
+                    EPA = campoProveedor.CampoCosecha.CampoCosechaNormativas.Any(n => n.TipoNormativa.Descripcion == "EPA" && n.ToneladasAprobadas > 0),
+                    EUDER = campoProveedor.CampoCosecha.CampoCosechaNormativas.Any(n => n.TipoNormativa.Descripcion == "EUDER" && n.ToneladasAprobadas > 0),
+                    BSVS2 = campoProveedor.CampoCosecha.CampoCosechaNormativas.Any(n => n.TipoNormativa.Descripcion == "BSVS2" && n.ToneladasAprobadas > 0),
+                    Normativas = campoProveedor.CampoCosecha.CampoCosechaNormativas.Where(y => y.ToneladasAprobadas > 0).Select(x => new CampoCosechaNormativaDto
+                    {
+                        Id = x.Id,
+                        ToneladasAprobadas = x.ToneladasAprobadas,
+                        DescripcionNormativa = x.TipoNormativa.Descripcion,
+                    }).ToList()
                 })
                 .ToList();
+
+            foreach(var c in camposSugerencia.Where(cs => cs.EvidenciaEPA_Id != null))
+            {
+                c.NombreArchivoEPA = Path.GetFileName(Obtener<Archivo>(a => a.Id == c.EvidenciaEPA_Id).Ruta);
+            }
 
             return camposSugerencia;
         }

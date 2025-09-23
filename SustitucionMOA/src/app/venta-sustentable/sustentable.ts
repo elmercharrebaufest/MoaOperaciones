@@ -6,6 +6,7 @@ export interface DetallesCampo {
     Proveedor_Id: number;
     CUIT: string;
     Archivo_Id: number;
+    EvidenciaEPA_Id: number;
     BSVS2: boolean;
     EPA: boolean;
     EUDER: boolean;
@@ -38,10 +39,19 @@ export interface CampoProveedorDetalle extends DetallesCampo {
     CampoSustentableId: number;
     CosechaId: number;
     CodigoProveedor: string;
+    NombreArchivoEPA: string;
 }
 
 export interface SugerenciaCampo extends CampoProveedorDetalle {
     CampoYaPresentado: boolean;
     Seleccionado: boolean;
     NombreNuevoKmz: string;
+    NombreNuevaEvidenciaEPA: string;
+    Normativas: CampoCosechaNormativa[];
+}
+
+export interface CampoCosechaNormativa {
+    Id: number;
+    DescripcionNormativa: string;
+    ToneladasAprobadas: number;
 }

@@ -15,10 +15,11 @@ namespace SustitucionMOAModel.Dto
         public int CampoCosecha_Id { get; set; }
         public int TipoNormativa_Id { get; set; }
         public TipoNormativaDto TipoNormativa { get; set; }
-        public float ToneladasAprobadas { get; set; }
+        public double ToneladasAprobadas { get; set; }
         public string MotivoRechazo { get; set; }
         public bool Validado { get; set; }
         public int ValidadoPor { get; set; }
         public DateTime? ValidadoFecha { get; set; }
+        public string DescripcionNormativa { get; set; }
     }
 }

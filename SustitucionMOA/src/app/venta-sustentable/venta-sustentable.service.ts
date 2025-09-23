@@ -35,11 +35,12 @@ export class VentaSustentableService extends BaseService {
             .post('/api/CampoSustentable/CampoProveedorAgregar', payload, { headers: this.headersPost });
     }
 
-    campoProveedorEditar(campoProveedor: CampoProveedor, archivoKmz: File) {
+    campoProveedorEditar(campoProveedor: CampoProveedor, archivoKmz: File, archivoEPA: File) {
         var payload = new FormData();
         let camp = JSON.stringify(campoProveedor);
 
         payload.append('archivoKmz', archivoKmz);
+        payload.append('archivoEPA', archivoEPA);
         payload.append('campoProveedorJson', camp);
         return this.http
             .post('/api/CampoSustentable/CampoProveedorEditar', payload, { headers: this.headersPost });
@@ -190,13 +191,17 @@ export class VentaSustentableService extends BaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
-    guardarSugerenciasCamposNuevaCosecha(campos: SugerenciaCampo[], archivosKmz: File[]): Observable<ApiResponse<string>> {
+    guardarSugerenciasCamposNuevaCosecha(campos: SugerenciaCampo[], archivosKmz: File[], archivosEPA: File[]): Observable<ApiResponse<string>> {
         let camposJson = JSON.stringify(campos);
         let payload = new FormData();
         payload.append('camposJson', camposJson);
 
         archivosKmz.forEach((file, index) => {
             payload.append('archivosKmz', file);
+        });
+
+        archivosEPA.forEach((file, index) => {
+            payload.append('archivosEPA', file);
         });
 
         return this.http
@@ -213,5 +218,14 @@ export class VentaSustentableService extends BaseService {
     public getNormativas() {
         return this.http
             .get('/api/CampoSustentable/ObtenerNormativas', { headers: this.headers });
+    }
+
+    descargarArchivoEPA(campoCosechaId: number, proveedorId: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("campoCosechaId", campoCosechaId.toString());
+        params = params.set("proveedorId", proveedorId.toString());
+
+        return this.http
+            .get('/api/CampoSustentable/DescargarArchivoEPA', { params: params, headers: this.headers })
     }
 }

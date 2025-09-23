@@ -322,7 +322,7 @@
 
                                 <div class="col-sm-2">
                                 
-                                    <button *ngIf="campo.TipoNormativa == 'EPA'" type="button" class="btn-custom btn-mediano btn-guardar" (click)="descargarEvidencia(campo)">
+                                    <button *ngIf="campo.TipoNormativa == 'EPA'" type="button" class="btn-custom btn-mediano btn-guardar" (click)="descargarEPA(campo.CampoCosechaId, campo.Proveedor.Id)">
                                         Descargar evidencia
                                     </button>
 
