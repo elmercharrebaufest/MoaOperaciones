@@ -646,7 +646,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
                             return x;
                         });
                         this.mostrarConfirmacionSugeridos2BSVS = true;
-                        //this.mostrarSugerenciasCamposNuevos = true;
                     }
                 },
                 error => {

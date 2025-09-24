@@ -268,7 +268,7 @@ namespace SustitucionMOAUtils.Services
 
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
 
-            if (campoProveedor.CampoCosecha.ToneladasAprobadas > 0)
+            if (campoProveedor.CampoCosecha.CampoCosechaNormativas.Any(n => n.ToneladasAprobadas > 0))
             {
                 throw new ValidationCustomException("No se puede eliminar el campo debido a que ya tiene toneladas aprobadas");
             }
@@ -578,6 +578,7 @@ namespace SustitucionMOAUtils.Services
                             MotivoRechazo = normativa.MotivoRechazo,
                             FechaCreacion = cp.FechaCreacion,
                             TipoNormativa = normativa.TipoNormativa.Descripcion,
+                            TipoNormativaId = normativa.TipoNormativa_Id,
                             Validado = normativa.Validado,
                             ValidadoPor = normativa.ValidadoPor,
                         });
@@ -1332,5 +1333,55 @@ namespace SustitucionMOAUtils.Services
             return campoProveedor.EvidenciaEPA.Ruta;
         }
 
+        public string Rechazar(string mailUsuario, int campoCosechaId, int proveedorId, int tipoNormativaId, string motivoRechazo)
+        {
+            var campoProveedor = repositorio.Obtener<CampoProveedor>(cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha_Id == campoCosechaId);
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
+
+            var campoCosechaNormativa = this.repositorio.Obtener<CampoCosechaNormativa>(c => c.TipoNormativa_Id == tipoNormativaId);
+            
+            if(campoCosechaNormativa == null)
+            {
+                throw new ValidationCustomException("No existe el campo seleccionado.");
+            }
+
+            campoCosechaNormativa.MotivoRechazo = motivoRechazo;
+            
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.CampoSustentableRechazado;
+        }
+
+        public string Aprobar(string mailUsuario, int campoCosechaId, int proveedorId, int tipoNormativaId)
+        {
+            var campoProveedor = repositorio.Obtener<CampoProveedor>(cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha_Id == campoCosechaId);
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
+
+            var campoCosechaNormativa = this.repositorio.Obtener<CampoCosechaNormativa>(c => c.TipoNormativa_Id == tipoNormativaId);
+
+            if (campoCosechaNormativa == null)
+            {
+                throw new ValidationCustomException("No existe el campo seleccionado.");
+            }
+
+            campoCosechaNormativa.Validado = true;
+            campoCosechaNormativa.ValidadoPor = usuario.Id;
+            campoCosechaNormativa.ValidadoFecha = DateTime.Now;
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.CampoSustentableAprobado;
+        }
+
     }
+
+
 }
+
+

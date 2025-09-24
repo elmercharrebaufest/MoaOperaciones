@@ -20,7 +20,7 @@ namespace SustitucionMOAModel.Entities
         public virtual TipoNormativa TipoNormativa { get; set; }
         public double ToneladasAprobadas { get; set; }   
         public string MotivoRechazo { get; set; }
-        public bool? Validado { get; set; }
+        public bool Validado { get; set; }
         public int? ValidadoPor { get; set; }
         public DateTime? ValidadoFecha { get; set; }
     }

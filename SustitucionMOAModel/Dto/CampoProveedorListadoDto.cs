@@ -39,13 +39,21 @@ namespace SustitucionMOAModel.Dto
         {
             get
             {
-                return ToneladasAprobadas > 0 ? "Aprobado" : ToneladasAprobadas == 0 ? "Desaprobado" : "En gestión";
+                if(TipoNormativa == "EUDER")
+                {
+                    return ToneladasAprobadas > 0 ? "Aprobado" : ToneladasAprobadas == 0 ? "Desaprobado" : "En gestión";
+                }
+                else
+                {
+                    return Validado && ToneladasAprobadas > 0? "Aprobado" : ToneladasAprobadas == 0 && !Validado ? "Rechazado" : "En gestión";
+                }
             }
         }
 
         public string TipoNormativa { get; set; }
+        public int TipoNormativaId { get; set; }
 
-        public bool? Validado { get; set; }
+        public bool Validado { get; set; }
         public int? ValidadoPor { get; set; }
 
         public override bool Equals(object obj)

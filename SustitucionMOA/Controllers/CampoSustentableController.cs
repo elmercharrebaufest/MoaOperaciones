@@ -49,6 +49,20 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(campoSustentableService.Borrar(SessionPersister.User.username, campoCosechaId, proveedorId));
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.BORRAR_CAMPOS_CREADOS)]
+        [HttpPost]
+        public JsonResult CampoProveedorRechazar(int campoCosechaId, int proveedorId, int tipoNormativaId, string motivoRechazo)
+        {
+            return JsonCustom(campoSustentableService.Rechazar(SessionPersister.User.username, campoCosechaId, proveedorId, tipoNormativaId, motivoRechazo));
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.BORRAR_CAMPOS_CREADOS)]
+        [HttpPost]
+        public JsonResult CampoProveedorAprobar(int campoCosechaId, int proveedorId, int tipoNormativaId)
+        {
+            return JsonCustom(campoSustentableService.Aprobar(SessionPersister.User.username, campoCosechaId, proveedorId, tipoNormativaId));
+        }
+
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpGet]
         public JsonResult CampoProveedor(int proveedorId, int campoCosechaId)

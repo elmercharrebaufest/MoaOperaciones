@@ -161,6 +161,9 @@ namespace SustitucionMOATest.Services
             var fileStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\Example.KMZ"), FileMode.Open, FileAccess.Read);
             var uploadedFileMock = new Mock<HttpPostedFileBase>();
 
+            var fileEpaStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\EPA.png"), FileMode.Open, FileAccess.Read);
+            var uploadedFileEPAMock = new Mock<HttpPostedFileBase>();
+
             uploadedFileMock
                 .Setup(f => f.ContentLength)
                 .Returns(100);
@@ -173,9 +176,13 @@ namespace SustitucionMOATest.Services
                 .Setup(f => f.InputStream)
                 .Returns(fileStream);
 
+            uploadedFileEPAMock
+                .Setup(f => f.InputStream)
+                .Returns(fileEpaStream);
+
             ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"] = TestContext.CurrentContext.TestDirectory;
 
-            var result = target.Agregar(mailUsuario, campoCreado, uploadedFileMock.Object, UsarArchivoId);
+            var result = target.Agregar(mailUsuario, campoCreado, uploadedFileMock.Object, UsarArchivoId, uploadedFileEPAMock.Object);
 
             repositorioMock
                 .Verify(
@@ -282,6 +289,9 @@ namespace SustitucionMOATest.Services
             var fileStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\Example.KMZ"), FileMode.Open, FileAccess.Read);
             Mock<HttpPostedFileBase> uploadedFile = new Mock<HttpPostedFileBase>();
 
+            var fileEpaStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\EPA.png"), FileMode.Open, FileAccess.Read);
+            Mock<HttpPostedFileBase> uploadedFileEpa = new Mock<HttpPostedFileBase>();
+
             uploadedFile
                 .Setup(f => f.ContentLength)
                 .Returns(100);
@@ -294,9 +304,13 @@ namespace SustitucionMOATest.Services
                 .Setup(f => f.InputStream)
                 .Returns(fileStream);
 
+            uploadedFileEpa
+                .Setup(f => f.InputStream)
+                .Returns(fileEpaStream);
+
             ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"] = TestContext.CurrentContext.TestDirectory;
 
-            var result = target.Editar(mailUsuario, campoEditado, uploadedFile.Object);
+            var result = target.Editar(mailUsuario, campoEditado, uploadedFile.Object, uploadedFileEpa.Object);
 
             repositorioMock
                  .Verify(x => x.Obtener(It.Is<Expression<Func<Usuario, bool>>>(l => l.Compile().Invoke(usuario))), Times.Once);
@@ -1234,5 +1248,93 @@ namespace SustitucionMOATest.Services
             googleDriveMock.Verify(drive => drive.DownloadFileAs<ReporteProcesoUcropit>(It.IsAny<GoogleDriveFileDownloadRequest>()), Times.Once);
             repositorioMock.Verify(repositorio => repositorio.GuardarCambios(), Times.Once);
         }
+
+        [Test]
+        public void Rechazar_CampoCosechaNormativaExiste_ActualizaMotivoRechazoYGuarda()
+        {
+            // Arrange
+            var mailUsuario = "usuario@test.com";
+            var campoCosechaId = 10;
+            var proveedorId = 20;
+            var tipoNormativaId = 30;
+            var motivoRechazo = "Motivo rechazo de prueba";
+
+            var usuario = new Usuario { Mail = mailUsuario, Proveedores = new List<Proveedor> { new Proveedor { Id = proveedorId } },
+                Roles = new List<Rol>{
+                    new Rol
+                    {
+                        Codigo = "TestRol",
+                        PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Id = 1, Permiso = "VER TODOS CAMPOS SUSTENTABLE" } }
+                    }
+                }
+            };
+            var campoProveedor = new CampoProveedor { Proveedor_Id = proveedorId, CampoCosecha_Id = campoCosechaId };
+            var campoCosechaNormativa = new CampoCosechaNormativa { TipoNormativa_Id = tipoNormativaId };
+
+            repositorioMock
+                .Setup(x => x.Obtener<CampoProveedor>(It.IsAny<Expression<Func<CampoProveedor, bool>>>()))
+                .Returns(campoProveedor);
+
+            repositorioMock
+                .Setup(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                .Returns(usuario);
+
+            repositorioMock
+                .Setup(x => x.Obtener<CampoCosechaNormativa>(It.IsAny<Expression<Func<CampoCosechaNormativa, bool>>>()))
+                .Returns(campoCosechaNormativa);
+
+            // Act
+            var result = target.Rechazar(mailUsuario, campoCosechaId, proveedorId, tipoNormativaId, motivoRechazo);
+
+            // Assert
+            Assert.AreEqual(motivoRechazo, campoCosechaNormativa.MotivoRechazo);
+            Assert.AreEqual(SuccessMsg.CampoSustentableRechazado, result);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+        }
+
+        [Test]
+        public void Aprobar_CampoCosechaNormativaExiste_ValidaYGuarda()
+        {
+            // Arrange
+            var mailUsuario = "usuario@test.com";
+            var campoCosechaId = 10;
+            var proveedorId = 20;
+            var tipoNormativaId = 30;
+
+            var usuario = new Usuario { Id = 99, Mail = mailUsuario, Proveedores = new List<Proveedor> { new Proveedor { Id = proveedorId } },
+                Roles = new List<Rol>{
+                    new Rol
+                    {
+                        Codigo = "TestRol",
+                        PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Id = 1, Permiso = "VER TODOS CAMPOS SUSTENTABLE" } }
+                    }
+                }
+            };
+            var campoProveedor = new CampoProveedor { Proveedor_Id = proveedorId, CampoCosecha_Id = campoCosechaId };
+            var campoCosechaNormativa = new CampoCosechaNormativa { TipoNormativa_Id = tipoNormativaId };
+
+            repositorioMock
+                .Setup(x => x.Obtener<CampoProveedor>(It.IsAny<Expression<Func<CampoProveedor, bool>>>()))
+                .Returns(campoProveedor);
+
+            repositorioMock
+                .Setup(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                .Returns(usuario);
+
+            repositorioMock
+                .Setup(x => x.Obtener<CampoCosechaNormativa>(It.IsAny<Expression<Func<CampoCosechaNormativa, bool>>>()))
+                .Returns(campoCosechaNormativa);
+
+            // Act
+            var result = target.Aprobar(mailUsuario, campoCosechaId, proveedorId, tipoNormativaId);
+
+            // Assert
+            Assert.IsTrue(campoCosechaNormativa.Validado);
+            Assert.AreEqual(usuario.Id, campoCosechaNormativa.ValidadoPor);
+            Assert.IsNotNull(campoCosechaNormativa.ValidadoFecha);
+            Assert.AreEqual(SuccessMsg.CampoSustentableAprobado, result);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+        }
+
     }
 }

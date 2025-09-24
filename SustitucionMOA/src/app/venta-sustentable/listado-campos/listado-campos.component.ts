@@ -59,6 +59,11 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     orderDirection: number = 1;
     itemsPerPage = 20;
     checkRevision: boolean = false;
+    mostrarDialogoRechazo: boolean = false;
+    mostrarDialogoAprobacion: boolean = false;
+    motivoRechazo: string = '';
+    campoARechazar: any = null;
+    campoAAprobar: any = null;
 
     tituloArchivo: string = "Reporte de Campos Sustentables.xls";
 
@@ -327,5 +332,63 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
             }
         )
     }
+
+    abrirDialogoRechazo(campo: any) {
+        this.campoARechazar = campo;
+        this.motivoRechazo = '';
+        this.mostrarDialogoRechazo = true;
+    }
+
+    confirmarRechazo() {
+         this.mensajeComponent.setMsgsEmpty();
+        this.unsubscribe();
+        this.subscription = this.service.campoProveedorRechazar(this.campoARechazar.CampoCosechaId, this.campoARechazar.Proveedor.Id, this.campoARechazar.TipoNormativaId, this.motivoRechazo).subscribe(
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.getCamposSustentables();
+                    this.mostrarDialogoRechazo = false;
+                    this.mensajeComponent.setSuccessMsg("Se rechazo el campo " + this.campoARechazar.NombreCampo + " correctamente.");
+                }
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
+    abrirDialogoAprobacion(campo: any) {
+        this.campoAAprobar = campo;
+        this.mostrarDialogoAprobacion = true;
+    }
+
+    confirmarAprobacion() {
+         this.mensajeComponent.setMsgsEmpty();
+        this.unsubscribe();
+        this.subscription = this.service.campoProveedorAprobar(this.campoAAprobar.CampoCosechaId, this.campoAAprobar.Proveedor.Id, this.campoAAprobar.TipoNormativaId).subscribe(
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.getCamposSustentables();
+                    this.mostrarDialogoAprobacion = false;
+                    this.mensajeComponent.setSuccessMsg("Se aprobó el campo " + this.campoAAprobar.NombreCampo + " correctamente.");
+                }
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
 
 }

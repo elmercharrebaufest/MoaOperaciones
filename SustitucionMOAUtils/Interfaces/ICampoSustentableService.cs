@@ -15,6 +15,8 @@ namespace SustitucionMOAUtils.Interfaces
         string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, int cosechaId, string CUITDeclaracion, HttpPostedFileBase fileSubido);
         Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz, bool UsarArchivoId, HttpPostedFileBase archivoEPA);
         string Borrar(string mailUsuario, int campoCosechaId, int proveedorId);
+        string Rechazar(string mailUsuario, int campoCosechaId, int proveedorId, int tipoNormativaId, string motivoRechazo);
+        string Aprobar(string mailUsuario, int campoCosechaId, int proveedorId, int tipoNormativaId);
         Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz, HttpPostedFileBase archivoEPA);
         string ExportarCamposProveedores(string mailUsuario);
         byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, int cosechaId, double hectareasTotales, string CUITDeclaracion, string razonSocialDeclaracion);

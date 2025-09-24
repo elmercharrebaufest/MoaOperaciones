@@ -80,6 +80,27 @@ export class VentaSustentableService extends BaseService {
             .post('/api/CampoSustentable/CampoProveedorBorrar', payload, { headers: this.headersPost, });
     }
 
+    campoProveedorRechazar(campoCosechaId: number, proveedorId: number, tipoNormativaId: number, motivoRechazo: string) {
+        var payload = new FormData();
+        payload.append("campoCosechaId", campoCosechaId.toString());
+        payload.append("proveedorId", proveedorId.toString());
+        payload.append("tipoNormativaId", tipoNormativaId.toString());
+        payload.append("motivoRechazo", motivoRechazo);
+
+        return this.http
+            .post('/api/CampoSustentable/CampoProveedorRechazar', payload, { headers: this.headersPost, });
+    }
+
+        campoProveedorAprobar(campoCosechaId: number, proveedorId: number, tipoNormativaId: number) {
+        var payload = new FormData();
+        payload.append("campoCosechaId", campoCosechaId.toString());
+        payload.append("proveedorId", proveedorId.toString());
+        payload.append("tipoNormativaId", tipoNormativaId.toString());
+
+        return this.http
+            .post('/api/CampoSustentable/CampoProveedorAprobar', payload, { headers: this.headersPost, });
+    }
+
     getCampoProveedor(proveedorId: any, campoCosechaId: any): Observable<CampoProveedorDetalle> {
         let params: HttpParams = new HttpParams();
         params = params.append("proveedorId", proveedorId);
