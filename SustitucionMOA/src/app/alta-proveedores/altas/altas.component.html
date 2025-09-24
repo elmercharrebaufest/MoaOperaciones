@@ -1579,7 +1579,19 @@
 <p-confirmDialog #dialogoExisteCuit key="verificarExistenciaCuit" header="Verificar existencia de CUIT"
     icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
     <p-footer>
+        <button type="button" pButton label="Volver al canal de altas" class="ui-button-success botonModal"
+            (click)="moverAlCanalDeAltas();"></button>
+    </p-footer>
+    <p-footer>
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
             (click)="dialogoExisteCuit.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+
+<p-confirmDialog #dialogoMoverAlCanalDeAltas key="moveToAtlasChannel" header="Volver al canal de altas"
+    icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
+            (click)="dialogoMoverAlCanalDeAltas.accept()"></button>
     </p-footer>
 </p-confirmDialog>
