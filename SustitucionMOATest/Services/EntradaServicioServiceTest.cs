@@ -1,5 +1,6 @@
 ﻿using Moq;
 using NUnit.Framework;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenesCompra;
@@ -22,12 +23,12 @@ namespace SustitucionMOATest.Services
     public class EntradaServicioServiceTest
     {
         private Mock<IRepositorioEntradaServicio> mIRepositorioEntradaServicio;
-        private Mock<IComprasService> mComprasService;
+        private Mock<IComprasService> mIComprasService;
         private Mock<IEmailCertificationService> mEmailCertificationService;
         private Mock<IObtenerOrdenDeCompraConsumerMOA> mObtenerOrdenDeCompraConsumerMOA;
         private Mock<IReporteESService> mReporteESService;
         private Mock<OrderService> mOrderService;
-        private Mock<IComprasSapService> mComprasSapService;
+        private Mock<IComprasSapService> mIComprasSapService;
 
         private EntradaServicioService target;
 
@@ -35,21 +36,21 @@ namespace SustitucionMOATest.Services
         public void SetUp()
         {
             mIRepositorioEntradaServicio = new Mock<IRepositorioEntradaServicio>();
-            mComprasService = new Mock<IComprasService>();
+            mIComprasService = new Mock<IComprasService>();
             mEmailCertificationService = new Mock<IEmailCertificationService>();
             mObtenerOrdenDeCompraConsumerMOA = new Mock<IObtenerOrdenDeCompraConsumerMOA>();
             mReporteESService = new Mock<IReporteESService>();
             mOrderService = new Mock<OrderService>(mIRepositorioEntradaServicio.Object);
-            mComprasSapService = new Mock<IComprasSapService>();
+            mIComprasSapService = new Mock<IComprasSapService>();
 
             target = new EntradaServicioService(
                 mIRepositorioEntradaServicio.Object,
                 mOrderService.Object,
-                mComprasService.Object,
+                mIComprasService.Object,
                 mEmailCertificationService.Object,
                 mObtenerOrdenDeCompraConsumerMOA.Object,
                 mReporteESService.Object,
-                mComprasSapService.Object
+                mIComprasSapService.Object
             );
         }
 
@@ -178,7 +179,7 @@ namespace SustitucionMOATest.Services
                     It.Is<string>(p => p == proveedorCodigo)))
                 .Returns(false);
 
-            mComprasService
+            mIComprasService
                 .Setup(x => x.TraerSolpPorNumero(
                     It.Is<string>(s => s == nroSolp)))
                 .Returns(solpEsDto);
@@ -246,6 +247,148 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(1, respuestasCreacion.Count);
             Assert.AreEqual("I", respuestasCreacion[0].Type);
             Assert.AreEqual("SE", respuestasCreacion[0].Id);
+        }
+
+        [Test]
+        public void CertificarOrdenesDeCompraConContratoMarco_OCConAcuerdoMarco()
+        {
+            var centrosSap = new List<TablaSap>
+            {
+                new TablaSap { Codigo = "1000", Descripcion = "CENTRO 1000" },
+                new TablaSap { Codigo = "2000", Descripcion = "CENTRO 2000" }
+            };
+            var almacenesSap = new List<TablaSap>
+            {
+                new TablaSap { Codigo = "A100", Descripcion = "ALMACEN A100" },
+                new TablaSap { Codigo = "B200", Descripcion = "ALMACEN B200" }
+            };
+
+            var fechaDesde = DateTime.Today.AddDays(-2);
+            var nroOcConAcuerdo = 4500012345;
+            var nroSolpDeOcConAcuerdo = "1012345";
+            var nroAcuerdoMarco = "11223344";
+            var mailUsuarioFiscal = "usrFiscal@bauf.com";
+
+            var ordenesCompraDto = new List<OrdenCompraDto>
+            {
+                new OrdenCompraDto
+                {
+                    Id = nroOcConAcuerdo,
+                    SUBJ_TO_R = ""
+                }
+            };
+
+            var ordenDeCompraSap = new OrdenDeCompraSAPDto
+            {
+                Posiciones = new List<OrdenDeCompraSAPPosicion>
+                {
+                    new OrdenDeCompraSAPPosicion { NroSolp = nroSolpDeOcConAcuerdo, AcuerdoMarco = nroAcuerdoMarco }
+                }
+            };
+
+            var solpDeOcConAcuerdo = new Solp
+            {
+                NroSolp = nroSolpDeOcConAcuerdo,
+                CertificacionAutomatica = true,
+                UsuarioCreacion = new Usuario { Mail = "usrCreac@bauf.com" },
+                Pliego = new Pliego { Email = "usrPliego@bauf.com" }
+            };
+
+            var detalleOcConAcuerdo = new DetalleOrdenDeCompraDto
+            {
+                Posiciones = new List<PosicionDto>
+                {
+                    new PosicionDto
+                    {
+                        NumeroSolp = nroSolpDeOcConAcuerdo,
+                        Bloqueada = false,
+                        Items = new List<ItemDto>
+                        {
+                            new ItemDto
+                            {
+                                Porcentaje = "30",
+                                Cantidad = 15,
+                                Importe = 2000,
+                                NumeroLinea = 1,
+                                Monto = 2000
+                            }
+                        },
+                        Descripcion = "Descr",
+                        NroOrdenCompra = nroOcConAcuerdo.ToString(),
+                        NumeroPosicion = 10,
+                        PrecioTotal = 50300
+                    }
+                }
+            };
+
+            var solpESDto = new SolpESDto
+            {
+                Email = mailUsuarioFiscal
+            };
+            var usuarioFiscal = new Usuario { Mail = mailUsuarioFiscal, Externo = false };
+            var aprobaciones = new Aprobaciones { NRO_ES_SAP = null, Estado_certificacion = "Pendiente Aprobación" };
+            var proveedor = new Proveedor { };
+
+            mIComprasSapService
+                .Setup(s => s.ObtenerOrdenesDeCompra(It.Is<DateTime>(d => d == fechaDesde)))
+                .Returns(ordenesCompraDto);
+
+            mIRepositorioEntradaServicio
+                .Setup(s => s.GetTablaSap("Centro"))
+                .Returns(centrosSap);
+            
+            mIRepositorioEntradaServicio
+                .Setup(s => s.GetTablaSap("Almacen"))
+                .Returns(almacenesSap);
+
+            mIComprasSapService
+                .Setup(s => s.ObtenerOrdenDeCompra(nroOcConAcuerdo.ToString()))
+                .Returns(ordenDeCompraSap);
+
+            mIRepositorioEntradaServicio
+                .Setup(s => s.ObtenerSolpsAutocertificablesDeOC(It.Is<List<string>>(x => x.Contains(nroSolpDeOcConAcuerdo))))
+                .Returns(new List<Solp> { solpDeOcConAcuerdo });
+
+            var mObtenerOrdenDeCompraConsumer = new Mock<IObtenerOrdenDeCompraConsumerMOA>();
+            mObtenerOrdenDeCompraConsumer
+                .Setup(s => s.ObtenerDetalleDeOrdenDeCompra(nroOcConAcuerdo.ToString(), It.IsAny<List<TablaSap>>(), It.IsAny<List<TablaSap>>(), true))
+                .Returns(detalleOcConAcuerdo);
+
+            mIRepositorioEntradaServicio
+                .SetupSequence(s => s.Listar(It.IsAny<System.Linq.Expressions.Expression<Func<Aprobaciones, bool>>>(), 0, null, It.IsAny<DirOrden>(), null))
+                .Returns(new List<Aprobaciones>())
+                .Returns(new List<Aprobaciones> { aprobaciones })
+                .Returns(new List<Aprobaciones>())
+                .Returns(new List<Aprobaciones>());
+
+            mIComprasService
+                .Setup(s => s.TraerSolpPorNumero(nroSolpDeOcConAcuerdo))
+                .Returns(solpESDto);
+
+            mIRepositorioEntradaServicio
+                .Setup(s => s.GetUsuarioPorMail(mailUsuarioFiscal))
+                .Returns(usuarioFiscal);
+
+            mOrderService
+                .Setup(s => s.BuscarProveedor(It.IsAny<OrderParamsDto>()))
+                .Returns(proveedor);
+
+            mIRepositorioEntradaServicio
+                .Setup(s => s.ObtenerSiguienteValorSecuencia())
+                .Returns(123);
+
+            target.ObtenerOrdenDeCompraConsumer = mObtenerOrdenDeCompraConsumer.Object;
+            target.CertificarOrdenesDeCompraConContratoMarco();
+
+            mIRepositorioEntradaServicio
+                .Verify(s => s.ObtenerSolpsAutocertificablesDeOC(It.Is<List<string>>(x => x.Contains(nroSolpDeOcConAcuerdo))), Times.Once);
+
+            mIRepositorioEntradaServicio
+                .Verify(s => s.Agregar(
+                    It.Is<Aprobaciones>(x =>
+                        x.NRO_ES_LOCAL == "T_0000000123" &&
+                        x.NRO_OC == nroOcConAcuerdo.ToString())),
+                    Times.Once);
         }
     }
 }

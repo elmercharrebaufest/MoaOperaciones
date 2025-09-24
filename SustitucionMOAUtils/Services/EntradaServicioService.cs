@@ -41,7 +41,9 @@ namespace SustitucionMOAUtils.Services
 
         private readonly string EmailEnvioErrores = ConfigurationManager.AppSettings["EmailEnvioErrores"];
 
+        // Properties para inyección de consumers (para facilitar el mockeo en tests)
         public CrearEntradaDeServicioConsumerMOA CrearEntradaDeServicioConsumer { private get; set; } = null;
+        public IObtenerOrdenDeCompraConsumerMOA ObtenerOrdenDeCompraConsumer { private get; set; } = null;
 
         public EntradaServicioService(
             IRepositorioEntradaServicio repositorioEntradaServicio,
@@ -821,7 +823,7 @@ namespace SustitucionMOAUtils.Services
             GenerarCertificacionesAutomaticas(detalleOC, solps, obtenerOrdenConsumer, centrosSap, almacenesSap);
         }
 
-        public void LiberarOrdenesDeCompraConContratoMarco()
+        public void CertificarOrdenesDeCompraConContratoMarco()
         {
             var fechaDesde = DateTime.Today.AddDays(-2);
             var ordenesDeCompra = comprasSapService.ObtenerOrdenesDeCompra(fechaDesde);
@@ -832,9 +834,9 @@ namespace SustitucionMOAUtils.Services
                 .Where(oc => OcFueLiberada(oc))
                 .Select(oc => oc.Id.ToString()));
 
-            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio);
-            var centrosSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Centro");
-            var almacenesSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+            var obtenerOrdenConsumer = this.ObtenerOrdenDeCompraConsumer ?? new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio);
+            var centrosSap = repositorioEntradaServicio.GetTablaSap("Centro");
+            var almacenesSap = repositorioEntradaServicio.GetTablaSap("Almacen");
 
             foreach (var nroOc in nrosOcs)
             {
@@ -862,7 +864,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void GenerarCertificacionesAutomaticas(DetalleOrdenDeCompraDto detalleOC, List<Solp> solpsAutocertificables, ObtenerOrdenDeCompraConsumerMOA obtenerOrdenConsumer,
+        private void GenerarCertificacionesAutomaticas(DetalleOrdenDeCompraDto detalleOC, List<Solp> solpsAutocertificables, IObtenerOrdenDeCompraConsumerMOA obtenerOrdenConsumer,
             List<TablaSap> centrosSap, List<TablaSap> almacenesSap)
         {
             var solicitudesMailAprobacionES = new List<MailAprobacionESRequest>();
@@ -1434,13 +1436,9 @@ namespace SustitucionMOAUtils.Services
         /// MMSN-602: Guardar datos en tabla aprobaciones - Aprobación - Descripción de campos en Entity
         /// </summary>
         private Aprobaciones GuardarDatosES(EntradaServicioCreateParamsDto posicion, string userMail, int ESNumber,
-            bool auto, List<ReporteDto> reporte, string solPedNumber = null, string proveedor = null)
+            bool esAprobacionAutomatica, List<ReporteDto> reporte, string solPedNumber = null, string proveedor = null)
         {
-            Aprobaciones temp = new Aprobaciones();
-            //MMSN-1066 - Derivacion automatica del suplente
-
-            #region CargaDatosCabecera
-            DateTime dateDocument;
+            var aprobacionesTemporal = new Aprobaciones();
 
             if (String.IsNullOrEmpty(posicion.EntrySheetHeader.FechaDocumento))
             {
@@ -1449,72 +1447,59 @@ namespace SustitucionMOAUtils.Services
 
             if (DateTime.TryParseExact(posicion.EntrySheetHeader.FechaDocumento, "yyyy-MM-dd",
                            CultureInfo.InvariantCulture,
-                           DateTimeStyles.None, out dateDocument))
+                           DateTimeStyles.None, out DateTime fechaDocumento))
             {
-                temp.Fecha_Documento = dateDocument;
+                aprobacionesTemporal.Fecha_Documento = fechaDocumento;
             }
-            DateTime dateAccounting;
+
             if (DateTime.TryParseExact(posicion.EntrySheetHeader.FechaContabilizacion, "yyyy-MM-dd",
                            CultureInfo.InvariantCulture,
-                           DateTimeStyles.None, out dateAccounting))
+                           DateTimeStyles.None, out DateTime fechaContabilizacion))
             {
-                temp.Fecha_Contabilizacion = dateAccounting;
+                aprobacionesTemporal.Fecha_Contabilizacion = fechaContabilizacion;
             }
 
-            temp.Referencia = posicion.EntrySheetHeader.DocumentoReferenciaNumero;
-            temp.Fecha_Carga_ES = DateTime.Today;
-            temp.Notificaciones_enviadas = false;
-            temp.Ingresante_CDS = userMail;
-            temp.Proveedor = proveedor;
+            aprobacionesTemporal.Referencia = posicion.EntrySheetHeader.DocumentoReferenciaNumero;
+            aprobacionesTemporal.Fecha_Carga_ES = DateTime.Today;
+            aprobacionesTemporal.Notificaciones_enviadas = false;
+            aprobacionesTemporal.Ingresante_CDS = userMail;
+            aprobacionesTemporal.Proveedor = proveedor;
 
-
-            //Datos dependientes de aprobación automatica o no
-            if (auto)
+            if (esAprobacionAutomatica)
             {
-                temp.NRO_ES_SAP = ESNumber;
-                temp.SetEstadoAprobada();
-                temp.Aprobada_automaticamente = true;
-                temp.Aprobador_CDS = userMail;
-                temp.Fecha_aprobacion = DateTime.Today;
+                aprobacionesTemporal.NRO_ES_SAP = ESNumber;
+                aprobacionesTemporal.SetEstadoAprobada();
+                aprobacionesTemporal.Aprobada_automaticamente = true;
+                aprobacionesTemporal.Aprobador_CDS = userMail;
+                aprobacionesTemporal.Fecha_aprobacion = DateTime.Today;
             }
             else
             {
-                temp.SetEstadoPendienteAprobacion();
-                temp.Aprobada_automaticamente = false;
+                aprobacionesTemporal.SetEstadoPendienteAprobacion();
+                aprobacionesTemporal.Aprobada_automaticamente = false;
             }
-            #endregion
 
             Usuario usuarioFiscal = null;
 
-            //Datos SolPed
-            #region DatosSolPed
             // Pendiente Carga temp.Area, ya que se necesitan los datos de MMSN-726
             try
             {
                 if (!string.IsNullOrEmpty(solPedNumber))
                 {
-                    SolpESDto detalleSolPed = new SolpESDto();
-                    try
-                    {
-                        detalleSolPed = comprasService.TraerSolpPorNumero(solPedNumber);
-                    }
-                    catch (Exception e)
-                    {
-                        throw e;
-                    }
+                    var detalleSolPed = comprasService.TraerSolpPorNumero(solPedNumber);
 
                     if (!ValoresSolpEstanVacios(detalleSolPed))
                     {
                         usuarioFiscal = ObtenerUsuarioFiscal(detalleSolPed);
                         if (usuarioFiscal != null)
                         {
-                            temp.Fiscal_SOLPED = usuarioFiscal.Mail;
-                            temp.Suplente = usuarioFiscal.Suplente;
+                            aprobacionesTemporal.Fiscal_SOLPED = usuarioFiscal.Mail;
+                            aprobacionesTemporal.Suplente = usuarioFiscal.Suplente;
                         }
                     }
-                    if (!auto)
+                    if (!esAprobacionAutomatica)
                     {
-                        temp.Aprobador_CDS = temp.Fiscal_SOLPED;
+                        aprobacionesTemporal.Aprobador_CDS = aprobacionesTemporal.Fiscal_SOLPED;
                     }
                 }
             }
@@ -1522,128 +1507,95 @@ namespace SustitucionMOAUtils.Services
             {
                 Logger.Log.Error(e);
             }
-            #endregion
 
             if (usuarioFiscal != null && usuarioFiscal.Externo == true && !string.IsNullOrEmpty(usuarioFiscal.Suplente))
             {
-                var usuarioSuplente = repositorioEntradaServicio.Obtener<Usuario>(x => x.Mail == usuarioFiscal.Suplente);
-                temp.Aprobador_CDS = usuarioFiscal.Suplente;
-                temp.Suplente = usuarioSuplente.Suplente;
-                temp.Fiscal_SOLPED = usuarioFiscal.Suplente;
+                var usuarioSuplente = repositorioEntradaServicio.GetUsuarioPorMail(usuarioFiscal.Suplente);
+                aprobacionesTemporal.Aprobador_CDS = usuarioFiscal.Suplente;
+                aprobacionesTemporal.Suplente = usuarioSuplente.Suplente;
+                aprobacionesTemporal.Fiscal_SOLPED = usuarioFiscal.Suplente;
             }
 
             //Datos OC
-            temp.NRO_OC = posicion.EntrySheetHeader.OrdenCompraNumero;
-            temp.NRO_POS = posicion.EntrySheetHeader.OrdenCompraPosicionNumero;
-            temp.Monto = posicion.EntrySheetHeader.MontoTotalACertificar.ToNullableDecimal();
+            aprobacionesTemporal.NRO_OC = posicion.EntrySheetHeader.OrdenCompraNumero;
+            aprobacionesTemporal.NRO_POS = posicion.EntrySheetHeader.OrdenCompraPosicionNumero;
+            aprobacionesTemporal.Monto = posicion.EntrySheetHeader.MontoTotalACertificar.ToNullableDecimal();
 
             //Obtener último registro para nuevo número
-            long ultimoRegistro = 0;
-            try
-            {
-                ultimoRegistro = repositorioEntradaServicio.ObtenerSiguienteValorSecuencia();
-            }
-            catch (Exception e)
-            {
-                Logger.Log.Error(e);
-                throw;
-            }
+            var ultimoRegistro = repositorioEntradaServicio.ObtenerSiguienteValorSecuencia();
 
-            string newESLocal = string.Empty;
+            var nuevoNroESLocal = string.Empty;
 
             if (ultimoRegistro == 0)
             {
                 //Primer registro en tabla
-                temp.NRO_ES_LOCAL = "T_0000000001";
+                aprobacionesTemporal.NRO_ES_LOCAL = "T_0000000001";
             }
             else
             {
-                newESLocal = "T_" + ultimoRegistro.ToString("D10");
+                nuevoNroESLocal = "T_" + ultimoRegistro.ToString("D10");
 
-                temp.NRO_ES_LOCAL = newESLocal;
+                aprobacionesTemporal.NRO_ES_LOCAL = nuevoNroESLocal;
             }
 
             //MontoTotal = Suma de los montos a certificar de cada ES A APROBAR
             decimal monto_total = 0;
-            List<Aprobaciones> toSave = new List<Aprobaciones>();
+            var aprobacionesAGrabar = new List<Aprobaciones>();
 
-            #region CargaDeDatosPorItem
             //Datos por Item en ES
             foreach (EntrySheetServiceItemSection esItem in posicion.EntrySheetServices.Items)
             {
-                temp.Descripcion_ES = esItem.Descripcion;
+                aprobacionesTemporal.Descripcion_ES = esItem.Descripcion;
 
                 //Copiar lo cargado hasta ahora
-                var aprobacion = DeepCopy(temp);
-                try
-                {
-                    aprobacion.Cantidad = esItem.ItemQuantity.ToNullableDecimal();
-                    aprobacion.Monto = esItem.ItemGrossPrice.ToNullableDecimal();
-                    aprobacion.Nro_linea = esItem.ExternalLineNumber;
-                    aprobacion.Nro_servicio = esItem.Service;
-                    aprobacion.Texto_breve_servicio = esItem.ShortText.Trim();
-                    aprobacion.UM = esItem.UM;
-                    aprobacion.Cantidad_a_certificar = esItem.Quantity;
-                    aprobacion.Porcentaje_a_certificar = esItem.Percentage;
-                    aprobacion.Planned_package = esItem.PlannedPackage;
-                    aprobacion.Planned_line = esItem.PlannedLine;
+                var aprobacion = DeepCopy(aprobacionesTemporal);
 
-                    ReporteDto itemReport = reporte.Find(report => report.Id == esItem.PlannedPackage && report.LINE_NO.ToString() == esItem.PlannedLine);
-                    if (itemReport != null)
-                    {
-                        aprobacion.Cantidad_Anterior = itemReport.CantidadReal;
-                    }
+                aprobacion.Cantidad = esItem.ItemQuantity.ToNullableDecimal();
+                aprobacion.Monto = esItem.ItemGrossPrice.ToNullableDecimal();
+                aprobacion.Nro_linea = esItem.ExternalLineNumber;
+                aprobacion.Nro_servicio = esItem.Service;
+                aprobacion.Texto_breve_servicio = esItem.ShortText.Trim();
+                aprobacion.UM = esItem.UM;
+                aprobacion.Cantidad_a_certificar = esItem.Quantity;
+                aprobacion.Porcentaje_a_certificar = esItem.Percentage;
+                aprobacion.Planned_package = esItem.PlannedPackage;
+                aprobacion.Planned_line = esItem.PlannedLine;
 
-                    if (!string.IsNullOrEmpty(esItem.CertificationAmount))
-                    {
-                        aprobacion.Monto_a_certificar = esItem.Quantity.ToNullableDecimal();
-                        monto_total = (monto_total + (aprobacion.Monto_a_certificar ?? 0));
-                    }
-                }
-                catch (Exception e)
+                ReporteDto itemReport = reporte.Find(report => report.Id == esItem.PlannedPackage && report.LINE_NO.ToString() == esItem.PlannedLine);
+                if (itemReport != null)
                 {
-                    Logger.Log.Error(e);
-                    throw;
+                    aprobacion.Cantidad_Anterior = itemReport.CantidadReal;
                 }
 
-                toSave.Add(aprobacion);
+                if (!string.IsNullOrEmpty(esItem.CertificationAmount))
+                {
+                    aprobacion.Monto_a_certificar = esItem.Quantity.ToNullableDecimal();
+                    monto_total = (monto_total + (aprobacion.Monto_a_certificar ?? 0));
+                }
+
+                aprobacionesAGrabar.Add(aprobacion);
             }
-            #endregion
 
-            if (toSave.Count > 0)
+            if (aprobacionesAGrabar.Count > 0)
             {
-                //Agregar Monto Total y grabar
-                foreach (Aprobaciones ap in toSave)
+                foreach (Aprobaciones ap in aprobacionesAGrabar)
                 {
                     ap.Monto_total = monto_total;
-                    repositorioEntradaServicio.Agregar<Aprobaciones>(ap);
+                    repositorioEntradaServicio.Agregar(ap);
                 }
-                //Transaccion
-                try
-                {
-                    repositorioEntradaServicio.GuardarCambios();
 
-                    #region DerivacionAutomatica
-                    foreach (Aprobaciones ap in toSave)
-                    {
-                        if (ap.EstaPendienteAprobacion())
-                        {
-                            ReasignarSuplente(ap.NRO_ES_LOCAL, ap.Aprobador_CDS, false);
-                        }
-                    }
-                    #endregion
-                }
-                catch (Exception e)
+                repositorioEntradaServicio.GuardarCambios();
+
+                foreach (Aprobaciones ap in aprobacionesAGrabar.Where(x => x.EstaPendienteAprobacion()))
                 {
-                    Logger.Log.Error(e);
-                    throw;
+                    ReasignarSuplente(ap.NRO_ES_LOCAL, ap.Aprobador_CDS, false);
                 }
             }
 
-            Task.Run(() => GenerateAndSaveReportInBlob(reporte, newESLocal)).Wait();
+            Task.Run(() => GenerateAndSaveReportInBlob(reporte, nuevoNroESLocal)).Wait();
 
             //Para mensaje de retorno de ES Temporal (sin aprobación automatica) se necesita mostrar datos de NRO_ES_LOCAL y estado.
-            return temp;
+            return aprobacionesTemporal;
         }
 
         private async Task GenerateAndSaveReportInBlob(List<ReporteDto> reporte, string blobReference)
@@ -1719,10 +1671,11 @@ namespace SustitucionMOAUtils.Services
 
         private DetalleOrdenDeCompraDto ObtenerDetalleOrdenDeCompra(string nroOC)
         {
-            var centros = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Centro");
-            var almacenes = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+            var centros = repositorioEntradaServicio.GetTablaSap("Centro");
+            var almacenes = repositorioEntradaServicio.GetTablaSap("Almacen");
 
-            var detalleOC = new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio).ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes, true);
+            var detalleOC = (this.ObtenerOrdenDeCompraConsumer ?? new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio))
+                .ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes, true);
 
             var aprobaciones = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_OC == nroOC && x.Estado_certificacion == "Pendiente Aprobación");
 
@@ -1815,14 +1768,14 @@ namespace SustitucionMOAUtils.Services
             return crearESParamsDto;
         }
 
-        private bool ItemTienePorcentajeACertificar(ItemDto itemDto)
+        private static bool ItemTienePorcentajeACertificar(ItemDto itemDto)
         {
             return
                 decimal.TryParse(itemDto.Porcentaje, out decimal valorPorcentaje) &&
                 valorPorcentaje < 100;
         }
 
-        private bool ItemTieneMontoValidoACertificar(ItemDto itemDto)
+        private static bool ItemTieneMontoValidoACertificar(ItemDto itemDto)
         {
             var monto = itemDto.Importe ?? 0;
             var cantidad = itemDto.Cantidad ?? 0;
@@ -1833,7 +1786,7 @@ namespace SustitucionMOAUtils.Services
             return montoACertificar > 0;
         }
 
-        private decimal CalcularPorcentajeACertificar(ItemDto itemDto)
+        private static decimal CalcularPorcentajeACertificar(ItemDto itemDto)
         {
             var cantidadACertificar = (itemDto.Cantidad ?? 0) - (itemDto.CantidadReal ?? 0);
             var porcentajeACertificar = (cantidadACertificar * 100) / itemDto.Cantidad;
@@ -1841,7 +1794,7 @@ namespace SustitucionMOAUtils.Services
         }
 
         private void CrearEntradaServicioCertificacionAutomatica(EntradaServicioCreateParamsDto crearESParamsDto, Solp solpACertificar, List<MailAprobacionESRequest> solicitudesMailAprobacionES,
-            ObtenerOrdenDeCompraConsumerMOA obtenerOrdenConsumer, List<TablaSap> centrosSap, List<TablaSap> almacenesSap, string proveedorCodigo = null)
+            IObtenerOrdenDeCompraConsumerMOA obtenerOrdenConsumer, List<TablaSap> centrosSap, List<TablaSap> almacenesSap, string proveedorCodigo = null)
         {
             Logger.Log.Info("EntradaServicioService.CrearEntradaServicioCertificacionAutomatica");
 

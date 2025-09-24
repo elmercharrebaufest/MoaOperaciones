@@ -91,6 +91,11 @@ namespace SustitucionMOARepositorio.Repositorios
             return qrySuplente.FirstOrDefault();
         }
 
+        public List<TablaSap> GetTablaSap(string nombreTablaSap)
+        {
+            return Listar<TablaSap>(a => a.Tabla == nombreTablaSap);
+        }
+
         public long ObtenerSiguienteValorSecuencia()
         {
             return ExecuteQuery<long>("EXEC ObtenerSiguienteValorSecuencia").Single();

@@ -8,6 +8,7 @@ namespace SustitucionMOARepositorio.Repositorios.Interfaces
     {
         bool ExisteRemitoActivoParaProveedor(string remitoNro, string proveedorCodigo);
         UsuarioReasignacion GetReasignacion(int usuarioId);
+        List<TablaSap> GetTablaSap(string nombreTablaSap);
         Usuario GetUsuarioPorMail(string mailUsuario);
         string ObtenerMailSuplenteSegunFecha(string mailUsuario, DateTime fechaReasignacion);
         long ObtenerSiguienteValorSecuencia();

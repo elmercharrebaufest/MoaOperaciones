@@ -6,14 +6,14 @@ using System;
 
 namespace SustitucionMOA.Jobs
 {
-    public interface ILiberarOrdenesCompraContratoMarcoJob : IHangfireJob { }
+    public interface ICertificarOrdenesCompraContratoMarcoJob : IHangfireJob { }
 
-    public class LiberarOrdenesCompraContratoMarcoJob : IHangfireJob
+    public class CertificarOrdenesCompraContratoMarcoJob : IHangfireJob
     {
         private readonly IRepositorio repositorio;
         private readonly IEntradaServicioService entradaServicioService;
 
-        public LiberarOrdenesCompraContratoMarcoJob(IRepositorio repositorio, IEntradaServicioService entradaServicioService)
+        public CertificarOrdenesCompraContratoMarcoJob(IRepositorio repositorio, IEntradaServicioService entradaServicioService)
         {
             this.repositorio = repositorio;
             this.entradaServicioService = entradaServicioService;
@@ -23,12 +23,12 @@ namespace SustitucionMOA.Jobs
         {
             try
             {
-                Log.Info("Inicia ejecución LiberarOrdenesCompraContratoMarcoJob");
-                if (!repositorio.Obtener<HabilitacionJob>(hj => hj.Nombre == "LiberarOrdenesCompraContratoMarcoJob").Habilitado)
+                Log.Info("Inicia ejecución CertificarOrdenesCompraContratoMarcoJob");
+                if (!repositorio.Obtener<HabilitacionJob>(hj => hj.Nombre == "CertificarOrdenesCompraContratoMarcoJob").Habilitado)
                 {
                     return;
                 }
-                entradaServicioService.LiberarOrdenesDeCompraConContratoMarco();
+                entradaServicioService.CertificarOrdenesDeCompraConContratoMarco();
             }
             catch (Exception ex)
             {

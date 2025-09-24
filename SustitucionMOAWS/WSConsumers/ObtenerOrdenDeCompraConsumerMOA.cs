@@ -913,7 +913,7 @@ namespace SustitucionMOAWS.WSConsumers
         /// </summary>
         /// <param name="numeroDeOrdenCompra"></param>
         /// <returns></returns>
-        public DetalleOrdenDeCompraDto ObtenerDetalleDeOrdenDeCompra(string numeroDeOrdenCompra, List<TablaSap> centro, List<TablaSap> almacen, bool usuarioSolp)
+        public virtual DetalleOrdenDeCompraDto ObtenerDetalleDeOrdenDeCompra(string numeroDeOrdenCompra, List<TablaSap> centro, List<TablaSap> almacen, bool usuarioSolp)
         {
             try
             {

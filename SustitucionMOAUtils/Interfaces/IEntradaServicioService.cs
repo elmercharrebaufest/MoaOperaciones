@@ -25,6 +25,6 @@ namespace SustitucionMOAUtils.Interfaces
 
         Task NotificarReasignaciones(IEnumerable<string> ListaAp);
         void GenerarCertificacionAutomaticaPorLiberacionOC(string nroOC);
-        void LiberarOrdenesDeCompraConContratoMarco();
+        void CertificarOrdenesDeCompraConContratoMarco();
     }
 }
