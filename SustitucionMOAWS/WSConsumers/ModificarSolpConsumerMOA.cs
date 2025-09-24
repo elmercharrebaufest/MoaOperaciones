@@ -544,7 +544,7 @@ namespace SustitucionMOAWS.WSConsumers
                     CURRENCY = a.CURRENCY,
                     DEL_IND = a.DEL_IND,
                     DOC_ITEM = a.DOC_ITEM,
-                    GROSS_PRICE = Math.Round(a.GROSS_PRICE, 4),
+                    GROSS_PRICE = Math.Round(a.GROSS_PRICE, 2),
                     //GROSS_PRICESpecified = a.GROSS_PRICESpecified,
                     MATL_GROUP = a.MATL_GROUP,
                     NET_PRICE = Math.Round(a.NET_PRICE, 4),
