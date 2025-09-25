@@ -167,7 +167,7 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_CONTRATO = string.IsNullOrWhiteSpace(req.Contrato) ? "" : req.Contrato,
                         IM_CORREDOR = string.IsNullOrWhiteSpace(req.Corredor) ? "" : req.Corredor,
                         IM_CUITDESTF = string.IsNullOrWhiteSpace(req.CuitDestino) ? "" : req.CuitDestino,
-                        IM_CUITDESTINAT = string.IsNullOrWhiteSpace(req.CuitDestinatario) ? "" : req.CuitDestinatario,
+                        IM_CUITDESTINAT = string.IsNullOrWhiteSpace(req.CuitDestinatario) || req.CuitDestinatario == req.CuitCliente ? "" : req.CuitDestinatario,
                         IM_DOMORDEN = string.IsNullOrWhiteSpace(req.DomicilioDescr) ? "" : req.DomicilioDescr,
                         IM_INDRVTA = req.Reventa ? "X" : "",
                         IM_KILOS = req.Kilos,

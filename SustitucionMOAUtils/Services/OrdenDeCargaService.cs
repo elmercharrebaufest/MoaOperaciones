@@ -4,7 +4,6 @@ using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
-using SustitucionMOAModel.Dto.OrdenDeCargaCommon;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
@@ -77,13 +76,13 @@ namespace SustitucionMOAUtils.Services
             var gestionAltas = crearOrdenDeCargaRequest.GestionAltasFAS;
 
             Log.Info($"Agregar orden de carga con datos: {ordenReq.ToDto().ToJson()}. MailUsuario: {mailUsuario}");
-            
+
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                
+
                 LlenarOrdenAltaCorredorCliente(ordenReq, usuario);
-                
+
                 LlenarOrdenAlta(ordenReq, usuario);
 
                 var kilosDisponibles = ObtenerKilosDisponiblesContrato(ordenReq, out Result contratoSAP);
@@ -99,9 +98,9 @@ namespace SustitucionMOAUtils.Services
                     nuevaOrden = new OrdenDeCarga(ordenReq, unidadTransporte);
 
                     ValidarOrdenDeCargaAlta(nuevaOrden);
-                    
+
                     nuevaOrden.TransporteExiste = TransporteExiste(nuevaOrden);
-                    
+
                     var crearPedido = VerificarOrden(nuevaOrden, nuevaOrden.Cliente, false);
 
                     repositorio.Agregar(nuevaOrden);
@@ -326,6 +325,7 @@ namespace SustitucionMOAUtils.Services
                 var crearOrdenReq = new CrearOrdenRequest
                 {
                     Cliente = ordenDeCarga.Cliente.CodigoProveedor,
+                    CuitCliente = ordenDeCarga.Cliente.CUIT,
                     Contrato = ObtenerContratoDeOrden(ordenDeCarga),
                     Corredor = ordenDeCarga.CodigoCorredor,
                     Kilos = ordenDeCarga.Cantidad,
@@ -2168,6 +2168,7 @@ namespace SustitucionMOAUtils.Services
             var crearOrdenReq = new CrearOrdenRequest
             {
                 Cliente = cliente.CodigoProveedor,
+                CuitCliente = cliente.CUIT,
                 Contrato = ObtenerContratoDeOrden(ordenDeCarga),
                 Corredor = ordenDeCarga.CodigoCorredor,
                 Kilos = ordenDeCarga.Cantidad,
