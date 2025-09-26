@@ -361,8 +361,8 @@ namespace SustitucionMOAUtils.Services
             Logger.Log.Debug($"CrearEntradaServicio ValidarCreacionEntradaServicio ok");
 
             //var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio);
-            var centrosSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Centro");
-            var almacenesSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+            var centrosSap = repositorioEntradaServicio.GetTablaSap("Centro");
+            var almacenesSap = repositorioEntradaServicio.GetTablaSap("Almacen");
             var solicitudesMailAprobacionES = new List<MailAprobacionESRequest>();
             var respuestasCreacion = new List<EntradaServicioCreateRespuestaDto>();
 
@@ -1435,7 +1435,7 @@ namespace SustitucionMOAUtils.Services
         /// <summary>
         /// MMSN-602: Obtiene número de ES desde el mensaje, necesario registrar en tabla Aprobaciones.
         /// </summary>
-        private int GetESNumber(string message)
+        private static int GetESNumber(string message)
         {
             int ESNumber = 0;
 
@@ -1529,6 +1529,7 @@ namespace SustitucionMOAUtils.Services
             catch (Exception e)
             {
                 Logger.Log.Error(e);
+                throw;
             }
 
             if (usuarioFiscal != null && usuarioFiscal.Externo == true && !string.IsNullOrEmpty(usuarioFiscal.Suplente))

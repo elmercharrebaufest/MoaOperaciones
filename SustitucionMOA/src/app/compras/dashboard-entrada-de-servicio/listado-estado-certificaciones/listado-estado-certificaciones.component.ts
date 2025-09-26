@@ -211,8 +211,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         if (permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES")) {
             this.havePermission = true;
         }
-        this.recalculando = true;
-        this.recalculandoAprobadas = true;
         await this.getListarPO(); // No mover.
         this.obtenerESSap(this.proveedor, this.documentoNumero);
     }
@@ -258,6 +256,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
 
     getListarPO(fechaDesde: string = "", fechaHasta: string = ""): Promise<void> {
+        this.recalculando = true;
+        this.tablaPOAprobaciones = [];
         return new Promise<void>((resolve, reject) => {
             const subscription = this.service.ObtenerESLocales(this.isAll, '', fechaDesde, fechaHasta, this.ordenCompraFiltro).subscribe(
                 (result: any) => {
@@ -291,7 +291,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
 
 
-    obtenerESSap(proveedor, documentoNumero): Promise<void> {
+    obtenerESSap(proveedor: string, documentoNumero: string): Promise<void> {
+        this.recalculandoAprobadas = true;
+        this.tablaPOSap = [];
         return new Promise<void>((resolve, reject) => {
             const subscription = this.service
                 .getByProveedorAsync(
@@ -401,14 +403,12 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 break;
             case 'Pendiente Aprobación':
                 if (this.tablaPOAprobaciones.length < 1) {
-                    this.recalculando = true;
                     this.getListarPO();
                 }
                 this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
                 break;
             case 'Rechazado':
                 if (this.tablaPOAprobaciones.length < 1) {
-                    this.recalculando = true;
                     this.getListarPO();
                 }
                 this.defaultTablesConfig[0].columns.forEach(col => {
@@ -417,7 +417,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 break;
             case 'Anulada':
                 if (this.tablaPOAprobaciones.length < 1) {
-                    this.recalculando = true;
                     this.getListarPO();
                 }
                 this.defaultTablesConfig[0].columns.forEach(col => {
@@ -605,7 +604,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         const moneda: string = this.entradaServicioSeleccionada[0].Items[0].Moneda;
         this.messageService.clear();
         this.confirmationService.confirm({
-            message: '¿Esta seguro que desea aprobar esta Entrada de Servicio?',
+            message: '¿Está seguro de que desea aprobar esta Entrada de Servicio?',
             header: 'Confirmar Aprobación',
             icon: 'pi pi-exclamation-triangle',
             acceptLabel: "Sí",
@@ -625,7 +624,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                                 case "I": {
                                     this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
                                     this.updateStateFromPending(numeroCertificacion, 'Aprobar');
-                                    this.recalculandoAprobadas = true;
                                     this.getFecha("1");
                                     this.obtenerESSap(this.proveedor, this.documentoNumero);
                                     break;
@@ -675,18 +673,14 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         const mockEvent = { value: { code: this.estadoCertificacion.code } };
 
         if (this.estadoCertificacion.code === 'Aprobada') {
-            this.recalculandoAprobadas = true;
             await this.obtenerESSap(this.proveedor, this.documentoNumero);
             await this.filtrarPorEstado(mockEvent);
             this.blockUI.stop();
-            this.recalculando = true;
             await this.getListarPO();
         } else {
-            this.recalculando = true;
             await this.getListarPO();
             await this.filtrarPorEstado(mockEvent);
             this.blockUI.stop();
-            this.recalculandoAprobadas = true;
             await this.obtenerESSap(this.proveedor, this.documentoNumero);
         }
     }
@@ -922,7 +916,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     
     async onBuscar() {
         this.collapseExpandedRow();
-        this.recalculandoAprobadas = true;
 
         if (this.proveedorSeleccionado !== undefined) {
             this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
@@ -1077,11 +1070,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
     refreshDataTable() {
         if (this.estadoCertificacion.code === 'Aprobada' && !this.recalculandoAprobadas) {
-            this.recalculandoAprobadas = true;
             this.obtenerESSap(this.proveedor, this.documentoNumero);
         }
         if ((this.estadoCertificacion.code === 'Aprobada' || this.estadoCertificacion.code === 'Pendiente Aprobación' || this.estadoCertificacion.code === 'Rechazado' || this.estadoCertificacion.code === 'Anulada') && !this.recalculandoAprobadas) {
-            this.recalculando = true;
             this.getListarPO(); // No mover.
         }
     }

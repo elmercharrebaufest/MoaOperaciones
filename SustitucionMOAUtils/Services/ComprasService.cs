@@ -1429,36 +1429,19 @@ namespace SustitucionMOAUtils.Services
 
         public SolpESDto TraerSolpPorNumero(string nroSolp)
         {
-            var includes = new List<Expression<Func<Solp, object>>>();
-            includes.Add(u => u.Pliego);
-            includes.Add(u => u.Pliego.VisitasMasivas);
-            includes.Add(u => u.Pliego.Archivos);
-            includes.Add(u => u.Posiciones);
-            includes.Add(u => u.Posiciones.Select(y => y.Subposiciones));
-            includes.Add(u => u.UsuarioCreacion);
-            includes.Add(u => u.UsuarioModificacion);
-
-            var solp = repositorio.Listar<Solp>(s => s.NroSolp == nroSolp, 0, null, DirOrden.Asc, includes).ToList().FirstOrDefault();
-
-            if (solp == null)
+            var includes = new List<Expression<Func<Solp, object>>>
             {
-                throw new InfoCustomException("No se encontró la SOLP.");
-            }
+                u => u.Pliego,
+                u => u.Pliego.VisitasMasivas,
+                u => u.Pliego.Archivos,
+                u => u.Posiciones,
+                u => u.Posiciones.Select(y => y.Subposiciones),
+                u => u.UsuarioCreacion,
+                u => u.UsuarioModificacion
+            };
 
-            //if (!String.IsNullOrEmpty(x.NroSolp))
-            //{
-            //    ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
-            //    {
-            //        FechaDesde = Convert.ToDateTime(new DateTime(2010, 01, 01)),
-            //        FechaHasta = Convert.ToDateTime(DateTime.Now.Date.AddDays(1)),
-            //        CreadoPorUsuarios = new List<string>(),
-            //        NumeroSolp = x.NroSolp
-            //    };
-
-            //    //ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
-
-            //    x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
-            //}
+            var solp = repositorio.Listar<Solp>(s => s.NroSolp == nroSolp, 0, null, DirOrden.Asc, includes).ToList().FirstOrDefault()
+                ?? throw new InfoCustomException("No se encontró la SOLP.");
 
             var solpDevuelta = new SolpESDto()
             {
