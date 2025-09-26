@@ -277,6 +277,7 @@ namespace SustitucionMOAUtils.Services
                     Input = item.Input
                 }).ToList();
                 repositorio.AgregarTodos(resultadosAnalisisOcr);
+                repositorio.GuardarCambios();
             }
             catch (Exception e)
             {

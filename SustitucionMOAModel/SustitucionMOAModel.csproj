@@ -87,7 +87,6 @@
     <Compile Include="Dto\Compras\PosicionCrearPoMultipleDto.cs" />
     <Compile Include="Dto\Compras\SolpCrearPoMultipleDto.cs" />
     <Compile Include="Dto\Compras\PosicionPendienteDto.cs" />
-    <Compile Include="Dto\Compras\AreaDto.cs" />
     <Compile Include="Dto\Compras\CertificacionES\SolpESDto.cs" />
     <Compile Include="Dto\Compras\ActualizarFechaVigenciaRegistroInfoDto.cs" />
     <Compile Include="Dto\Compras\AdjuntosSolpDto.cs" />
@@ -165,7 +164,6 @@
     <Compile Include="Entities\AplicacionCartaPorteCargaMasiva.cs" />
     <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
     <Compile Include="Entities\Aprobaciones.cs" />
-    <Compile Include="Entities\Area.cs" />
     <Compile Include="Entities\CertificacionRegistrada.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\DistanciaDomicilio.cs" />
