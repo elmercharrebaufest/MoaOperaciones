@@ -402,7 +402,6 @@
     <Content Include="dist\*.js" />
     <Content Include="dist\styles.*.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Hue.INT.DeployParameters.xml" />
     <Content Include="ILLink\ILLink.Descriptors.LibraryBuild.xml" />
     <Content Include="Libs\Kendo.DynamicLinq.dll" />
     <Content Include="NEW.PRE.DeployParameters.xml" />
