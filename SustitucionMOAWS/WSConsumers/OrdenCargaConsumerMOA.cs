@@ -784,7 +784,7 @@ namespace SustitucionMOAWS.WSConsumers
                     IM_ACOPLADO = req.Acoplado,
                     IM_BORRAR = "",
                     IM_CHASIS = req.Chasis,
-                    IM_CHOFER = req.Chofer,
+                    IM_CHOFER = !string.IsNullOrEmpty(req.Chofer) && req.Chofer.Length > 20 ? req.Chofer.Substring(0, 20) : req.Chofer,
                     IM_DOCUMENTO = req.Documento,
                     IM_ENTREGA = req.NumeroEntrega,
                     IM_TIPODOC = req.TipoDoc,

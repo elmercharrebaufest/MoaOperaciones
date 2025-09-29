@@ -1,18 +1,13 @@
-﻿using SustitucionMOAWS.CredentialService;
+﻿using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerCuentasSolpWebServiceMOA;
+using SustitucionMOAWS.Util;
+using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using System.Net;
-using SustitucionMOAWS.Interfaces;
 using System.Configuration;
-using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
-using SustitucionMOAWS.Logger;
-using SustitucionMOAWS.Util;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -51,7 +46,7 @@ namespace SustitucionMOAWS.WSConsumers
                     var response = agent.Z_MMRFC_OBTENER_CUENTAS(request);
 
                     Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CUENTAS response");
-                    Log.Info(response.ToXml());
+                    //Log.Info(response.ToXml());
 
                     return MapSinPI(response);
                 }
@@ -105,7 +100,7 @@ namespace SustitucionMOAWS.WSConsumers
             CuentaWSMOAResponse result = new CuentaWSMOAResponse();
             result.Cuentas = new List<Cuenta> { };
 
-            if(error == "200")
+            if (error == "200")
             {
                 foreach (ObtenerCuentasSolpWebServiceMOA.ZMPES5760 cuentaSolp in EX_GL_ACCOUNT_LIST)
                 {
