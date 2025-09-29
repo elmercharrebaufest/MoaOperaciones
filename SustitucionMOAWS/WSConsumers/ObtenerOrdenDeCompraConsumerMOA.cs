@@ -428,6 +428,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             return resultado;
         }
+
         private OrdenDeCompraSAPDto MapOrdenDeCompraSAPSinPIDto(WS_GAQ_sin_PI_DIRECT_2012.BAPI_PO_GETDETAIL1Response response)
         {
             OrdenDeCompraSAPDto resultado = new OrdenDeCompraSAPDto();
@@ -528,6 +529,7 @@ namespace SustitucionMOAWS.WSConsumers
                 .Sum(r => r.VAL_LOCCUR);
             return sumaProcess9HistD - sumaProcess2HistQR;
         }
+
         private decimal CalcularSaldoDisponibleSinPI(WS_GAQ_sin_PI_DIRECT_2012.BAPIEKBE[] POHISTORY)
         {
             var registros = POHISTORY.ToList();

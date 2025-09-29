@@ -183,6 +183,7 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IRepositorioUbicacionGeografica>().To<RepositorioUbicacionGeografica>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioConsultas>().To<RepositorioConsultas>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioCompras>().To<RepositorioCompras>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioFactura>().To<RepositorioFactura>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioEntradaServicio>().To<RepositorioEntradaServicio>().InScope(ctx => HttpContext.Current);
 
             // GoogleDrive

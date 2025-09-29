@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOAModel.Entities;
@@ -8,6 +9,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -29,13 +31,13 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IAzureService azureService;
         private readonly IAnalisisDocumentoService analisisDocumentoService;
-        private readonly IRepositorio repositorio;
+        private readonly IRepositorioFactura repositorio;
         private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
         private readonly IEmailService emailService;
         private readonly string EmailFacturasES = ConfigurationManager.AppSettings["EmailFacturasES"];
 
 
-        public FacturaService(IAzureService azureService, IAnalisisDocumentoService analisisDocumentoService, IRepositorio repositorio,
+        public FacturaService(IAzureService azureService, IAnalisisDocumentoService analisisDocumentoService, IRepositorioFactura repositorio,
             IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA, IEmailService emailService)
         {
             this.azureService = azureService ?? throw new ArgumentNullException(nameof(azureService));
@@ -407,7 +409,7 @@ namespace SustitucionMOAUtils.Services
                             Message = $"Seleccione las certificaciones para la orden de compra {ordenDeCompraEncontrada.Value}.",
                             ValidataionType = typeof(OrdenCompraValidationCommand).Name,
                             Value = ordenDeCompraEncontrada.Value,
-                            Certificaciones = ordenDeCompraSAP.Certificaciones,
+                            Certificaciones = FiltrarCertificacionesNoVigentes(ordenDeCompraSAP.Certificaciones),
                             EsMonedaExtranjera = ordenDeCompraSAP.Cabecera.Moneda != nameof(Currency.ARP)
                         });
                         return result;
@@ -538,6 +540,20 @@ namespace SustitucionMOAUtils.Services
             Log.Info("Fin ObtenerResultadoOCRAsync: " + archivo.FileName);
 
             return resultadoOcrs;
+        }
+
+        private List<OrdenDeCompraSAPCertificacion> FiltrarCertificacionesNoVigentes(List<OrdenDeCompraSAPCertificacion> certificaciones)
+        {
+            var nrosCertificacionesSap = new HashSet<string>(certificaciones.Select(x => x.NroCertificacion));
+            var estadosCertificaciones = repositorio.ObtenerEstadosCertificaciones(nrosCertificacionesSap);
+            var certificacionesVigentes = certificaciones
+                .Where(x =>
+                    estadosCertificaciones.Any(e =>
+                        e.NumeroCertificacionSap == x.NroCertificacion &&
+                        e.Estado != "Anulada" &&
+                        e.Estado != "Rechazado"));
+
+            return certificacionesVigentes.ToList();
         }
     }
 }

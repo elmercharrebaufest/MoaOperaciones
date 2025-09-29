@@ -210,6 +210,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioCampoSustentable>().To<RepositorioCampoSustentable>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioCompras>().To<RepositorioCompras>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioFactura>().To<RepositorioFactura>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenDeCarga>().To<RepositorioOrdenDeCarga>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenDeCargaFason>().To<RepositorioOrdenDeCargaFason>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);
