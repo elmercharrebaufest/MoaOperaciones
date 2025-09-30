@@ -1925,7 +1925,7 @@ namespace SustitucionMOAUtils.Services
              }
              , e => e.CodigoSap.ToString().Contains(valor));
 
-            if((lista == null || !lista.Any()) && valor.Length >= 7 && valor.All(char.IsDigit))
+            if ((lista == null || !lista.Any()) && valor.Length >= 7 && valor.All(char.IsDigit))
             {
                 string codServicio = valor.PadLeft(18, '0');
                 this.ActualizarServicioSolpDadoCodigo(codServicio);
@@ -7583,7 +7583,7 @@ namespace SustitucionMOAUtils.Services
                             SolpCreador = solpTh.SolpCreador,
                             SolpFecha = solpTh.SolpFecha,
                             OrdenCompraNro = detalleOc.Cabecera.OrdenDeCompra,
-                            OrdenCompraCreador = detalleOc.Cabecera.CreadoPor,
+                            OrdenCompraCreador = detalleOc.Cabecera.UsuarioComprasSAP,
                             OrdenCompraFecha = detalleOc.Cabecera.FechaCreacion.ToString("dd/MM/yyyy"),
                             OrdenCompraFechaLiberacion = fechasLiberacionPorOc.TryGetValue(detalleOc.Cabecera.OrdenDeCompra, out DateTime fechaLiberacionOc) ? fechaLiberacionOc.ToString("dd/MM/yyyy") : null
                         });
