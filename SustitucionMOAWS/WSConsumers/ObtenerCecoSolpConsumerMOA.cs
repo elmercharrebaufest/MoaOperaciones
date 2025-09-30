@@ -1,5 +1,4 @@
-﻿using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
+﻿using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
@@ -9,10 +8,6 @@ using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -49,7 +44,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info(request.ToXml());
                     var response = agent.Z_MMRFC_OBTENER_CECO(request);
                     Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CECO response");
-                    Log.Info(response.ToXml());
+                    //Log.Info(response.ToXml());
                     return MapSinPI(response);
                 }
                 else

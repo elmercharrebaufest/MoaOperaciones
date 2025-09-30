@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkqr_camiones=self.webpackChunkqr_camiones||[]).push([[998],{2998:(t,o,n)=>{n.r(o),n.d(o,{adminRoutes:()=>s});const s=[{path:"",loadComponent:()=>n.e(452).then(n.bind(n,9452)).then(d=>d.AdminDashboardComponent),title:"Admin Dashboard"}]}}]);

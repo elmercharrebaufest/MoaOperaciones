@@ -1,22 +1,13 @@
-﻿using SustitucionMOAFotmatter;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA;
-using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerOrdenesDeCompraWebServiceMOA;
-using SustitucionMOAWS.OrdenesDeCompraParaSolpWebServiceMOA;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MEWP;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace SustitucionMOAWS.WSConsumers
@@ -80,7 +71,7 @@ namespace SustitucionMOAWS.WSConsumers
                     SHORT_TEXT = string.Empty,
                     SUPPL_PLANT = string.Empty,
                     TRACKINGNO = string.Empty,
-                    VENDOR = vendedor,
+                    VENDOR = !string.IsNullOrEmpty(vendedor) && vendedor.Length > 10 ? vendedor.Substring(0, 10) : vendedor,
                     WITH_PO_HEADERS = "X",
                     PO_HEADERS = cabeceras,
                     PO_ITEMS = detalle,
@@ -101,8 +92,8 @@ namespace SustitucionMOAWS.WSConsumers
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-                ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKKOL[] cabeceras   = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKKOL[] { };
-                ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKPOC[] detalle     = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKPOC[] { };
+                ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKKOL[] cabeceras = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKKOL[] { };
+                ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKPOC[] detalle = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKPOC[] { };
                 ObtenerOrdenesDeCompraWebServiceMOA.BAPIRETURN[] bapiReturn = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIRETURN[] { };
                 service.BAPI_PO_GETITEMS("", "", usuarioSolp ? "X" : "", fechaInicio, "", "", categoria, "", new ObtenerOrdenesDeCompraWebServiceMOA.BAPIMGVMATNR(), "",
                                          "", "", "", OC, "", "", "", new ObtenerOrdenesDeCompraWebServiceMOA.BAPIMGVMATNR(), "", "",
