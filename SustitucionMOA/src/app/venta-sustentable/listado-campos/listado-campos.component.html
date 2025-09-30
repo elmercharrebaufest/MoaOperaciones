@@ -148,7 +148,7 @@
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-sm-12 col-md-3">
+                <div class="col-xs-12 col-sm-12 col-md-3" *ngIf="esInterno">
                     <input type="checkbox" [(ngModel)]="checkRevision" name="miCheckbox">
                     Pendiente Revisión
                 </div>
@@ -363,7 +363,7 @@
 
                                         </span>
 
-                                        <button *ngIf="campo.TipoNormativa == 'EPA' || campo.TipoNormativa == '2BSVS'"
+                                        <button *ngIf="(campo.TipoNormativa == 'EPA' || campo.TipoNormativa == '2BSVS') && (!campo.Validado && !campo.MotivoRechazo) && esInterno"
                                             type="button" class="btn-sin-fondo btn-borrar fa fa-check" title="Aprobar"
                                             (click)="abrirDialogoAprobacion(campo)">
                                         </button>
@@ -386,20 +386,15 @@
                                             type="button" class="btn-sin-fondo btn-borrar fa fa-trash" title="Borrar"
                                             (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
                                         </button>
-                                        <button *ngIf="campo.TipoNormativa == 'EPA' || campo.TipoNormativa == '2BSVS'"
+                                        <button *ngIf="(campo.TipoNormativa == 'EPA' || campo.TipoNormativa == '2BSVS') && (!campo.Validado && !campo.MotivoRechazo) && esInterno"
                                             type="button" class="btn-sin-fondo btn-borrar fa fa-times" title="Rechazar"
                                             (click)="abrirDialogoRechazo(campo)">
                                         </button>
                                     </div>
-
                                 </div>
-
                             </td>
-
                         </tr>
-
                     </tbody>
-
                 </table>
 
                 <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="data && data.length != 0">

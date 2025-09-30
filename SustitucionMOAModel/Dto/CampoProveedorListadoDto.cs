@@ -39,7 +39,7 @@ namespace SustitucionMOAModel.Dto
         {
             get
             {
-                if(TipoNormativa == "EUDER")
+                if(TipoNormativa == "EUDR")
                 {
                     return ToneladasAprobadas > 0 ? "Aprobado" : ToneladasAprobadas == 0 ? "Desaprobado" : "En gestión";
                 }

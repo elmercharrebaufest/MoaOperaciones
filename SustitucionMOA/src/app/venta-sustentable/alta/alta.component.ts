@@ -332,12 +332,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }
     }
 
-    onCheck2BSVS(valor: boolean) {
-        if(valor && this.cosechaId > 0){
-            this.validarModalDeclaracion();
-        }
-    }
-
     private validarModalDeclaracion() {
         if (this.cosechaId > 0) {
             if (this.esCorredor) {

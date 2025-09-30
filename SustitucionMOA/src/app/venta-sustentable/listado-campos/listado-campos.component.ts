@@ -293,8 +293,8 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     getCamposFiltrados(): any[] {
     if (this.checkRevision) {
         return this.data.filter(campo =>
-            (campo.Validado === null || campo.Validado === false) &&
-            campo.TipoNormativa === "EPA"
+            (campo.Validado === false && !campo.MotivoRechazo) &&
+            (campo.TipoNormativa === "EPA" || campo.TipoNormativa === "2BSVS")
         );
     }
         return this.data;

@@ -9,6 +9,7 @@ using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
+using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Export.CampoSustentable;
 using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Interfaces;
@@ -26,6 +27,7 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -84,6 +86,12 @@ namespace SustitucionMOAUtils.Services
 
             ValidarCampo(campoProveedor, archivoKmz);
 
+            if (!ExisteCarpetaUcropIt(campoProveedor))
+            {
+                EnviarMailCarpetasUCROPIT(campoProveedor);
+                throw new ValidationCustomException("No se encontró la configuración de carpeta para subir el archivo KMZ. Contacte al administrador.");
+            }
+
             var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
 
             if(campoProveedor.BSVS2 && declaracion != null)
@@ -107,7 +115,7 @@ namespace SustitucionMOAUtils.Services
             if (campoProveedor.EPA && archivoEPA != null)
             {
                 campoProveedor.EvidenciaEPA = (new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" });
-                campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoCampoSustentable(campoProveedor, archivoEPA, rutaArch => campoProveedor.EvidenciaEPA.Ruta = rutaArch);
+                campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
             }
 
             //TODO linea 113 borrar dps
@@ -123,7 +131,7 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
             if (!UsarArchivoId)
             {
-                ruta = GuardarArchivoCampoSustentable(campoProveedor, archivoKmz, rutaArch => campoProveedor.Archivo.Ruta = rutaArch);
+                ruta = GuardarArchivoKMZ(campoProveedor, archivoKmz);
 
                 repositorio.GuardarCambios();
             }
@@ -256,7 +264,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     campoProveedor.EvidenciaEPA = new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" };
                 }
-                campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoCampoSustentable(campoProveedor, archivoEPA, rutaArch => campoProveedor.EvidenciaEPA.Ruta = rutaArch);
+                campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
             }
         }
 
@@ -730,15 +738,36 @@ namespace SustitucionMOAUtils.Services
 
             var nuevoArchivo = new Archivo { FileKey = FileKeys.CampoSustentableAnalisisUcrop, Ruta = rutaGuardado };
 
-
-
             repositorio.Agregar(nuevoArchivo);
 
             archivoSinDescargar.Archivo = nuevoArchivo;
             archivoSinDescargar.ProcesadoUcropit = true;
-            archivoSinDescargar.CampoCosecha.ToneladasAprobadas = resultadoProcesadoUcropit.Bsvs2 != null ?
-                    Math.Round(resultadoProcesadoUcropit.Bsvs2.ToneladasAprobadas ?? 0, 2) : 0;
-            archivoSinDescargar.CampoCosecha.MotivoRechazo = resultadoProcesadoUcropit.MotivoRechazo;
+
+            var normativas = new Dictionary<string, (bool flag, dynamic resultado)>
+            {
+                 { "2BSVS", (campoProveedor.BSVS2, resultadoProcesadoUcropit.Bsvs2) },
+                 { "EPA",   (campoProveedor.EPA,   resultadoProcesadoUcropit.Epa) },
+                 { "EUDR",  (campoProveedor.EUDR,  resultadoProcesadoUcropit.Eudr) }
+            };
+
+            foreach (var normativa in normativas)
+            {
+                if (normativa.Value.flag)
+                {
+                    var campoNormativa = archivoSinDescargar.CampoCosecha.CampoCosechaNormativas
+                        .FirstOrDefault(x => x.TipoNormativa.Descripcion == normativa.Key);
+
+                    if (campoNormativa != null)
+                    {
+                        campoNormativa.ToneladasAprobadas = normativa.Value.resultado != null
+                            ? Math.Round(normativa.Value.resultado.ToneladasAprobadas ?? 0, 2)
+                            : 0;
+
+                        campoNormativa.MotivoRechazo = normativa.Value.resultado?.MotivoRechazo ?? null;
+                    }
+                }
+            }
+            
             campoProveedor.HectareasSojaUcropit = resultadoProcesadoUcropit.Bsvs2?.SuperficieElegible;
             campoProveedor.HectareasTotalesUcropit = resultadoProcesadoUcropit.Bsvs2?.SuperficieTotalCampo;
 
@@ -763,6 +792,30 @@ namespace SustitucionMOAUtils.Services
             }
 
             return result;
+        }
+
+        private void EnviarMailCarpetasUCROPIT(CampoProveedor campoProveedor)
+        {
+            try
+            {
+                var normativas = new List<string>();
+                if (campoProveedor.EPA) normativas.Add("EPA");
+                if (campoProveedor.BSVS2) normativas.Add("2BSVS");
+                if (campoProveedor.EUDR) normativas.Add("EUDR");
+                string normativasTexto = string.Join(", ", normativas);
+
+                var cosecha = this.repositorio.Obtener<Cosecha>(c => c.Id == campoProveedor.CampoCosecha.Cosecha_Id);
+                var cuerpo = $"Estimados, falta configurar carpeta drive, para la cosecha {cosecha} y las siguientes normativas: {normativasTexto}.";
+                string asunto = "Molinos Agro - Falta configurar carpeta UCROPIT";
+                string destinatarios = ConfigurationManager.AppSettings["EmailCarpetasUcropIt"];
+                List<string> listaCorreos = destinatarios.Split(',').Select(x => x.Trim()).ToList();
+                
+                EmailSender.EnviarMail(listaCorreos, asunto, cuerpo, null, null, null, null);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
         }
 
         public List<SugerenciaCampoDto> ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int cosechaId, string cuitTitularCP)
@@ -832,7 +885,7 @@ namespace SustitucionMOAUtils.Services
                     if (fileEPA != null)
                     {
                         campoProveedor.EvidenciaEPA = (new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" });
-                        campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoCampoSustentable(campoProveedor, fileEPA, rutaArch => campoProveedor.EvidenciaEPA.Ruta = rutaArch);
+                        campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, fileEPA);
                     }
                     else
                     {
@@ -883,7 +936,7 @@ namespace SustitucionMOAUtils.Services
                         campoProveedor.Archivo = new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" };
                         if (archivoNuevoKmz != null)
                         {
-                            rutaArchivo = GuardarArchivoCampoSustentable(campoProveedor, archivoNuevoKmz, rutaArch => campoProveedor.Archivo.Ruta = rutaArch);
+                            rutaArchivo = GuardarArchivoKMZ(campoProveedor, archivoNuevoKmz);
                         }
                         repositorio.Agregar(campoProveedor);
                         repositorio.GuardarCambios();
@@ -976,11 +1029,28 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-
-        private string GuardarArchivoCampoSustentable(CampoProveedor campoProveedor, HttpPostedFileBase archivo, Action<string> setRutaArch)
+        private string GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
-            var extension = Path.GetExtension(archivo.FileName);
-            var fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, extension);
+            var extension = Path.GetExtension(archivoKmz.FileName);
+            var fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, ".", extension);
+            var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.CUIT);
+            var rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
+
+            Directory.CreateDirectory(rutaCarpeta);
+
+            if (File.Exists(rutaArchivo))
+            {
+                File.Delete(rutaArchivo);
+            }
+            archivoKmz.SaveAs(rutaArchivo);
+
+            campoProveedor.Archivo.Ruta = rutaArchivo;
+            return rutaArchivo;
+        }
+
+        private string GuardarArchivoEPA(CampoProveedor campoProveedor, HttpPostedFileBase archivo)
+        {
+            var fileName = Path.GetFileName(archivo.FileName);
             var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.CUIT);
             var rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
 
@@ -992,7 +1062,7 @@ namespace SustitucionMOAUtils.Services
             }
             archivo.SaveAs(rutaArchivo);
 
-            setRutaArch(rutaArchivo);
+            campoProveedor.EvidenciaEPA.Ruta = rutaArchivo;
             return rutaArchivo;
         }
 
@@ -1088,20 +1158,41 @@ namespace SustitucionMOAUtils.Services
             var jsonBytes = Encoding.UTF8.GetBytes(reporteCertificadorJson);
 
             var nombreArchivo = ObtenerNombreArchivoDrive(campoProveedor);
+            var inputFolderId = ObtenerInputFolderSegunNormativa(campoProveedor);
 
             var uploadFileKMZ = new GoogleDriveFileUploadRequest()
                 .WithFileUploadName($"{nombreArchivo}{extension}")
                 .WithFilePath(rutaArchivo);
 
-            campoSustentableGoogleDrive.UploadFile(uploadFileKMZ);
+            campoSustentableGoogleDrive.UploadFile(uploadFileKMZ, inputFolderId);
 
             var uploadFileJSON = new GoogleDriveFileUploadRequest()
                 .WithFileUploadName($"{nombreArchivo}.json")
                 .WithMimeType("applications/json")
                 .WithBytes(jsonBytes);
 
-            campoSustentableGoogleDrive.UploadFile(uploadFileJSON);
+            campoSustentableGoogleDrive.UploadFile(uploadFileJSON, inputFolderId);
         }
+
+        private string ObtenerInputFolderSegunNormativa(CampoProveedor campoProveedor)
+        {
+            var carpetaUcropIt = this.repositorio.Obtener<CarpetasUCROPIT>(c => c.Cosecha_Id == campoProveedor.CampoCosecha.Cosecha_Id
+            && c.EPA == campoProveedor.EPA && c.EUDR == campoProveedor.EUDR && c.BSVS2 == campoProveedor.BSVS2);
+            if (carpetaUcropIt == null)
+            {
+                throw new ValidationCustomException("No se encontró la configuración de carpeta para subir el archivo KMZ. Contacte al administrador.");
+            }
+
+            var match = System.Text.RegularExpressions.Regex.Match(carpetaUcropIt.UrlSubida, @"folders\/([a-zA-Z0-9\-_]+)");
+            return match.Success ? match.Groups[1].Value : null;
+        }
+
+        private bool ExisteCarpetaUcropIt(CampoProveedor campoProveedor)
+        {
+            return this.repositorio.Existe<CarpetasUCROPIT>(c => c.EUDR == campoProveedor.EUDR && c.EPA == campoProveedor.EPA &&
+            c.BSVS2 == campoProveedor.BSVS2 && c.Cosecha_Id == campoProveedor.CampoCosecha.Cosecha_Id);
+        }
+
         private void ActualizarPdf(byte[] pdfBytes, MemoryStream stream, DeclaracionCampoSustentableDto datos)
         {
             // open the reader
@@ -1341,7 +1432,7 @@ namespace SustitucionMOAUtils.Services
 
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
 
-            var campoCosechaNormativa = this.repositorio.Obtener<CampoCosechaNormativa>(c => c.TipoNormativa_Id == tipoNormativaId);
+            var campoCosechaNormativa = campoProveedor.CampoCosecha.CampoCosechaNormativas.FirstOrDefault(c => c.TipoNormativa_Id == tipoNormativaId);
             
             if(campoCosechaNormativa == null)
             {
@@ -1363,7 +1454,7 @@ namespace SustitucionMOAUtils.Services
 
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
 
-            var campoCosechaNormativa = this.repositorio.Obtener<CampoCosechaNormativa>(c => c.TipoNormativa_Id == tipoNormativaId);
+            var campoCosechaNormativa = campoProveedor.CampoCosecha.CampoCosechaNormativas.FirstOrDefault(c => c.TipoNormativa_Id == tipoNormativaId);
 
             if (campoCosechaNormativa == null)
             {

@@ -38,7 +38,8 @@
   <setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
 
   <setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,emartin@baufest.com" />
-
+  <setParameter name="EmailCarpetasUcropIt Config" value="moaoperaciones@baufest.com" />
+	
   <setParameter name="EmailToMesaENTSL Config" value="moaoperaciones@baufest.com;emartin@baufest.com;marian.rabellato@molinosagro.com.ar" />
   <setParameter name="EmailToMesaVentaFas Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
   <setParameter name="EmailToCobranzas Config" value="moaoperaciones@baufest.com;emartin@baufest.com" />
