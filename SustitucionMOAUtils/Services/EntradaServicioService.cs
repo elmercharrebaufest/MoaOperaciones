@@ -8,6 +8,7 @@ using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Util.EntitiesExtensions;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
+using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services.Email.Dto;
 using SustitucionMOAWS.Interfaces;
@@ -359,7 +360,9 @@ namespace SustitucionMOAUtils.Services
 
         public List<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(CreateEntradaServicioDto crearESRequestDto, string mailUsuario)
         {
+            Logger.Log.Debug($"CrearEntradaServicio user: {mailUsuario},data: {crearESRequestDto.ToJson()}");
             ValidarCreacionEntradaServicio(crearESRequestDto);
+            Logger.Log.Debug($"CrearEntradaServicio ValidarCreacionEntradaServicio ok");
 
             var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio);
             var centrosSap = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Centro");
@@ -369,14 +372,21 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var posicionES in crearESRequestDto.Posiciones)
             {
+
                 var solpNro = posicionES.EntrySheetHeader.SolPedNumber;
                 var proveedor = posicionES.EntrySheetHeader.Proveedor;
+                Logger.Log.Debug($"CrearEntradaServicio solpNro: {solpNro}, proveedor: {proveedor}");
 
+                Logger.Log.Debug($"CrearEntradaServicio ValidarIngresante");
                 var validacionIngresanteResp = ValidarIngresante(mailUsuario, solpNro);
+                Logger.Log.Debug($"CrearEntradaServicio ValidarIngresante {validacionIngresanteResp}");
+
                 EntradaServicioCreateRespuestaDto resultadoCreacionES;
+                Logger.Log.Debug($"CrearEntradaServicio CrearEntradaServicio {validacionIngresanteResp.Message}");
                 if (validacionIngresanteResp.Message == "Auto")
                 {
                     resultadoCreacionES = CrearEntradaServicio(posicionES, mailUsuario, crearESRequestDto.report, crearESRequestDto.IdAdjuntos, solpNro, proveedor);
+                    Logger.Log.Debug($"CrearEntradaServicio CrearEntradaServicio resultado {resultadoCreacionES}");
                 }
                 else
                 {
@@ -384,6 +394,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         resultadoCreacionES = CrearEntradaServicioTemporal(posicionES, mailUsuario, crearESRequestDto.report, crearESRequestDto.IdAdjuntos, solicitudesMailAprobacionES,
                             obtenerOrdenConsumer, centrosSap, almacenesSap, solpNro, proveedor);
+                        Logger.Log.Debug($"CrearEntradaServicio CrearEntradaServicioTemporal resultado {resultadoCreacionES}");
                     }
                     else
                     {
@@ -394,7 +405,11 @@ namespace SustitucionMOAUtils.Services
                 respuestasCreacion.Add(resultadoCreacionES);
             }
 
-            solicitudesMailAprobacionES.ForEach(s => emailCertificationService.EnviarMailAprobacion(s));
+            foreach (var s in solicitudesMailAprobacionES)
+            {
+                emailCertificationService.EnviarMailAprobacion(s);
+                Logger.Log.Debug($"CrearEntradaServicio EnviarMailAprobacion {s.DestinatarioMail} ");
+            }
 
             return respuestasCreacion;
         }
@@ -732,7 +747,7 @@ namespace SustitucionMOAUtils.Services
         /// <param name="nro_es_local"></param>
         /// <param name="suplenteOriginal"></param>
         /// <returns></returns>
-        public EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string suplenteOriginal)
+        public EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string suplenteOriginal, bool notificarAprobacionPendiente)
         {
             var esTemporalPendienteAprobacionList = ObtenerEntradasServicioPendientesParaReasignacion(nro_es_local);
 
@@ -762,7 +777,10 @@ namespace SustitucionMOAUtils.Services
 
             var aprobacionesNotificar = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nro_es_local);
 
-            _ = NotifyCreation(aprobacionesNotificar, proveedor, usuarioSuplente.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS);
+            if (notificarAprobacionPendiente)
+            {
+                _ = NotifyCreation(aprobacionesNotificar, proveedor, usuarioSuplente.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS);
+            }
 
             repositorioEntradaServicio.GuardarCambios();
 
@@ -1100,7 +1118,7 @@ namespace SustitucionMOAUtils.Services
         private EntradaServicioCreateRespuestaDto CrearEntradaServicio(EntradaServicioCreateParamsDto posicion,
             string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber, string proveedor = null)
         {
-            SustitucionMOAWS.Logger.Log.Info("EntradaServicioService.CrearEntradaServicio");
+            SustitucionMOAWS.Logger.Log.Debug("EntradaServicioService.CrearEntradaServicio");
 
             // 3 - Si alguna de las validaciones es correcta, alta automatica.
             EntradaServicioCreateRespuestaDto result = new CrearEntradaDeServicioConsumerMOA().CrearEntradaServicio(posicion);
@@ -1203,14 +1221,19 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                Logger.Log.Debug($"CrearEntradaServicioTemporal GuardarDatosES");
                 var nuevaAprobacion = GuardarDatosES(posiciones, userMail, 0, false, reporte, solpedNumber, proveedorCodigo);
-                ActualizarAdjuntosConES(idAdjuntos, nuevaAprobacion.NRO_ES_LOCAL);
+                Logger.Log.Debug($"CrearEntradaServicioTemporal GuardarDatosES id: {nuevaAprobacion.ID}, NRO_ES_LOCAL: {nuevaAprobacion.NRO_ES_LOCAL}");
 
+                Logger.Log.Debug($"CrearEntradaServicioTemporal ActualizarAdjuntosConES");
+                ActualizarAdjuntosConES(idAdjuntos, nuevaAprobacion.NRO_ES_LOCAL);
+                Logger.Log.Debug($"CrearEntradaServicioTemporal ActualizarAdjuntosConES ok");
                 var respuestaCrearES = new EntradaServicioCreateRespuestaDto
                 {
                     Type = "S",
                     Message = $"Se generó la entrada de servicio {nuevaAprobacion.NRO_ES_LOCAL} en estado {nuevaAprobacion.Estado_certificacion}, a verificar por Contratante o Solicitante."
                 };
+                Logger.Log.Debug($"CrearEntradaServicioTemporal ActualizarAdjuntosConES {respuestaCrearES.ToJson()}");
 
                 if (nuevaAprobacion != null)
                 {
@@ -1224,11 +1247,14 @@ namespace SustitucionMOAUtils.Services
                         var aprobadorMail = aprobacionesES[0].Aprobador_CDS;
                         var user = repositorioEntradaServicio.Listar<Usuario>(x => x.Mail == aprobadorMail).FirstOrDefault();
                         var userId = (user != null ? user.Id : 0);
+                        Logger.Log.Debug($"CrearEntradaServicioTemporal AgregarPosicionASolicitudesMailAprobacionES");
 
                         AgregarPosicionASolicitudesMailAprobacionES(solicitudesMailAprobacionES, aprobadorMail, userId, proveedor, aprobacionesES, obtenerOrdenConsumer, centrosSap, almacenesSap);
+                        Logger.Log.Debug($"CrearEntradaServicioTemporal AgregarPosicionASolicitudesMailAprobacionES ok");
 
                         aprobacionesES.ForEach(x => x.Notificaciones_enviadas = true);
                         repositorioEntradaServicio.GuardarCambios();
+                        Logger.Log.Debug($"CrearEntradaServicioTemporal GuardarCambios IDS {aprobacionesES.Select(a => a.ID).ToList().ToJson()} {nuevaAprobacion.ID}");
                     }
                 }
                 return respuestaCrearES;
@@ -1680,7 +1706,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         if (ap.EstaPendienteAprobacion())
                         {
-                            ReasignarSuplente(ap.NRO_ES_LOCAL, ap.Aprobador_CDS);
+                            ReasignarSuplente(ap.NRO_ES_LOCAL, ap.Aprobador_CDS, false);
                         }
                     }
                     #endregion

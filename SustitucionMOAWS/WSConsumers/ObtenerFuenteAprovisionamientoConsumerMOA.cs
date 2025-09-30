@@ -1,9 +1,5 @@
-﻿using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
+﻿using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.CredentialService;
-using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerFuenteAprovisionamientoWebServiceMOA;
 using SustitucionMOAWS.Util;
@@ -12,9 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -53,7 +46,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info(request.ToXml());
                     var response = agent.Z_MMRFC_OBTENER_FUENTE_APROV(request);
                     Log.Info($"SAP sin PI Z_MMRFC_OBTENER_FUENTE_APROV response");
-                    Log.Info(response.ToXml());
+                    //Log.Info(response.ToXml());
 
                     return MapSinPI(response);
                 }
@@ -121,25 +114,25 @@ namespace SustitucionMOAWS.WSConsumers
 
 
             foreach (var contrato in EX_FUENTE.Where(a => !string.IsNullOrEmpty(a.AGREEMENT)).ToList())
+            {
+                result.ContratosAprovisionamiento.Add(new FuenteAprovisionamiento()
                 {
-                    result.ContratosAprovisionamiento.Add(new FuenteAprovisionamiento()
-                    {
-                        ProveedorFijo = contrato.FIXED_VEND, //FIXED_VEND FLIEF   Proveedor fijo
-                        NombreProveedor = contrato.NAM_VENDOR, //NAM_VENDOR LFA1-NAME1 Nombre del Proveedor
-                        CentroAprovisionamiento = contrato.SUPPL_PLNT, //SUPPL_PLNT BEWRK   Centro desde el cual se aprovisiona el material
-                        NumeroContratoSuperior = contrato.AGREEMENT, //AGREEMENT KONNR   Número del contrato superior
-                        NumeroPosicionContratoSuperior = contrato.AGMT_ITEM, //AGMT_ITEM KTPNR   Número de posición del contrato superior
-                        NumeroRegistroInfoCompras = contrato.INFO_REC, //INFO_REC INFNR   Número del registro info de compras
-                        TipoDocumentoCompras = contrato.DOC_CAT, //DOC_CAT BSTYP   Tipo de documento de compras
-                        OrganizacionCompras = contrato.PURCH_ORG, //PURCH_ORG   EKORG Organización de compras
-                        UnidadMedida = contrato.PO_UNIT, //PO_UNIT BSTME   Unidad de medida de pedido
-                        TipoPosicionDocumento = contrato.ITEM_CAT, //ITEM_CAT    PSTYP Tipo de posición del documento de compras
-                        NumeroMaterial = contrato.MATERIAL, //MATERIAL MATNR18 Número de material (18 caracteres)
-                        TipoPosicionDocumentoCompras = contrato.ITEM_CAT_EXT ///ITEM_CAT_EXT EPSTP   Tipo de posición del documento de compras
+                    ProveedorFijo = contrato.FIXED_VEND, //FIXED_VEND FLIEF   Proveedor fijo
+                    NombreProveedor = contrato.NAM_VENDOR, //NAM_VENDOR LFA1-NAME1 Nombre del Proveedor
+                    CentroAprovisionamiento = contrato.SUPPL_PLNT, //SUPPL_PLNT BEWRK   Centro desde el cual se aprovisiona el material
+                    NumeroContratoSuperior = contrato.AGREEMENT, //AGREEMENT KONNR   Número del contrato superior
+                    NumeroPosicionContratoSuperior = contrato.AGMT_ITEM, //AGMT_ITEM KTPNR   Número de posición del contrato superior
+                    NumeroRegistroInfoCompras = contrato.INFO_REC, //INFO_REC INFNR   Número del registro info de compras
+                    TipoDocumentoCompras = contrato.DOC_CAT, //DOC_CAT BSTYP   Tipo de documento de compras
+                    OrganizacionCompras = contrato.PURCH_ORG, //PURCH_ORG   EKORG Organización de compras
+                    UnidadMedida = contrato.PO_UNIT, //PO_UNIT BSTME   Unidad de medida de pedido
+                    TipoPosicionDocumento = contrato.ITEM_CAT, //ITEM_CAT    PSTYP Tipo de posición del documento de compras
+                    NumeroMaterial = contrato.MATERIAL, //MATERIAL MATNR18 Número de material (18 caracteres)
+                    TipoPosicionDocumentoCompras = contrato.ITEM_CAT_EXT ///ITEM_CAT_EXT EPSTP   Tipo de posición del documento de compras
 
-                    });
-                }
-            
+                });
+            }
+
 
             result.error = resultado;
 

@@ -1,19 +1,13 @@
-﻿using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
+﻿using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
-using SustitucionMOAWS.ObtenerAdjuntosSOLPEDWebServiceMOA;
 using SustitucionMOAWS.ObtenerMaterialesSolpWebServiceMOA;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -38,7 +32,7 @@ namespace SustitucionMOAWS.WSConsumers
                     var agent = new Z_WS_MOAOP_COMPRAS_DIRECTClient();
                     agent.ClientCredentials.UserName.UserName = UserSap;
                     agent.ClientCredentials.UserName.Password = PassSap;
-                    
+
                     byte IM_MAX = Convert.ToByte(0);
                     var result = new MaterialWSMOAResponse();
                     result.Materiales = new List<Material>();
@@ -51,8 +45,8 @@ namespace SustitucionMOAWS.WSConsumers
                         var request = new Z_MMRFC_OBTENER_MATERIALES()
                         {
                             IM_MATERIAL = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5800[] { },
-                            IM_MATL_DESC = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5810[] {},
-                            IM_MATL_GROUP = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5830[]{},
+                            IM_MATL_DESC = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5810[] { },
+                            IM_MATL_GROUP = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5830[] { },
                             IM_MAX = Convert.ToByte(IM_MAX),
                             IM_PLANT = IM_PLANT
                         };
@@ -60,7 +54,7 @@ namespace SustitucionMOAWS.WSConsumers
                         Log.Info(request.ToXml());
                         var response = agent.Z_MMRFC_OBTENER_MATERIALES(request);
                         Log.Info($"SAP sin PI Z_MMRFC_OBTENER_MATERIALES response");
-                        Log.Info(response.ToXml());
+                        //Log.Info(response.ToXml());
 
                         var resultado = MapSinPI(response);
                         result.Materiales.AddRange(resultado.Materiales);
@@ -77,8 +71,8 @@ namespace SustitucionMOAWS.WSConsumers
                     service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                     service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-                    ObtenerMaterialesSolpWebServiceMOA.ZMPES5800[] IM_MATERIAL   = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5800[] { };
-                    ObtenerMaterialesSolpWebServiceMOA.ZMPES5810[] IM_MATL_DESC  = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5810[] { };
+                    ObtenerMaterialesSolpWebServiceMOA.ZMPES5800[] IM_MATERIAL = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5800[] { };
+                    ObtenerMaterialesSolpWebServiceMOA.ZMPES5810[] IM_MATL_DESC = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5810[] { };
                     ObtenerMaterialesSolpWebServiceMOA.ZMPES5830[] IM_MATL_GROUP = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5830[] { };
 
                     //ZMPES5820[] IM_PLANT = new List<ZMPES5820>{ new ZMPES5820 { SIGN = "I", OPTION = "EQ", LOW = CentroCodigo },  }.ToArray();
@@ -140,7 +134,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             return result;
         }
-    
+
 
         protected virtual MaterialWSMOAResponse map(string error, ObtenerMaterialesSolpWebServiceMOA.ZMPES5840[] EX_MATERIAL, ObtenerMaterialesSolpWebServiceMOA.BAPIRETURN[] IM_RETURN)
         {

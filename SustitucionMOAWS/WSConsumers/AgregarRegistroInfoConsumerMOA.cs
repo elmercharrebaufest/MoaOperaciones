@@ -276,6 +276,7 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (var registro in registros)
             {
                 string unidadMedidaCodigo = unidadesDeMedia.First(x => x.Comercial == registro.Unidad).UM;
+
                 var registroInfoSAP = new RegistroInfoSAPSinPI
                 {
                     MEWIEINA = new WS_GAQ_sin_PI_DIRECT_MOAOP.MEWIEINA

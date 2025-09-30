@@ -203,6 +203,8 @@ namespace SustitucionMOAWS.WSConsumers
                 CharSet = "utf-8"
             };
 
+            Logger.Log.Debug("requestMessage.Content CrearEntradaServicio: " + stringContent);
+
             return stringContent;
         }
 
