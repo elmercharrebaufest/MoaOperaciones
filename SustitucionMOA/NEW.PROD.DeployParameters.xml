@@ -239,4 +239,15 @@
   <setParameter value="http://GVICSAPA3.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_moaop_compras_direct/400/z_ws_moaop_compras_direct/z_ws_moaop_compras_direct" name="Z_WS_MOAOP_COMPRAS_DIRECT Service Endpoint Address" />
   <setParameter value="http://GVICSAPA3.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_moaop_direct/400/z_ws_moaop_direct/z_ws_moaop_direct" name="Z_WS_MOAOP_DIRECT Service Endpoint Address" />
   <setParameter value="http://GVICSAPA3.molinosagro.ad:8000/sap/bc/srt/rfc/sap/z_ws_panol_direct/400/z_ws_panol_direct/z_ws_panol_direct" name="Z_WS_PANOL_DIRECT Service Endpoint Address" />
+
+  <setParameter value="sap_sin_pi_http" name="Z_WS_BAPI_DIRECT_MLBO Binding Configuration" />
+  <setParameter value="sap_sin_pi_http" name="Z_WS_BAPI_DIRECT_2012 Binding Configuration" />
+  <setParameter value="sap_sin_pi_http" name="Z_WS_BAPI_DIRECT_MEWI Binding Configuration" />
+  <setParameter value="sap_sin_pi_http" name="Z_WS_BAPI_DIRECT_MEWP Binding Configuration" />
+  <setParameter value="sap_sin_pi_http" name="Z_WS_BAPI_DIRECT_MEWQ Binding Configuration" />
+  <setParameter value="sap_sin_pi_http" name="Z_WS_BAPI_DIRECT_BAPT Binding Configuration" />
+  <setParameter value="sap_sin_pi_http" name="Z_WS_MOAOP_COMPRAS_DIRECT Binding Configuration" />
+  <setParameter value="sap_sin_pi_http" name="Z_WS_MOAOP_DIRECT Binding Configuration" />
+  <setParameter value="sap_sin_pi_http" name="Z_WS_PANOL_DIRECT Binding Configuration" />
+  
 </parameters>

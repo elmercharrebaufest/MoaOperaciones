@@ -1032,5 +1032,34 @@
                     /endpoint[@name='Z_WS_PANOL_DIRECT']
                     /@address" />
   </parameter>
+
+  <parameter name="Z_WS_BAPI_DIRECT_MLBO Binding Configuration">
+    <parameterEntry kind="XmlFile" scope="Web.config" match="/configuration/system.serviceModel/client/endpoint[@name='Z_WS_BAPI_DIRECT_MLBO']/@bindingConfiguration" />
+  </parameter>
+  <parameter name="Z_WS_BAPI_DIRECT_2012 Binding Configuration">
+    <parameterEntry kind="XmlFile" scope="Web.config" match="/configuration/system.serviceModel/client/endpoint[@name='Z_WS_BAPI_DIRECT_2012']/@bindingConfiguration" />
+  </parameter>
+  <parameter name="Z_WS_BAPI_DIRECT_MEWI Binding Configuration">
+    <parameterEntry kind="XmlFile" scope="Web.config" match="/configuration/system.serviceModel/client/endpoint[@name='Z_WS_BAPI_DIRECT_MEWI']/@bindingConfiguration" />
+  </parameter>
+  <parameter name="Z_WS_BAPI_DIRECT_MEWP Binding Configuration">
+    <parameterEntry kind="XmlFile" scope="Web.config" match="/configuration/system.serviceModel/client/endpoint[@name='Z_WS_BAPI_DIRECT_MEWP']/@bindingConfiguration" />
+  </parameter>
+  <parameter name="Z_WS_BAPI_DIRECT_MEWQ Binding Configuration">
+    <parameterEntry kind="XmlFile" scope="Web.config" match="/configuration/system.serviceModel/client/endpoint[@name='Z_WS_BAPI_DIRECT_MEWQ']/@bindingConfiguration" />
+  </parameter>
+  <parameter name="Z_WS_BAPI_DIRECT_BAPT Binding Configuration">
+    <parameterEntry kind="XmlFile" scope="Web.config" match="/configuration/system.serviceModel/client/endpoint[@name='Z_WS_BAPI_DIRECT_BAPT']/@bindingConfiguration" />
+  </parameter>
+  <parameter name="Z_WS_MOAOP_COMPRAS_DIRECT Binding Configuration">
+    <parameterEntry kind="XmlFile" scope="Web.config" match="/configuration/system.serviceModel/client/endpoint[@name='Z_WS_MOAOP_COMPRAS_DIRECT']/@bindingConfiguration" />
+  </parameter>
+  <parameter name="Z_WS_MOAOP_DIRECT Binding Configuration">
+    <parameterEntry kind="XmlFile" scope="Web.config" match="/configuration/system.serviceModel/client/endpoint[@name='Z_WS_MOAOP_DIRECT']/@bindingConfiguration" />
+  </parameter>
+  <parameter name="Z_WS_PANOL_DIRECT Binding Configuration">
+    <parameterEntry kind="XmlFile" scope="Web.config" match="/configuration/system.serviceModel/client/endpoint[@name='Z_WS_PANOL_DIRECT']/@bindingConfiguration" />
+  </parameter>
+
 </parameters>
 
