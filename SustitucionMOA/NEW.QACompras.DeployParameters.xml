@@ -11,7 +11,7 @@
   <setParameter name="PasswordSap Config" value="prueba" />
   <setParameter name="SAPsinPI Config" value="1" />
   <setParameter name="SapUserSinPI Config" value="GWEBSRV_GOL" />
-  <setParameter name="SapPassSinPI Config" value="prueba" />
+  <setParameter name="SapPassSinPI Config" value="Inicio2025!" />
   
   <setParameter name="EsLocal Config" value="false" />
 
