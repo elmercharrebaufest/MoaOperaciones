@@ -7,7 +7,6 @@ using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
-using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Email;
@@ -504,7 +503,7 @@ namespace SustitucionMOAUtils.Services
                     c.Moneda
                 }).ToList();
 
-                int totalItems = resultado.Items.Count;
+                int totalItems = resultado.ItemsTotales;
                 itemsPorPagina = paginacion?.ItemsPorPagina ?? totalItems;
                 int paginaActual = paginacion?.Pagina ?? 1;
                 int totalPaginas = (int)Math.Ceiling((decimal)totalItems / itemsPorPagina.Value);

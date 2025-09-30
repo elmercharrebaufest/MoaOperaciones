@@ -76,7 +76,7 @@
             </thead>
             <tbody>
                 <ng-container
-                    *ngFor="let certificacion of datosCertificaciones | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
+                    *ngFor="let certificacion of datosCertificaciones"
                     role="row" [class.odd]="!odd">
                     <tr>
                         <td>{{certificacion.RazonSocial}}</td>
