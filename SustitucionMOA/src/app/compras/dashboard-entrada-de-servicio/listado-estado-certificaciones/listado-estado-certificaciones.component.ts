@@ -615,42 +615,44 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 this.subscripciones.push(
                     this.service.enviarAprobacionES(numeroCertificacion, moneda).subscribe(
                         (resp) => {
-                            let mensajeError: string = "";
-                            if (!resp.data) {
-                                mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
-                                this.messageService.add({ severity: 'error', summary: 'Error', detail: mensajeError });
-                            }
-                            switch (resp.data.Type) {
-                                case "I": {
-                                    this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
-                                    this.updateStateFromPending(numeroCertificacion, 'Aprobar');
-                                    this.getFecha("1");
-                                    this.obtenerESSap(this.proveedor, this.documentoNumero);
-                                    break;
-                                }
-                                case "S":
-                                case "Desync":
-                                    this.messageService.add({ severity: 'info', summary: '', detail: resp.data.Message });
-                                    break;
-                                case "E": {
-                                    mensajeError = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
-                                        resp.data.Message.startsWith("Contabilice en ") ?
-                                        "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
-                                    this.messageService.add({ severity: 'warning', summary: '', detail: mensajeError });
-                                    break;
-                                }
-                                default: {
-                                    this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
-                                    break;
-                                }
-                            }
                             this.mostrarModalAprobaciones = false;
                             this.blockUI.stop();
                             this.clearMessage();
-                        }, error => {
+                            if (!resp.data || resp.error) {
+                                this.messageService.add({ severity: 'error', summary: 'Error', detail: resp.error || 'del servidor, vuelva a intentarlo más tarde.' });
+                            }
+                            else {
+                                const tipoResp = resp.data.Type || '';
+                                switch (tipoResp) {
+                                    case "I": {
+                                        this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
+                                        this.updateStateFromPending(numeroCertificacion, 'Aprobar');
+                                        this.getFecha("1");
+                                        this.obtenerESSap(this.proveedor, this.documentoNumero);
+                                        break;
+                                    }
+                                    case "S":
+                                    case "Desync":
+                                        this.messageService.add({ severity: 'info', summary: '', detail: resp.data.Message });
+                                        break;
+                                    case "E": {
+                                        let mensajeError: string = !!resp.data.Message && (resp.data.Message.startsWith("Sólo es posible contabilizar en ") || resp.data.Message.startsWith("Contabilice en ")) ?
+                                            "El período se encuentra cerrado, por favor contabilice en el periodo actual." : (resp.data.Message || '');
+                                        this.messageService.add({ severity: 'warning', summary: '', detail: mensajeError });
+                                        break;
+                                    }
+                                    default: {
+                                        this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Por favor inténtelo de nuevo.' });
+                                        break;
+                                    }
+                                }
+                            }
+                        },
+                        errorResp => {
+                            console.error(errorResp);
                             this.mostrarModalAprobaciones = false;
                             this.blockUI.stop();
-                            this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
+                            this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Por favor inténtelo de nuevo.' });
                             this.clearMessage();
                         }
                     )

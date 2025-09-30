@@ -450,7 +450,7 @@ namespace SustitucionMOAUtils.Services
         public async Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local, string Moneda)
         {
             Logger.Log.Info($"AprobarEntradaDeServicio: '{nro_es_local}', moneda '{Moneda}'");
-            List<Aprobaciones> EntradasDeServicioTemp = repositorioEntradaServicio.Listar<SustitucionMOAModel.Entities.Aprobaciones>(x => x.NRO_ES_LOCAL == nro_es_local);
+            List<Aprobaciones> EntradasDeServicioTemp = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nro_es_local);
             EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
             string status = CheckESStatus(EntradasDeServicioTemp);
             if (status.Contains("Modificado"))
@@ -491,9 +491,8 @@ namespace SustitucionMOAUtils.Services
                         DocumentoReferenciaNumero = EntradasDeServicioTemp[0].Referencia
                     };
 
-                    string codigoProveedor = EntradasDeServicioTemp[0].Proveedor;
-
-                    var proveedor = repositorioEntradaServicio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor);
+                    var codigoProveedor = EntradasDeServicioTemp[0].Proveedor;
+                    var proveedor = repositorioEntradaServicio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor) ?? throw new ValidationCustomException("No se encontró el proveedor: " + codigoProveedor);
 
                     emailDetailCertificateDto.Descripcion = EntradasDeServicioTemp[0].Texto_breve_servicio;
                     emailDetailCertificateDto.FechaCertificacion = EntradasDeServicioTemp[0].Fecha_Contabilizacion?.ToString("yyyy-MM-dd");
@@ -503,7 +502,6 @@ namespace SustitucionMOAUtils.Services
                     emailDetailCertificateDto.NroOC = EntradasDeServicioTemp[0].NRO_OC;
                     emailDetailCertificateDto.NumeroPosicion = EntradasDeServicioTemp[0].NRO_POS;
                     emailDetailCertificateDto.Aprobador = EntradasDeServicioTemp[0].Aprobador_CDS;
-
 
                     EntradaServicioSapParams.EntrySheetServices = new EntrySheetServiceSection
                     {
@@ -534,12 +532,10 @@ namespace SustitucionMOAUtils.Services
                         serviceDetailDto.Cantidad = ES.Cantidad_a_certificar.ToString();
                         serviceDetailDto.Monto = Moneda == "ARP" ? "$ " + ES.Monto_a_certificar.ToString() : Moneda + " " + ES.Monto_a_certificar.ToString();
 
-
                         serviceDetailDtoList.Add(serviceDetailDto);
                     }
 
                     emailDetailCertificateDto.DetalleServicio = serviceDetailDtoList;
-
 
                     if (EntradaServicioSapParams.EntrySheetServices.Items.Count > 0)
                     {
@@ -558,18 +554,13 @@ namespace SustitucionMOAUtils.Services
                     emailDetailCertificateDto.NumeroCertificacion = ESNumber.ToString();
                     try
                     {
-                        foreach (var ES in EntradasDeServicioTemp)
+                        foreach (var ES in EntradasDeServicioTemp.Where(x => x.EstaPendienteAprobacion()))
                         {
-                            if (ES.EstaPendienteAprobacion())
-                            {
-
-                                ES.NRO_ES_SAP = ESNumber;
-                                ES.SetEstadoAprobada();
-                                ES.Fecha_aprobacion = DateTime.Today;
-                                result.NroESSap = ESNumber.ToString();
-                                repositorioEntradaServicio.GuardarCambios();
-
-                            }
+                            ES.NRO_ES_SAP = ESNumber;
+                            ES.SetEstadoAprobada();
+                            ES.Fecha_aprobacion = DateTime.Today;
+                            result.NroESSap = ESNumber.ToString();
+                            repositorioEntradaServicio.GuardarCambios();
                         }
 
                         _ = NotifyApproval(emailDetailCertificateDto, nro_es_local);
