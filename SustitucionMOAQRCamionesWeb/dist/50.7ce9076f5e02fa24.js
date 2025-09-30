@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkqr_camiones=self.webpackChunkqr_camiones||[]).push([[50],{8050:(e,n,s)=>{s.r(n),s.d(n,{usersRoutes:()=>t});const t=[{path:"",loadComponent:()=>s.e(975).then(s.bind(s,975)).then(o=>o.UsersListComponent),title:"Users List"}]}}]);

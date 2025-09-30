@@ -6,11 +6,8 @@ using SustitucionMOAWS.Util;
 using SustitucionMOAWS.VendedorDetalleWebServiceMOA;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -30,15 +27,15 @@ namespace SustitucionMOAWS.WSConsumers
                     agent.ClientCredentials.UserName.UserName = UserSap;
                     agent.ClientCredentials.UserName.Password = PassSap;
 
-                    WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4470[] cabeceras   = new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4470[] { };
-                    WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4430[] convenios   = new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4430[] { };
-                    WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4460[] cuentas     = new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4460[] { };
-                    WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4450[] exenciones  = new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4450[] { };
+                    WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4470[] cabeceras = new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4470[] { };
+                    WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4430[] convenios = new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4430[] { };
+                    WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4460[] cuentas = new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4460[] { };
+                    WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4450[] exenciones = new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4450[] { };
                     WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPTE3420[] actividades = new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPTE3420[] { };
 
                     var request = new Z_MPMF_MOAOP_DETALLES_VENDEDOR()
                     {
-                        PE_PROVEEDOR = proveedor,
+                        PE_PROVEEDOR = !string.IsNullOrEmpty(proveedor) && proveedor.Length > 10 ? proveedor.Substring(0, 10) : proveedor,
                         PE_PROVEEDOR_DETALLE = vendedor,
                         T_CABE = cabeceras,
                         T_CONVENIO = convenios,
@@ -60,10 +57,10 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     SI_MPMF_MOAOP_DETALLES_VENDEDORClient service = new SI_MPMF_MOAOP_DETALLES_VENDEDORClient();
 
-                    VendedorDetalleWebServiceMOA.ZMPES4470[] cabeceras   = new VendedorDetalleWebServiceMOA.ZMPES4470[] { };
-                    VendedorDetalleWebServiceMOA.ZMPES4430[] convenios   = new VendedorDetalleWebServiceMOA.ZMPES4430[] { };
-                    VendedorDetalleWebServiceMOA.ZMPES4460[] cuentas     = new VendedorDetalleWebServiceMOA.ZMPES4460[] { };
-                    VendedorDetalleWebServiceMOA.ZMPES4450[] exenciones  = new VendedorDetalleWebServiceMOA.ZMPES4450[] { };
+                    VendedorDetalleWebServiceMOA.ZMPES4470[] cabeceras = new VendedorDetalleWebServiceMOA.ZMPES4470[] { };
+                    VendedorDetalleWebServiceMOA.ZMPES4430[] convenios = new VendedorDetalleWebServiceMOA.ZMPES4430[] { };
+                    VendedorDetalleWebServiceMOA.ZMPES4460[] cuentas = new VendedorDetalleWebServiceMOA.ZMPES4460[] { };
+                    VendedorDetalleWebServiceMOA.ZMPES4450[] exenciones = new VendedorDetalleWebServiceMOA.ZMPES4450[] { };
                     VendedorDetalleWebServiceMOA.ZMPTE3420[] actividades = new VendedorDetalleWebServiceMOA.ZMPTE3420[] { };
                     service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                     service.ClientCredentials.UserName.Password = SAPCredential.getPassword();

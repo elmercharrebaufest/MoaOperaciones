@@ -45,7 +45,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Mail;
 using System.Text;
-using System.Threading;
 using System.Web;
 
 
@@ -967,7 +966,7 @@ namespace SustitucionMOAUtils.Services
 
                         }
                         else
-                        {  
+                        {
                             SolpSAPDto solpSAP = comprasServiceSap.ConvertirSOLPSAP(solpEntity);
                             resultadoEditarSolp = comprasServiceSap.ModificarSolpSap(solpSAP);
                         }
@@ -3122,7 +3121,6 @@ namespace SustitucionMOAUtils.Services
             {
                 try
                 {
-                    Thread.Sleep(10000);
                     ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
                 }
                 catch (Exception e)
