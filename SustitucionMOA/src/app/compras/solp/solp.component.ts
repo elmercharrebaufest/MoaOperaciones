@@ -692,7 +692,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.disabledSave = false;
                         return false;
                     }
-                    if(!this.validarCondicionesDeAcuerdoMarco()){
+                    if (!this.validarCondicionesDeAcuerdoMarco()) {
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen acuerdo marco" });
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
@@ -700,7 +700,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.disabledSave = false;
                         return false;
                     }
-                    if(!this.validarQueTodasLasPosicionesTenganProveedor()){
+                    if (!this.validarQueTodasLasPosicionesTenganProveedor()) {
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen el mismo proveedor" });
                         if (guardarPorPaso == false) {
                             this.blockUI.stop();
@@ -1048,35 +1048,35 @@ export class SolpComponent extends BaseComponent implements OnInit {
     validarQueTodasLasPosicionesTenganProveedor() {
         // Filtrar solo posiciones activas (estado == true)
         const posicionesActivas = this.solpActual.posiciones.filter(x => x.estado === true);
-        
+
         if (posicionesActivas.length === 0) {
             return true; // No hay posiciones activas para validar
         }
-        
+
         // Separar posiciones con contrato marco y sin contrato marco
         const posicionesConContratoMarco = posicionesActivas.filter(
-            x => x.numeroContratoSuperior != null && 
-                x.numeroContratoSuperior !== undefined && 
+            x => x.numeroContratoSuperior != null &&
+                x.numeroContratoSuperior !== undefined &&
                 x.numeroContratoSuperior !== ""
         );
-        
+
         const posicionesSinContratoMarco = posicionesActivas.filter(
-            x => x.numeroContratoSuperior === null || 
-                x.numeroContratoSuperior === undefined || 
+            x => x.numeroContratoSuperior === null ||
+                x.numeroContratoSuperior === undefined ||
                 x.numeroContratoSuperior === ""
         );
-        
+
         // Si todas las posiciones activas tienen contrato marco, no se valida que tengan el mismo proveedor
         if (posicionesConContratoMarco.length === posicionesActivas.length) {
             return true;
         }
-        
+
         // Si hay posiciones sin contrato marco, ya no validamos si tienen proveedor asignado
         // Siempre retornamos true para este caso
         if (posicionesSinContratoMarco.length > 0) {
             return true;
         }
-        
+
         return true; // Por seguridad, aunque no debería llegarse a este punto
     }
 
@@ -1095,34 +1095,34 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         // 1. Verificar si todas las posiciones activas tienen contrato marco o todas no tienen
         const tienenContratoMarco = posicionesActivas.filter(
-            x => x.numeroContratoSuperior != null && 
-                 x.numeroContratoSuperior !== undefined && 
-                 x.numeroContratoSuperior !== ""
+            x => x.numeroContratoSuperior != null &&
+                x.numeroContratoSuperior !== undefined &&
+                x.numeroContratoSuperior !== ""
         );
-        
+
         const sinContratoMarco = posicionesActivas.filter(
-            x => x.numeroContratoSuperior === null || 
-                 x.numeroContratoSuperior === undefined || 
-                 x.numeroContratoSuperior === ""
+            x => x.numeroContratoSuperior === null ||
+                x.numeroContratoSuperior === undefined ||
+                x.numeroContratoSuperior === ""
         );
-        
+
         // 2. Si hay posiciones con contrato marco y sin contrato marco al mismo tiempo,
         // la función debe devolver false (condición no permitida)
         if (tienenContratoMarco.length > 0 && sinContratoMarco.length > 0) {
             return false;
         }
-        
+
         // 3. Si todas las posiciones activas tienen contrato marco, es válido
         // También es válido que posiciones activas tengan diferentes contratos marco
         if (tienenContratoMarco.length === posicionesActivas.length) {
             return true;
         }
-        
+
         // 4. Si todas las posiciones activas NO tienen contrato marco, también es válido
         if (sinContratoMarco.length === posicionesActivas.length) {
             return true;
         }
-        
+
         // Este punto no debería alcanzarse, pero por seguridad devolvemos false
         return false;
     }
@@ -1131,7 +1131,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         if (this.solpActual.listaVisitas.length === 0) { //se evita listaVisitas.reduce() cuando listaVisitas está vacía
             return false;
         }
-        var esTipoPosicionServicio = this.solpActual.posicionActual != undefined &&  this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
+        var esTipoPosicionServicio = this.solpActual.posicionActual != undefined && this.solpActual.posicionActual.tipoPosicion != "undefined" && this.solpActual.posicionActual.tipoPosicion && this.solpActual.posicionActual.tipoPosicion.Codigo == "SERVICIO";
         var sinPliego = this.solpActual.tipoSolp === "SIN_PLIEGO";
         var pliegoMultiple = this.solpActual.tipoSolp === "PLIEGO_MULTIPLE";
         var validarFechaVisitaDeObra = false;
@@ -1507,8 +1507,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Abre el modal del boton finalizar
     showFinalizarDialog() {
-        this.selectModalMessageBasedOnSolpConditions();
-        this.displayModalConfirmacionFinalizar = true;
+        if (this.solpActual.certificacionAutomatica == true) {
+            this.displayModalConfirmacionFinalizar = true;
+            this.modalMessage = "LA CERTIFICACION DEL SERVICIO SE HARA DE FORMA AUTOMATICA. EL PROVEEDOR QUEDA AUTORIZADO A COBRAR EL SERVICIO.";
+        } else {
+            this.continuarAFinalizar();
+        }
     }
 
     // Nuevo método para continuar al modal de finalizar
@@ -1895,13 +1899,4 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    selectModalMessageBasedOnSolpConditions() {
-
-        if(this.solpActual.certificacionAutomatica == true){
-            this.modalMessage = "LA CERTIFICACION DEL SERVICIO SE HARA DE FORMA AUTOMATICA. EL PROVEEDOR QUEDA AUTORIZADO A COBRAR EL SERVICIO.";
-        }
-        else {
-            this.modalMessage = "VA A REQUERIR DEFINIR DESDE COMPRAS SI ADMITE O NO CERTIFICACIONES PARCIALES EN LOS SERVICIOS.";
-        }
-    }
 }
