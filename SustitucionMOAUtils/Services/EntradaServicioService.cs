@@ -8,8 +8,8 @@ using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Util.EntitiesExtensions;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
-using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Extensions;
+using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services.Email.Dto;
 using SustitucionMOAWS.Interfaces;
@@ -851,7 +851,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     List<Solp> solps;
                     var nrosSolps = ordenDeCompra.Posiciones.Select(p => p.NroSolp).ToList();
-                    
+
                     if (ordenDeCompra.Posiciones.Any(pos => !string.IsNullOrEmpty(pos.AcuerdoMarco)))
                     {
                         solps = repositorioEntradaServicio.ObtenerSolpsAutocertificablesDeOC(nrosSolps);
@@ -1584,8 +1584,8 @@ namespace SustitucionMOAUtils.Services
 
                 if (!string.IsNullOrEmpty(esItem.CertificationAmount))
                 {
-                    aprobacion.Monto_a_certificar = esItem.Quantity.ToNullableDecimal();
-                    monto_total = (monto_total + (aprobacion.Monto_a_certificar ?? 0));
+                    aprobacion.Monto_a_certificar = esItem.Quantity.ToNullableDecimal() * esItem.ItemGrossPrice.ToNullableDecimal();
+                    monto_total = monto_total + (aprobacion.Monto_a_certificar ?? 0);
                 }
 
                 aprobacionesAGrabar.Add(aprobacion);
@@ -1929,7 +1929,8 @@ namespace SustitucionMOAUtils.Services
                 //Busqueda por Supervisor Trabajo
                 if (detalleSolPed.SupervisorTrabajo[0].Contains("@"))
                 {
-                    var usuario = repositorioEntradaServicio.Obtener<Usuario>(x => x.Mail == detalleSolPed.SupervisorTrabajo[0]);
+                    string mailSupervisor = detalleSolPed.SupervisorTrabajo[0];
+                    var usuario = repositorioEntradaServicio.Obtener<Usuario>(x => x.Mail == mailSupervisor);
                     if (usuario != null)
                     {
                         return usuario;
