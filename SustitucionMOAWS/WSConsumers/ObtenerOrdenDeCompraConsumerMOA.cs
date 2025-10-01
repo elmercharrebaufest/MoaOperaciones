@@ -490,6 +490,7 @@ namespace SustitucionMOAWS.WSConsumers
                             NroCertificacion = poh.MAT_DOC,
                             Saldo = poh.VAL_LOCCUR,
                             Moneda = poh.CURRENCY,
+                            MontoFormateado = SAPFormatter.FormatearMonto(poh.VAL_FORCUR, poh.CURRENCY)
                             //importe = poh.importe // Nos tienen que decir el nombre de este campo
                         });
                     }
@@ -501,9 +502,11 @@ namespace SustitucionMOAWS.WSConsumers
                         {
                             case "Q":
                                 certificacion.Saldo -= poh.VAL_LOCCUR;
+                                certificacion.MontoFormateado = SAPFormatter.FormatearMonto(certificacion.Saldo, certificacion.Moneda);
                                 break;
                             case "N":
                                 certificacion.Saldo += poh.VAL_LOCCUR;
+                                certificacion.MontoFormateado = SAPFormatter.FormatearMonto(certificacion.Saldo, certificacion.Moneda);
                                 break;
                             default:
                                 break;

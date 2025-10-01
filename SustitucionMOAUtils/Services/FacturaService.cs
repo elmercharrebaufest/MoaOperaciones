@@ -79,10 +79,10 @@ namespace SustitucionMOAUtils.Services
                     {
                         var ordenDeCompraValidationResult = resultadoAnalisis.Find(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name);
                         var certificacionesRegistradasOC = repositorio.Listar<CertificacionRegistrada>(cr => cr.NRO_OC == ordenDeCompraValidationResult.Value);
+                        resultado.ForEach(r => r.FileName = file.FileName);
 
                         if (resultado[0].Certificaciones?.Count > 0)
                         {
-                            resultado.ForEach(r => r.FileName = file.FileName);
                             // Buscamos los archivos relacionados a ese nro de certificacion
                             resultado[0].Certificaciones.ForEach((certificacion) =>
                             {
@@ -97,12 +97,13 @@ namespace SustitucionMOAUtils.Services
                             });
                         }
 
-                        resultado[0].Certificaciones = resultado[0].Certificaciones ?? new List<SustitucionMOAModel.Dto.OrdenDeCompraSAPCertificacion>();
+                        resultado[0].Certificaciones = resultado[0].Certificaciones ?? new List<OrdenDeCompraSAPCertificacion>();
                         if (certificacionesRegistradasOC.Any(x => x.Archivo.FileKey == FileKeys.FacturaDiferenciaTasaDeCambio))
                         {
-                            resultado[0].Certificaciones.Add(new SustitucionMOAModel.Dto.OrdenDeCompraSAPCertificacion
+                            resultado[0].Certificaciones.Add(new OrdenDeCompraSAPCertificacion
                             {
                                 NroCertificacion = "Factura por diferencia de tasa de cambio",
+                                Moneda = string.Empty,
                                 Archivo = new List<Archivo>(certificacionesRegistradasOC.Where(cr => cr.Archivo.FileKey == FileKeys.FacturaDiferenciaTasaDeCambio).Select(x => x.Archivo))
                             });
                         }
