@@ -32,6 +32,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
+using SharpKml.Engine;
+using SharpKml.Base;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -64,6 +66,9 @@ namespace SustitucionMOAUtils.Services
         {
             var ruta = "";
             var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
+
+            if(archivoKmz != null)
+                ValidarCampoPoligonoKmz(campoProveedor, archivoKmz);
 
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
 
@@ -644,48 +649,83 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var esAdminCampos = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
-            var headersBase = new List<string>() { "Cosecha", "Campo", "RENSPA", "Proveedor", "Cuit", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas", "Razon Social", "Fecha Creacion" };
-            dynamic listado;
+            var headersBase = new List<string> { "Cosecha", "Campo", "RENSPA", "Proveedor", "Cuit", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas", "Normativa", "Razon Social", "Fecha Creacion" };
+            var campos = ListarCampos(usuario, cp => cp);
+
+            if (esAdminCampos)
+                headersBase.Insert(0, "Id Scato");
+
+            var normativas = new List<(Func<CampoProveedor, bool> flag, string descripcion)>
+            {
+                (cp => cp.BSVS2, "2BSVS"),
+                (cp => cp.EPA, "EPA"),
+                (cp => cp.EUDR, "EUDR")
+            };
 
             if (esAdminCampos)
             {
-                headersBase.Insert(0, "Id Scato");
-                listado = ListarCampos(usuario, cp => new CampoSustentableExportDTO()
-                {
-                    Campo = cp.CampoCosecha.Campo.Nombre,
-                    Renspa = cp.CampoCosecha.Campo.Renspa,
-                    ProveedorRazonSocial = cp.Proveedor.RazonSocial,
-                    CuitProveedor = cp.Proveedor.CUIT,
-                    Cosecha = cp.CampoCosecha.Cosecha.Nombre,
-                    HectareasSoja = cp.HectareasSoja,
-                    HectareasTotales = cp.HectareasTotales,
-                    IdScato = cp.CampoCosecha.Campo.IdScato,
-                    Motivo = cp.CampoCosecha.MotivoRechazo,
-                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
-                    RazonSocial = cp.RazonSocial,
-                    FechaCreacion = cp.FechaCreacion
-                });
-                ((List<CampoSustentableExportDTO>)listado).ForEach(x => x.Renspa = x.Renspa.ToFormatoRenspa());
+                var listado = campos
+                    .SelectMany(cp => normativas
+                        .Where(n => n.flag(cp))
+                        .Select(n =>
+                        {
+                            var normativa = cp.CampoCosecha.CampoCosechaNormativas?
+                                .FirstOrDefault(x => x.TipoNormativa.Descripcion == n.descripcion);
+                            return normativa == null ? null : new CampoSustentableExportDTO
+                            {
+                                Campo = cp.CampoCosecha.Campo.Nombre,
+                                Renspa = cp.CampoCosecha.Campo.Renspa,
+                                ProveedorRazonSocial = cp.Proveedor.RazonSocial,
+                                CuitProveedor = cp.Proveedor.CUIT,
+                                Cosecha = cp.CampoCosecha.Cosecha.Nombre,
+                                HectareasSoja = cp.HectareasSoja,
+                                HectareasTotales = cp.HectareasTotales,
+                                IdScato = cp.CampoCosecha.Campo.IdScato,
+                                Motivo = normativa.MotivoRechazo,
+                                ToneladasAprobadas = normativa.ToneladasAprobadas,
+                                Normativa = normativa.TipoNormativa.Descripcion,
+                                RazonSocial = cp.RazonSocial,
+                                FechaCreacion = cp.FechaCreacion,
+                            };
+                        })
+                        .Where(x => x != null)
+                    )
+                    .ToList();
+
+                listado.ForEach(x => x.Renspa = x.Renspa.ToFormatoRenspa());
+                return excelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
             }
             else
             {
-                listado = ListarCampos(usuario, cp => new CampoSustentableExportBaseDTO()
-                {
-                    Campo = cp.CampoCosecha.Campo.Nombre,
-                    Renspa = cp.CampoCosecha.Campo.Renspa,
-                    ProveedorRazonSocial = cp.Proveedor.CodigoProveedor,
-                    Cosecha = cp.CampoCosecha.Cosecha.Nombre,
-                    HectareasSoja = cp.HectareasSoja,
-                    HectareasTotales = cp.HectareasTotales,
-                    Motivo = cp.CampoCosecha.MotivoRechazo,
-                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
-                    RazonSocial = cp.RazonSocial,
-                    FechaCreacion = cp.FechaCreacion
-                });
-                ((List<CampoSustentableExportBaseDTO>)listado).ForEach(x => x.Renspa = x.Renspa.ToFormatoRenspa());
-            }
+                var listado = campos
+                    .SelectMany(cp => normativas
+                        .Where(n => n.flag(cp))
+                        .Select(n =>
+                        {
+                            var normativa = cp.CampoCosecha.CampoCosechaNormativas?
+                                .FirstOrDefault(x => x.TipoNormativa.Descripcion == n.descripcion);
+                            return normativa == null ? null : new CampoSustentableExportBaseDTO
+                            {
+                                Campo = cp.CampoCosecha.Campo.Nombre,
+                                Renspa = cp.CampoCosecha.Campo.Renspa,
+                                ProveedorRazonSocial = cp.Proveedor.CodigoProveedor,
+                                Cosecha = cp.CampoCosecha.Cosecha.Nombre,
+                                HectareasSoja = cp.HectareasSoja,
+                                HectareasTotales = cp.HectareasTotales,
+                                Motivo = normativa.MotivoRechazo,
+                                ToneladasAprobadas = normativa.ToneladasAprobadas,
+                                Normativa = normativa.TipoNormativa.Descripcion,
+                                RazonSocial = cp.RazonSocial,
+                                FechaCreacion = cp.FechaCreacion,
+                            };
+                        })
+                        .Where(x => x != null)
+                    )
+                    .ToList();
 
-            return excelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
+                listado.ForEach(x => x.Renspa = x.Renspa.ToFormatoRenspa());
+                return excelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
+            }
         }
 
         public string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId)
@@ -1468,6 +1508,62 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return SuccessMsg.CampoSustentableAprobado;
+        }
+
+        private void ValidarCampoPoligonoKmz(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
+        {
+            // Validar que no sea solo un punto
+            if (archivoKmz.ContentLength == 0)
+            {
+                throw new ValidationCustomException("El archivo KMZ está vacío.");
+            }
+
+            // Validar que contenga al menos un polígono
+            if (!ContienePoligonoEnKmz(archivoKmz))
+            {
+                throw new ValidationCustomException("El archivo KMZ debe contener al menos un polígono.");
+            }
+        }
+
+        private bool ContienePoligonoEnKmz(HttpPostedFileBase archivoKmz)
+        {
+            using (var kmzStream = archivoKmz.InputStream)
+            using (var zip = new System.IO.Compression.ZipArchive(kmzStream, System.IO.Compression.ZipArchiveMode.Read, true))
+            {
+                var kmlEntry = zip.Entries.FirstOrDefault(e => e.FullName.EndsWith(".kml", StringComparison.OrdinalIgnoreCase));
+                if (kmlEntry == null)
+                    return false;
+
+                using (var kmlStream = kmlEntry.Open())
+                {
+                    // Ensure the following code is updated to use the correct Parser class from the SharpKml.Engine namespace.
+                    var parser = new Parser();
+                    parser.Parse(kmlStream);
+                    var kml = parser.Root as SharpKml.Dom.Kml;
+                    if (kml == null)
+                        return false;
+
+                    // Buscar polígonos en el KML
+                    return BuscarPoligonoEnKml(kml);
+                }
+            }
+        }
+
+        private bool BuscarPoligonoEnKml(SharpKml.Dom.Kml kml)
+        {
+            // Recorrer todos los elementos y buscar al menos un Polígono
+            foreach (var placemark in kml.Flatten().OfType<SharpKml.Dom.Placemark>())
+            {
+                if (placemark.Geometry is SharpKml.Dom.Polygon)
+                    return true;
+                // También puede haber MultiGeometry con polígonos
+                if (placemark.Geometry is SharpKml.Dom.MultipleGeometry multi)
+                {
+                    if (multi.Geometry.Any(g => g is SharpKml.Dom.Polygon))
+                        return true;
+                }
+            }
+            return false;
         }
 
     }

@@ -24,6 +24,7 @@ namespace SustitucionMOAModel.Dto
         public double HectareasTotales { get; set; }
         public double HectareasSoja { get; set; }
         public double ToneladasAprobadas { get; set; }
+        public string Normativa { get; set; }
         public string RazonSocial { get; set; }
         public DateTime? FechaCreacion { get; set; }
     }
