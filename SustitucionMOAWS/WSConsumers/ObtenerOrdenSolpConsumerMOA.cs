@@ -8,10 +8,6 @@ using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -30,7 +26,7 @@ namespace SustitucionMOAWS.WSConsumers
         public object request(string idOrder = "")
         {
             try
-             {
+            {
                 if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
                 {
                     var agent = new Z_WS_MOAOP_COMPRAS_DIRECTClient();
@@ -49,8 +45,8 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MMRFC_OBTENER_ORDEN(request);
-                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN response");
-                    Log.Info(response.ToXml());
+                    //Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN response");
+                    //Log.Info(response.ToXml());
                     return MapSinPI(response);
                 }
                 else
