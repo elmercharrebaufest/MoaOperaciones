@@ -322,10 +322,14 @@
 
                                 <div class="col-sm-2">
 
-                                    <button *ngIf="campo.TipoNormativa == 'EPA'" type="button"
+                                    <button *ngIf="campo.TipoNormativa == 'EPA' && campo.EvidenciaEPA_Id" type="button"
                                         class="btn-custom btn-mediano btn-guardar"
                                         (click)="descargarEPA(campo.CampoCosechaId, campo.Proveedor.Id)">
                                         Descargar evidencia
+                                    </button>
+                                    <button *ngIf="campo.TipoNormativa == 'EPA' && esInterno"
+                                            type="button" class="btn-sin-fondo btn-borrar fa fa-paperclip" title="Adjuntar evidencia aprobada"
+                                            (click)="abrirDialogoEvidenciaPresentada(campo)">
                                     </button>
 
                                     <app-impresion-declaracion *ngIf="campo.TipoNormativa == '2BSVS'"
@@ -468,6 +472,22 @@
             <button type="button" pButton icon="pi pi-times" label="Cancelar" class="ui-button-secondary"
                 (click)="mostrarDialogoAprobacion = false"></button>
             <button type="button" pButton icon="pi pi-check" label="Aprobar" (click)="confirmarAprobacion()"></button>
+        </p-footer>
+    </p-dialog>
+
+    <p-dialog header="Adjuntar evidencia presentada" [(visible)]="mostrarDialogoAdjuntarEvidencia" [modal]="true"
+        [closable]="false" [responsive]="true" [style]="{ width: '30rem' }"
+        [breakpoints]="{ '1199px': '50vw', '575px': '90vw' }" appendTo="body">
+        <div>
+            <label for="archivoEvidencia">Seleccione el archivo de evidencia:</label>
+            <input id="archivoEvidencia" type="file" (change)="onArchivoEvidenciaChange($event)" class="form-control"
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg" />
+        </div>
+        <p-footer>
+            <button type="button" pButton icon="pi pi-times" label="Cancelar" class="ui-button-secondary"
+                (click)="cancelarSubidaEPA()"></button>
+            <button type="button" pButton icon="pi pi-check" label="Adjuntar" [disabled]="!archivoEvidenciaSeleccionado"
+                (click)="confirmarSubidaEPA()"></button>
         </p-footer>
     </p-dialog>
 </div>

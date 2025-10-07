@@ -63,7 +63,9 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     mostrarDialogoAprobacion: boolean = false;
     motivoRechazo: string = '';
     campoARechazar: any = null;
-    campoAAprobar: any = null;
+    campoSeleccionado: any = null;
+    mostrarDialogoAdjuntarEvidencia: boolean = false;
+    archivoEvidenciaSeleccionado: File | null = null;
 
     tituloArchivo: string = "Reporte de Campos Sustentables.xls";
 
@@ -363,14 +365,14 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     }
 
     abrirDialogoAprobacion(campo: any) {
-        this.campoAAprobar = campo;
+        this.campoSeleccionado = campo;
         this.mostrarDialogoAprobacion = true;
     }
 
     confirmarAprobacion() {
          this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
-        this.subscription = this.service.campoProveedorAprobar(this.campoAAprobar.CampoCosechaId, this.campoAAprobar.Proveedor.Id, this.campoAAprobar.TipoNormativaId).subscribe(
+        this.subscription = this.service.campoProveedorAprobar(this.campoSeleccionado.CampoCosechaId, this.campoSeleccionado.Proveedor.Id, this.campoSeleccionado.TipoNormativaId).subscribe(
             (result: any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -381,7 +383,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
                 } else {
                     this.getCamposSustentables();
                     this.mostrarDialogoAprobacion = false;
-                    this.mensajeComponent.setSuccessMsg("Se aprobó el campo " + this.campoAAprobar.NombreCampo + " correctamente.");
+                    this.mensajeComponent.setSuccessMsg("Se aprobó el campo " + this.campoSeleccionado.NombreCampo + " correctamente.");
                 }
             },
             error => {
@@ -390,5 +392,43 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         );
     }
 
+    onArchivoEvidenciaChange(event: any) {
+    const files = event.target.files;
+    this.archivoEvidenciaSeleccionado = files && files.length > 0 ? files[0] : null;
+    }
+
+    abrirDialogoEvidenciaPresentada(campo: any) {
+        this.mostrarDialogoAdjuntarEvidencia = true;
+        this.campoSeleccionado = campo;
+    }
+
+    confirmarSubidaEPA() {
+         this.mensajeComponent.setMsgsEmpty();
+        this.unsubscribe();
+        this.subscription = this.service.campoProveedorAjuntarEPAValidado(this.campoSeleccionado.CampoCosechaId, this.campoSeleccionado.Proveedor.Id, this.archivoEvidenciaSeleccionado).subscribe(
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.getCamposSustentables();
+                    this.mostrarDialogoAdjuntarEvidencia = false;
+                    this.archivoEvidenciaSeleccionado = null;
+                    this.mensajeComponent.setSuccessMsg("Se adjunto la evidencia correctamente.");
+                }
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
+    cancelarSubidaEPA() {
+        this.mostrarDialogoAdjuntarEvidencia = false;
+        this.archivoEvidenciaSeleccionado = null;
+    }
 
 }

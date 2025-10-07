@@ -33,6 +33,6 @@ namespace SustitucionMOAUtils.Interfaces
         string ExportarCamposSugeridos(int proveedorId, int cosechaId, string cuitTitularCP);
         List<TipoNormativa> ObtenerNormativas();
         string ObtenerRutaArchivoEPA(int campoCosechaId, int proveedorId);
-
+        string AdjuntarEPAValidado(string mailUsuario, int campoCosechaId, int proveedorId, HttpPostedFileBase archivoEPA);
     }
 }

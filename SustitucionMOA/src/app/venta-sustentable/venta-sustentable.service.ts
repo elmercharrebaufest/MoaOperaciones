@@ -249,4 +249,14 @@ export class VentaSustentableService extends BaseService {
         return this.http
             .get('/api/CampoSustentable/DescargarArchivoEPA', { params: params, headers: this.headers })
     }
+
+        campoProveedorAjuntarEPAValidado(campoCosechaId: number, proveedorId: number, archivoEPA: File) {
+        var payload = new FormData();
+        payload.append("campoCosechaId", campoCosechaId.toString());
+        payload.append("proveedorId", proveedorId.toString());
+        payload.append("archivoEPA", archivoEPA);
+
+        return this.http
+            .post('/api/CampoSustentable/CampoProveedorAdjuntarEPAValidado', payload, { headers: this.headersPost, });
+    }
 }

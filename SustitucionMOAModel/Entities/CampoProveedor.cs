@@ -21,6 +21,9 @@ namespace SustitucionMOAModel.Entities
         public int Archivo_Id { get; set; }
         [ForeignKey("Archivo_Id")]
         public virtual Archivo Archivo { get; set; }
+        public int? EvidenciaEPA_Id { get; set; }
+        [ForeignKey("EvidenciaEPA_Id")]
+        public virtual Archivo EvidenciaEPA { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaModificacion { get; set; }
         public string CUIT { get; set; }
@@ -28,12 +31,10 @@ namespace SustitucionMOAModel.Entities
         public bool Borrado { get; set; }
         public double? HectareasTotalesUcropit { get; set; }
         public double? HectareasSojaUcropit { get; set; }
-        public int? EvidenciaEPA_Id { get; set; }
-        [ForeignKey("EvidenciaEPA_Id")]
-        public virtual Archivo EvidenciaEPA { get; set; }
         public bool BSVS2 { get; set; }
         public bool EPA { get; set; }
-        public bool EUDR { get; set; } 
+        public bool EUDR { get; set; }
+        public bool EvidenciaPresentada { get; set; }
 
     }
 }

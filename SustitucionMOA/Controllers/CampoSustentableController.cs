@@ -196,5 +196,12 @@ namespace SustitucionMOA.Controllers
             string fileName = Path.GetFileName(rutaArchivo);
             return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
         }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.VER_TODOS_CAMPOS_SUSTENTABLE)]
+        [HttpPost]
+        public JsonResult CampoProveedorAdjuntarEPAValidado(int campoCosechaId, int proveedorId, HttpPostedFileBase archivoEPA)
+        {
+            return JsonCustom(campoSustentableService.AdjuntarEPAValidado(SessionPersister.User.username, campoCosechaId, proveedorId, archivoEPA));
+        }
     }
 }

@@ -31,6 +31,7 @@ namespace SustitucionMOAModel.Dto
         public bool EUDR { get; set; }
         public byte[] ArchivoEPA { get; set; }
         public string NombreArchivoEPA { get; set; }
+        public bool EvidenciaPresentada { get; set; }
 
         public override bool Equals(object obj)
         {

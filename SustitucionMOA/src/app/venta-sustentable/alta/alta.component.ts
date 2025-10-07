@@ -75,6 +75,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
     @ViewChild('fileInputSugerencia')
     fileInputSugerenciaEpa: ElementRef;
 
+    @ViewChild('fileInputEPA')
+    fileInputEPA: ElementRef;
+
     @ViewChild('mensajeEdicionSugerencia')
     mensajeEdicionSugerencia: MensajeComponent;
 
@@ -147,6 +150,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     localidadCampoSugeridoEnEdicion: { IdLocalidad: number, NombreLocalidad: string };
     archivosNuevosSugerencias: File[] = [];
     archivosNuevosEPA: File[] = [];
+    evidenciaEpaPresentada: boolean = false;
 
     ngOnInit() {
         this.renspaExiste = { RenspaExiste: false, MismoCuit: false };
@@ -394,7 +398,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
             EPA: this.normEPA,
             EUDR: this.normEUDR,
             BSVS2: this.normBSVS2,
-            EvidenciaEPA_Id: 0
+            EvidenciaEPA_Id: 0,
+            EvidenciaPresentada: this.evidenciaEpaPresentada
         }
 
         this.mensajeComponent.setMsgsEmpty();
@@ -555,7 +560,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             return true;
         }
 
-        if (this.normEPA && (!this.fileEPA || this.fileEPA.length < 1)) {
+        if (this.normEPA && (!this.fileEPA || this.fileEPA.length < 1) && !this.evidenciaEpaPresentada) {
             this.mensajeComponent.setErrorMsg("Falta adjuntar el archivo de evidencia EPA.");
             return true;
         }
@@ -989,4 +994,14 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.mostrarSugerenciasCamposNuevos = true;
     }
 }
+
+onEvidenciaEpaPresentadaChange() {
+    if (this.evidenciaEpaPresentada) {
+        this.fileEPA = null;
+        if (this.fileInputEPA) {
+            this.fileInputEPA.nativeElement.value = '';
+        }
+    }
+}
+
 }

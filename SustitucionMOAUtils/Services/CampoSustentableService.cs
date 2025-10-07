@@ -109,7 +109,9 @@ namespace SustitucionMOAUtils.Services
             
             if (campoProveedor.Archivo_Id == 0)
             {
-                campoProveedor.Archivo = (new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" });
+                var archivoKmzEntidad = new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" };
+                repositorio.Agregar(archivoKmzEntidad); 
+                campoProveedor.Archivo = archivoKmzEntidad;
             }
             else
             {
@@ -117,10 +119,16 @@ namespace SustitucionMOAUtils.Services
                 ruta = archivoCampo.Ruta;
             }
 
-            if (campoProveedor.EPA && archivoEPA != null)
+            if (campoProveedor.EPA && archivoEPA != null && !campoProveedor.EvidenciaPresentada)
             {
-                campoProveedor.EvidenciaEPA = (new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" });
+                var archivoEPAEntidad = new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" };
+                repositorio.Agregar(archivoEPAEntidad); 
+                campoProveedor.EvidenciaEPA = archivoEPAEntidad;
                 campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
+            }
+            else
+            {
+                campoProveedor.EvidenciaEPA = null;
             }
 
             //TODO linea 113 borrar dps
@@ -263,7 +271,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             // Si EPA está seleccionada y hay archivo, actualiza la evidencia
-            if (campoProveedor.EPA && archivoEPA != null)
+            if (campoProveedor.EPA && archivoEPA != null && !campoProveedor.EvidenciaPresentada)
             {
                 if (campoProveedor.EvidenciaEPA == null)
                 {
@@ -594,6 +602,7 @@ namespace SustitucionMOAUtils.Services
                             TipoNormativaId = normativa.TipoNormativa_Id,
                             Validado = normativa.Validado,
                             ValidadoPor = normativa.ValidadoPor,
+                            EvidenciaEPA_Id = cp.EvidenciaEPA_Id
                         });
                     }
                 }
@@ -1566,6 +1575,20 @@ namespace SustitucionMOAUtils.Services
             return false;
         }
 
+        public string AdjuntarEPAValidado(string mailUsuario, int campoCosechaId, int proveedorId, HttpPostedFileBase archivoEPA)
+        {
+            var campoProveedor = repositorio.Obtener<CampoProveedor>(cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha_Id == campoCosechaId);
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
+
+            campoProveedor.EvidenciaEPA = (new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" });
+            campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.CampoSustentableActualizado;
+        }
     }
 
 

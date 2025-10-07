@@ -10,6 +10,7 @@ export interface DetallesCampo {
     BSVS2: boolean;
     EPA: boolean;
     EUDR: boolean;
+    EvidenciaPresentada: boolean;
 }
 export interface CampoProveedor extends DetallesCampo {
     CampoCosecha?: CampoCosecha;

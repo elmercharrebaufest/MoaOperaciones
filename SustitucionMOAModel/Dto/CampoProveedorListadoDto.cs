@@ -52,9 +52,9 @@ namespace SustitucionMOAModel.Dto
 
         public string TipoNormativa { get; set; }
         public int TipoNormativaId { get; set; }
-
         public bool Validado { get; set; }
         public int? ValidadoPor { get; set; }
+        public int? EvidenciaEPA_Id { get; set; }
 
         public override bool Equals(object obj)
         {

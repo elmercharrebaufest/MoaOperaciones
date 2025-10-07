@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { VentaSustentableService } from './../venta-sustentable.service'
 import { BaseComponent } from './../../common/base-components/base-component';
 import { NavService } from './../../common/services/NavService';
@@ -30,6 +30,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
   @ViewChild("spinnerDatosGenerales")
   protected spinnerDatosGenerales: SpinnerComponent;
 
+  @ViewChild('fileInputEPA') fileInputEPA: ElementRef;
 
   @BlockUI() blockUI: NgBlockUI;
 
@@ -70,6 +71,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
   campoCosechaId: any;
   NombreCosecha: any;
   localidadNombre: string;
+  evidenciaEpaPresentada: boolean = false;
 
 
   proveedorSelected: any;
@@ -185,7 +187,8 @@ export class EdicionComponent extends BaseComponent implements OnInit {
       BSVS2: this.campoProveedor.BSVS2,
       EPA: this.campoProveedor.EPA,
       EUDR: this.campoProveedor.EUDR,
-      EvidenciaEPA_Id: 0
+      EvidenciaEPA_Id: 0,
+      EvidenciaPresentada: this.campoProveedor.EvidenciaPresentada
     }
 
     this.mensajeComponent.setMsgsEmpty();
@@ -375,6 +378,15 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     if (fileList.length > 0) {
       this.fileEPA = fileList[0];
       this.campoProveedor.NombreArchivoEPA = this.fileEPA.name;
+    }
+  }
+
+  onEvidenciaEpaPresentadaChange() {
+    if (this.evidenciaEpaPresentada) {
+        this.fileEPA = null;
+        if (this.fileInputEPA) {
+            this.fileInputEPA.nativeElement.value = '';
+        }
     }
   }
 }
