@@ -327,7 +327,7 @@
                                         (click)="descargarEPA(campo.CampoCosechaId, campo.Proveedor.Id)">
                                         Descargar evidencia
                                     </button>
-                                    <button *ngIf="campo.TipoNormativa == 'EPA' && esInterno"
+                                    <button *ngIf="campo.TipoNormativa == 'EPA' && esInterno && campo.EvidenciaEPA_Id == null"
                                             type="button" class="btn-sin-fondo btn-borrar fa fa-paperclip" title="Adjuntar evidencia aprobada"
                                             (click)="abrirDialogoEvidenciaPresentada(campo)">
                                     </button>

@@ -1336,5 +1336,52 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
         }
 
+        [Test]
+        public void AdjuntarEPAValidado_ActualizaEvidenciaEPA_YGuarda()
+        {
+            var mailUsuario = "usuario@test.com";
+            var campoCosechaId = 10;
+            var proveedorId = 20;
+            var tipoNormativaId = 30;
+            
+            var usuario = new Usuario
+            {
+                Id = 99,
+                Mail = mailUsuario,
+                Proveedores = new List<Proveedor> { new Proveedor { Id = proveedorId } },
+                Roles = new List<Rol>{
+                    new Rol
+                    {
+                        Codigo = "TestRol",
+                        PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Id = 1, Permiso = "VER TODOS CAMPOS SUSTENTABLE" } }
+                    }
+                }
+            };
+            var campoProveedor = new CampoProveedor { Proveedor_Id = proveedorId, CampoCosecha_Id = campoCosechaId };
+            var campoCosechaNormativa = new CampoCosechaNormativa { TipoNormativa_Id = tipoNormativaId };
+
+
+            var archivoEPAStream = new MemoryStream(new byte[] { 1, 2, 3 });
+            var archivoEPAMock = new Mock<HttpPostedFileBase>();
+            archivoEPAMock.Setup(f => f.FileName).Returns("EPA.pdf");
+            archivoEPAMock.Setup(f => f.InputStream).Returns(archivoEPAStream);
+
+            repositorioMock
+                .Setup(x => x.Obtener<CampoProveedor>(It.IsAny<Expression<Func<CampoProveedor, bool>>>()))
+                .Returns(campoProveedor);
+
+            repositorioMock
+                .Setup(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                .Returns(usuario);
+
+            var result = target.AdjuntarEPAValidado(mailUsuario, campoCosechaId, proveedorId, archivoEPAMock.Object);
+
+            Assert.IsNotNull(campoProveedor.EvidenciaEPA);
+            Assert.AreEqual(FileKeys.ArchivoEPA, campoProveedor.EvidenciaEPA.FileKey);
+            Assert.IsTrue(campoProveedor.EvidenciaEPA.Ruta.EndsWith("EPA.pdf"));
+            Assert.AreEqual(SuccessMsg.CampoSustentableActualizado, result);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+        }
+
     }
 }

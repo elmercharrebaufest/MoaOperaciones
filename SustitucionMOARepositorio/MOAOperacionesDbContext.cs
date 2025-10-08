@@ -31,18 +31,6 @@ namespace SustitucionMOARepositorio
             modelBuilder.Entity<IngresosBrutosCoeficienteUnificadoDetalle>().Property(x => x.CoeficienteIngresos).HasPrecision(10, 4);
             modelBuilder.Entity<IngresosBrutosCoeficienteUnificadoDetalle>().Property(x => x.CoeficienteUnificado).HasPrecision(10, 4);
 
-            modelBuilder.Entity<CampoProveedor>()
-            .HasRequired(cp => cp.Archivo)               
-            .WithMany()                                 
-            .HasForeignKey(cp => cp.Archivo_Id)         
-            .WillCascadeOnDelete(false);                
-
-            modelBuilder.Entity<CampoProveedor>()
-                .HasOptional(cp => cp.EvidenciaEPA)          
-                .WithMany()                                  
-                .HasForeignKey(cp => cp.EvidenciaEPA_Id)     
-                .WillCascadeOnDelete(false);
-
             Database.SetInitializer<MOAOperacionesDbContext>(null);
             base.OnModelCreating(modelBuilder);
 

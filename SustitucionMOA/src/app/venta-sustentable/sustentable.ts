@@ -6,7 +6,7 @@ export interface DetallesCampo {
     Proveedor_Id: number;
     CUIT: string;
     Archivo_Id: number;
-    EvidenciaEPA_Id: number;
+    EvidenciaEPA_Id?: number;
     BSVS2: boolean;
     EPA: boolean;
     EUDR: boolean;

@@ -128,6 +128,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
+                campoProveedor.EvidenciaEPA_Id = null;
                 campoProveedor.EvidenciaEPA = null;
             }
 
@@ -924,7 +925,8 @@ namespace SustitucionMOAUtils.Services
                     Borrado = false,
                     BSVS2 = campoSugeridoDto.BSVS2,
                     EPA = campoSugeridoDto.EPA,
-                    EUDR = campoSugeridoDto.EUDR
+                    EUDR = campoSugeridoDto.EUDR,
+                    EvidenciaPresentada = campoSugeridoDto.EvidenciaPresentada
                 };
 
                 this.AgregarNormativas(campoProveedor);
