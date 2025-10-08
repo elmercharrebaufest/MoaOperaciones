@@ -63,6 +63,7 @@ namespace SustitucionMOAModel.Dto
         public string NroSolp { get; set; }
         public DateTime? PlazoDeOferta { get; set; }
         public string TipoPosicion { get; set; }
+        public string AcuerdoMarco { get; set; }
     }
 
     public class OrdenDeCompraSAPCertificacion

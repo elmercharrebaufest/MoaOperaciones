@@ -40,28 +40,6 @@ export class FinalizarSolpComponent implements OnInit, OnChanges {
         solpActual: Solp;
     }>();
 
-    certificacionAutomaticaOptions = [
-        { name: "No", value: "false" },
-        { name: "Si", value: "true" },
-    ];
-
-    admiteCertificacionesParcialesOptions = [
-        { name: "No", value: "false" },
-        { name: "Si", value: "true" },
-    ];
-    certificacionAutomaticaValue = {
-        name: "No",
-        value: "false",
-    };
-
-    admiteCertificacionesParcialesValue = {
-        name: "No",
-        value: "false",
-    };
-
-    disableCertificacionAutomatica = false;
-    disableAdmiteCertificacionesParciales = false;
-
     constructor() {}
 
     // State OnChange para ver cuando cambie la solpActual y con esto correr la logica del ngOnInit()
@@ -83,115 +61,20 @@ export class FinalizarSolpComponent implements OnInit, OnChanges {
             return;
         }
 
-        if (this.verificarAcuerdoMarco() && this.verificarSiEsTrabajoHecho()) {
-            // Usar los valores existentes de solpActual o establecer valores por defecto para trabajo hecho
-            const certificacionAuto =
-                this.solpActual.certificacionAutomatica !== undefined
-                    ? this.solpActual.certificacionAutomatica
-                    : true; // Por defecto true para trabajo hecho
-
-            const certificacionParcial =
-                this.solpActual.admiteCertificacionesParciales !== undefined
-                    ? this.solpActual.admiteCertificacionesParciales
-                    : false; // Por defecto false para trabajo hecho
-
-            // Actualizar los valores de display según el modelo
-            this.certificacionAutomaticaValue = {
-                name: certificacionAuto ? "Si" : "No",
-                value: certificacionAuto ? "true" : "false",
-            };
-
-            this.admiteCertificacionesParcialesValue = {
-                name: certificacionParcial ? "Si" : "No",
-                value: certificacionParcial ? "true" : "false",
-            };
-
-            // Actualizar el modelo si es necesario
-            this.solpActual.certificacionAutomatica = certificacionAuto;
-            this.solpActual.admiteCertificacionesParciales =
-                certificacionParcial;
-
-            // Deshabilitar controles para trabajo hecho
-            this.disableCertificacionAutomatica = true;
-            this.disableAdmiteCertificacionesParciales = true;
-        } else {
-            // Usar los valores existentes de solpActual o establecer valores por defecto normales
-            const certificacionAuto =
-                this.solpActual.certificacionAutomatica !== undefined
-                    ? this.solpActual.certificacionAutomatica
-                    : false; // Por defecto false para casos normales
-
-            const certificacionParcial =
-                this.solpActual.admiteCertificacionesParciales !== undefined
-                    ? this.solpActual.admiteCertificacionesParciales
-                    : false; // Por defecto false para casos normales
-
-            // Actualizar los valores de display según el modelo
-            this.certificacionAutomaticaValue = {
-                name: certificacionAuto ? "Si" : "No",
-                value: certificacionAuto ? "true" : "false",
-            };
-
-            this.admiteCertificacionesParcialesValue = {
-                name: certificacionParcial ? "Si" : "No",
-                value: certificacionParcial ? "true" : "false",
-            };
-
-            // Actualizar el modelo
-            this.solpActual.certificacionAutomatica = certificacionAuto;
-            this.solpActual.admiteCertificacionesParciales =
-                certificacionParcial;
-
-            // Habilitar controles para casos normales
-            this.disableCertificacionAutomatica = false;
-            this.disableAdmiteCertificacionesParciales = false;
+        if(this.verificarAcuerdoMarco()){
+            if(this.verificarSiEsTrabajoHecho()){
+                this.solpActual.certificacionAutomatica = true;
+                this.solpActual.admiteCertificacionesParciales = false;
+            }
+            else{
+                this.solpActual.certificacionAutomatica = false;
+                this.solpActual.admiteCertificacionesParciales = false;
+            }
         }
     }
 
     onCancelarFinalizar() {
         this.cancelarFinalizarEmitter.next();
-    }
-
-    puedeConfigurarCertificacionAutomatica(): boolean {
-        if (this.solpActual.selectTipoPosicion) {
-            const esMaterial =
-                this.solpActual.selectTipoPosicion.Codigo === "MATERIALES";
-            if (esMaterial) {
-                return false;
-            } else {
-                if (this.verificarAcuerdoMarco()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
-    }
-
-    puedeConfigurarCertificacionesParciales(): boolean {
-        if (this.verificarAcuerdoMarco() && !this.solpActual.certificacionAutomatica) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    onCertificacionAutomaticaChange(event: any) {
-        const valor = event.value;
-        if (valor.value === "true") {
-            this.solpActual.certificacionAutomatica = true;
-        } else {
-            this.solpActual.certificacionAutomatica = false;
-        }
-    }
-
-    onAdmiteCertificacionesParcialesChange(event: any) {
-        const valor = event.value;
-        if (valor.value === "true") {
-            this.solpActual.admiteCertificacionesParciales = true;
-        } else {
-            this.solpActual.admiteCertificacionesParciales = false;
-        }
     }
 
     verificarAcuerdoMarco() {

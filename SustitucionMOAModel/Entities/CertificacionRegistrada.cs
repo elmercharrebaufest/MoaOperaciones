@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -15,7 +11,7 @@ namespace SustitucionMOAModel.Entities
         public string NombreDeArchivo { get; set; }
         public string NRO_OC { get; set; }
         public string NRO_Certificacion { get; set; }
-        public double Importe { get; set; }
+        public decimal Importe { get; set; }
         public string Moneda { get; set; }
         public DateTime FechaDeRegistro { get; set; }
         public int UsuarioId { get; set; }

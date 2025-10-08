@@ -32,7 +32,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
-        public EntradaServicioCreateRespuestaDto CrearEntradaServicio(EntradaServicioCreateParamsDto parametros)
+        public virtual EntradaServicioCreateRespuestaDto CrearEntradaServicio(EntradaServicioCreateParamsDto parametros)
         {
             try
             {
@@ -202,6 +202,8 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 CharSet = "utf-8"
             };
+
+            Logger.Log.Debug("requestMessage.Content CrearEntradaServicio: " + stringContent);
 
             return stringContent;
         }

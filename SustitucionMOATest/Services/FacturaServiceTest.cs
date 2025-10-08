@@ -6,6 +6,7 @@ using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
@@ -27,7 +28,7 @@ namespace SustitucionMOATest.Services
         private FacturaService target;
         private Mock<IAzureService> azureServiceMock;
         private Mock<IAnalisisDocumentoService> analisisDocumentoServiceMock;
-        private Mock<IRepositorio> repositorioMock;
+        private Mock<IRepositorioFactura> repositorioFacturaMock;
         private Mock<IObtenerOrdenDeCompraConsumerMOA> obtenerOrdenDeCompraConsumerMOAMock;
         private Mock<IEmailService> emailServiceMock;
 
@@ -36,14 +37,14 @@ namespace SustitucionMOATest.Services
         {
             azureServiceMock = new Mock<IAzureService>();
             analisisDocumentoServiceMock = new Mock<IAnalisisDocumentoService>();
-            repositorioMock = new Mock<IRepositorio>();
+            repositorioFacturaMock = new Mock<IRepositorioFactura>();
             obtenerOrdenDeCompraConsumerMOAMock = new Mock<IObtenerOrdenDeCompraConsumerMOA>();
             emailServiceMock = new Mock<IEmailService>();
 
             target = new FacturaService(
                 azureServiceMock.Object,
                 analisisDocumentoServiceMock.Object,
-                repositorioMock.Object,
+                repositorioFacturaMock.Object,
                 obtenerOrdenDeCompraConsumerMOAMock.Object,
                 emailServiceMock.Object
             );
@@ -73,7 +74,7 @@ namespace SustitucionMOATest.Services
             var elementosLeidos = new List<string> { "element1", "element2" };
             var validationResult = new ValidationResult { IsValid = true, FileName = "test.pdf" };
 
-            repositorioMock.Setup(r => r.Obtener<Usuario>(It.IsAny<System.Linq.Expressions.Expression<System.Func<Usuario, bool>>>())).Returns(usuario);
+            repositorioFacturaMock.Setup(r => r.Obtener<Usuario>(It.IsAny<System.Linq.Expressions.Expression<System.Func<Usuario, bool>>>())).Returns(usuario);
             azureServiceMock.Setup(a => a.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>())).ReturnsAsync(operacionOCRId);
             azureServiceMock.Setup(a => a.ObtenerResultadoOCRAsync(operacionOCRId)).ReturnsAsync(elementosLeidos);
             analisisDocumentoServiceMock.Setup(a => a.AnalizarFacturaCertificacionServicios(It.IsAny<List<string>>(), cuit, It.IsAny<string>())).Returns(new List<ValidationResult> { validationResult });
@@ -108,8 +109,8 @@ namespace SustitucionMOATest.Services
             var elementosLeidos = new List<string> { "element1", "element2" };
             var validationResult = new ValidationResult { IsValid = true, FileName = "test.pdf" };
 
-            repositorioMock.Setup(r => r.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
-            repositorioMock
+            repositorioFacturaMock.Setup(r => r.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
+            repositorioFacturaMock
                 .Setup(r => r.Listar(It.IsAny<Expression<Func<CertificacionRegistrada, bool>>>(), 0, null, DirOrden.Asc, null))
                 .Returns(new List<CertificacionRegistrada>());
             azureServiceMock.Setup(a => a.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>())).ReturnsAsync(operacionOCRId);
@@ -130,21 +131,21 @@ namespace SustitucionMOATest.Services
         public void EliminarFacturasAntiguasTest()
         {
             // Arrange
-            repositorioMock
+            repositorioFacturaMock
                .Setup(x => x.Listar(It.IsAny<Expression<Func<ResultadoOcr, bool>>>(),
                                 It.IsAny<int>(),
                                 It.IsAny<string>(),
                                 It.IsAny<DirOrden>(),
                                 It.IsAny<IEnumerable<Expression<Func<ResultadoOcr, object>>>>()))
                .Returns(new List<ResultadoOcr>());
-            repositorioMock
+            repositorioFacturaMock
                .Setup(x => x.Listar(It.IsAny<Expression<Func<ResultadoAnalisisOcr, bool>>>(),
                                 It.IsAny<int>(),
                                 It.IsAny<string>(),
                                 It.IsAny<DirOrden>(),
                                 It.IsAny<IEnumerable<Expression<Func<ResultadoAnalisisOcr, object>>>>()))
                .Returns(new List<ResultadoAnalisisOcr>());
-            repositorioMock
+            repositorioFacturaMock
                .Setup(x => x.Listar(It.IsAny<Expression<Func<Archivo, bool>>>(),
                                 It.IsAny<int>(),
                                 It.IsAny<string>(),
@@ -156,27 +157,27 @@ namespace SustitucionMOATest.Services
             target.EliminarFacturasAntiguas();
 
             // Assert
-            repositorioMock.Verify(r => r.Listar(It.IsAny<Expression<Func<ResultadoOcr, bool>>>(),
+            repositorioFacturaMock.Verify(r => r.Listar(It.IsAny<Expression<Func<ResultadoOcr, bool>>>(),
                                 It.IsAny<int>(),
                                 It.IsAny<string>(),
                                 It.IsAny<DirOrden>(),
                                 It.IsAny<IEnumerable<Expression<Func<ResultadoOcr, object>>>>()), Times.Once);
-            repositorioMock.Verify(r => r.Listar(It.IsAny<Expression<Func<ResultadoAnalisisOcr, bool>>>(),
+            repositorioFacturaMock.Verify(r => r.Listar(It.IsAny<Expression<Func<ResultadoAnalisisOcr, bool>>>(),
                                 It.IsAny<int>(),
                                 It.IsAny<string>(),
                                 It.IsAny<DirOrden>(),
                                 It.IsAny<IEnumerable<Expression<Func<ResultadoAnalisisOcr, object>>>>()), Times.Once);
-            repositorioMock.Verify(r => r.Listar(It.IsAny<Expression<Func<Archivo, bool>>>(),
+            repositorioFacturaMock.Verify(r => r.Listar(It.IsAny<Expression<Func<Archivo, bool>>>(),
                                 It.IsAny<int>(),
                                 It.IsAny<string>(),
                                 It.IsAny<DirOrden>(),
                                 It.IsAny<IEnumerable<Expression<Func<Archivo, object>>>>()), Times.Once);
 
-            repositorioMock.Verify(r => r.RemoverTodos(It.IsAny<IEnumerable<ResultadoOcr>>()), Times.Once);
-            repositorioMock.Verify(r => r.RemoverTodos(It.IsAny<IEnumerable<ResultadoAnalisisOcr>>()), Times.Once);
-            repositorioMock.Verify(r => r.RemoverTodos(It.IsAny<IEnumerable<Archivo>>()), Times.Once);
+            repositorioFacturaMock.Verify(r => r.RemoverTodos(It.IsAny<IEnumerable<ResultadoOcr>>()), Times.Once);
+            repositorioFacturaMock.Verify(r => r.RemoverTodos(It.IsAny<IEnumerable<ResultadoAnalisisOcr>>()), Times.Once);
+            repositorioFacturaMock.Verify(r => r.RemoverTodos(It.IsAny<IEnumerable<Archivo>>()), Times.Once);
 
-            repositorioMock.Verify(r => r.GuardarCambios(), Times.Once);
+            repositorioFacturaMock.Verify(r => r.GuardarCambios(), Times.Once);
         }
 
         [Test]
@@ -203,7 +204,7 @@ namespace SustitucionMOATest.Services
 
             azureServiceMock.Setup(a => a.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>())).ReturnsAsync(operacionOCRId);
             azureServiceMock.Setup(a => a.ObtenerResultadoOCRAsync(operacionOCRId)).ReturnsAsync(elementosLeidos);
-            repositorioMock.Setup(r => r.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
+            repositorioFacturaMock.Setup(r => r.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
             analisisDocumentoServiceMock.Setup(a => a.AnalizarFacturaCertificacionServicios(It.IsAny<List<string>>(), cuit, It.IsAny<string>())).Returns(new List<ValidationResult> { validationResult });
 
             var gruposCertificaciones = new List<GrupoCertificaciones>
@@ -221,7 +222,7 @@ namespace SustitucionMOATest.Services
 
             azureServiceMock.Verify(a => a.AnalizarImagenAsync(It.IsAny<HttpPostedFileBase>()), Times.Once);
             azureServiceMock.Verify(a => a.ObtenerResultadoOCRAsync(operacionOCRId), Times.Once);
-            repositorioMock.Verify(r => r.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioFacturaMock.Verify(r => r.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
             analisisDocumentoServiceMock.Verify(a => a.AnalizarFacturaCertificacionServicios(It.IsAny<List<string>>(), cuit, It.IsAny<string>()), Times.Once);
             archivoFactura.Verify(d => d.SaveAs(It.IsAny<string>()), Times.Once);
             emailServiceMock.Verify(e => e.EnviarMail(It.IsAny<EmailSenderData>()), Times.Once);

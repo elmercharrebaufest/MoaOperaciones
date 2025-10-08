@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAAssets;
+using SustitucionMOAModel.Dto;
 using System;
 
 namespace SustitucionMOAWS.Logger
@@ -8,8 +9,8 @@ namespace SustitucionMOAWS.Logger
         private static readonly NLog.Logger DefaultLogger = NLog.LogManager.GetLogger("defaultLogger");
         private static readonly NLog.Logger AzureLogger = NLog.LogManager.GetLogger("azureLogger");
         private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
-        private static readonly NLog.Logger ComprasRegistroInfoLogger = NLog.LogManager.GetLogger("comprasRegistroInfoLogger");
         private static readonly NLog.Logger RequestLogger = NLog.LogManager.GetLogger("requestLogger");
+        private static readonly NLog.Logger QrLogger = NLog.LogManager.GetLogger("qrLogger");
 
         public static void Error(string ip, string usuario, string controller, string method, string error)
         {
@@ -141,19 +142,6 @@ namespace SustitucionMOAWS.Logger
                 Console.WriteLine("ERROR en API:" + e.Message);
             }
         }
-        public static void ComprasRegistroInfo(string message)
-        {
-            try
-            {
-                ComprasRegistroInfoLogger.Info(message);
-            }
-            catch (Exception e)
-            {
-                Log.Error("", "", "", "", e.Message);
-                Console.WriteLine("ERROR en ComprasRegistroInfo:" + e.Message);
-            }
-        }
-
         public static void LogRequest(string mensaje)
         {
             try
@@ -163,6 +151,21 @@ namespace SustitucionMOAWS.Logger
             catch (Exception e)
             {
                 Console.WriteLine("ERROR en LogService:" + e.Message);
+            }
+        }
+        public static void QrError(FrontLoggerRequestDto frontData)
+        {
+            QrError(frontData.ToString());
+        }
+        public static void QrError(string message)
+        {
+            try
+            {
+                QrLogger.Error(message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en front:" + e.Message);
             }
         }
     }

@@ -383,8 +383,8 @@ namespace SustitucionMOAWS.WSConsumers
                             RegionSap = region?.REGION
                         },
                         PlazoDeOferta = !string.IsNullOrEmpty(plazo?.DELIVERY_DATE) ?
-                             DateTime.ParseExact(plazo.DELIVERY_DATE, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null
-
+                             DateTime.ParseExact(plazo.DELIVERY_DATE, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null,
+                        AcuerdoMarco = pos.AGREEMENT
                     });
                 }
 
@@ -411,11 +411,11 @@ namespace SustitucionMOAWS.WSConsumers
                         switch (poh.HIST_TYPE)
                         {
                             case "Q":
-                                certificacion.Saldo -= poh.VAL_LOCCUR;
+                                certificacion.Saldo -= poh.VAL_FORCUR;
                                 certificacion.MontoFormateado = SAPFormatter.FormatearMonto(certificacion.Saldo, certificacion.Moneda);
                                 break;
                             case "N":
-                                certificacion.Saldo += poh.VAL_LOCCUR;
+                                certificacion.Saldo += poh.VAL_FORCUR;
                                 certificacion.MontoFormateado = SAPFormatter.FormatearMonto(certificacion.Saldo, certificacion.Moneda);
                                 break;
                             default:
@@ -428,6 +428,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             return resultado;
         }
+
         private OrdenDeCompraSAPDto MapOrdenDeCompraSAPSinPIDto(WS_GAQ_sin_PI_DIRECT_2012.BAPI_PO_GETDETAIL1Response response)
         {
             OrdenDeCompraSAPDto resultado = new OrdenDeCompraSAPDto();
@@ -487,8 +488,9 @@ namespace SustitucionMOAWS.WSConsumers
                         resultado.Certificaciones.Add(new OrdenDeCompraSAPCertificacion
                         {
                             NroCertificacion = poh.MAT_DOC,
-                            Saldo = poh.VAL_LOCCUR,
+                            Saldo = poh.VAL_FORCUR,
                             Moneda = poh.CURRENCY,
+                            MontoFormateado = SAPFormatter.FormatearMonto(poh.VAL_FORCUR, poh.CURRENCY)
                             //importe = poh.importe // Nos tienen que decir el nombre de este campo
                         });
                     }
@@ -499,10 +501,12 @@ namespace SustitucionMOAWS.WSConsumers
                         switch (poh.HIST_TYPE)
                         {
                             case "Q":
-                                certificacion.Saldo -= poh.VAL_LOCCUR;
+                                certificacion.Saldo -= poh.VAL_FORCUR;
+                                certificacion.MontoFormateado = SAPFormatter.FormatearMonto(certificacion.Saldo, certificacion.Moneda);
                                 break;
                             case "N":
-                                certificacion.Saldo += poh.VAL_LOCCUR;
+                                certificacion.Saldo += poh.VAL_FORCUR;
+                                certificacion.MontoFormateado = SAPFormatter.FormatearMonto(certificacion.Saldo, certificacion.Moneda);
                                 break;
                             default:
                                 break;
@@ -514,21 +518,22 @@ namespace SustitucionMOAWS.WSConsumers
             return resultado;
         }
 
-        private decimal CalcularSaldoDisponible(ObtenerOrdenDeCompraWebServiceMOA.BAPIEKBE[] POHISTORY)
+        private static decimal CalcularSaldoDisponible(ObtenerOrdenDeCompraWebServiceMOA.BAPIEKBE[] POHISTORY)
         {
             var registros = POHISTORY.ToList();
             // Suma de registros con process_id = 9 y hist_type = 'D'
             var sumaProcess9HistD = registros
                 .Where(r => r.PROCESS_ID == "9" && r.HIST_TYPE == "D")
-                .Sum(r => r.VAL_LOCCUR);
+                .Sum(r => r.VAL_FORCUR);
 
             // Suma de registros con process_id = 2 y (hist_type = 'Q' o hist_type = 'R')
             var sumaProcess2HistQR = registros
                 .Where(r => r.PROCESS_ID == "2" && (r.HIST_TYPE == "Q" || r.HIST_TYPE == "R"))
-                .Sum(r => r.VAL_LOCCUR);
+                .Sum(r => r.VAL_FORCUR);
             return sumaProcess9HistD - sumaProcess2HistQR;
         }
-        private decimal CalcularSaldoDisponibleSinPI(WS_GAQ_sin_PI_DIRECT_2012.BAPIEKBE[] POHISTORY)
+
+        private static decimal CalcularSaldoDisponibleSinPI(WS_GAQ_sin_PI_DIRECT_2012.BAPIEKBE[] POHISTORY)
         {
             var registros = POHISTORY.ToList();
             // Suma de registros con process_id = 9 y hist_type = 'D'
@@ -913,7 +918,7 @@ namespace SustitucionMOAWS.WSConsumers
         /// </summary>
         /// <param name="numeroDeOrdenCompra"></param>
         /// <returns></returns>
-        public DetalleOrdenDeCompraDto ObtenerDetalleDeOrdenDeCompra(string numeroDeOrdenCompra, List<TablaSap> centro, List<TablaSap> almacen, bool usuarioSolp)
+        public virtual DetalleOrdenDeCompraDto ObtenerDetalleDeOrdenDeCompra(string numeroDeOrdenCompra, List<TablaSap> centro, List<TablaSap> almacen, bool usuarioSolp)
         {
             try
             {

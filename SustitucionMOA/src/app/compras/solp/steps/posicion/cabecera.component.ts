@@ -1041,6 +1041,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     calcularValorNeto(posicion: SolpPosicion): void {
         if (posicion != null && posicion != undefined) {
+            if (posicion.precioBruto != null) {
+                const valor = Number(posicion.precioBruto);
+                posicion.precioBruto = parseFloat(valor.toFixed(2));
+            }
+            if (posicion.cuentaTd != null) {
+                const valor = Number(posicion.cuentaTd);
+                posicion.cuentaTd = parseFloat(valor.toFixed(2));
+            }
             posicion.calcularValorTotal();
         }
         this.model.calcularValorTotalPorMoneda();

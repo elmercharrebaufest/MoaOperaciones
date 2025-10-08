@@ -89,7 +89,7 @@ namespace SustitucionMOAUtils.Services
 
         // MMSN-768
         // Buscar nombre de proveedor para agregarlo a la ES.
-        public Proveedor BuscarProveedor(OrderParamsDto parametros)
+        public virtual Proveedor BuscarProveedor(OrderParamsDto parametros)
         {
             List<OrdenCompraDto> ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
 

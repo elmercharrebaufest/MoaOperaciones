@@ -20,10 +20,11 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<Aprobaciones> GetESTemporaria(string nroESLocal);
         string GetCurrencyType(string NroOC);
-        EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string mail);
+        EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string suplenteOriginal, bool notificarAprobacionPendiente);
         string ActualizarInformacionIngresante(IngresanteInfoEditableDto info);
 
         Task NotificarReasignaciones(IEnumerable<string> ListaAp);
         void GenerarCertificacionAutomaticaPorLiberacionOC(string nroOC);
+        void CertificarOrdenesDeCompraConContratoMarco();
     }
 }

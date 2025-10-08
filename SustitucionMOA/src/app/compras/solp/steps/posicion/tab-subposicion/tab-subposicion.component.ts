@@ -376,6 +376,14 @@ export class TabSubposicionComponent extends ListBaseComponent {
 
     calcularValorNeto(subPosicion: SubPosicionViewModel): void {
         if (subPosicion != null && subPosicion != undefined) {
+            if (subPosicion.precioBruto != null) {
+                const valor = Number(subPosicion.precioBruto);
+                subPosicion.precioBruto = parseFloat(valor.toFixed(2));
+            }
+            if (subPosicion.cuentaTd != null) {
+                const valor = Number(subPosicion.cuentaTd);
+                subPosicion.cuentaTd = parseFloat(valor.toFixed(2));
+            }
             subPosicion.calcularValorNeto();
         }
         this.posicion.calcularValorTotal();
@@ -610,18 +618,18 @@ export class TabSubposicionComponent extends ListBaseComponent {
         }
     }
 
-   duplicarSubposicion(rowIndex: any) {
-    rowIndex = Number(rowIndex); 
-    if (!isNaN(rowIndex)) { 
-        let subPosicion = this.listadoSubposiciones[rowIndex];
-        let nuevaSubPosicion = _.cloneDeep(subPosicion);
-        let maxSubPosicion = this.listadoSubposiciones.reduce((max, sp) => Math.max(max, Number(sp.subPosicion)), 0);        
-        nuevaSubPosicion.subPosicion = maxSubPosicion + 1;
-        nuevaSubPosicion.id = uuid.v4();
-        this.listadoSubposiciones.push(nuevaSubPosicion);
-        this.calcularTotalSubPosicion();
-    } 
-}
+    duplicarSubposicion(rowIndex: any) {
+        rowIndex = Number(rowIndex);
+        if (!isNaN(rowIndex)) {
+            let subPosicion = this.listadoSubposiciones[rowIndex];
+            let nuevaSubPosicion = _.cloneDeep(subPosicion);
+            let maxSubPosicion = this.listadoSubposiciones.reduce((max, sp) => Math.max(max, Number(sp.subPosicion)), 0);
+            nuevaSubPosicion.subPosicion = maxSubPosicion + 1;
+            nuevaSubPosicion.id = uuid.v4();
+            this.listadoSubposiciones.push(nuevaSubPosicion);
+            this.calcularTotalSubPosicion();
+        }
+    }
 
     public get monedaPosicion(): string {
 

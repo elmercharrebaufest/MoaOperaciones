@@ -75,7 +75,7 @@ namespace SustitucionMOA.Controllers
         [ValidateInput(false)]
         public ActionResult CrearEntradaServicio(string request)
         {
-            SustitucionMOAWS.Logger.Log.Info("EntradaServicioController.CreateAsync");
+            SustitucionMOAWS.Logger.Log.Info("EntradaServicioController.CrearEntradaServicio");
 
             var payload = JsonConvert.DeserializeObject<CreateEntradaServicioDto>(request);
 
@@ -105,7 +105,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ReasignarSuplente(string nro_es_local, string suplente)
         {
-            var result = EntradaServicioService.ReasignarSuplente(nro_es_local, suplente);
+            var result = EntradaServicioService.ReasignarSuplente(nro_es_local, suplente, true);
             return JsonCustom(new { data = result });
         }
 

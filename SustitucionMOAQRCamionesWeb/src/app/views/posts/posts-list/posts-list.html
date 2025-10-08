@@ -1,0 +1,85 @@
+<div class="posts-container">
+    <div class="posts-header">
+        <h1>{{ i18n.t('posts.title') }}</h1>
+        <button mat-raised-button color="primary" routerLink="/posts/create">
+            <mat-icon>add</mat-icon>
+            {{ i18n.t('posts.create') }}
+        </button>
+    </div>
+
+    <div class="filters">
+        <mat-form-field appearance="outline">
+            <mat-label>{{ i18n.t('common.filter') }} by User</mat-label>
+            <mat-select [(value)]="selectedUserId" (selectionChange)="onUserFilter($event.value)">
+                <mat-option [value]="null">All Users</mat-option>
+                @for (user of users(); track user.id) {
+                <mat-option [value]="user.id">{{ user.name }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>{{ i18n.t('common.search') }}</mat-label>
+            <input matInput [(ngModel)]="searchTerm" (input)="onSearchChange()" placeholder="Search posts...">
+            @if (searchTerm) {
+            <button matSuffix mat-icon-button (click)="clearSearch()">
+                <mat-icon>clear</mat-icon>
+            </button>
+            }
+        </mat-form-field>
+    </div>
+
+    @if (isLoading()) {
+    <div class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>{{ loadingService.loadingMessage() }}</p>
+    </div>
+    } @else {
+    @if (filteredPosts().length === 0) {
+    <div class="no-posts">
+        <mat-icon>inbox</mat-icon>
+        <p>{{ i18n.t('posts.noPosts') }}</p>
+    </div>
+    } @else {
+    <div class="posts-grid">
+        @for (post of filteredPosts(); track post.id) {
+        <mat-card class="post-card">
+            <mat-card-header>
+                <mat-card-title>{{ post.title | titlecase }}</mat-card-title>
+                <mat-card-subtitle>
+                    {{ i18n.t('posts.author') }}: {{ getUserName(post.userId) }}
+                </mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <p>{{ post.body | slice:0:150 }}{{ post.body.length > 150 ? '...' : '' }}</p>
+            </mat-card-content>
+
+            <mat-card-actions>
+                <button mat-button [routerLink]="['/posts', post.id]">
+                    <mat-icon>visibility</mat-icon>
+                    View
+                </button>
+                <button mat-button [routerLink]="['/posts', post.id, 'edit']">
+                    <mat-icon>edit</mat-icon>
+                    {{ i18n.t('common.edit') }}
+                </button>
+                <button mat-button color="warn" (click)="deletePost(post.id)">
+                    <mat-icon>delete</mat-icon>
+                    {{ i18n.t('common.delete') }}
+                </button>
+            </mat-card-actions>
+        </mat-card>
+        }
+    </div>
+    }
+    }
+
+    <div class="stats">
+        <p>Total Posts: {{ posts().length }}</p>
+        <p>Filtered Posts: {{ filteredPosts().length }}</p>
+        @if (selectedUserId) {
+        <p>Selected User: {{ selectedUser()?.name }}</p>
+        }
+    </div>
+</div>

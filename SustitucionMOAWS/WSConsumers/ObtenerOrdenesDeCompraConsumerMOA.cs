@@ -1,22 +1,13 @@
-﻿using SustitucionMOAFotmatter;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA;
-using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerOrdenesDeCompraWebServiceMOA;
-using SustitucionMOAWS.OrdenesDeCompraParaSolpWebServiceMOA;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MEWP;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace SustitucionMOAWS.WSConsumers
@@ -80,7 +71,7 @@ namespace SustitucionMOAWS.WSConsumers
                     SHORT_TEXT = string.Empty,
                     SUPPL_PLANT = string.Empty,
                     TRACKINGNO = string.Empty,
-                    VENDOR = vendedor,
+                    VENDOR = !string.IsNullOrEmpty(vendedor) && vendedor.Length > 10 ? vendedor.Substring(0, 10) : vendedor,
                     WITH_PO_HEADERS = "X",
                     PO_HEADERS = cabeceras,
                     PO_ITEMS = detalle,
@@ -101,16 +92,39 @@ namespace SustitucionMOAWS.WSConsumers
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-                ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKKOL[] cabeceras   = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKKOL[] { };
-                ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKPOC[] detalle     = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKPOC[] { };
+                ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKKOL[] cabeceras = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKKOL[] { };
+                ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKPOC[] detalle = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKPOC[] { };
                 ObtenerOrdenesDeCompraWebServiceMOA.BAPIRETURN[] bapiReturn = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIRETURN[] { };
-                service.BAPI_PO_GETITEMS("", "", usuarioSolp ? "X" : "", fechaInicio, "", "", categoria, "", new ObtenerOrdenesDeCompraWebServiceMOA.BAPIMGVMATNR(), "",
-                                         "", "", "", OC, "", "", "", new ObtenerOrdenesDeCompraWebServiceMOA.BAPIMGVMATNR(), "", "",
-                                         "", "", vendedor, "X",
-                                         ref cabeceras,
-                                         ref detalle,
-                                         ref bapiReturn
-                                        );
+
+                service.BAPI_PO_GETITEMS(
+                    ACCTASSCAT: "",
+                    CREATED_BY: "",
+                    DELETED_ITEMS: usuarioSolp ? "X" : "",
+                    DOC_DATE: fechaInicio,
+                    DOC_TYPE: "",
+                    ITEMS_OPEN_FOR_RECEIPT: "",
+                    ITEM_CAT: categoria,
+                    MATERIAL: "",
+                    MATERIAL_EVG: new ObtenerOrdenesDeCompraWebServiceMOA.BAPIMGVMATNR(),
+                    MATERIAL_LONG: "",
+                    MAT_GRP: "",
+                    PLANT: "",
+                    PREQ_NAME: "",
+                    PURCHASEORDER: OC,
+                    PURCH_ORG: "",
+                    PUR_GROUP: "",
+                    PUR_MAT: "",
+                    PUR_MAT_EVG: new ObtenerOrdenesDeCompraWebServiceMOA.BAPIMGVMATNR(),
+                    PUR_MAT_LONG: "",
+                    SHORT_TEXT: "",
+                    SUPPL_PLANT: "",
+                    TRACKINGNO: "",
+                    VENDOR: vendedor,
+                    WITH_PO_HEADERS: "X",
+                    ref cabeceras,
+                    ref detalle,
+                    ref bapiReturn);
+
                 return Map(cabeceras);
             }
         }

@@ -640,6 +640,7 @@ IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on Permiso
 
 
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'VER TODOS LOS ESTADOS DE ES' and PermisoPorRol.Permiso = 'VER TODOS LOS ESTADOS DE ES') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'VER TODOS LOS ESTADOS DE ES'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'VER TODOS LOS ESTADOS DE ES')) END
+IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'VER TODOS LOS ESTADOS DE ES' and PermisoPorRol.Permiso = 'ABM USUARIOS') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'VER TODOS LOS ESTADOS DE ES'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'ABM USUARIOS')) END
 
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'ADMIN CONTABILIZACION MES ANTERIOR' and PermisoPorRol.Permiso = 'ADMIN CONTABILIZACION MES ANTERIOR') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'ADMIN CONTABILIZACION MES ANTERIOR'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'ADMIN CONTABILIZACION MES ANTERIOR')) END
 

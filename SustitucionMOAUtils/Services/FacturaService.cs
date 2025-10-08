@@ -1,13 +1,14 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
-using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -29,13 +30,13 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IAzureService azureService;
         private readonly IAnalisisDocumentoService analisisDocumentoService;
-        private readonly IRepositorio repositorio;
+        private readonly IRepositorioFactura repositorio;
         private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
         private readonly IEmailService emailService;
         private readonly string EmailFacturasES = ConfigurationManager.AppSettings["EmailFacturasES"];
 
 
-        public FacturaService(IAzureService azureService, IAnalisisDocumentoService analisisDocumentoService, IRepositorio repositorio,
+        public FacturaService(IAzureService azureService, IAnalisisDocumentoService analisisDocumentoService, IRepositorioFactura repositorio,
             IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA, IEmailService emailService)
         {
             this.azureService = azureService ?? throw new ArgumentNullException(nameof(azureService));
@@ -78,10 +79,10 @@ namespace SustitucionMOAUtils.Services
                     {
                         var ordenDeCompraValidationResult = resultadoAnalisis.Find(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name);
                         var certificacionesRegistradasOC = repositorio.Listar<CertificacionRegistrada>(cr => cr.NRO_OC == ordenDeCompraValidationResult.Value);
+                        resultado.ForEach(r => r.FileName = file.FileName);
 
                         if (resultado[0].Certificaciones?.Count > 0)
                         {
-                            resultado.ForEach(r => r.FileName = file.FileName);
                             // Buscamos los archivos relacionados a ese nro de certificacion
                             resultado[0].Certificaciones.ForEach((certificacion) =>
                             {
@@ -96,12 +97,13 @@ namespace SustitucionMOAUtils.Services
                             });
                         }
 
-                        resultado[0].Certificaciones = resultado[0].Certificaciones ?? new List<SustitucionMOAModel.Dto.OrdenDeCompraSAPCertificacion>();
+                        resultado[0].Certificaciones = resultado[0].Certificaciones ?? new List<OrdenDeCompraSAPCertificacion>();
                         if (certificacionesRegistradasOC.Any(x => x.Archivo.FileKey == FileKeys.FacturaDiferenciaTasaDeCambio))
                         {
-                            resultado[0].Certificaciones.Add(new SustitucionMOAModel.Dto.OrdenDeCompraSAPCertificacion
+                            resultado[0].Certificaciones.Add(new OrdenDeCompraSAPCertificacion
                             {
                                 NroCertificacion = "Factura por diferencia de tasa de cambio",
+                                Moneda = string.Empty,
                                 Archivo = new List<Archivo>(certificacionesRegistradasOC.Where(cr => cr.Archivo.FileKey == FileKeys.FacturaDiferenciaTasaDeCambio).Select(x => x.Archivo))
                             });
                         }
@@ -277,6 +279,7 @@ namespace SustitucionMOAUtils.Services
                     Input = item.Input
                 }).ToList();
                 repositorio.AgregarTodos(resultadosAnalisisOcr);
+                repositorio.GuardarCambios();
             }
             catch (Exception e)
             {
@@ -406,7 +409,7 @@ namespace SustitucionMOAUtils.Services
                             Message = $"Seleccione las certificaciones para la orden de compra {ordenDeCompraEncontrada.Value}.",
                             ValidataionType = typeof(OrdenCompraValidationCommand).Name,
                             Value = ordenDeCompraEncontrada.Value,
-                            Certificaciones = ordenDeCompraSAP.Certificaciones,
+                            Certificaciones = FiltrarCertificacionesNoVigentes(ordenDeCompraSAP.Certificaciones),
                             EsMonedaExtranjera = ordenDeCompraSAP.Cabecera.Moneda != nameof(Currency.ARP)
                         });
                         return result;
@@ -501,7 +504,7 @@ namespace SustitucionMOAUtils.Services
                     c.Moneda
                 }).ToList();
 
-                int totalItems = resultado.Items.Count;
+                int totalItems = resultado.ItemsTotales;
                 itemsPorPagina = paginacion?.ItemsPorPagina ?? totalItems;
                 int paginaActual = paginacion?.Pagina ?? 1;
                 int totalPaginas = (int)Math.Ceiling((decimal)totalItems / itemsPorPagina.Value);
@@ -537,6 +540,20 @@ namespace SustitucionMOAUtils.Services
             Log.Info("Fin ObtenerResultadoOCRAsync: " + archivo.FileName);
 
             return resultadoOcrs;
+        }
+
+        private List<OrdenDeCompraSAPCertificacion> FiltrarCertificacionesNoVigentes(List<OrdenDeCompraSAPCertificacion> certificaciones)
+        {
+            var nrosCertificacionesSap = new HashSet<string>(certificaciones.Select(x => x.NroCertificacion));
+            var estadosCertificaciones = repositorio.ObtenerEstadosCertificaciones(nrosCertificacionesSap);
+            var certificacionesVigentes = certificaciones
+                .Where(x =>
+                    estadosCertificaciones.Any(e =>
+                        e.NumeroCertificacionSap == x.NroCertificacion &&
+                        e.Estado != "Anulada" &&
+                        e.Estado != "Rechazado"));
+
+            return certificacionesVigentes.ToList();
         }
     }
 }

@@ -3,15 +3,11 @@ using SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle;
 using SustitucionMOAWS.ContratoDetalleWebServiceMOA;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
-using SustitucionMOAWS.ScatoComandosWebService;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -43,7 +39,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                     var request = new Z_MPMF_MOAOP_DETALLES_CONTRATO()
                     {
-                        PE_CONTRATO = contrato,
+                        PE_CONTRATO = contrato?.Length > 10 ? contrato.Substring(0, 10) : contrato,
                         PE_PROVEEDOR = proveedor,
                         T_AMPLI_ANUL = ampliaciones_anulaciones,
                         T_APLICA = aplicaciones,
@@ -62,7 +58,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_DETALLES_CONTRATO response");
                     Log.Info(response.ToXml());
                     string error = string.Empty;
-                    return MapSinPI(contrato, error, response.EX_BOLETOS, response.T_AMPLI_ANUL, response.T_APLICA,response.T_CALIDAD, response.T_CARACT, response.T_COND_PAGO, response.T_FIJA, response.T_HIJOS, response.T_LIQUI, response.T_PAGOS, response.T_RESUMEN);
+                    return MapSinPI(contrato, error, response.EX_BOLETOS, response.T_AMPLI_ANUL, response.T_APLICA, response.T_CALIDAD, response.T_CARACT, response.T_COND_PAGO, response.T_FIJA, response.T_HIJOS, response.T_LIQUI, response.T_PAGOS, response.T_RESUMEN);
                 }
                 else
                 {
@@ -705,7 +701,8 @@ namespace SustitucionMOAWS.WSConsumers
 
 
             result.calidad = calidades.GroupBy(x => x.CCPP)
-                .Select(x => {
+                .Select(x =>
+                {
                     var calidad = new Calidad
                     {
                         ccpp = x.Key,
@@ -970,7 +967,8 @@ namespace SustitucionMOAWS.WSConsumers
 
 
             result.calidad = calidades.GroupBy(x => x.CCPP)
-                .Select(x => {
+                .Select(x =>
+                {
                     var calidad = new Calidad
                     {
                         ccpp = x.Key,

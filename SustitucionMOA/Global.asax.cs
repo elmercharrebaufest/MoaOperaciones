@@ -3,6 +3,8 @@ using SustitucionMOAUtils.Logger;
 using System;
 using System.Linq;
 using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
@@ -19,6 +21,13 @@ namespace SustitucionMOA
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            // Esto lo podés poner en Application_Start (Web) o en Main (Console/Service)
+            ServicePointManager.ServerCertificateValidationCallback =
+                delegate (object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+                {
+                    return true; // Ignora todos los errores de certificado
+                };
 
             // Habilita TLS 1.2
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;

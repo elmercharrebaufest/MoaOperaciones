@@ -4,7 +4,7 @@
     [NombreDeArchivo] NVARCHAR(MAX) NOT NULL, 
     [NRO_OC] NCHAR(20) NOT NULL, 
     [NRO_Certificacion] NCHAR(10) NOT NULL, 
-    [Importe] FLOAT NOT NULL, 
+    [Importe] DECIMAL(18, 2) NOT NULL, 
     [Moneda] NCHAR(10) NOT NULL, 
     [FechaDeRegistro] DATETIME2 NOT NULL, 
     [UsuarioId] INT NOT NULL,

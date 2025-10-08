@@ -1,6 +1,5 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ReporteOCWebServiceMOA;
@@ -82,7 +81,7 @@ namespace SustitucionMOAWS.WSConsumers
                     SHORT_TEXT = SHORT_TEXT,
                     SUPPL_PLANT = SUPPL_PLANT,
                     TRACKINGNO = TRACKINGNO,
-                    VENDOR = VENDOR,
+                    VENDOR = !string.IsNullOrEmpty(VENDOR) && VENDOR.Length > 10 ? VENDOR.Substring(0, 10) : VENDOR,
                     WITH_PO_HEADERS = WITH_PO_HEADERS,
                     PO_HEADERS = PO_HEADERS,
                     PO_ITEMS = PO_ITEMS,
@@ -129,8 +128,8 @@ namespace SustitucionMOAWS.WSConsumers
                 string VENDOR = codigoProveedor;
                 string WITH_PO_HEADERS = "X";
                 ReporteOCWebServiceMOA.BAPIEKKOL[] PO_HEADERS = new ReporteOCWebServiceMOA.BAPIEKKOL[] { };
-                ReporteOCWebServiceMOA.BAPIEKPOC[] PO_ITEMS   = new ReporteOCWebServiceMOA.BAPIEKPOC[] { };
-                ReporteOCWebServiceMOA.BAPIRETURN[] RETURN    = new ReporteOCWebServiceMOA.BAPIRETURN[] { };
+                ReporteOCWebServiceMOA.BAPIEKPOC[] PO_ITEMS = new ReporteOCWebServiceMOA.BAPIEKPOC[] { };
+                ReporteOCWebServiceMOA.BAPIRETURN[] RETURN = new ReporteOCWebServiceMOA.BAPIRETURN[] { };
 
                 service.BAPI_PO_GETITEMS(ACCTASSCAT,
                                         CREATED_BY,

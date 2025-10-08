@@ -1,150 +1,158 @@
 <div class="content-wraper">
-  <!-- CONTENT-->
-  <section class="container-fluid clearfix">
-    <!--Title-->
-    <div class="row titleSection">
-      <div class="col-xs-12 col-sm-10 "><strong>Órdenes de Carga FASON</strong> </div>
-      <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
-          (click)="goToSeccion('/ordenes-de-carga-fason/alta')" id="modalToggleButton">
-          Nueva OC
-        </button>
-      </div>
-    </div>
-    <!--End Title-->
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row alert alert-light" role="alert" style="font-weight: 800; color:red;">
+            Recuerde que el camión deberá llegar a la planta con la Tasa Municipal paga. Puede realizar el pago en <a href="https://www.puertos.tramitesenlinea.com.ar/" target="_blank">este link</a>.
+        </div>
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 "><strong>Órdenes de Carga FASON</strong> </div>
+            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
+                    (click)="goToSeccion('/ordenes-de-carga-fason/alta')" id="modalToggleButton">
+                    Nueva OC
+                </button>
+            </div>
+        </div>
+        <!--End Title-->
 
-    <!--Search-->
-    <div class="myRow mySearch">
-      <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
-        <div class="col-xs-12 col-md-12 search-header">
-          <title-caps>Refinar resultados</title-caps>
-        </div>
+        <!--Search-->
+        <div class="myRow mySearch">
+            <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
 
-        <div id="searchVer" class="col-xs-12 col-sm-12 col-md-12">
-          <app-filtro-fecha-fas (ClickEvent)="getListado()" [key]="filtroFechaKey" [periodoDefault]="filtroFechaPeriodoDefault"></app-filtro-fecha-fas>
-        </div>
-        <div *ngIf="esAdmin" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
-          <p>Por Cliente:</p>
-          <div class="styled-select">
-            <input type="search" class="" placeholder="Ingrese numero de cliente" [value]="" aria-controls="tableModal"
-              [(ngModel)]="filtroCliente">
-          </div>
-        </div>
+                <div id="searchVer" class="col-xs-12 col-sm-12 col-md-12">
+                    <app-filtro-fecha-fas (ClickEvent)="getListado()" [key]="filtroFechaKey"
+                        [periodoDefault]="filtroFechaPeriodoDefault"></app-filtro-fecha-fas>
+                </div>
+                <div *ngIf="esAdmin" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Por Cliente:</p>
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="Ingrese numero de cliente" [value]=""
+                            aria-controls="tableModal" [(ngModel)]="filtroCliente">
+                    </div>
+                </div>
 
-        <div id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
-          <p>Por Estado:</p>
-          <div>
-            <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados" [(ngModel)]="estadosSelected"
-              selectedItemsLabel="{0} Items seleccionados" (onChange)="filtrarListado()" appendTo="body">
-            </p-multiSelect>
-          </div>
+                <div id="searchEstado" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Por Estado:</p>
+                    <div>
+                        <p-multiSelect [options]="descripcionEstadoOrdenCarga" defaultLabel="Estados"
+                            [(ngModel)]="estadosSelected" selectedItemsLabel="{0} Items seleccionados"
+                            (onChange)="filtrarListado()" appendTo="body">
+                        </p-multiSelect>
+                    </div>
+                </div>
+                <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Por Producto:</p>
+                    <div class="styled-select">
+                        <select name="product" [(ngModel)]="productoSelected">
+                            <option value="Todos">Todos</option>
+                            <option *ngFor="let producto of listaProductos" value="{{producto.Descripcion}}">
+                                {{producto.Descripcion}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div id="searchPatente" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Por Patente Chasis:</p>
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="Ingrese número de patente chasis"
+                            aria-controls="tableModal" [value]="" [(ngModel)]="filtroPatente">
+                    </div>
+                </div>
+                <div style="float: right; height: 70px;">
+                    <button type="button" pButton icon="fa fa-refresh"
+                        style="background-color: #075088; float: right; left: -10px; top: 50%;"
+                        (click)="getListado()"></button>
+                    &nbsp;
+                </div>
+            </div>
         </div>
-        <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
-          <p>Por Producto:</p>
-          <div class="styled-select">
-            <select name="product" [(ngModel)]="productoSelected">
-              <option value="Todos">Todos</option>
-              <option *ngFor="let producto of listaProductos" value="{{producto.Descripcion}}">{{producto.Descripcion}}
-              </option>
-            </select>
-          </div>
-        </div>
-        <div id="searchPatente" class="col-xs-12 col-sm-6 col-md-15">
-          <p>Por Patente Chasis:</p>
-          <div class="styled-select">
-            <input type="search" class="" placeholder="Ingrese número de patente chasis" aria-controls="tableModal"
-              [value]="" [(ngModel)]="filtroPatente">
-          </div>
-        </div>
-        <div style="float: right; height: 70px;">
-          <button type="button" pButton icon="fa fa-refresh"
-            style="background-color: #075088; float: right; left: -10px; top: 50%;" (click)="getListado()"></button>
-          &nbsp;
-        </div>
-      </div>
-    </div>
-    <!-- End Search-->
+        <!-- End Search-->
 
-    <!-- Tables-->
-    <div class="row myRow">
-      <div class="clearfix myTables" style="overflow-x:auto;">
-        <mensaje></mensaje>
-        <spinner></spinner>
-        <table #tabla *ngIf="data && data.length != 0;" id="tableModal"
-          class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" role="grid"
-          aria-describedby="tableModal_info" style="width: 100%; padding:10px 0; background: white !important;">
-          <thead>
-            <tr role="row">
-              <th>Id</th>
-              <th *ngIf="esAdmin">Corredor</th>
-              <th *ngIf="esAdmin || isCorredor()">Cliente</th>
-              <th>Estado</th>
-              <th>Fecha Creación</th>
-              <th>Fecha Retiro</th>
-              <th>Producto</th>
-              <th>Patente chasis</th>
-              <th *ngIf="esAdmin"></th>
-              <th>Detalle</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              *ngFor="let ordenDeCargaFason of data 
-              | customFilter : 'RazonSocialCliente' : filtroCliente 
-              | customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected) 
-              | customFilter : 'patenteChasis' : filtroPatente | paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd"
-              role="row" [class.odd]="!odd">
-              <td>{{ordenDeCargaFason.Id}}
-                <i *ngIf="ordenDeCargaFason.FleteMOA && esAdmin" pTooltip="Flete a cargo MOA" tooltipPosition="bottom">
-                  <img src="../../../../Content/images/icons/dolly-solid.svg" alt="fleteMoa" style="height:15px;" />
-                </i>
-              </td>
-              <td *ngIf="esAdmin">{{ordenDeCargaFason.RazonSocialCorredor}}</td>
-              <td *ngIf="esAdmin || isCorredor()">{{ordenDeCargaFason.RazonSocialCliente}}</td>
-              <td>{{ordenDeCargaFason.DescripcionEstado}}</td>
-              <td>{{ordenDeCargaFason.FechaCreacion || ordenDeCargaFason.fechaCreacion}}</td>
-              <td>{{ordenDeCargaFason.FechaRetiroReal || '---'}}</td>
-              <td>{{ordenDeCargaFason.Material}}</td>
-              <td>{{ordenDeCargaFason.patenteChasis}}
-                <span *ngIf="ordenDeCargaFason.Escalable" class="fa fa-truck" aria-hidden="true"></span>
-                <span pTooltip="Patente repetida" tooltipPosition="bottom"
-                  *ngIf="ordenDeCargaFason.TienePatentesRepetidas || ordenDeCargaFason.TienePatenteMultiplesAutorizaciones"
-                  class="fa fa-exclamation-triangle text-repetido" [ngClass]="{
+        <!-- Tables-->
+        <div class="row myRow">
+            <div class="clearfix myTables" style="overflow-x:auto;">
+                <mensaje></mensaje>
+                <spinner></spinner>
+                <table #tabla *ngIf="data && data.length != 0;" id="tableModal"
+                    class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" role="grid"
+                    aria-describedby="tableModal_info"
+                    style="width: 100%; padding:10px 0; background: white !important;">
+                    <thead>
+                        <tr role="row">
+                            <th>Id</th>
+                            <th *ngIf="esAdmin">Corredor</th>
+                            <th *ngIf="esAdmin || isCorredor()">Cliente</th>
+                            <th>Estado</th>
+                            <th>Fecha Creación</th>
+                            <th>Fecha Retiro</th>
+                            <th>Producto</th>
+                            <th>Patente chasis</th>
+                            <th *ngIf="esAdmin"></th>
+                            <th>Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                        *ngFor="let ordenDeCargaFason of data 
+                        | customFilter : 'RazonSocialCliente' : filtroCliente 
+                        | customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected) 
+                        | customFilter : 'patenteChasis' : filtroPatente | paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd"
+                                        role="row" [class.odd]="!odd">
+                            <td>{{ordenDeCargaFason.Id}}
+                                <i *ngIf="ordenDeCargaFason.FleteMOA && esAdmin" pTooltip="Flete a cargo MOA" tooltipPosition="bottom">
+                                    <img src="../../../../Content/images/icons/dolly-solid.svg" alt="fleteMoa" style="height:15px;" />
+                                </i>
+                            </td>
+                            <td *ngIf="esAdmin">{{ordenDeCargaFason.RazonSocialCorredor}}</td>
+                            <td *ngIf="esAdmin || isCorredor()">{{ordenDeCargaFason.RazonSocialCliente}}</td>
+                            <td>{{ordenDeCargaFason.DescripcionEstado}}</td>
+                            <td>{{ordenDeCargaFason.FechaCreacion || ordenDeCargaFason.fechaCreacion}}</td>
+                            <td>{{ordenDeCargaFason.FechaRetiroReal || '---'}}</td>
+                            <td>{{ordenDeCargaFason.Material}}</td>
+                            <td>{{ordenDeCargaFason.patenteChasis}}
+                                <span *ngIf="ordenDeCargaFason.Escalable" class="fa fa-truck" aria-hidden="true"></span>
+                                <span pTooltip="Patente repetida" tooltipPosition="bottom"
+                                    *ngIf="ordenDeCargaFason.TienePatentesRepetidas || ordenDeCargaFason.TienePatenteMultiplesAutorizaciones"
+                                    class="fa fa-exclamation-triangle text-repetido" [ngClass]="{
                   'text-multiples-autorizaciones':ordenDeCargaFason.TienePatenteMultiplesAutorizaciones
                  }" aria-hidden="true"></span>
-              </td>
-              <td *ngIf="esAdmin">
-                <div class="semaforo {{ordenDeCargaFason.ColorSemaforo}}">
-                </div>
-              </td>
-              <td>
-                <a class="cursor" style="cursor: pointer;"
-                  (click)="goToSeccionParam('/ordenes-de-carga-fason/detalle/', ordenDeCargaFason.Id)">
-                  Ver
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                            </td>
+                            <td *ngIf="esAdmin">
+                                <div class="semaforo {{ordenDeCargaFason.ColorSemaforo}}">
+                                </div>
+                            </td>
+                            <td>
+                                <a class="cursor" style="cursor: pointer;"
+                                    (click)="goToSeccionParam('/ordenes-de-carga-fason/detalle/', ordenDeCargaFason.Id)">
+                                    Ver
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
-        <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="data && data.length != 0">
-          <div class="dataTables_paginate paging_simple_numbers">
-            <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
-              [class.disabled]="pT.isFirstPage()"> Anterior </a>
-            <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+                <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="data && data.length != 0">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
+                            [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                        <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
               <a class="paginate_button" (click)="pT.setCurrent(page.value)" *ngIf="pT.getCurrent() !== page.value">{{
-                page.label }}</a>
+                                page.label }}</a>
               <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
-            </span>
+                        </span>
             <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()">
-              Siguiente </a>
-          </div>
-        </pagination-template>
-      </div>
-    </div>
-    <!-- END Tables-->
+                            Siguiente </a>
+                    </div>
+                </pagination-template>
+            </div>
+        </div>
+        <!-- END Tables-->
 
-  </section>
-  <!--End CONTENT-->
+    </section>
+    <!--End CONTENT-->
 </div>

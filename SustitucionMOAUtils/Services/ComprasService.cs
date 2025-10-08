@@ -45,7 +45,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Mail;
 using System.Text;
-using System.Threading;
 using System.Web;
 
 
@@ -967,7 +966,7 @@ namespace SustitucionMOAUtils.Services
 
                         }
                         else
-                        {  
+                        {
                             SolpSAPDto solpSAP = comprasServiceSap.ConvertirSOLPSAP(solpEntity);
                             resultadoEditarSolp = comprasServiceSap.ModificarSolpSap(solpSAP);
                         }
@@ -1429,36 +1428,19 @@ namespace SustitucionMOAUtils.Services
 
         public SolpESDto TraerSolpPorNumero(string nroSolp)
         {
-            var includes = new List<Expression<Func<Solp, object>>>();
-            includes.Add(u => u.Pliego);
-            includes.Add(u => u.Pliego.VisitasMasivas);
-            includes.Add(u => u.Pliego.Archivos);
-            includes.Add(u => u.Posiciones);
-            includes.Add(u => u.Posiciones.Select(y => y.Subposiciones));
-            includes.Add(u => u.UsuarioCreacion);
-            includes.Add(u => u.UsuarioModificacion);
-
-            var solp = repositorio.Listar<Solp>(s => s.NroSolp == nroSolp, 0, null, DirOrden.Asc, includes).ToList().FirstOrDefault();
-
-            if (solp == null)
+            var includes = new List<Expression<Func<Solp, object>>>
             {
-                throw new InfoCustomException("No se encontró la SOLP.");
-            }
+                u => u.Pliego,
+                u => u.Pliego.VisitasMasivas,
+                u => u.Pliego.Archivos,
+                u => u.Posiciones,
+                u => u.Posiciones.Select(y => y.Subposiciones),
+                u => u.UsuarioCreacion,
+                u => u.UsuarioModificacion
+            };
 
-            //if (!String.IsNullOrEmpty(x.NroSolp))
-            //{
-            //    ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
-            //    {
-            //        FechaDesde = Convert.ToDateTime(new DateTime(2010, 01, 01)),
-            //        FechaHasta = Convert.ToDateTime(DateTime.Now.Date.AddDays(1)),
-            //        CreadoPorUsuarios = new List<string>(),
-            //        NumeroSolp = x.NroSolp
-            //    };
-
-            //    //ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
-
-            //    x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
-            //}
+            var solp = repositorio.Listar<Solp>(s => s.NroSolp == nroSolp, 0, null, DirOrden.Asc, includes).ToList().FirstOrDefault()
+                ?? throw new InfoCustomException("No se encontró la SOLP.");
 
             var solpDevuelta = new SolpESDto()
             {
@@ -1943,7 +1925,7 @@ namespace SustitucionMOAUtils.Services
              }
              , e => e.CodigoSap.ToString().Contains(valor));
 
-            if((lista == null || !lista.Any()) && valor.Length >= 7 && valor.All(char.IsDigit))
+            if ((lista == null || !lista.Any()) && valor.Length >= 7 && valor.All(char.IsDigit))
             {
                 string codServicio = valor.PadLeft(18, '0');
                 this.ActualizarServicioSolpDadoCodigo(codServicio);
@@ -3139,7 +3121,6 @@ namespace SustitucionMOAUtils.Services
             {
                 try
                 {
-                    Thread.Sleep(10000);
                     ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
                 }
                 catch (Exception e)
@@ -7556,7 +7537,65 @@ namespace SustitucionMOAUtils.Services
             var nombreArchivoXls = $"Reporte SOLPs {DateTime.Today:dd-MM-yyyy}.xlsx";
 
             EnviarMailReporteSolp(streamExcel.ToArray(), nombreArchivoXls);
+        }
 
+        public void EnviarReporteTrabajoYaHecho()
+        {
+            var fechaDesde = DateTime.Today.AddDays(-7);
+            var ordenesDeCompraUltimaSemana = comprasServiceSap.ObtenerOrdenesDeCompra(fechaDesde);
+
+            var nrosOcs = new HashSet<string>(ordenesDeCompraUltimaSemana.Select(x => x.Id.ToString()));
+            var nrosSolps = new HashSet<string>();
+            var detallesOCs = new List<OrdenDeCompraSAPDto>();
+
+            foreach (var nroOc in nrosOcs)
+            {
+                var ordenDeCompra = comprasServiceSap.ObtenerOrdenDeCompra(nroOc);
+                if (ordenDeCompra.Posiciones?.Any() ?? false)
+                {
+                    ordenDeCompra.Posiciones?.ForEach(p => nrosSolps.Add(p.NroSolp));
+                    detallesOCs.Add(ordenDeCompra);
+                }
+            }
+
+            var solpsTrabajosHechos = repositorio.ObtenerSolpsReporteTrabajoYaHecho(nrosSolps);
+
+            if (!ordenesDeCompraUltimaSemana.Any() || !solpsTrabajosHechos.Any())
+            {
+                Log.Info($"No se encontraron registros para reportar Trabajo ya hecho. OCs: {ordenesDeCompraUltimaSemana.Count}. SOLPs: {solpsTrabajosHechos.Count}");
+                return;
+            }
+
+            var fechasLiberacionPorOc = repositorio.ObtenerFechasLiberacionOcs(nrosOcs);
+
+            var trabajosHechosAReportar = new List<TrabajoYaHechoReporte>();
+
+            foreach (var detalleOc in detallesOCs)
+            {
+                foreach (var nroSolp in detalleOc.Posiciones?.Select(x => x.NroSolp).Distinct())
+                {
+                    var solpTh = solpsTrabajosHechos.FirstOrDefault(s => s.SolpNro == nroSolp);
+                    if (solpTh != null)
+                    {
+                        trabajosHechosAReportar.Add(new TrabajoYaHechoReporte
+                        {
+                            SolpNro = solpTh.SolpNro,
+                            SolpCreador = solpTh.SolpCreador,
+                            SolpFecha = solpTh.SolpFecha,
+                            OrdenCompraNro = detalleOc.Cabecera.OrdenDeCompra,
+                            OrdenCompraCreador = detalleOc.Cabecera.UsuarioComprasSAP,
+                            OrdenCompraFecha = detalleOc.Cabecera.FechaCreacion.ToString("dd/MM/yyyy"),
+                            OrdenCompraFechaLiberacion = fechasLiberacionPorOc.TryGetValue(detalleOc.Cabecera.OrdenDeCompra, out DateTime fechaLiberacionOc) ? fechaLiberacionOc.ToString("dd/MM/yyyy") : null
+                        });
+                    }
+                }
+            }
+
+            Log.Info("Trabajos hechos a reportar: " + trabajosHechosAReportar.Count);
+            var excelMemStream = ExcelExport.CreateExcelFileMs(trabajosHechosAReportar, new string[] { "Nro solp", "Creador solp", "Fecha solp", "Liberación OC", "Nro OC", "Creador OC", "Fecha OC" });
+            var nombreArchivoXls = $"Reporte OCs trabajos ya hechos {DateTime.Today:yyyy-MM-dd}.xlsx";
+
+            emailComprasService.EnviarMailReporteTrabajoYaHecho(excelMemStream.ToArray(), nombreArchivoXls);
         }
 
         private void EnviarMailReporteSolp(byte[] archivoExcel, string archivo)
