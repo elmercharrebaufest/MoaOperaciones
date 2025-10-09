@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SustitucionMOAModel.Dto
+﻿namespace SustitucionMOAModel.Dto
 {
     public class NotificacionEsPendientesDiariasDto
     {
@@ -15,7 +9,7 @@ namespace SustitucionMOAModel.Dto
         public string Cantidad_a_certificar { get; set; }
         public string UM { get; set; }
         public string Porcentaje_a_certificar { get; set; }
-        public double? Monto_a_certificar { get; set; }
+        public decimal? Monto_a_certificar { get; set; }
         public string Aprobador_CDS { get; set; }
         public string Moneda { get; set; }
 
