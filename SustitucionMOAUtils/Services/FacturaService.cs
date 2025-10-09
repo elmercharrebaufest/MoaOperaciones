@@ -102,7 +102,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             resultado[0].Certificaciones.Add(new OrdenDeCompraSAPCertificacion
                             {
-                                NroCertificacion = "Factura por diferencia de tasa de cambio",
+                                NroCertificacion = "Factura por diferencia de tipo de cambio",
                                 Moneda = string.Empty,
                                 Archivo = new List<Archivo>(certificacionesRegistradasOC.Where(cr => cr.Archivo.FileKey == FileKeys.FacturaDiferenciaTasaDeCambio).Select(x => x.Archivo))
                             });
@@ -218,7 +218,7 @@ namespace SustitucionMOAUtils.Services
 
             var usuarioId = usuario.Id;
 
-            Log.Info("Procesando documento por diferencia de tasa de cambio: " + archivoFactura.FileName);
+            Log.Info("Procesando documento por diferencia de tipo de cambio: " + archivoFactura.FileName);
 
             var elementosLeidos = resultadoOcrs.Where(a => a.FileName == archivoFactura.FileName).Select(a => a.Input).ToList();
             List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, archivoFactura.FileName);
@@ -496,7 +496,7 @@ namespace SustitucionMOAUtils.Services
                     c.Id,
                     c.Proveedor.RazonSocial,
                     c.NRO_OC,
-                    NRO_Certificacion = c.Archivo.FileKey != FileKeys.FacturaDiferenciaTasaDeCambio ? c.NRO_Certificacion : "Por diferencia de tasa de cambio",
+                    NRO_Certificacion = c.Archivo.FileKey != FileKeys.FacturaDiferenciaTasaDeCambio ? c.NRO_Certificacion : "Por diferencia de tipo de cambio",
                     c.Importe,
                     c.Archivo,
                     c.FechaDeRegistro,

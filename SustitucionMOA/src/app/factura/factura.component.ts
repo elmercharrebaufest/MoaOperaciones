@@ -57,7 +57,7 @@ export class FacturaComponent extends ListBaseComponent {
 
     certificacionesRegistradasExistentes = [];
     verPendientes: boolean = false;
-    textoNroCertifFacturaDiferenciaTasaCambio: string = 'Factura por diferencia de tasa de cambio';
+    textoNroCertifFacturaDiferenciaTasaCambio: string = 'Factura por diferencia de tipo de cambio';
 
     setTabs() {
         this.setMenuSeccionTab("factura", "Factura");
