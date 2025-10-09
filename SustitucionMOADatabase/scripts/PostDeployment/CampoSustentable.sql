@@ -16,3 +16,9 @@ BEGIN
     INSERT INTO [dbo].[TipoNormativa] (Descripcion)
     VALUES ('EUDR')
 END
+
+-- Actualiza el campo DirectivaDDJJCampoSustentable a 'ISO 2' para las cosechas indicadas si está en NULL
+UPDATE [dbo].[Cosecha]
+SET DirectivaDDJJCampoSustentable = '2023/2413/EC (RED III)'
+WHERE Nombre IN ('20-21', '21-22', '22-23', '23-24', '24-25')
+AND DirectivaDDJJCampoSustentable IS NULL;

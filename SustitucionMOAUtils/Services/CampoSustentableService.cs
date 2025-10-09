@@ -332,7 +332,8 @@ namespace SustitucionMOAUtils.Services
                 RazonSocial = declaracion.RazonSocial,
                 Fecha = declaracion.FechaFirma?.ToString("dd/MM/yyyy"),
                 CantidadParteSoja = declaracion.HectareasDeclaradas.Value,
-                Campos = allCampos
+                Campos = allCampos,
+                DirectivaDDJJCampoSustentable = cosecha.DirectivaDDJJCampoSustentable
             };
 
             //var pdfDeclaracionJurada = GenerarPDFDeclaracion(datosDeclaracionJurada);
@@ -385,7 +386,8 @@ namespace SustitucionMOAUtils.Services
                 CUIT = CUITDeclaracion,
                 RazonSocial = razonSocial,
                 HectareasDeclaracionCampoSustentable = 0,
-                OpcionDeclaracionCampoSustentable = OpcionesDeclaracionCampoSustentable.Totalidad
+                OpcionDeclaracionCampoSustentable = OpcionesDeclaracionCampoSustentable.Totalidad,
+                DirectivaDDJJCampoSustentable = cosecha.DirectivaDDJJCampoSustentable
             };
 
             var declaracion = repositorio.ObtenerDeclaracionDeProveedor(CUITDeclaracion, cosechaId);
@@ -529,11 +531,12 @@ namespace SustitucionMOAUtils.Services
                 RazonSocial = declaracion.RazonSocial,
                 Fecha = declaracion.FechaFirma?.ToString("dd/MM/yyyy"),
                 CantidadParteSoja = declaracion.HectareasDeclaradas.Value,
-                Campos = null
+                Campos = null,
+                DirectivaDDJJCampoSustentable = cosecha.DirectivaDDJJCampoSustentable
             };
 
             var pdfBytes = GenerarPDFDeclaracion(datos);
-            pdfBytes = ReemplazarTextoEnPdf(pdfBytes, @"2018/2001/EC \(RED II\)", @"2023/2413/EC \(RED III\)");
+            pdfBytes = ReemplazarTextoEnPdf(pdfBytes, @"2018/2001/EC \(RED II\)", datos.DirectivaDDJJCampoSustentable);
 
             byte[] archivoResult;
             using (MemoryStream stream = new MemoryStream())
@@ -1274,7 +1277,7 @@ namespace SustitucionMOAUtils.Services
             float xPosition = iTextSharp.text.PageSize.A4.Width / 10;
             float yPosition = iTextSharp.text.PageSize.A4.Height - ((iTextSharp.text.PageSize.A4.Height - 140f) / 5);
 
-            AddTextosSegundaPagina(writer, baseFontBold, fontSizeNormal, fontSize, xPosition, xMargenBase, xMargenTexto, yPosition);
+            AddTextosSegundaPagina(writer, baseFontBold, fontSizeNormal, fontSize, xPosition, xMargenBase, xMargenTexto, yPosition, datos.DirectivaDDJJCampoSustentable);
 
             var logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content", "images", "header", "logo_.png");
             var logoImg = iTextSharp.text.Image.GetInstance(logoPath);
@@ -1335,7 +1338,7 @@ namespace SustitucionMOAUtils.Services
             cb.EndText();
 
         }
-        private void AddTextosSegundaPagina(PdfWriter writer, BaseFont baseFontBold, float fontSizeNormal, float fontSize, float xPosition, float xMargenBase, float xMargenTexto, float yPosition)
+        private void AddTextosSegundaPagina(PdfWriter writer, BaseFont baseFontBold, float fontSizeNormal, float fontSize, float xPosition, float xMargenBase, float xMargenTexto, float yPosition, string directiva)
         {
 
             PdfContentByte under = writer.DirectContentUnder;
@@ -1346,7 +1349,7 @@ namespace SustitucionMOAUtils.Services
             under.SetFontAndSize(baseFontBold, fontSize);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Declaración de Conformidad según criterios de sustentabilidad para la producción de Biomasa, de acuerdo con los"
                 , xPosition + xMargenTexto, yPosition - (15f * 2), 0);
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "requisitos de la Directiva 2023/2413/EC (RED III)"
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "requisitos de la Directiva " + directiva
                 , xPosition + xMargenTexto, yPosition - (15f * 3), 0);
             under.SetFontAndSize(baseFontBold, fontSizeNormal);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "De mi mayor consideración:"
