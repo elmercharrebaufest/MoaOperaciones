@@ -28,8 +28,17 @@ export const MOCK_CARGO_TRACKING_DATA: CargoTrackingState = {
     "Post Calado",
     "Pesaje Bruto",
     "Descarga",
-    "Cierre"
+    "Cierre",
+    // { nombre: "Ingreso", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 15 },
+    // { nombre: "Pre Calado", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 15 },
+    // { nombre: "Calado", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 30 },
+    // { nombre: "Post Calado", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 20 },
+    // { nombre: "Pesaje Bruto", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 35 },
+    // { nombre: "Descarga", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 20 },
+    // { nombre: "Cierre", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 15 },
   ],
+
+  
   currentStageIndex: 0,
   stageDate: new Date('2025-09-19T12:30:00'),
   estimatedTime: 'aprox. 10 min'

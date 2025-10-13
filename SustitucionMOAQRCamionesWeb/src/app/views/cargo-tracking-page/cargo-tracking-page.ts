@@ -6,6 +6,7 @@ import { StageProgressComponent } from '../stage-progress/stage-progress';
 import { ProgressStepperComponent } from '../progress-stepper/progress-stepper';
 import { ExpandableSectionComponent } from '../expandable-section/expandable-section';
 import { ContainerComponent } from '../../shared/container/container';
+import { SectionWrapperComponent } from '../section-wrapper/section-wrapper';
 
 @Component({
   selector: 'app-cargo-tracking-page',
@@ -16,7 +17,8 @@ import { ContainerComponent } from '../../shared/container/container';
     StageProgressComponent,
     ProgressStepperComponent,
     ExpandableSectionComponent,
-    ContainerComponent
+    ContainerComponent,
+    SectionWrapperComponent
   ],
   templateUrl: './cargo-tracking-page.html',
   styleUrls: ['./cargo-tracking-page.scss']

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from './infrastructure/services/auth.service';
 import { CargoTrackingPageComponent } from './views/cargo-tracking-page/cargo-tracking-page'
+import { InformationDetailComponent } from './views/information-detail/information-detail';
 
 // Functional guards
 const canEnter = () => {
@@ -67,5 +68,15 @@ export const appRoutes: Routes = [
     path: '',
     loadComponent: () => import('./views/cargo-tracking-page/cargo-tracking-page').then(m => m.CargoTrackingPageComponent),
     title: 'QR Camiones'
+  },
+  {
+    path: 'cargo-tracking',
+    loadComponent: () => import('./views/cargo-tracking-page/cargo-tracking-page').then(m => m.CargoTrackingPageComponent),
+    title: 'QR Camiones'
+  },
+  {
+    path: 'information-detail',
+    loadComponent: () => import('./views/information-detail/information-detail').then(m => m.InformationDetailComponent),
+    title: 'Información detallada'
   }
 ];

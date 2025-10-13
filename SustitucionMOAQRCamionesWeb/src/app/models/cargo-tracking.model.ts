@@ -15,6 +15,12 @@ export interface Granos {
   material: string;
 }
 
+export interface Etapa {
+  nombre: string;
+  fecha: Date;
+  tiempoEstimado: number;
+}
+
 export interface CargoTrackingInfo {
   ctg: string;
   titularCartaPorte: string;

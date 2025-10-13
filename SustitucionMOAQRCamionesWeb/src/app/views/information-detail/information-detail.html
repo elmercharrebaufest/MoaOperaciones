@@ -1,0 +1,116 @@
+<div class="information-detail-container">
+  @if (cargoData(); as data) {
+    <!-- Header Section -->
+    <app-section-wrapper backgroundColor="#EAE9E9">
+      <header class="header">
+        <img src="assets/moa_logo.svg" alt="Molinos agro" class="logo">
+      </header>
+
+      <!-- Back Button Header -->
+      <div class="back-header" (click)="goBack()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="back-icon">
+          <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="back-title">{{ getTitle() }}</span>
+      </div>
+    </app-section-wrapper>
+
+    <!-- Content Section -->
+    <app-section-wrapper backgroundColor="#f5f5f5">
+      <div class="detail-content">
+        <!-- Fecha y hora de ingreso -->
+        <div class="info-section">
+          <p class="section-label">Fecha y hora de ingreso</p>
+          <!-- <p class="section-value">{{ data.fechaHoraIngreso }}</p> -->
+        </div>
+
+        <app-container>
+          <!-- Datos del traslado de granos -->
+          <div class="info-section">
+            <h2 class="section-title">Datos del traslado de granos</h2>
+            
+            <div class="field-group">
+              <p class="field-label">Titular carta de porte</p>
+              <p class="field-value">{{ data.titularCartaPorte }}</p>
+            </div>
+
+            <div class="field-group">
+              <p class="field-label">Rtte. Comercial Prod.</p>
+              <p class="field-value">{{ data.remitenteComercial }}</p>
+            </div>
+
+            <div class="field-group">
+              <p class="field-label">Rtte. Comercial Vta Prim</p>
+              <p class="field-value">{{ data.remitenteComercialVtaPrim }}</p>
+            </div>
+
+            <div class="field-group">
+              <p class="field-label">Entregador</p>
+              <p class="field-value">{{ data.entregador }}</p>
+            </div>
+
+            <div class="field-group">
+              <p class="field-label">Transportista</p>
+              <p class="field-value">{{ data.transportista }}</p>
+            </div>
+          </div>
+
+          <!-- Datos del chofer -->
+          <div class="info-section">
+            <h2 class="section-title">Datos del chofer</h2>
+            
+            <div class="field-group">
+              <p class="field-label">CUIL</p>
+              <p class="field-value">{{ data.chofer.cuil }}</p>
+            </div>
+
+            <div class="field-group">
+              <p class="field-label">Tipo de documento</p>
+              <p class="field-value">{{ data.chofer.tipoDocumento }}</p>
+            </div>
+
+            <div class="field-group">
+              <p class="field-label">Núm. de documento</p>
+              <p class="field-value">{{ data.chofer.numeroDocumento }}</p>
+            </div>
+
+            <div class="field-group">
+              <p class="field-label">Extranjero</p>
+              <p class="field-value">{{ data.chofer.extranjero }}</p>
+            </div>
+
+            <div class="field-group">
+              <p class="field-label">Nombre y apellido</p>
+              <p class="field-value">{{ data.chofer.nombreApellido }}</p>
+            </div>
+          </div>
+
+          <!-- Datos del camión -->
+          <div class="info-section">
+            <h2 class="section-title">Datos del camión</h2>
+            
+            <div class="field-group">
+              <p class="field-label">Patente</p>
+              <p class="field-value">{{ data.camion.patente }}</p>
+            </div>
+
+            <div class="field-group">
+              <p class="field-label">Patente del acoplado</p>
+              <p class="field-value">{{ data.camion.patenteAcoplado }}</p>
+            </div>
+          </div>
+
+          <!-- Datos de Granos -->
+          <div class="info-section">
+            <h2 class="section-title">Datos de Granos</h2>
+            
+            <div class="field-group">
+              <p class="field-label">Material</p>
+              <p class="field-value">{{ data.granos.material }}</p>
+            </div>
+          </div>
+        </app-container>                
+      </div>
+    </app-section-wrapper>
+  }
+</div>
