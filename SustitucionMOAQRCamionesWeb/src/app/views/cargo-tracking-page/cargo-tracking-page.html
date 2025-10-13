@@ -1,0 +1,95 @@
+<div class="cargo-tracking-container">
+  @if (cargoData(); as data) {
+    <header class="header">
+      <img src="assets/moa_full_logo.svg" alt="Molinos agro" class="logo">
+    </header>
+
+    <div class="content-wrapper">
+      <div class="mb-2">
+        <app-container>
+          <app-shipment-card 
+            [ctg]="data.ctg"
+            [patente]="data.camion.patente"
+            [patenteAcoplado]="data.camion.patenteAcoplado">
+          </app-shipment-card>
+        </app-container>
+      </div>
+
+      @if (currentStage(); as stage) {
+        <div class="mb-2">
+          <app-container>
+            <app-stage-progress
+              [currentStage]="stage.index"
+              [totalStages]="stage.total"
+              [stageName]="stage.name"
+              [stageDate]="stage.date"
+              [estimatedTime]="stage.estimatedTime">
+            </app-stage-progress>
+
+            <app-progress-stepper
+              [totalSteps]="stage.total"
+              [currentStep]="stage.index"
+              (stageChanged)="onStageChange($event)">
+            </app-progress-stepper>
+          </app-container>
+        </div>
+      }
+
+      <app-container>
+        <app-expandable-section title="Información general de la carga">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Titular Carta Porte:</span>
+              <span class="value">{{ data.titularCartaPorte }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Remitente Comercial:</span>
+              <span class="value">{{ data.remitenteComercial }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Entregador:</span>
+              <span class="value">{{ data.entregador }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Transportista:</span>
+              <span class="value">{{ data.transportista }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Material:</span>
+              <span class="value">{{ data.granos.material }}</span>
+            </div>
+          </div>
+        </app-expandable-section>
+
+        <app-expandable-section title="Información general de la planta">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Chofer:</span>
+              <span class="value">{{ data.chofer.nombreApellido }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">CUIL:</span>
+              <span class="value">{{ data.chofer.cuil }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Documento:</span>
+              <span class="value">{{ data.chofer.tipoDocumento }} {{ data.chofer.numeroDocumento }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Remitente Vta. Primaria:</span>
+              <span class="value">{{ data.remitenteComercialVtaPrim }}</span>
+            </div>
+          </div>
+        </app-expandable-section>
+      </app-container>
+
+      <button class="consult-button" (click)="consultarOtraCTG()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16z" stroke="currentColor" stroke-width="2"/>
+          <path d="m13 13 4 4" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        Consultar otra CTG
+      </button>
+    </div>
+  }
+</div>

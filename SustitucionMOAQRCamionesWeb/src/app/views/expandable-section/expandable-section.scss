@@ -1,0 +1,77 @@
+.expandable-section {
+  // Removed: background, border-radius, box-shadow, margin-bottom
+  // Keep only internal layout styles
+  padding: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: #f9f9f9;
+  }
+  
+  &:active {
+    transform: scale(0.99);
+  }
+  
+  .section-title {
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  .chevron {
+    transition: transform 0.3s ease;
+    color: #666;
+    flex-shrink: 0;
+    
+    &.rotated {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.section-content {
+  // Removed: background, box-shadow, border-radius
+  // Keep only internal layout styles
+  padding: 1rem 1.25rem;
+  animation: slideDown 0.3s ease;
+  
+  .info-grid {
+    display: grid;
+    gap: 1rem;
+    
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      
+      .label {
+        font-size: 0.75rem;
+        color: #666;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .value {
+        font-size: 0.875rem;
+        color: #1a1a1a;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

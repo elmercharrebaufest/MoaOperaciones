@@ -1,0 +1,46 @@
+<div class="progress-stepper">
+  <button 
+    class="nav-button prev" 
+    (click)="goToPrevious()" 
+    [disabled]="currentStep() === 1"
+    aria-label="Etapa anterior">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M12 4l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  
+  <div class="steps">
+    @for (step of steps(); track step; let isLast = $last) {
+      <div 
+        class="step" 
+        [class.active]="step === currentStep()" 
+        [class.completed]="step < currentStep()">
+        <div class="step-dot"></div>
+        @if (!isLast) {
+          <div class="step-line"></div>
+        }
+      </div>
+    }
+  </div>
+  
+  <button 
+    class="nav-button next" 
+    (click)="goToNext()" 
+    [disabled]="currentStep() === totalSteps()"
+    aria-label="Siguiente etapa">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M8 4l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</div>
+
+<button class="expand-more" (click)="toggleExpanded()" aria-label="Expandir detalles">
+  <svg 
+    width="20" 
+    height="20" 
+    viewBox="0 0 20 20" 
+    fill="none" 
+    [class.rotated]="isExpanded()">
+    <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>

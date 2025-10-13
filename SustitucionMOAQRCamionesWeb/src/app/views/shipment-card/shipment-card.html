@@ -1,0 +1,21 @@
+<div class="shipment-card">
+  <div class="truck-icon">
+    <img src="assets/camion_icon.svg" alt="Icono Camion" class="icon">
+    <!-- <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+      <path d="M1 3h15v13H1V3z" stroke="currentColor" stroke-width="2"/>
+      <path d="M16 8h3l3 3v5h-6V8z" stroke="currentColor" stroke-width="2"/>
+      <circle cx="5.5" cy="18.5" r="2.5" stroke="currentColor" stroke-width="2"/>
+      <circle cx="18.5" cy="18.5" r="2.5" stroke="currentColor" stroke-width="2"/>
+    </svg> -->
+  </div>
+  <div class="shipment-details">
+    <div class="detail-row">CTG {{ ctg() }}</div>
+    <div class="detail-row">PATENTE {{ patente() }}</div>
+    <div class="detail-row">PATENTE ACOPLADO {{ patenteAcoplado() }}</div>
+  </div>
+  <button class="expand-button">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="2"/>
+    </svg>
+  </button>
+</div>
