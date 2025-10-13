@@ -146,10 +146,14 @@ export class ReporteOcComponent extends ListBaseComponent {
     onSelect(event: any) {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
             let d = new Date(Date.parse(event));
-            this.fechaDesde = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            const month = (d.getMonth() + 1).toString().padStart(2, '0');
+            const day = d.getDate().toString().padStart(2, '0');
+            this.fechaDesde = `${d.getFullYear()}-${month}-${day}`;
         } else {
             let d = new Date(Date.parse(event));
-            this.fechaHasta = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            const month = (d.getMonth() + 1).toString().padStart(2, '0');
+            const day = d.getDate().toString().padStart(2, '0');
+            this.fechaHasta = `${d.getFullYear()}-${month}-${day}`;
             if (this.rangeDates[1]) {
                 this.calendar.overlayVisible = false;
             }
