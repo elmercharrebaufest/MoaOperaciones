@@ -123,11 +123,11 @@
                                     </div>
                                     <div class="styled-select">
                                         <div class="ui-inputgroup">
-                                            <input [disabled]="noPuedeEditarCuitsTerceros||null" type="text" pInputText
+                                            <input [disabled]="noPuedeEditarCuitsTerceros()" type="text" pInputText
                                                 [(ngModel)]="ordenDeCarga.CUITDestinatario" mask="00-00000000-0"
                                                 (change)="validarSisaCuit(ordenDeCarga.CUITDestinatario, 'CUITDestinatario')">
                                             <span
-                                                *ngIf="ordenDeCarga.CUITDestinatario != ordenDeCarga.CUITCliente.toString()&& !noPuedeEditarCuitsTerceros"
+                                                *ngIf="ordenDeCarga.CUITDestinatario != ordenDeCarga.CUITCliente.toString()&& !noPuedeEditarCuitsTerceros()"
                                                 class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestinatario()"
                                                 [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
                                             <span class="ui-inputgroup-addon" *ngIf="validando.CUITDestinatario">
@@ -162,11 +162,11 @@
                                     </div>
                                     <div class="styled-select">
                                         <div class="ui-inputgroup">
-                                            <input [disabled]="noPuedeEditarCuitsTerceros||null" type="text" pInputText
+                                            <input [disabled]="noPuedeEditarCuitsTerceros()" type="text" pInputText
                                                 [(ngModel)]="ordenDeCarga.CUITDestino" mask="00-00000000-0"
                                                 (change)="validarSisaCuit(ordenDeCarga.CUITDestino, 'CUITDestino')">
                                             <span
-                                                *ngIf="ordenDeCarga.CUITDestino != ordenDeCarga.CUITCliente.toString() && !noPuedeEditarCuitsTerceros"
+                                                *ngIf="ordenDeCarga.CUITDestino != ordenDeCarga.CUITCliente.toString() && !noPuedeEditarCuitsTerceros()"
                                                 class="pt-2 pointer pi pi-copy" (click)="copiarCuitEnDestino()"
                                                 [pTooltip]="ttCopiarCuit" style="font-size: 2.5rem"></span>
                                             <span class="ui-inputgroup-addon" *ngIf="validando.CUITDestino">
@@ -203,7 +203,7 @@
                                             [options]="listaPlantas" optionLabel="Codigo"
                                             placeholder="Seleccione una planta"
                                             (ngModelChange)="onPlantaSeleccionadaChanged()" [filter]="true"
-                                            filterBy="value.Codigo" [disabled]="noPuedeEditarCuitsTerceros||null">
+                                            filterBy="value.Codigo" [disabled]="noPuedeEditarCuitsTerceros()">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -216,7 +216,7 @@
                                             [options]="listaDomicilios" optionLabel="Descripcion"
                                             placeholder="Seleccione un domicilio"
                                             (ngModelChange)="onDomicilioSeleccionadoChanged()" [filter]="true"
-                                            filterBy="value.Descripcion" [disabled]="noPuedeEditarCuitsTerceros||null">
+                                            filterBy="value.Descripcion" [disabled]="noPuedeEditarCuitsTerceros()">
                                         </p-dropdown>
                                     </div>
                                 </div>
@@ -270,7 +270,7 @@
                                         [(ngModel)]="unidadTransporte.PatenteChasis"
                                         [source]="patentesChasis"
                                         (ngModelChange)="chasisAcopladoSelected($event);validarCNRT()"
-                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte() || noPuedeEditarCuitsTerceros()"
                                         [no-match-found-text]="'No se encontraron resultados'" [min-chars]="2" maxlength="7"
                                         [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" mask="AAAAAAA" />
                                 </div>
@@ -285,7 +285,7 @@
                                         [(ngModel)]="unidadTransporte.PatenteAcoplado"
                                         [source]="patentesAcoplados"
                                         (ngModelChange)="patenteAcopladoSelected($event);onPatenteSeleccionada();validarCNRT()"
-                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte() || noPuedeEditarCuitsTerceros()"
                                         [no-match-found-text]="'No se encontraron resultados'" [min-chars]="2" maxlength="7"
                                         [value-formatter]="generalFormatterAcoplado"
                                         [list-formatter]="generalFormatterAcoplado" mask="AAAAAAA" />
@@ -300,7 +300,7 @@
                                     <input type="text"
                                         [(ngModel)]="unidadTransporte.NombreChofer"
                                         (ngModelChange)="unidadTransporte.NombreChofer = pasarAMayusculas($event)"
-                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte() || noPuedeEditarCuitsTerceros()"
                                         maxlength="35">
                                 </div>
                             </div>
@@ -314,7 +314,7 @@
                                         [(ngModel)]="unidadTransporte.CUILChofer"
                                         (ngModelChange)="validarCuilChofer()" [source]="cuilsChofer"
                                         (valueChanged)="cuitChoferSelected($event)"
-                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte() || noPuedeEditarCuitsTerceros()"
                                         [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
                                         [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [min-chars]="2" />
                                     <div *ngIf="validando.CUITChofer">
@@ -331,7 +331,7 @@
                                     <input type="text"
                                         [(ngModel)]="unidadTransporte.RazonSocialTransporte"
                                         (ngModelChange)="unidadTransporte.RazonSocialTransporte = pasarAMayusculas($event)"
-                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte() || noPuedeEditarCuitsTerceros()"
                                         maxlength="50">
                                 </div>
                             </div>
@@ -345,7 +345,7 @@
                                         [(ngModel)]="unidadTransporte.CUITTransporte"
                                         (ngModelChange)="validarCuitTransporte()" [source]="cuitsTransporte"
                                         (valueChanged)="cuitTransporteSelected($event)"
-                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
+                                        [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte() || noPuedeEditarCuitsTerceros()"
                                         [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
                                         [min-chars]="2" [value-formatter]="generalFormatter"
                                         [list-formatter]="generalFormatter" [placeholder]="descripcionTransporte">
@@ -365,7 +365,7 @@
                                             <input type="text"
                                                 [(ngModel)]="unidadTransporte.CUITIntermediarioFlete"
                                                 (change)="validarIntermediarioFlete()"
-                                                [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte()"
+                                                [disabled]="!esEdicionDeOrden && !estaIngresandoUnidadTransporte() || noPuedeEditarCuitsTerceros()"
                                                 mask="00-00000000-0" [placeholder]="descripcionIntermediarioFlete">
                                             <span class="ui-inputgroup-addon" *ngIf="validando.CUITIntermediarioFlete">
                                                 <p-progressSpinner
