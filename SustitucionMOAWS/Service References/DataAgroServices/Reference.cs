@@ -5146,6 +5146,9 @@ namespace SustitucionMOAWS.DataAgroServices {
         private string MailField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool OperaConMATBAField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool OperandoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -5267,6 +5270,19 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((object.ReferenceEquals(this.MailField, value) != true)) {
                     this.MailField = value;
                     this.RaisePropertyChanged("Mail");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool OperaConMATBA {
+            get {
+                return this.OperaConMATBAField;
+            }
+            set {
+                if ((this.OperaConMATBAField.Equals(value) != true)) {
+                    this.OperaConMATBAField = value;
+                    this.RaisePropertyChanged("OperaConMATBA");
                 }
             }
         }

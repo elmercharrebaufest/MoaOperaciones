@@ -437,6 +437,7 @@
       <xs:element minOccurs="0" name="EstadoHomeId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="EstadoHomeMensaje" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Mail" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="OperaConMATBA" type="xs:boolean" />
       <xs:element minOccurs="0" name="Operando" type="xs:boolean" />
       <xs:element minOccurs="0" name="ProveedorId" type="xs:int" />
       <xs:element minOccurs="0" name="RazonSocial" nillable="true" type="xs:string" />
