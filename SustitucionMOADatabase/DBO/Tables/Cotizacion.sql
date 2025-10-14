@@ -9,7 +9,7 @@
     [ObservacionTecnica] [nvarchar](max)  NULL,	 
     [ObservacionEconomica] [nvarchar](max)  NULL,	
     [Revision] INT            NOT NULL,
-    [PorcentajeDeHoras] DECIMAL(18, 6) NULL, 
+    [PorcentajeDeHoras] DECIMAL(18, 2) NULL, 
     [CotizarNuevaPosicion] bit  NULL, 
     CONSTRAINT [PK_Cotizacion] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.Cotizacion_Cotizacion_CotizacionEstado_Id] FOREIGN KEY ([CotizacionEstado_Id]) REFERENCES [CotizacionEstado]([Id]),
