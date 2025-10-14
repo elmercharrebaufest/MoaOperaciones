@@ -58,66 +58,80 @@ namespace SustitucionMOARepositorio.Extensiones
         public static string[] SplitParagraph(this string paragraph, int maxCharacters)
         {
             List<string> linesList = new List<string>();
-
             StringBuilder currentLine = new StringBuilder();
-            int currentLineLength = 0;
 
-            string[] words = paragraph.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(a => a + '\n').SelectMany(word => word.Split(' ')).ToArray();
+            // Normalizamos saltos de línea
+            string normalized = paragraph.Replace("\r", "");
 
-            foreach (string word in words)
+            // Recorremos el texto por palabras, pero manteniendo los saltos de línea
+            int start = 0;
+            while (start < normalized.Length)
             {
-                // Si la palabra es más larga que el límite máximo, se divide en múltiples líneas
-                if (word.Length > maxCharacters)
+                // Buscar el siguiente espacio o salto de línea
+                int spaceIndex = normalized.IndexOf(' ', start);
+                int newlineIndex = normalized.IndexOf('\n', start);
+                int nextBreak;
+
+                bool isNewline = false;
+
+                if (spaceIndex == -1 && newlineIndex == -1)
                 {
-                    int index = 0;
-                    while (index < word.Length)
-                    {
-                        int length = Math.Min(maxCharacters, word.Length - index);
-                        string subWord = word.Substring(index, length);
-
-                        // Si la línea actual ya tiene contenido, agregarla a la lista y crear una nueva línea
-                        if (currentLineLength > 0)
-                        {
-                            linesList.Add(currentLine.ToString().TrimEnd());
-                            currentLine.Clear();
-                            currentLineLength = 0;
-                        }
-
-                        // Agregar subpalabra a la línea actual y agregarla a la lista si es necesario
-                        currentLine.Append(subWord).Append(" ");
-                        linesList.Add(currentLine.ToString().TrimEnd());
-                        currentLine.Clear();
-                        currentLineLength = 0;
-
-                        index += length;
-                    }
+                    nextBreak = normalized.Length;
+                }
+                else if (spaceIndex == -1)
+                {
+                    nextBreak = newlineIndex;
+                    isNewline = true;
+                }
+                else if (newlineIndex == -1)
+                {
+                    nextBreak = spaceIndex;
                 }
                 else
                 {
-                    // Verificar si agregar la palabra excede el límite de caracteres o si es un punto seguido o un salto de línea
-                    if (currentLineLength + word.Length + 1 > maxCharacters || word.EndsWith(".") || word.EndsWith("\n"))
+                    nextBreak = Math.Min(spaceIndex, newlineIndex);
+                    isNewline = nextBreak == newlineIndex;
+                }
+
+                string word = normalized.Substring(start, nextBreak - start);
+
+                if (currentLine.Length == 0)
+                {
+                    currentLine.Append(word);
+                }
+                else
+                {
+                    if (currentLine.Length + 1 + word.Length > maxCharacters)
                     {
-                        // Agregar la palabra a la línea actual
-                        currentLine.Append(word).Append(" ");
-                        linesList.Add(currentLine.ToString().TrimEnd()); // Agregar la línea actual a la lista
-                        currentLine.Clear(); // Crear una nueva línea vacía
-                        currentLineLength = 0;
+                        linesList.Add(currentLine.ToString());
+                        currentLine.Clear();
+                        currentLine.Append(word);
                     }
                     else
                     {
-                        // Agregar la palabra a la línea actual
-                        currentLine.Append(word).Append(" ");
-                        currentLineLength += word.Length + 1;
+                        currentLine.Append(" ").Append(word);
                     }
                 }
+
+                // Si encontramos un salto de línea en el texto original, cortamos línea
+                if (isNewline)
+                {
+                    linesList.Add(currentLine.ToString());
+                    currentLine.Clear();
+                }
+
+                // Avanzamos al siguiente segmento
+                start = nextBreak + 1;
             }
 
-            // Agregar la última línea si no está vacía
+            // Agregar la última línea
             if (currentLine.Length > 0)
-                linesList.Add(currentLine.ToString().TrimEnd());
+                linesList.Add(currentLine.ToString());
 
             return linesList.ToArray();
         }
+
+
 
 
         public static void SqlBulkInsert(this DbContext session, DataTable dataTable, string tableName)
