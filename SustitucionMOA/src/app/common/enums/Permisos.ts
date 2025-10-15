@@ -12,6 +12,7 @@ export enum Permiso {
     FasVerOrdenesComerciales = "VER ORDENES DE CARGA PARA COMERCIALES",
     FasVerTodasOrdenes = "VER TODAS ORDENES DE CARGA",
     FleteMOA = "FASON - MODIFICA FLETE MOA",
+    ReporteFacturasCertificaciones = "REPORTE FACTURAS CERTIFICACIONES",
     ResiduosVerOrdenesDeCarga = "VER ORDENES DE CARGA RESIDUOS",
     ResiduosVerOrdenesDeCargaAdmin = "VER ORDENES DE CARGA RESIDUOS ADMIN",
     VerComoAuditor = "VER COMO AUDITOR"

@@ -23,6 +23,7 @@ namespace SustitucionMOATest.Services
         private Mock<IComprasSapService> comprasServiceSapMock;
         private Mock<IRegistroInfoService> registroInfoServiceMock;
         private Mock<IUnidadMedidaService> unidadMedidaServiceMock;
+        private Mock<IMaterialService> materialServiceMock;
 
         [SetUp]
         public void SetUp()
@@ -32,11 +33,13 @@ namespace SustitucionMOATest.Services
             comprasServiceSapMock = new Mock<IComprasSapService>();
             registroInfoServiceMock = new Mock<IRegistroInfoService>();
             unidadMedidaServiceMock = new Mock<IUnidadMedidaService>();
+            materialServiceMock = new Mock<IMaterialService>();
             target = new ComprasSolicitanteService(repositorioMock.Object,
                                                    comprasServiceMock.Object,
                                                    comprasServiceSapMock.Object,
                                                    registroInfoServiceMock.Object,
-                                                   unidadMedidaServiceMock.Object);
+                                                   unidadMedidaServiceMock.Object,
+                                                   materialServiceMock.Object);
         }
 
         #region private methods

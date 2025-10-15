@@ -32,7 +32,7 @@ namespace SustitucionMOATest.Services
         public void ActualizarMaterialesSolpOk()
         {
             var tablaSap = new List<TablaSap> { new TablaSap { Codigo = "FINALIZADA", Tabla = "Centro", CodigoSap = "05", Descripcion = "Liberación concluida" } };
-            obtenerMaterialesSolpConsumerMOAMock.Setup(y => y.request(It.IsAny<List<string>>(), It.IsAny<string>())).Returns(new MaterialWSMOAResponse
+            obtenerMaterialesSolpConsumerMOAMock.Setup(y => y.request(It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<string>())).Returns(new MaterialWSMOAResponse
             {
                 Materiales = new List<SustitucionMOAModel.Models.WSMapMOA.Compras.Material> { new SustitucionMOAModel.Models.WSMapMOA.Compras.Material {
                 NroMaterial = "", NombreDeMaterial = "", TipoMaterial = "", TipoValoracion = "", GrupoCompras = "", PrecioDelMaterial = 500, CuentaDeMayor = "", TextoAmpliado = ""} }

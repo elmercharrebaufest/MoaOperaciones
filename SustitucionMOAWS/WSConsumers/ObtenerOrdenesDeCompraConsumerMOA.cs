@@ -17,8 +17,8 @@ namespace SustitucionMOAWS.WSConsumers
     /// </summary>
     public class ObtenerOrdenesDeCompraConsumerMOA : IObtenerOrdenesDeCompraConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
         public ObtenerOrdenesDeCompraConsumerMOA()
         {
 
@@ -95,13 +95,36 @@ namespace SustitucionMOAWS.WSConsumers
                 ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKKOL[] cabeceras = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKKOL[] { };
                 ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKPOC[] detalle = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIEKPOC[] { };
                 ObtenerOrdenesDeCompraWebServiceMOA.BAPIRETURN[] bapiReturn = new ObtenerOrdenesDeCompraWebServiceMOA.BAPIRETURN[] { };
-                service.BAPI_PO_GETITEMS("", "", usuarioSolp ? "X" : "", fechaInicio, "", "", categoria, "", new ObtenerOrdenesDeCompraWebServiceMOA.BAPIMGVMATNR(), "",
-                                         "", "", "", OC, "", "", "", new ObtenerOrdenesDeCompraWebServiceMOA.BAPIMGVMATNR(), "", "",
-                                         "", "", vendedor, "X",
-                                         ref cabeceras,
-                                         ref detalle,
-                                         ref bapiReturn
-                                        );
+
+                service.BAPI_PO_GETITEMS(
+                    ACCTASSCAT: "",
+                    CREATED_BY: "",
+                    DELETED_ITEMS: usuarioSolp ? "X" : "",
+                    DOC_DATE: fechaInicio,
+                    DOC_TYPE: "",
+                    ITEMS_OPEN_FOR_RECEIPT: "",
+                    ITEM_CAT: categoria,
+                    MATERIAL: "",
+                    MATERIAL_EVG: new ObtenerOrdenesDeCompraWebServiceMOA.BAPIMGVMATNR(),
+                    MATERIAL_LONG: "",
+                    MAT_GRP: "",
+                    PLANT: "",
+                    PREQ_NAME: "",
+                    PURCHASEORDER: OC,
+                    PURCH_ORG: "",
+                    PUR_GROUP: "",
+                    PUR_MAT: "",
+                    PUR_MAT_EVG: new ObtenerOrdenesDeCompraWebServiceMOA.BAPIMGVMATNR(),
+                    PUR_MAT_LONG: "",
+                    SHORT_TEXT: "",
+                    SUPPL_PLANT: "",
+                    TRACKINGNO: "",
+                    VENDOR: vendedor,
+                    WITH_PO_HEADERS: "X",
+                    ref cabeceras,
+                    ref detalle,
+                    ref bapiReturn);
+
                 return Map(cabeceras);
             }
         }

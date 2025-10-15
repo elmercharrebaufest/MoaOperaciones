@@ -51,6 +51,7 @@
         DescargarPagosNg,
         Pesificacion,
         RegistrarPesada,
+        ReporteFacturasCertificaciones,
         SeleccionarVendedor,
         AltaEmpresaGranos,
         AbmEmpresas,

@@ -145,6 +145,7 @@
 
 	<setParameter name="EmailToMesaENTSL Config" value="Mesaentsl@molinosagro.com.ar" />
 	<setParameter name="EmailToMesaVentaFas Config" value="mesafassanlorenzo@molinosagro.com.ar" />
+	<setParameter name="EmailToReporteTrabajoHecho Config" value="MariadelRosario.Lattini@molinosagro.com.ar; Liza.Molina@molinosagro.com.ar; guillermo.ayuso@molinosagro.com.ar" />
 	<setParameter name="EmailToGestionAltaCuit Config" value="Mesaentsl@molinosagro.com.ar" />
 	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="mesafassanlorenzo@molinosagro.com.ar" />
 	<setParameter name="EmailAltaTempranaCuitFasonTo Config" value="Mesaentsl@molinosagro.com.ar"/>
@@ -238,4 +239,15 @@
   <setParameter value="https://sapprgap.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_moaop_compras_direct/400/z_ws_moaop_compras_direct/z_ws_moaop_compras_direct" name="Z_WS_MOAOP_COMPRAS_DIRECT Service Endpoint Address" />
   <setParameter value="https://sapprgap.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_moaop_direct/400/z_ws_moaop_direct/z_ws_moaop_direct" name="Z_WS_MOAOP_DIRECT Service Endpoint Address" />
   <setParameter value="https://sapprgap.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_panol_direct/400/z_ws_panol_direct/z_ws_panol_direct" name="Z_WS_PANOL_DIRECT Service Endpoint Address" />
+
+  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MLBO Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_2012 Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MEWI Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MEWP Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MEWQ Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_BAPT Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_MOAOP_COMPRAS_DIRECT Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_MOAOP_DIRECT Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_PANOL_DIRECT Binding Configuration" />
+  
 </parameters>

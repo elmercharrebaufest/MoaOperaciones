@@ -74,6 +74,7 @@
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\CertificacionDto.cs" />
+    <Compile Include="Dto\Compras\Factura\EstadoCertificacion.cs" />
     <Compile Include="Dto\Compras\Factura\GrupoCertificaciones.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaRevisionTecnicaDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaSolpPosicionDto.cs" />
@@ -87,7 +88,6 @@
     <Compile Include="Dto\Compras\PosicionCrearPoMultipleDto.cs" />
     <Compile Include="Dto\Compras\SolpCrearPoMultipleDto.cs" />
     <Compile Include="Dto\Compras\PosicionPendienteDto.cs" />
-    <Compile Include="Dto\Compras\AreaDto.cs" />
     <Compile Include="Dto\Compras\CertificacionES\SolpESDto.cs" />
     <Compile Include="Dto\Compras\ActualizarFechaVigenciaRegistroInfoDto.cs" />
     <Compile Include="Dto\Compras\AdjuntosSolpDto.cs" />
@@ -100,6 +100,7 @@
     <Compile Include="Dto\Compras\POPosicionDto.cs" />
     <Compile Include="Dto\Compras\TablaGeneralDto.cs" />
     <Compile Include="Dto\Compras\TablaSapDto.cs" />
+    <Compile Include="Dto\Compras\TrabajoYaHechoReporte.cs" />
     <Compile Include="Dto\Compras\UsuarioAreaDto.cs" />
     <Compile Include="Dto\Compras\EmailDetailCertificateDto.cs" />
     <Compile Include="Dto\CondicionDePagoDto.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Dto\FrontLoggerRequestDto.cs" />
     <Compile Include="Dto\LiberadorSapDto.cs" />
     <Compile Include="Dto\LocalidadDto.cs" />
+    <Compile Include="Dto\LogQrRequestDto.cs" />
     <Compile Include="Dto\LogTableDto.cs" />
     <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\NotificacionEsPendientesDiariasDto.cs" />
@@ -163,7 +165,6 @@
     <Compile Include="Entities\AplicacionCartaPorteCargaMasiva.cs" />
     <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
     <Compile Include="Entities\Aprobaciones.cs" />
-    <Compile Include="Entities\Area.cs" />
     <Compile Include="Entities\CertificacionRegistrada.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\DistanciaDomicilio.cs" />

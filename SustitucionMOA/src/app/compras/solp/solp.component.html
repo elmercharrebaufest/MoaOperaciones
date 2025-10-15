@@ -106,6 +106,23 @@
 </p-confirmDialog>
 <!--fin modal Volver a home SOLP-->
 
+<!-- Modal de confirmación antes de finalizar -->
+<p-dialog [header]="'Información importante'" [(visible)]="displayModalConfirmacionFinalizar" [modal]="true" 
+    [responsive]="true" [style]="{width: '600px', minWidth: '400px', maxWidth:'700px'}" [minY]="70" 
+    [draggable]="false" appendTo="body" [closable]="false">
+    
+    <div class="modal-content-text">
+        <p>{{modalMessage}}</p>
+    </div>
+    
+    <p-footer>
+        <button type="button" pButton icon="pi pi-times" (click)="cancelarConfirmacionFinalizar()" 
+            label="Cancelar" class="ui-button-secondary"></button>
+        <button type="button" pButton icon="pi pi-check" (click)="continuarAFinalizar()" 
+            label="Continuar" class="ui-button-success"></button>
+    </p-footer>
+</p-dialog>
+
 <finalizar-solp [(locale)]="es"
                 [(displayFinalizar)]="displayFinalizar"
                 [(solpActual)]="solpActual"

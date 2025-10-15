@@ -10,8 +10,8 @@
 
   <setParameter name="PasswordSap Config" value="prueba" />
   <setParameter name="SAPsinPI Config" value="1" />
-  <setParameter name="SapUserS4 Config" value="GWEBSRV_GOL" />
-  <setParameter name="SapPassS4 Config" value="Inicio2025!" />
+  <setParameter name="SapUserSinPI Config" value="GWEBSRV_GOL" />
+  <setParameter name="SapPassSinPI Config" value="Inicio2025!" />
 
   <setParameter name="EsLocal Config" value="false" />
 
@@ -40,7 +40,8 @@
   <setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,emartin@baufest.com" />
 
   <setParameter name="EmailToMesaENTSL Config" value="moaoperaciones@baufest.com;emartin@baufest.com;marian.rabellato@molinosagro.com.ar" />
-  <setParameter name="EmailToMesaVentaFas Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
+	<setParameter name="EmailToMesaVentaFas Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
+	<setParameter name="EmailToReporteTrabajoHecho Config" value="moaoperaciones@baufest.com" />
   <setParameter name="EmailToCobranzas Config" value="moaoperaciones@baufest.com;emartin@baufest.com" />
   <setParameter name="EmailToComerciales Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
   <setParameter name="EmailToComercialesAlimAnimal Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />

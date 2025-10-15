@@ -104,6 +104,8 @@ namespace SustitucionMOA.App_Start
 
             kernel.Bind<IAltaClienteSAPJob>().To(typeof(AltaClienteSAPJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEnviarMailReporteSOLPJob>().To(typeof(EnviarMailReporteSOLPJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IEnviarMailReporteTrabajoYaHechoJob>().To(typeof(EnviarMailReporteTrabajoYaHechoJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<ICertificarOrdenesCompraContratoMarcoJob>().To(typeof(CertificarOrdenesCompraContratoMarcoJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteOrdenDeCompraConsumerMOA>().To(typeof(ReporteOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<ICcSsObtenerArchivosUcropJob>().To(typeof(CcSsObtenerArchivosUcropJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEnviarCamposUcropitJob>().To(typeof(EnviarCamposUcropitJob)).InScope(ctx => OperationContext.Current);
@@ -208,6 +210,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioCampoSustentable>().To<RepositorioCampoSustentable>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioCompras>().To<RepositorioCompras>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioFactura>().To<RepositorioFactura>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenDeCarga>().To<RepositorioOrdenDeCarga>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenDeCargaFason>().To<RepositorioOrdenDeCargaFason>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);

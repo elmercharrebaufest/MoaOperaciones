@@ -155,6 +155,42 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public string VolverProveedorCanalDeAltas(string CUIT)
+        {
+            try {
+                //Filtrar proveedores por cuit
+            
+                List<Proveedor> proveedor = repositorio.Listar<Proveedor>(x => x.CUIT == CUIT).ToList();
+                if (proveedor.Count == 0)
+                {
+                    return "No se encontró ningún proveedor con el CUIT ingresado.";
+                }
+                if (proveedor.Count > 1)
+                {
+                    return "Se encontraron múltiples proveedores con el CUIT ingresado. Por favor, contacte a soporte.";
+                }
+                if (proveedor.Count == 1)
+                { 
+                    // Cambiar el valor de la columna EstadoAprobación para dicho proveedor en la base de datos
+                    int proveedorId = proveedor[0].Id;
+                    Proveedor proveedorToUpdate = repositorio.Obtener<Proveedor>(proveedorId);
+                    if (proveedorToUpdate == null)
+                    {
+                        return "No se encontró el proveedor para actualizar.";
+                    }
+                    proveedorToUpdate.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
+                    repositorio.GuardarCambios();
+                    return "El proveedor ha sido exitosamente vuelto al canal de altas.";
+                }
+                return "Error al intentar volver el proveedor al canal de altas.";
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         private List<ProveedorHistorialAprobacionDto> GetProveedorHistorialAprobacion(List<int> IdProveedor)
         {
 

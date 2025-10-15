@@ -586,3 +586,92 @@
   height: 32px !important;
   font-weight: 400;
 }
+
+.modal-content-text {
+    padding: 1rem 0;
+    line-height: 1.6;
+}
+
+.modal-content-text ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.modal-content-text li {
+    margin-bottom: 0.5rem;
+}
+
+.modal-content-text p {
+    margin-bottom: 1rem;
+}
+
+/* Estilo para el cuadro de información lateral */
+.info-box-side {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 2em;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    position: sticky;
+    top: 20px;
+    font-family: "Roboto", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.info-box-side p {
+    margin: 0;
+    color: #495057;
+    white-space: pre-line;
+}
+
+.info-box-header {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #212529;
+}
+
+/* Hacer el rectángulo responsivo */
+@media (max-width: 768px) {
+    .info-box-side {
+        max-width: 100%;
+        font-size: 12px;
+        padding: 10px;
+        margin-top: 15px;
+        position: relative;
+    }
+}
+
+/* Agregar efecto hover */
+.info-box-side:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.info-box-bottom-right p {
+    margin: 0;
+    color: #495057;
+    white-space: pre-line;
+}
+
+.info-box-header {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #212529;
+}
+
+/* Opcional: Hacer el rectángulo responsivo */
+@media (max-width: 768px) {
+    .info-box-bottom-right {
+        max-width: 100%;
+        font-size: 12px;
+        padding: 10px;
+    }
+}
+
+/* Opcional: Agregar efecto hover */
+.info-box-bottom-right:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
