@@ -231,7 +231,7 @@ namespace SustitucionMOATest.Services
                         It.Is<int>(y => y == proveedorId)),
                     Times.Once);
 
-            googleDriveMock.Verify(x => x.UploadFile(It.IsAny<GoogleDriveFileUploadRequest>()), Times.Exactly(2));
+            googleDriveMock.Verify(x => x.UploadFile(It.IsAny<GoogleDriveFileUploadRequest>(), It.IsAny<string>()), Times.Exactly(2));
             googleDriveMock.VerifyAll();
 
             var expected = new Resultado { IdEntidad = campoCosechaId, Mensaje = SuccessMsg.CampoSustentableAgregado };
@@ -239,9 +239,10 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(expected, result);
         }
 
-        [Test()]
+        [Test]
         public void EditarTest()
         {
+            // Arrange
             var proveedorId = 1;
             var usuarioId = 2;
             var mailUsuario = "mail@mail.com";
@@ -259,12 +260,29 @@ namespace SustitucionMOATest.Services
                 Mail = mailUsuario,
                 Proveedores = new List<Proveedor> { proveedor },
                 Roles = new List<Rol>{
-                    new Rol
-                    {
-                        Codigo = "TestRol",
-                        PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Id = 1, Permiso = "VER TODOS CAMPOS SUSTENTABLE" }, new PermisoPorRol { Id = 1, Permiso = "EDICION CAMPOS CREADOS" } }
-                    }
-                }
+            new Rol
+            {
+                Codigo = "TestRol",
+                PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Id = 1, Permiso = "VER TODOS CAMPOS SUSTENTABLE" }, new PermisoPorRol { Id = 1, Permiso = "EDICION CAMPOS CREADOS" } }
+            }
+        }
+            };
+
+            var tipoNormativaEPA = new TipoNormativa { Id = 3, Descripcion = "EPA" };
+            var normativaEPA = new CampoCosechaNormativa
+            {
+                TipoNormativa = tipoNormativaEPA,
+                TipoNormativa_Id = 3,
+                ToneladasAprobadas = 10,
+                MotivoRechazo = null
+            };
+
+            var campoCosecha = new CampoCosecha
+            {
+                Campo = new CampoSustentable { Nombre = "Test", Renspa = "123", Localidad_Id = 5 },
+                Cosecha = new Cosecha { Nombre = "20-21" },
+                ToneladasAprobadas = 5,
+                CampoCosechaNormativas = new List<CampoCosechaNormativa> { normativaEPA }
             };
 
             var campoProveedor = new CampoProveedor
@@ -273,72 +291,92 @@ namespace SustitucionMOATest.Services
                 Proveedor_Id = proveedorId,
                 HectareasSoja = 100,
                 HectareasTotales = 100,
+                Longitud = "1.1",
+                Latitud = "2.2",
                 Borrado = false,
                 Proveedor = proveedor,
                 Archivo = new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" },
-                CampoCosecha = new CampoCosecha
-                {
-                    Campo = new CampoSustentable { Nombre = "Test" },
-                    Cosecha = new Cosecha { Nombre = "20-21" }
-                }
+                CampoCosecha = campoCosecha,
+                EPA = true,
+                BSVS2 = false,
+                EUDR = false,
+                EvidenciaPresentada = false
             };
-
-            repositorioMock
-               .Setup(x => x.Obtener(It.Is<Expression<Func<Usuario, bool>>>(l => l.Compile().Invoke(usuario))))
-               .Returns(usuario);
-
-            repositorioMock
-               .Setup(x => x.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>()))
-               .Returns(campoProveedor);
 
             var campoEditado = new CampoProveedor
             {
                 CampoCosecha_Id = campoCosechaId,
                 Proveedor_Id = proveedorId,
-                HectareasSoja = 100,
-                HectareasTotales = 100,
+                HectareasSoja = 200,
+                HectareasTotales = 300,
+                Longitud = "3.3",
+                Latitud = "4.4",
                 Borrado = false,
+                EPA = true,
+                BSVS2 = false,
+                EUDR = false,
                 CampoCosecha = new CampoCosecha
                 {
-                    Campo = new CampoSustentable { Nombre = "Test" },
-                    Cosecha = new Cosecha { Nombre = "20-21" }
-                }
+                    Campo = new CampoSustentable { Nombre = "Editado", Renspa = "456", Localidad_Id = 6 },
+                    Cosecha = new Cosecha { Nombre = "21-22" },
+                    ToneladasAprobadas = 15
+                },
+                EvidenciaPresentada = false
             };
 
-            var fileStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\Example.KMZ"), FileMode.Open, FileAccess.Read);
-            Mock<HttpPostedFileBase> uploadedFile = new Mock<HttpPostedFileBase>();
+            var fileStream = new MemoryStream(new byte[] { 1, 2, 3 });
+            var uploadedFile = new Mock<HttpPostedFileBase>();
+            uploadedFile.Setup(f => f.ContentLength).Returns(100);
+            uploadedFile.Setup(f => f.FileName).Returns("Example.kmz");
+            uploadedFile.Setup(f => f.InputStream).Returns(fileStream);
 
-            var fileEpaStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\EPA.png"), FileMode.Open, FileAccess.Read);
-            Mock<HttpPostedFileBase> uploadedFileEpa = new Mock<HttpPostedFileBase>();
-
-            uploadedFile
-                .Setup(f => f.ContentLength)
-                .Returns(100);
-
-            uploadedFile
-                .Setup(f => f.FileName)
-                .Returns("Example.kmz");
-
-            uploadedFile
-                .Setup(f => f.InputStream)
-                .Returns(fileStream);
-
-            uploadedFileEpa
-                .Setup(f => f.InputStream)
-                .Returns(fileEpaStream);
+            var fileEpaStream = new MemoryStream(new byte[] { 4, 5, 6 });
+            var uploadedFileEpa = new Mock<HttpPostedFileBase>();
+            uploadedFileEpa.Setup(f => f.FileName).Returns("EPA.pdf");
+            uploadedFileEpa.Setup(f => f.InputStream).Returns(fileEpaStream);
 
             ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"] = TestContext.CurrentContext.TestDirectory;
 
+            repositorioMock
+                .Setup(x => x.Obtener(It.Is<Expression<Func<Usuario, bool>>>(l => l.Compile().Invoke(usuario))))
+                .Returns(usuario);
+
+            repositorioMock
+                .Setup(x => x.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>()))
+                .Returns(campoProveedor);
+
+            repositorioMock
+                .Setup(x => x.Listar<TipoNormativa>(null, 0, null, DirOrden.Asc, null))
+                .Returns(new List<TipoNormativa> { tipoNormativaEPA });
+
+            repositorioMock
+                .Setup(x => x.Obtener<TipoNormativa>(It.IsAny<Expression<Func<TipoNormativa, bool>>>()))
+                .Returns(tipoNormativaEPA);
+
+            repositorioMock
+                .Setup(x => x.Agregar(It.IsAny<CampoCosechaNormativa>()));
+
+            repositorioMock
+                .Setup(x => x.GuardarCambios());
+
+            // Act
             var result = target.Editar(mailUsuario, campoEditado, uploadedFile.Object, uploadedFileEpa.Object);
 
-            repositorioMock
-                 .Verify(x => x.Obtener(It.Is<Expression<Func<Usuario, bool>>>(l => l.Compile().Invoke(usuario))), Times.Once);
+            // Assert
+            repositorioMock.Verify(x => x.Obtener(It.Is<Expression<Func<Usuario, bool>>>(l => l.Compile().Invoke(usuario))), Times.Once);
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>()), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
 
-            repositorioMock
-                .Verify(x => x.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>()), Times.Once);
+            Assert.AreEqual(200, campoProveedor.HectareasSoja);
+            Assert.AreEqual(300, campoProveedor.HectareasTotales);
+            Assert.AreEqual("3.3", campoProveedor.Longitud);
+            Assert.AreEqual("4.4", campoProveedor.Latitud);
+            Assert.AreEqual("Editado", campoProveedor.CampoCosecha.Campo.Nombre);
+            Assert.AreEqual("456", campoProveedor.CampoCosecha.Campo.Renspa);
+            Assert.AreEqual(6, campoProveedor.CampoCosecha.Campo.Localidad_Id);
+            Assert.AreEqual(true, campoProveedor.EPA);
 
             var expected = new Resultado { IdEntidad = campoCosechaId, Mensaje = SuccessMsg.CampoSustentableActualizado };
-
             Assert.AreEqual(expected, result);
         }
 
@@ -380,7 +418,19 @@ namespace SustitucionMOATest.Services
                 CampoCosecha = new CampoCosecha
                 {
                     Campo = new CampoSustentable { Nombre = "Test" },
-                    Cosecha = new Cosecha { Nombre = "20-21" }
+                    Cosecha = new Cosecha { Nombre = "20-21" },
+                    CampoCosechaNormativas = new List<CampoCosechaNormativa>
+                    {
+                        new CampoCosechaNormativa
+                        {
+                            Id = 1,
+                            CampoCosecha_Id = 100,
+                            TipoNormativa_Id = 2,
+                            ToneladasAprobadas = 0,
+                            MotivoRechazo = null,
+                            Validado = false,
+                        }
+                    }
                 }
             };
 
@@ -445,8 +495,20 @@ namespace SustitucionMOATest.Services
                 {
                     Campo = new CampoSustentable { Nombre = "Test" },
                     Cosecha = new Cosecha { Nombre = "20-21" },
-                    ToneladasAprobadas = 50
-                }
+                    ToneladasAprobadas = 50,
+                    CampoCosechaNormativas = new List<CampoCosechaNormativa>
+                    {
+                        new CampoCosechaNormativa
+                        {
+                            Id = 1,
+                            CampoCosecha_Id = 100,
+                            TipoNormativa_Id = 2,
+                            ToneladasAprobadas = 50.5,
+                            MotivoRechazo = null,
+                            Validado = false,
+                        }
+                    }
+                },
             };
 
             repositorioMock
@@ -891,40 +953,117 @@ namespace SustitucionMOATest.Services
             usuario3Mock.Setup(x => x.TienePermiso(PermisoEnum.VerTodosCamposSustentable)).Returns(false);
 
             var usuariosList = new List<Usuario>
-            {
-                usuario1Mock.Object,
-                usuario2Mock.Object,
-                usuario3Mock.Object,
-            };
+    {
+        usuario1Mock.Object,
+        usuario2Mock.Object,
+        usuario3Mock.Object,
+    };
             this.repositorioMock.Setup(repo => repo.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns<Expression<Func<Usuario, bool>>>(q => usuariosList.SingleOrDefault(q.Compile()));
 
             CampoSustentable campoSustentable1 = new CampoSustentable { IdScato = 1, Nombre = "Campo sustentable 1" };
-
-            var campoCosecha1 = new CampoCosecha { Campo = campoSustentable1, Cosecha = new Cosecha { Nombre = "cosecha 1" }, ToneladasAprobadas = 29, Cosecha_Id = 1, MotivoRechazo = "motivo rechazo 1" };
-
             CampoSustentable campoSustentable2 = new CampoSustentable { IdScato = 2, Nombre = "Campo sustentable 2" };
 
-            var campoCosecha2 = new CampoCosecha { Campo = campoSustentable2, Cosecha = new Cosecha { Nombre = "cosecha 2" }, ToneladasAprobadas = 80, Cosecha_Id = 2, MotivoRechazo = "motivo rechazo 2" };
+            var campoCosecha1 = new CampoCosecha
+            {
+                Campo = campoSustentable1,
+                Cosecha = new Cosecha { Nombre = "cosecha 1" },
+                ToneladasAprobadas = 29,
+                Cosecha_Id = 1,
+                MotivoRechazo = "motivo rechazo 1",
+                CampoCosechaNormativas = new List<CampoCosechaNormativa>
+        {
+            new CampoCosechaNormativa
+            {
+                Id = 1,
+                CampoCosecha_Id = 1,
+                TipoNormativa_Id = 2,
+                TipoNormativa = new TipoNormativa
+                {
+                    Id = 2,
+                    Descripcion = "2BSVS"
+                },
+                ToneladasAprobadas = 29,
+                MotivoRechazo = "motivo rechazo 1",
+                Validado = false,
+            }
+        }
+            };
+            var campoCosecha2 = new CampoCosecha
+            {
+                Campo = campoSustentable2,
+                Cosecha = new Cosecha { Nombre = "cosecha 2" },
+                ToneladasAprobadas = 80,
+                Cosecha_Id = 2,
+                MotivoRechazo = "motivo rechazo 2",
+                CampoCosechaNormativas = new List<CampoCosechaNormativa>
+        {
+            new CampoCosechaNormativa
+            {
+                Id = 1,
+                CampoCosecha_Id = 2,
+                TipoNormativa_Id = 2,
+                TipoNormativa = new TipoNormativa
+                {
+                    Id = 2,
+                    Descripcion = "2BSVS"
+                },
+                ToneladasAprobadas = 80,
+                MotivoRechazo = "motivo rechazo 2",
+                Validado = false,
+            }
+        }
+            };
 
             Proveedor proveedor1 = new Proveedor { Id = 1, CodigoProveedor = "prov1", RazonSocial = "Proveedor 1", CUIT = "cuit1" };
             Proveedor proveedor2 = new Proveedor { Id = 2, CodigoProveedor = "prov2", RazonSocial = "Proveedor 2", CUIT = "cuit2" };
 
-            var campoProveedor1 = new CampoProveedor { CampoCosecha = campoCosecha1, CampoCosecha_Id = 1, HectareasSoja = 23, HectareasTotales = 93, Proveedor_Id = 1, Proveedor = proveedor1, CUIT = "cuit1", RazonSocial = "razon social 1", FechaCreacion = ayer, Borrado = false, };
-            var campoProveedor2 = new CampoProveedor { CampoCosecha = campoCosecha2, CampoCosecha_Id = 2, HectareasSoja = 39, HectareasTotales = 41, Proveedor_Id = 2, Proveedor = proveedor2, CUIT = "cuit2", RazonSocial = "razon social 2", FechaCreacion = hoy, Borrado = false, };
-            var campoProveedor3 = new CampoProveedor { Borrado = true, };
-            var campoProveedorList = new List<CampoProveedor>
+            var campoProveedor1 = new CampoProveedor
             {
-                campoProveedor1,
-                campoProveedor2,
-                campoProveedor3,
+                CampoCosecha = campoCosecha1,
+                CampoCosecha_Id = 1,
+                HectareasSoja = 23,
+                HectareasTotales = 93,
+                Proveedor_Id = 1,
+                Proveedor = proveedor1,
+                CUIT = "cuit1",
+                RazonSocial = "razon social 1",
+                FechaCreacion = ayer,
+                Borrado = false,
+                BSVS2 = true,
+                EPA = false,
+                EUDR = false
             };
+            var campoProveedor2 = new CampoProveedor
+            {
+                CampoCosecha = campoCosecha2,
+                CampoCosecha_Id = 2,
+                HectareasSoja = 39,
+                HectareasTotales = 41,
+                Proveedor_Id = 2,
+                Proveedor = proveedor2,
+                CUIT = "cuit2",
+                RazonSocial = "razon social 2",
+                FechaCreacion = hoy,
+                Borrado = false,
+                BSVS2 = true,
+                EPA = false,
+                EUDR = false
+            };
+            var campoProveedor3 = new CampoProveedor { Borrado = true, };
+
+            var campoProveedorList = new List<CampoProveedor>
+    {
+        campoProveedor1,
+        campoProveedor2,
+        campoProveedor3,
+    };
 
             this.repositorioMock
                 .Setup(repo => repo.Listar(
-                    It.IsAny<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>>(),
+                    It.IsAny<Expression<Func<CampoProveedor, CampoProveedor>>>(),
                     It.IsAny<Expression<Func<CampoProveedor, bool>>>(),
                     0, "FechaCreacion", DirOrden.Desc))
-                .Returns<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>, Expression<Func<CampoProveedor, bool>>, int, string, DirOrden>
+                .Returns<Expression<Func<CampoProveedor, CampoProveedor>>, Expression<Func<CampoProveedor, bool>>, int, string, DirOrden>
                     ((proy, filtro, maxResultados, orden, dirOrden) => campoProveedorList.Where(filtro.Compile()).Select(proy.Compile()).OrderByDescending(x => x.FechaCreacion).ToList());
 
             var result = target.Listar(mailUsuarioTest);
@@ -932,7 +1071,7 @@ namespace SustitucionMOATest.Services
             usuario2Mock.Verify(u => u.TienePermiso(PermisoEnum.ComercialCamposSustentables), Times.Once);
             usuario2Mock.Verify(u => u.TienePermiso(PermisoEnum.VerTodosCamposSustentable), Times.Once);
 
-            repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
+            repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoProveedor>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
 
             Assert.AreEqual(2, result.Count);
 
@@ -1007,11 +1146,55 @@ namespace SustitucionMOATest.Services
             CampoSustentable campoSustentable1 = new CampoSustentable { IdScato = 1, Nombre = "Campo sustentable 1" };
             CampoSustentable campoSustentable2 = new CampoSustentable { IdScato = 2, Nombre = "Campo sustentable 2" };
 
-            var campoCosecha1 = new CampoCosecha { Campo = campoSustentable1, Cosecha = new Cosecha { Nombre = "cosecha 1" }, ToneladasAprobadas = 29, Cosecha_Id = 1, MotivoRechazo = "motivo rechazo 1" };
-            var campoCosecha2 = new CampoCosecha { Campo = campoSustentable2, Cosecha = new Cosecha { Nombre = "cosecha 2" }, ToneladasAprobadas = 80, Cosecha_Id = 2, MotivoRechazo = "motivo rechazo 2" };
+            var campoCosecha1 = new CampoCosecha { Campo = campoSustentable1, Cosecha = new Cosecha { Nombre = "cosecha 1" }, ToneladasAprobadas = 29, Cosecha_Id = 1, MotivoRechazo = "motivo rechazo 1",
+                CampoCosechaNormativas = new List<CampoCosechaNormativa>
+                    {
+                        new CampoCosechaNormativa
+                        {
+                            Id = 1,
+                            CampoCosecha_Id = 1,
+                            TipoNormativa_Id = 3,
+                            TipoNormativa = new TipoNormativa
+                            {
+                                Id = 3,
+                                Descripcion = "2BSVS"
+                            },
+                            ToneladasAprobadas = 10,
+                            MotivoRechazo = null,
+                            Validado = false,
+                        }
+                    }
+            };
+            var campoCosecha2 = new CampoCosecha { Campo = campoSustentable2, Cosecha = new Cosecha { Nombre = "cosecha 2" }, ToneladasAprobadas = 80, Cosecha_Id = 2, MotivoRechazo = "motivo rechazo 2",
+                CampoCosechaNormativas = new List<CampoCosechaNormativa>
+                    {
+                        new CampoCosechaNormativa
+                        {
+                            Id = 1,
+                            CampoCosecha_Id = 1,
+                            TipoNormativa_Id = 3,
+                            TipoNormativa = new TipoNormativa
+                            {
+                                Id = 3,
+                                Descripcion = "2BSVS"
+                            },
+                            ToneladasAprobadas = 10,
+                            MotivoRechazo = null,
+                            Validado = false,
+                        }
+                    }
+            };
 
-            var campoProveedor1 = new CampoProveedor { CampoCosecha = campoCosecha1, CampoCosecha_Id = 1, HectareasSoja = 23, HectareasTotales = 93, Proveedor_Id = 1, Proveedor = proveedor1, CUIT = "cuit1", RazonSocial = "razon social 1", FechaCreacion = ayer, Borrado = false, };
-            var campoProveedor2 = new CampoProveedor { CampoCosecha = campoCosecha2, CampoCosecha_Id = 2, HectareasSoja = 39, HectareasTotales = 41, Proveedor_Id = 2, Proveedor = proveedor2, CUIT = "cuit2", RazonSocial = "razon social 2", FechaCreacion = hoy, Borrado = false, };
+            var campoProveedor1 = new CampoProveedor { CampoCosecha = campoCosecha1, CampoCosecha_Id = 1, HectareasSoja = 23, HectareasTotales = 93, Proveedor_Id = 1, Proveedor = proveedor1, CUIT = "cuit1", RazonSocial = "razon social 1", FechaCreacion = ayer, Borrado = false,
+                BSVS2 = true,
+                EPA = false,
+                EUDR = false
+            };
+            var campoProveedor2 = new CampoProveedor { CampoCosecha = campoCosecha2, CampoCosecha_Id = 2, HectareasSoja = 39, HectareasTotales = 41, Proveedor_Id = 2, Proveedor = proveedor2, CUIT = "cuit2", RazonSocial = "razon social 2", FechaCreacion = hoy, Borrado = false,
+                BSVS2 = true,
+                EPA = false,
+                EUDR = false
+            };
 
             var campoProveedorList = new List<CampoProveedor>
             {
@@ -1021,20 +1204,29 @@ namespace SustitucionMOATest.Services
                 new CampoProveedor { Borrado = true, },
             };
 
-            this.repositorioMock
+            /*this.repositorioMock
                 .Setup(repo => repo.Listar(
                     It.IsAny<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>>(),
                     It.IsAny<Expression<Func<CampoProveedor, bool>>>(),
                     0, "FechaCreacion", DirOrden.Desc))
                                 .Returns<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>, Expression<Func<CampoProveedor, bool>>, int, string, DirOrden>
                     ((proy, filtro, maxResultados, orden, dirOrden) => campoProveedorList.Where(filtro.Compile()).Select(proy.Compile()).OrderByDescending(x => x.FechaCreacion).ToList());
+            */
+            this.repositorioMock
+       .Setup(repo => repo.Listar(
+           It.IsAny<Expression<Func<CampoProveedor, CampoProveedor>>>(),
+           It.IsAny<Expression<Func<CampoProveedor, bool>>>(),
+           0, "FechaCreacion", DirOrden.Desc))
+       .Returns<Expression<Func<CampoProveedor, CampoProveedor>>, Expression<Func<CampoProveedor, bool>>, int, string, DirOrden>
+           ((proy, filtro, maxResultados, orden, dirOrden) => campoProveedorList.Where(filtro.Compile()).Select(proy.Compile()).OrderByDescending(x => x.FechaCreacion).ToList());
+
 
             var result = target.Listar(mailUsuarioTest);
 
             usuario1Mock.Verify(u => u.TienePermiso(PermisoEnum.ComercialCamposSustentables), Times.Once);
             usuario1Mock.Verify(u => u.TienePermiso(PermisoEnum.VerTodosCamposSustentable), Times.Once);
 
-            repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoProveedorListadoDto>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
+            repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoProveedor>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
 
             Assert.AreEqual(2, result.Count);
 
@@ -1043,7 +1235,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(39, result[0].HectareasSoja);
             Assert.AreEqual(41, result[0].HectareasTotales);
             Assert.AreEqual("Campo sustentable 2", result[0].NombreCampo);
-            Assert.AreEqual(80, result[0].ToneladasAprobadas);
+            Assert.AreEqual(10, result[0].ToneladasAprobadas);
             Assert.AreEqual(2, result[0].CampoCosechaId);
             Assert.AreEqual(2, result[0].Proveedor.Id);
             Assert.AreEqual("prov2", result[0].Proveedor.CodigoProveedor);
@@ -1052,7 +1244,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual("cuit2", result[0].CUITProveedor);
             Assert.AreEqual("razon social 2", result[0].RazonSocialProveedor);
             Assert.AreEqual(2, result[0].CosechaId);
-            Assert.AreEqual("motivo rechazo 2", result[0].MotivoRechazo);
+            Assert.AreEqual(null, result[0].MotivoRechazo);
             Assert.AreEqual(hoy, result[0].FechaCreacion);
 
             Assert.AreEqual(1, result[1].IdScato);
@@ -1060,7 +1252,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(23, result[1].HectareasSoja);
             Assert.AreEqual(93, result[1].HectareasTotales);
             Assert.AreEqual("Campo sustentable 1", result[1].NombreCampo);
-            Assert.AreEqual(29, result[1].ToneladasAprobadas);
+            Assert.AreEqual(10, result[1].ToneladasAprobadas);
             Assert.AreEqual(1, result[1].CampoCosechaId);
             Assert.AreEqual(1, result[1].Proveedor.Id);
             Assert.AreEqual("prov1", result[1].Proveedor.CodigoProveedor);
@@ -1069,85 +1261,110 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual("cuit1", result[1].CUITProveedor);
             Assert.AreEqual("razon social 1", result[1].RazonSocialProveedor);
             Assert.AreEqual(1, result[1].CosechaId);
-            Assert.AreEqual("motivo rechazo 1", result[1].MotivoRechazo);
+            Assert.AreEqual(null, result[1].MotivoRechazo);
             Assert.AreEqual(ayer, result[1].FechaCreacion);
         }
 
         [Test]
         public void ExportarCamposProveedoresAdminCampos()
         {
+            // Arrange
             string mailUsuarioTest = "mail";
-
             DateTime hoy = new DateTime(2021, 8, 24);
             DateTime ayer = new DateTime(2021, 8, 23);
 
             var permisoEsAdminCampos = PermisoEnum.VerTodosCamposSustentable;
 
-            Mock<Usuario> usuario1Mock = new Mock<Usuario>();
-            usuario1Mock.Setup(x => x.Mail).Returns("mail");
-            usuario1Mock.Setup(x => x.TienePermiso(permisoEsAdminCampos)).Returns(true);
-
-            Mock<Usuario> usuario2Mock = new Mock<Usuario>();
-            usuario2Mock.Setup(x => x.Mail).Returns("X");
-            usuario2Mock.Setup(x => x.TienePermiso(permisoEsAdminCampos)).Returns(false);
-
-            Mock<Usuario> usuario3Mock = new Mock<Usuario>();
-            usuario3Mock.Setup(x => x.Mail).Returns((string)null);
-            usuario3Mock.Setup(x => x.TienePermiso(permisoEsAdminCampos)).Returns(false);
+            var usuarioAdminMock = new Mock<Usuario>();
+            usuarioAdminMock.Setup(x => x.Mail).Returns(mailUsuarioTest);
+            usuarioAdminMock.Setup(x => x.TienePermiso(permisoEsAdminCampos)).Returns(true);
 
             var usuariosList = new List<Usuario>
             {
-                usuario1Mock.Object,
-                usuario2Mock.Object,
-                usuario3Mock.Object,
+                usuarioAdminMock.Object
             };
-            this.repositorioMock.Setup(repo => repo.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns<Expression<Func<Usuario, bool>>>(q => usuariosList.SingleOrDefault(q.Compile()));
+            repositorioMock.Setup(repo => repo.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns<Expression<Func<Usuario, bool>>>(q => usuariosList.SingleOrDefault(q.Compile()));
 
             CampoSustentable campoSustentable1 = new CampoSustentable { IdScato = 1, Nombre = "Campo sustentable 1" };
-
-            var campoCosecha1 = new CampoCosecha { Campo = campoSustentable1, Cosecha = new Cosecha { Nombre = "cosecha 1" }, ToneladasAprobadas = 29, Cosecha_Id = 1, MotivoRechazo = "motivo rechazo 1" };
-
             CampoSustentable campoSustentable2 = new CampoSustentable { IdScato = 2, Nombre = "Campo sustentable 2" };
 
-            var campoCosecha2 = new CampoCosecha { Campo = campoSustentable2, Cosecha = new Cosecha { Nombre = "cosecha 2" }, ToneladasAprobadas = 80, Cosecha_Id = 2, MotivoRechazo = "motivo rechazo 2" };
+            var tipoNormativa = new TipoNormativa { Id = 2, Descripcion = "2BSVS" };
+
+            var normativa1 = new CampoCosechaNormativa
+            {
+                TipoNormativa = tipoNormativa,
+                TipoNormativa_Id = 2,
+                ToneladasAprobadas = 29,
+                MotivoRechazo = "motivo rechazo 1"
+            };
+            var normativa2 = new CampoCosechaNormativa
+            {
+                TipoNormativa = tipoNormativa,
+                TipoNormativa_Id = 2,
+                ToneladasAprobadas = 80,
+                MotivoRechazo = "motivo rechazo 2"
+            };
+
+            var campoCosecha1 = new CampoCosecha
+            {
+                Campo = campoSustentable1,
+                Cosecha = new Cosecha { Nombre = "cosecha 1" },
+                ToneladasAprobadas = 29,
+                Cosecha_Id = 1,
+                MotivoRechazo = "motivo rechazo 1",
+                CampoCosechaNormativas = new List<CampoCosechaNormativa> { normativa1 }
+            };
+            var campoCosecha2 = new CampoCosecha
+            {
+                Campo = campoSustentable2,
+                Cosecha = new Cosecha { Nombre = "cosecha 2" },
+                ToneladasAprobadas = 80,
+                Cosecha_Id = 2,
+                MotivoRechazo = "motivo rechazo 2",
+                CampoCosechaNormativas = new List<CampoCosechaNormativa> { normativa2 }
+            };
 
             Proveedor proveedor1 = new Proveedor { Id = 1, CodigoProveedor = "prov1", RazonSocial = "Proveedor 1", CUIT = "cuit1" };
             Proveedor proveedor2 = new Proveedor { Id = 2, CodigoProveedor = "prov2", RazonSocial = "Proveedor 2", CUIT = "cuit2" };
 
             var campoProveedorList = new List<CampoProveedor>
             {
-                new CampoProveedor { CampoCosecha = campoCosecha1, CampoCosecha_Id = 1, HectareasSoja = 23, HectareasTotales = 93, Proveedor_Id = 1, Proveedor = proveedor1, CUIT = "cuit1", RazonSocial ="razon social 1", FechaCreacion = ayer, Borrado = false, },
-                new CampoProveedor { CampoCosecha = campoCosecha2, CampoCosecha_Id = 2, HectareasSoja = 39, HectareasTotales = 41, Proveedor_Id = 2, Proveedor = proveedor2, CUIT = "cuit2", RazonSocial ="razon social 2", FechaCreacion = hoy, Borrado = false, },
-                new CampoProveedor { Borrado = true, },
+                new CampoProveedor { CampoCosecha = campoCosecha1, CampoCosecha_Id = 1, HectareasSoja = 23, HectareasTotales = 93, Proveedor_Id = 1, Proveedor = proveedor1, CUIT = "cuit1", RazonSocial ="razon social 1", FechaCreacion = ayer, Borrado = false, BSVS2 = true },
+                new CampoProveedor { CampoCosecha = campoCosecha2, CampoCosecha_Id = 2, HectareasSoja = 39, HectareasTotales = 41, Proveedor_Id = 2, Proveedor = proveedor2, CUIT = "cuit2", RazonSocial ="razon social 2", FechaCreacion = hoy, Borrado = false, BSVS2 = true },
+                new CampoProveedor { Borrado = true }
             };
 
-            this.repositorioMock
-                .Setup(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoSustentableExportDTO>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), 0, "FechaCreacion", DirOrden.Desc))
-                .Returns<Expression<Func<CampoProveedor, CampoSustentableExportDTO>>, Expression<Func<CampoProveedor, bool>>, int, string, DirOrden>
+            repositorioMock
+                .Setup(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoProveedor>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), 0, "FechaCreacion", DirOrden.Desc))
+                .Returns<Expression<Func<CampoProveedor, CampoProveedor>>, Expression<Func<CampoProveedor, bool>>, int, string, DirOrden>
                     ((proy, filtro, maxResultados, orden, dirOrden) => campoProveedorList.Where(filtro.Compile()).Select(proy.Compile()).OrderByDescending(x => x.FechaCreacion).ToList());
 
+            excelExportWrapperMock
+                .Setup(excelExport => excelExport.ToExcel(It.IsAny<List<CampoSustentableExportDTO>>(), It.IsAny<string[]>(), It.IsAny<string>()))
+                .Returns("excel-content");
+
+            // Act
             var result = target.ExportarCamposProveedores(mailUsuarioTest);
 
-            this.excelExportWrapperMock
-                .Verify(excelExport => excelExport.ToExcel(It.IsAny<object>(), It.IsAny<string[]>(), It.IsAny<string>()), Times.Once);
-            this.excelExportWrapperMock
-                .Verify(excelExport => excelExport.ToExcel(
-                    It.Is<List<CampoSustentableExportDTO>>(x => x.Count == 2 &&
-                        x[0].IdScato == 2 &&
-                        x[1].IdScato == 1),
-                    It.IsAny<string[]>(),
-                    It.IsAny<string>()),
+            // Assert
+            excelExportWrapperMock.Verify(excelExport => excelExport.ToExcel(
+                It.Is<List<CampoSustentableExportDTO>>(x => x.Count == 2 &&
+                    x[0].IdScato == 2 &&
+                    x[1].IdScato == 1),
+                It.Is<string[]>(headers => headers.Contains("Id Scato")),
+                "Reporte Campos Sustentables"),
                 Times.Once);
 
-            this.repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoSustentableExportDTO>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
-            this.repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoSustentableExportDTO>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), 0, "FechaCreacion", DirOrden.Desc), Times.Once);
+            repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoProveedor>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), 0, "FechaCreacion", DirOrden.Desc), Times.Once);
+
+            Assert.AreEqual("excel-content", result);
         }
 
         [Test]
         public void ExportarCamposProveedores()
         {
+            // Arrange
             string mailUsuarioTest = "mail";
-
             DateTime hoy = new DateTime(2021, 8, 24);
             DateTime ayer = new DateTime(2021, 8, 23);
 
@@ -1156,62 +1373,89 @@ namespace SustitucionMOATest.Services
             Proveedor proveedor1 = new Proveedor { Id = 1, CodigoProveedor = "prov1", RazonSocial = "Proveedor 1" };
             Proveedor proveedor2 = new Proveedor { Id = 2, CodigoProveedor = "prov2", RazonSocial = "Proveedor 2" };
 
-            Mock<Usuario> usuario1Mock = new Mock<Usuario>();
-            usuario1Mock.Setup(x => x.Mail).Returns("X");
-            usuario1Mock.Setup(x => x.TienePermiso(permisoEsAdminCampos)).Returns(true);
-
-            Mock<Usuario> usuario2Mock = new Mock<Usuario>();
-            usuario2Mock.Setup(x => x.Mail).Returns("mail");
-            usuario2Mock.Setup(x => x.Proveedores).Returns(new List<Proveedor> { proveedor1, proveedor2 });
-            usuario2Mock.Setup(x => x.TienePermiso(permisoEsAdminCampos)).Returns(false);
-
-            Mock<Usuario> usuario3Mock = new Mock<Usuario>();
-            usuario3Mock.Setup(x => x.Mail).Returns((string)null);
-            usuario3Mock.Setup(x => x.TienePermiso(permisoEsAdminCampos)).Returns(false);
+            // Usuario SIN permiso de admin campos
+            var usuarioMock = new Mock<Usuario>();
+            usuarioMock.Setup(x => x.Mail).Returns(mailUsuarioTest);
+            usuarioMock.Setup(x => x.Proveedores).Returns(new List<Proveedor> { proveedor1, proveedor2 });
+            usuarioMock.Setup(x => x.TienePermiso(permisoEsAdminCampos)).Returns(false);
 
             var usuariosList = new List<Usuario>
             {
-                usuario1Mock.Object,
-                usuario2Mock.Object,
-                usuario3Mock.Object,
+                usuarioMock.Object
             };
-            this.repositorioMock.Setup(repo => repo.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns<Expression<Func<Usuario, bool>>>(q => usuariosList.SingleOrDefault(q.Compile()));
+            repositorioMock.Setup(repo => repo.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns<Expression<Func<Usuario, bool>>>(q => usuariosList.SingleOrDefault(q.Compile()));
 
             CampoSustentable campoSustentable1 = new CampoSustentable { IdScato = 1, Nombre = "Campo sustentable 1" };
-
-            var campoCosecha1 = new CampoCosecha { Campo = campoSustentable1, Cosecha = new Cosecha { Nombre = "cosecha 1" }, ToneladasAprobadas = 29, Cosecha_Id = 1, MotivoRechazo = "motivo rechazo 1" };
-
             CampoSustentable campoSustentable2 = new CampoSustentable { IdScato = 2, Nombre = "Campo sustentable 2" };
 
-            var campoCosecha2 = new CampoCosecha { Campo = campoSustentable2, Cosecha = new Cosecha { Nombre = "cosecha 2" }, ToneladasAprobadas = 80, Cosecha_Id = 2, MotivoRechazo = "motivo rechazo 2" };
+            var tipoNormativaEPA = new TipoNormativa { Id = 3, Descripcion = "EPA" };
+            var tipoNormativaBSVS2 = new TipoNormativa { Id = 2, Descripcion = "2BSVS" };
+
+            var normativaEPA = new CampoCosechaNormativa
+            {
+                TipoNormativa = tipoNormativaEPA,
+                TipoNormativa_Id = 3,
+                ToneladasAprobadas = 10,
+                MotivoRechazo = null
+            };
+            var normativaBSVS2 = new CampoCosechaNormativa
+            {
+                TipoNormativa = tipoNormativaBSVS2,
+                TipoNormativa_Id = 2,
+                ToneladasAprobadas = 20,
+                MotivoRechazo = null
+            };
+
+            var campoCosecha1 = new CampoCosecha
+            {
+                Campo = campoSustentable1,
+                Cosecha = new Cosecha { Nombre = "cosecha 1" },
+                ToneladasAprobadas = 29,
+                Cosecha_Id = 1,
+                MotivoRechazo = "motivo rechazo 1",
+                CampoCosechaNormativas = new List<CampoCosechaNormativa> { normativaEPA }
+            };
+            var campoCosecha2 = new CampoCosecha
+            {
+                Campo = campoSustentable2,
+                Cosecha = new Cosecha { Nombre = "cosecha 2" },
+                ToneladasAprobadas = 80,
+                Cosecha_Id = 2,
+                MotivoRechazo = "motivo rechazo 2",
+                CampoCosechaNormativas = new List<CampoCosechaNormativa> { normativaBSVS2 }
+            };
 
             var campoProveedorList = new List<CampoProveedor>
             {
-                new CampoProveedor { CampoCosecha = campoCosecha1, CampoCosecha_Id = 1, HectareasSoja = 23, HectareasTotales = 93, Proveedor_Id = 1, Proveedor = proveedor1, CUIT = "cuit1", RazonSocial ="razon social 1", FechaCreacion = ayer, Borrado = false, },
-                new CampoProveedor { CampoCosecha = campoCosecha2, CampoCosecha_Id = 2, HectareasSoja = 39, HectareasTotales = 41, Proveedor_Id = 2, Proveedor = proveedor2, CUIT = "cuit2", RazonSocial ="razon social 2", FechaCreacion = hoy, Borrado = false, },
-                new CampoProveedor { Borrado = true, },
+                new CampoProveedor { CampoCosecha = campoCosecha1, CampoCosecha_Id = 1, HectareasSoja = 23, HectareasTotales = 93, Proveedor_Id = 1, Proveedor = proveedor1, CUIT = "cuit1", RazonSocial ="razon social 1", FechaCreacion = ayer, Borrado = false, EPA = true },
+                new CampoProveedor { CampoCosecha = campoCosecha2, CampoCosecha_Id = 2, HectareasSoja = 39, HectareasTotales = 41, Proveedor_Id = 2, Proveedor = proveedor2, CUIT = "cuit2", RazonSocial ="razon social 2", FechaCreacion = hoy, Borrado = false, BSVS2 = true },
+                new CampoProveedor { Borrado = true }
             };
 
-            this.repositorioMock
-                .Setup(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoSustentableExportBaseDTO>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), 0, "FechaCreacion", DirOrden.Desc))
-                .Returns<Expression<Func<CampoProveedor, CampoSustentableExportBaseDTO>>, Expression<Func<CampoProveedor, bool>>, int, string, DirOrden>
+            repositorioMock
+                .Setup(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoProveedor>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), 0, "FechaCreacion", DirOrden.Desc))
+                .Returns<Expression<Func<CampoProveedor, CampoProveedor>>, Expression<Func<CampoProveedor, bool>>, int, string, DirOrden>
                     ((proy, filtro, maxResultados, orden, dirOrden) => campoProveedorList.Where(filtro.Compile()).Select(proy.Compile()).OrderByDescending(x => x.FechaCreacion).ToList());
 
+            excelExportWrapperMock
+                .Setup(excelExport => excelExport.ToExcel(It.IsAny<List<CampoSustentableExportBaseDTO>>(), It.IsAny<string[]>(), It.IsAny<string>()))
+                .Returns("excel-content");
+
+            // Act
             var result = target.ExportarCamposProveedores(mailUsuarioTest);
 
-            this.excelExportWrapperMock
-                .Verify(excelExport => excelExport.ToExcel(It.IsAny<object>(), It.IsAny<string[]>(), It.IsAny<string>()), Times.Once);
-            this.excelExportWrapperMock
-                .Verify(excelExport => excelExport.ToExcel(
-                    It.Is<List<CampoSustentableExportBaseDTO>>(x => x.Count == 2 &&
-                        x[0].RazonSocial == "razon social 2" &&
-                        x[1].RazonSocial == "razon social 1"),
-                    It.IsAny<string[]>(),
-                    It.IsAny<string>()),
+            // Assert
+            excelExportWrapperMock.Verify(excelExport => excelExport.ToExcel(
+                It.Is<List<CampoSustentableExportBaseDTO>>(x => x.Count == 2 &&
+                    x[0].RazonSocial == "razon social 2" &&
+                    x[1].RazonSocial == "razon social 1"),
+                It.IsAny<string[]>(),
+                "Reporte Campos Sustentables"),
                 Times.Once);
 
-            this.repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoSustentableExportBaseDTO>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>()), Times.Once);
-            this.repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoSustentableExportBaseDTO>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), 0, "FechaCreacion", DirOrden.Desc), Times.Once);
+            repositorioMock.Verify(repo => repo.Listar(It.IsAny<Expression<Func<CampoProveedor, CampoProveedor>>>(), It.IsAny<Expression<Func<CampoProveedor, bool>>>(), 0, "FechaCreacion", DirOrden.Desc), Times.Once);
+
+            Assert.AreEqual("excel-content", result);
         }
 
         [Test]
@@ -1278,17 +1522,42 @@ namespace SustitucionMOATest.Services
             var tipoNormativaId = 30;
             var motivoRechazo = "Motivo rechazo de prueba";
 
-            var usuario = new Usuario { Mail = mailUsuario, Proveedores = new List<Proveedor> { new Proveedor { Id = proveedorId } },
+            var usuario = new Usuario
+            {
+                Mail = mailUsuario,
+                Proveedores = new List<Proveedor> { new Proveedor { Id = proveedorId } },
                 Roles = new List<Rol>{
-                    new Rol
+            new Rol
+            {
+                Codigo = "TestRol",
+                PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Id = 1, Permiso = "VER TODOS CAMPOS SUSTENTABLE" } }
+            }
+        }
+            };
+            CampoSustentable campoSustentable = new CampoSustentable { IdScato = 1, Nombre = "Campo sustentable 1" };
+
+            var campoCosecha = new CampoCosecha
+            {
+                Campo = campoSustentable,
+                Cosecha = new Cosecha { Nombre = "cosecha 1" },
+                ToneladasAprobadas = 29,
+                Cosecha_Id = 1,
+                MotivoRechazo = "motivo rechazo 1",
+                CampoCosechaNormativas = new List<CampoCosechaNormativa>
+                {
+                    new CampoCosechaNormativa
                     {
-                        Codigo = "TestRol",
-                        PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Id = 1, Permiso = "VER TODOS CAMPOS SUSTENTABLE" } }
+                        Id = 1,
+                        CampoCosecha_Id = 100,
+                        TipoNormativa_Id = 30,
+                        ToneladasAprobadas = 50.5,
+                        MotivoRechazo = null,
+                        Validado = false,
                     }
                 }
             };
-            var campoProveedor = new CampoProveedor { Proveedor_Id = proveedorId, CampoCosecha_Id = campoCosechaId };
-            var campoCosechaNormativa = new CampoCosechaNormativa { TipoNormativa_Id = tipoNormativaId };
+            var campoProveedor = new CampoProveedor { Proveedor_Id = proveedorId, CampoCosecha_Id = campoCosechaId, CampoCosecha = campoCosecha };
+            var campoCosechaNormativa = campoProveedor.CampoCosecha.CampoCosechaNormativas.First();
 
             repositorioMock
                 .Setup(x => x.Obtener<CampoProveedor>(It.IsAny<Expression<Func<CampoProveedor, bool>>>()))
@@ -1296,11 +1565,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock
                 .Setup(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>()))
-                .Returns(usuario);
-
-            repositorioMock
-                .Setup(x => x.Obtener<CampoCosechaNormativa>(It.IsAny<Expression<Func<CampoCosechaNormativa, bool>>>()))
-                .Returns(campoCosechaNormativa);
+                .Returns(usuario);      
 
             // Act
             var result = target.Rechazar(mailUsuario, campoCosechaId, proveedorId, tipoNormativaId, motivoRechazo);
@@ -1310,7 +1575,6 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(SuccessMsg.CampoSustentableRechazado, result);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
         }
-
         [Test]
         public void Aprobar_CampoCosechaNormativaExiste_ValidaYGuarda()
         {
@@ -1318,7 +1582,7 @@ namespace SustitucionMOATest.Services
             var mailUsuario = "usuario@test.com";
             var campoCosechaId = 10;
             var proveedorId = 20;
-            var tipoNormativaId = 30;
+            var tipoNormativaId = 2;
 
             var usuario = new Usuario { Id = 99, Mail = mailUsuario, Proveedores = new List<Proveedor> { new Proveedor { Id = proveedorId } },
                 Roles = new List<Rol>{
@@ -1329,8 +1593,30 @@ namespace SustitucionMOATest.Services
                     }
                 }
             };
-            var campoProveedor = new CampoProveedor { Proveedor_Id = proveedorId, CampoCosecha_Id = campoCosechaId };
-            var campoCosechaNormativa = new CampoCosechaNormativa { TipoNormativa_Id = tipoNormativaId };
+            CampoSustentable campoSustentable = new CampoSustentable { IdScato = 1, Nombre = "Campo sustentable 1" };
+
+            var campoCosecha = new CampoCosecha
+            {
+                Campo = campoSustentable,
+                Cosecha = new Cosecha { Nombre = "cosecha 1" },
+                ToneladasAprobadas = 29,
+                Cosecha_Id = 1,
+                MotivoRechazo = "motivo rechazo 1",
+                CampoCosechaNormativas = new List<CampoCosechaNormativa>
+                {
+                    new CampoCosechaNormativa
+                    {
+                        Id = 1,
+                        CampoCosecha_Id = 100,
+                        TipoNormativa_Id = 2,
+                        ToneladasAprobadas = 50.5,
+                        MotivoRechazo = null,
+                        Validado = false,
+                    }
+                }
+            };
+
+            var campoProveedor = new CampoProveedor { Proveedor_Id = proveedorId, CampoCosecha_Id = campoCosechaId, CampoCosecha = campoCosecha };
 
             repositorioMock
                 .Setup(x => x.Obtener<CampoProveedor>(It.IsAny<Expression<Func<CampoProveedor, bool>>>()))
@@ -1340,13 +1626,14 @@ namespace SustitucionMOATest.Services
                 .Setup(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>()))
                 .Returns(usuario);
 
-            repositorioMock
-                .Setup(x => x.Obtener<CampoCosechaNormativa>(It.IsAny<Expression<Func<CampoCosechaNormativa, bool>>>()))
-                .Returns(campoCosechaNormativa);
+            //repositorioMock
+              //  .Setup(x => x.Obtener<CampoCosechaNormativa>(It.IsAny<Expression<Func<CampoCosechaNormativa, bool>>>()))
+               // .Returns(campoProveedor.CampoCosecha.CampoCosechaNormativas.First());
 
             // Act
             var result = target.Aprobar(mailUsuario, campoCosechaId, proveedorId, tipoNormativaId);
 
+            var campoCosechaNormativa = campoProveedor.CampoCosecha.CampoCosechaNormativas.First();
             // Assert
             Assert.IsTrue(campoCosechaNormativa.Validado);
             Assert.AreEqual(usuario.Id, campoCosechaNormativa.ValidadoPor);
