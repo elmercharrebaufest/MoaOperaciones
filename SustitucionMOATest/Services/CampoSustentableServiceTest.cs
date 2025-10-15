@@ -134,9 +134,22 @@ namespace SustitucionMOATest.Services
                     It.Is<int>(y => y == proveedorId)))
                 .Returns(reporteCertificadorDto);
 
+            repositorioMock
+                .Setup(x => x.Existe<CarpetasUCROPIT>(
+                It.IsAny<Expression<Func<CarpetasUCROPIT, bool>>>()))
+                .Returns(true);
+
             googleDriveMock
-                .Setup(x => x.UploadFile(It.IsAny<GoogleDriveFileUploadRequest>()))
+                .Setup(x => x.UploadFile(It.IsAny<GoogleDriveFileUploadRequest>(), It.IsAny<string>()))
                 .Returns(string.Empty);
+
+            repositorioMock
+                .Setup(x => x.Obtener<CarpetasUCROPIT>(
+                It.IsAny<Expression<Func<CarpetasUCROPIT, bool>>>()))
+                .Returns(new CarpetasUCROPIT
+                {
+                    UrlSubida = "https://drive.google.com/drive/folders/abc123"
+                });
 
             var campoCreado = new CampoProveedor
             {
@@ -155,10 +168,15 @@ namespace SustitucionMOATest.Services
                     Campo = new CampoSustentable { Nombre = "Test", Id = campoSustentableId },
                     Cosecha_Id = cosechaId,
                     Cosecha = new Cosecha { Id = cosechaId, Nombre = "20-21" }
-                }
+                },
+                EPA = true,
+                BSVS2 = true,
+                EUDR = false,
             };
 
-            var fileStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\Example.KMZ"), FileMode.Open, FileAccess.Read);
+            var kmzPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestFiles", "ValidExample.kmz");
+            Assert.IsTrue(File.Exists(kmzPath), $"El archivo de test KMZ no existe: {kmzPath}");
+            var fileStream = new FileStream(kmzPath, FileMode.Open, FileAccess.Read);
             var uploadedFileMock = new Mock<HttpPostedFileBase>();
 
             var fileEpaStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\EPA.png"), FileMode.Open, FileAccess.Read);
@@ -170,7 +188,7 @@ namespace SustitucionMOATest.Services
 
             uploadedFileMock
                 .Setup(f => f.FileName)
-                .Returns("Example.kmz");
+                .Returns("ValidExample.kmz");
 
             uploadedFileMock
                 .Setup(f => f.InputStream)
@@ -181,6 +199,7 @@ namespace SustitucionMOATest.Services
                 .Returns(fileEpaStream);
 
             ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"] = TestContext.CurrentContext.TestDirectory;
+            ConfigurationManager.AppSettings["EmailCarpetasUcropIt"] = TestContext.CurrentContext.TestDirectory;
 
             var result = target.Agregar(mailUsuario, campoCreado, uploadedFileMock.Object, UsarArchivoId, uploadedFileEPAMock.Object);
 

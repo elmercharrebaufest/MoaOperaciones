@@ -2,6 +2,8 @@
 using iTextSharp.text.pdf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SharpKml.Base;
+using SharpKml.Engine;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
@@ -22,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
@@ -32,8 +35,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
-using SharpKml.Engine;
-using SharpKml.Base;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -119,17 +120,34 @@ namespace SustitucionMOAUtils.Services
                 ruta = archivoCampo.Ruta;
             }
 
-            if (campoProveedor.EPA && archivoEPA != null && !campoProveedor.EvidenciaPresentada)
+            //Guardado Evidencia EPA
+
+            if (campoProveedor.EPA)
             {
-                var archivoEPAEntidad = new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" };
-                repositorio.Agregar(archivoEPAEntidad); 
-                campoProveedor.EvidenciaEPA = archivoEPAEntidad;
-                campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
+                if (archivoEPA != null && !campoProveedor.EvidenciaPresentada)
+                {
+                    var archivoEPAEntidad = new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" };
+                    repositorio.Agregar(archivoEPAEntidad);
+                    campoProveedor.EvidenciaEPA = archivoEPAEntidad;
+                    campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
+                }
+                else if (campoProveedor.EvidenciaPresentada)
+                {
+                    archivoKmz.InputStream.Position = 0;
+                    var archivoEPAExistente = this.ObtenerEPAExistenteCampo(campoProveedor.Proveedor_Id, campoProveedor.CUIT, archivoKmz);
+                    campoProveedor.EvidenciaEPA = archivoEPAExistente;
+                    campoProveedor.EvidenciaEPA_Id = archivoEPAExistente?.Id;
+                }
+                else
+                {
+                    campoProveedor.EvidenciaEPA = null;
+                    campoProveedor.EvidenciaEPA_Id = null;
+                }
             }
             else
             {
-                campoProveedor.EvidenciaEPA_Id = null;
                 campoProveedor.EvidenciaEPA = null;
+                campoProveedor.EvidenciaEPA_Id = null;
             }
 
             //TODO linea 113 borrar dps
@@ -208,7 +226,7 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.CampoCosecha.Campo.Localidad_Id = campoProveedorObj.CampoCosecha.Campo.Localidad_Id;
             campoProveedor.BSVS2 = campoProveedorObj.BSVS2;
             campoProveedor.EPA = campoProveedorObj.EPA;
-            campoProveedor.EUDR = campoProveedor.EUDR;
+            campoProveedor.EUDR = campoProveedorObj.EUDR;
 
             this.ActualizarNormativas(campoProveedor, archivoEPA);
 
@@ -1532,17 +1550,22 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("El archivo KMZ está vacío.");
             }
 
-            // Validar que contenga al menos un polígono
-            if (!ContienePoligonoEnKmz(archivoKmz))
+            using (var memoryStream = new MemoryStream())
             {
-                throw new ValidationCustomException("El archivo KMZ debe contener al menos un polígono.");
+                archivoKmz.InputStream.CopyTo(memoryStream);
+                memoryStream.Position = 0;
+
+                if (!ContienePoligonoEnKmz(memoryStream))
+                    throw new ValidationCustomException("El archivo KMZ debe contener al menos un polígono.");
             }
+
+            // Volver a dejar el InputStream original en el inicio
+            archivoKmz.InputStream.Position = 0;
         }
 
-        private bool ContienePoligonoEnKmz(HttpPostedFileBase archivoKmz)
+        private bool ContienePoligonoEnKmz(Stream kmzStream)
         {
-            using (var kmzStream = archivoKmz.InputStream)
-            using (var zip = new System.IO.Compression.ZipArchive(kmzStream, System.IO.Compression.ZipArchiveMode.Read, true))
+            using (var zip = new ZipArchive(kmzStream, ZipArchiveMode.Read, true))
             {
                 var kmlEntry = zip.Entries.FirstOrDefault(e => e.FullName.EndsWith(".kml", StringComparison.OrdinalIgnoreCase));
                 if (kmlEntry == null)
@@ -1550,14 +1573,12 @@ namespace SustitucionMOAUtils.Services
 
                 using (var kmlStream = kmlEntry.Open())
                 {
-                    // Ensure the following code is updated to use the correct Parser class from the SharpKml.Engine namespace.
                     var parser = new Parser();
                     parser.Parse(kmlStream);
                     var kml = parser.Root as SharpKml.Dom.Kml;
                     if (kml == null)
                         return false;
 
-                    // Buscar polígonos en el KML
                     return BuscarPoligonoEnKml(kml);
                 }
             }
@@ -1593,6 +1614,81 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return SuccessMsg.CampoSustentableActualizado;
+        }
+
+        public Archivo ObtenerEPAExistenteCampo(int proveedorId, string cuit, HttpPostedFileBase archivoKmz)
+        {
+            var campos = repositorio.Listar<CampoProveedor>(cp => cp.Proveedor_Id == proveedorId && cp.CUIT == cuit);
+            foreach(var campo in campos)
+            {
+                var rutaKmzExistente = campo.Archivo.Ruta;
+                if (!string.IsNullOrEmpty(rutaKmzExistente) && File.Exists(rutaKmzExistente))
+                {
+                    using (var streamExistente = File.OpenRead(rutaKmzExistente))
+                    {
+                        // Resetear el stream del archivo subido por si ya fue leído
+                        archivoKmz.InputStream.Position = 0;
+                        using (var kmzStream = archivoKmz.InputStream)
+                        if (SonKmzIgualesPorPoligono(streamExistente, kmzStream))
+                        {
+                            return campo.EvidenciaEPA;
+                        }
+                    }
+                }
+            }
+       
+            return null;
+        }
+
+        private bool SonKmzIgualesPorPoligono(Stream kmzStream1, Stream kmzStream2)
+        {
+            var coords1 = ExtraerCoordenadasPoligonoKmz(kmzStream1);
+            var coords2 = ExtraerCoordenadasPoligonoKmz(kmzStream2);
+
+            if (coords1 == null || coords2 == null)
+                return false;
+
+            if (coords1.Count != coords2.Count)
+                return false;
+
+            for (int i = 0; i < coords1.Count; i++)
+            {
+                if (!coords1[i].Equals(coords2[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private List<SharpKml.Base.Vector> ExtraerCoordenadasPoligonoKmz(Stream kmzStream)
+        {
+            using (var zip = new System.IO.Compression.ZipArchive(kmzStream, System.IO.Compression.ZipArchiveMode.Read, true))
+            {
+                var kmlEntry = zip.Entries.FirstOrDefault(e => e.FullName.EndsWith(".kml", StringComparison.OrdinalIgnoreCase));
+                if (kmlEntry == null)
+                    return null;
+
+                using (var kmlStream = kmlEntry.Open())
+                {
+                    var parser = new Parser();
+                    parser.Parse(kmlStream);
+                    var kml = parser.Root as SharpKml.Dom.Kml;
+                    if (kml == null)
+                        return null;
+
+                    var poligono = kml.Flatten()
+                        .OfType<SharpKml.Dom.Placemark>()
+                        .Select(p => p.Geometry)
+                        .OfType<SharpKml.Dom.Polygon>()
+                        .FirstOrDefault();
+
+                    if (poligono == null)
+                        return null;
+
+                    var coordinates = poligono.OuterBoundary.LinearRing.Coordinates;
+                    return coordinates?.ToList();
+                }
+            }
         }
     }
 
