@@ -794,7 +794,7 @@ namespace SustitucionMOAUtils.Services
                     if (subPosicion.ServicioSolp != null)
                         IM_SERVICELINE.SERVICE = subPosicion.ServicioSolp.Codigo.ToString(); //SERVICE ASNUM Número de servicio
                     else
-                        IM_SERVICELINE.SHORT_TEXT = subPosicion.Tarea; //SHORT_TEXT SH_TEXT1 Texto breve
+                        IM_SERVICELINE.SHORT_TEXT = (subPosicion.Tarea != null && subPosicion.Tarea.Length > 40) ? subPosicion.Tarea.Substring(0, 40) : subPosicion.Tarea; //SHORT_TEXT SH_TEXT1 Texto breve
 
                     IM_SERVICELINE.QUANTITY = subPosicion.Cantidad.Value; //QUANTITY MENGEV  Cantidad con signo +/ -
                     //IM_SERVICELINE.QUANTITYSpecified = true;
