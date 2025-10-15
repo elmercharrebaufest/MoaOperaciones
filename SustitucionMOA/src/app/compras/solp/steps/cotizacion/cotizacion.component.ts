@@ -777,14 +777,15 @@ export class CotizacionComponent extends ListBaseComponent {
         }
 
         // SOLP donde hay que salir a buscar la Oferta
-        if(this.model.trabajoHecho == false && this.model.conPresupuesto == false){
-            textos.push("Generará un proceso de licitación bajo las condiciones estándar.");
-            textos.push("El fiscal al momento de la carga de la SOLP solicitara un alcance técnico del servicio o producto y un precio a cotizar.");
-        }
         if(this.model.condEspProveedorAsignado == true){
             textos.push("Referencia la necesidad de un servicio a realizar o material a entregar.");
             textos.push("La solp será asignada a un proveedor definido técnicamente por sus condiciones especiales o particularidad del servicio, material, insumo o equipo.");
         }
+        if(this.model.trabajoHecho == false && this.model.conPresupuesto == false){
+            textos.push("Generará un proceso de licitación bajo las condiciones estándar.");
+            textos.push("El fiscal al momento de la carga de la SOLP solicitara un alcance técnico del servicio o producto y un precio a cotizar.");
+        }
+
         if(this.model.adicional == true){
             textos.push("Estas SOLPS nuevas se agregarán a una OC ya existente ya que hubo un proceso de licitación ya ejecutado y adjudicado con anterioridad.");
         }
@@ -801,19 +802,6 @@ export class CotizacionComponent extends ListBaseComponent {
         }
         if (this.model.certificacionAutomatica == false) {
             textos.push("VA A REQUERIR DEFINIR DESDE COMPRAS SI ADMITE O NO CERTIFICACIONES PARCIALES EN LOS SERVICIOS.");
-        }
-
-        if(this.validarCondicionesDeAcuerdoMarco() == true && this.model.trabajoHecho == true && this.model.certificacionAutomatica == true){
-            textos.push("Trabajo Realizado con acuerdo marco.");
-            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, rutinario que queda bajo las condiciones de un Acuerdo Marco (AM).");
-            textos.push("Esta solp nueva permitirá gestionar una OC puntual contra una Acuerdo Marco.");
-            textos.push("LA CERTIFICACION DEL SERVICIO SE HARA DE FORMA AUTOMATICA. EL PROVEEDOR QUEDA AUTORIZADO A COBRAR EL SERVICIO ó MATERIAL.");
-        }
-        if(this.validarCondicionesDeAcuerdoMarco() == true &&this.model.certificacionAutomatica == false){
-            textos.push("Con acuerdo marco.");
-            textos.push("Referencia la necesidad de un servicio a realizar o material a entregar, rutinario que queda bajo las condiciones de un Acuerdo Marco (AM).");
-            textos.push("Esta solp nueva permitirá gestionar una OC puntual contra una Acuerdo Marco.");
-            textos.push("LA CERTIFICACION SE HARA DE FORMA PARCIAL.");
         }
         
         // Si hay condiciones especiales, mostrar el info box
