@@ -11,6 +11,7 @@ export interface ObtenerContratosDisponiblesResponse {
 export enum TipoContrato {
     Normal = 0,
     FacturaAnticipada = 1,
+    CyO = 3,
 }
 
 export enum CondicionRetiro {
