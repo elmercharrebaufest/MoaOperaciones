@@ -590,7 +590,7 @@ namespace SustitucionMOAWS.WSConsumers
         {
             var response = new OrdenCargaVisualizarClienteWSMOAResponse();
             var resultados = new List<SustitucionMOAModel.Models.WSMapMOA.OrdenCarga.Result>();
-            foreach (var item in result)
+            foreach (var item in result.Where(a => a.TIPO_CONTRATO != "CyO"))
             {
                 var resultado = new SustitucionMOAModel.Models.WSMapMOA.OrdenCarga.Result()
                 {
