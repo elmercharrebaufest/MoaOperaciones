@@ -684,6 +684,19 @@ export class CotizacionComponent extends ListBaseComponent {
             this.habilitarProveedorSeleccionado(true);
             this.habilitarAdicional(true);
         }
+
+        // Agregar esta nueva lógica para deshabilitar mutuamente "Con Presupuesto" y "Proveedor Asignado"
+        if (this.model.conPresupuesto == true) {
+            this.habilitarCondEspProveedorAsignado(false);
+        } else if (this.model.condEspProveedorAsignado == true) {
+            this.habilitarConPresupuesto(false);
+        } else {
+            // Si ninguno está marcado, habilitar ambos (siempre que no haya otras restricciones)
+            if (!this.model.trabajoHecho && !this.model.adicional) {
+                this.habilitarCondEspProveedorAsignado(true);
+                this.habilitarConPresupuesto(true);
+            }
+        }
     }
 
     onConditionChange(): void {
