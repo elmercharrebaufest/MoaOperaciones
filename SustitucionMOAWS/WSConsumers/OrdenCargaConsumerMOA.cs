@@ -445,7 +445,7 @@ namespace SustitucionMOAWS.WSConsumers
                         }
                     }
                     string tipoContrato = ConvertirATipoContratoFasSAP(request.TipoContrato);
-                    tipoContrato = ConvertirATipoContratoFasSAP(TipoContratoFAS.CuentaYOrden);//Eliminar despues de las pruebas
+                    tipoContrato = ConvertirATipoContratoFasSAP(TipoContratoFAS.Todos);//Eliminar despues de las pruebas
                     tipoContrato = tipoContrato.Length > 0 ? tipoContrato.Substring(0, 1) : tipoContrato;
                     WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
 
