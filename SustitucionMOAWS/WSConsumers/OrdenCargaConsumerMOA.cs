@@ -460,8 +460,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info(requestFas.ToXml());
 
                     var response = agent.Z_MPMF_MOAOP_VISUALIZAR_ZFAS(requestFas);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_VISUALIZAR_ZFAS response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_VISUALIZAR_ZFAS");
 
                     var responseFAS = MapOrdenCargaVisualizarCliente(response.EX_SALIDA);
                     return responseFAS;
@@ -870,8 +869,7 @@ namespace SustitucionMOAWS.WSConsumers
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_VISUALIZAR_ZFAS request");
                 Log.Info(request.ToXml());
                 var response = agent.Z_MPMF_MOAOP_VISUALIZAR_ZFAS(request);
-                Log.Info($"SAP sin PI Z_MPMF_MOAOP_VISUALIZAR_ZFAS response");
-                Log.Info(response.ToXml());
+                SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_VISUALIZAR_ZFAS");
                 return response.EX_SALIDA.Length > 0;
 
             }

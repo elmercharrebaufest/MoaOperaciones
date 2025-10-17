@@ -57,8 +57,8 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info(request.ToXml());
 
                     var response = agent.Z_MPMF_MOAOP_VISUALIZAR_ZFAS(requestFAS);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_VISUALIZAR_ZFAS response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_VISUALIZAR_ZFAS");
+
 
                     var result = MapReporteContratoSinPI(response.EX_SALIDA);
                     return result;

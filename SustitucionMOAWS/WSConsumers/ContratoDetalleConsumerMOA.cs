@@ -55,8 +55,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_DETALLES_CONTRATO request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_DETALLES_CONTRATO(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_DETALLES_CONTRATO response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_DETALLES_CONTRATO");
                     string error = string.Empty;
                     return MapSinPI(contrato, error, response.EX_BOLETOS, response.T_AMPLI_ANUL, response.T_APLICA, response.T_CALIDAD, response.T_CARACT, response.T_COND_PAGO, response.T_FIJA, response.T_HIJOS, response.T_LIQUI, response.T_PAGOS, response.T_RESUMEN);
                 }
