@@ -10,8 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -58,8 +56,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_APLICACIONES request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_APLICACIONES(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_APLICACIONES response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_APLICACIONES");
                     return MapSinPI(response);
 
                 }
