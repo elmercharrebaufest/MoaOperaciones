@@ -190,7 +190,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         if (cartasPorteAplicacion == null)
                         {
-                            cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS>(), new List<string> { palabra }, "");
+                            cartasPorteAplicacion = new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS>(), new List<string> { palabra }, "");
                         }
                     }
                     catch (Exception e)
@@ -266,7 +266,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         //if (cartasPorteAplicacion == null)
                         //{
-                        cartasPorteAplicacion = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS> { }, new List<string>(), palabra);
+                        cartasPorteAplicacion = new AplicacionesConsumerMOA().request(proveedor, new List<FechaWS> { }, new List<string>(), palabra);
                         //}
 
                         //if (cartasPorteDescargas == null)

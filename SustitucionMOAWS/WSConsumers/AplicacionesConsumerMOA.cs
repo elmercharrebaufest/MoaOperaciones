@@ -13,11 +13,12 @@ using System.Linq;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public class AplicacionesConsumerMOA
+    public abstract class AplicacionesConsumerMoaBase<TResp>
     {
         private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
         private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
-        public object request(string proveedor, List<FechaWS> fechas, List<string> contratos, string CCPP)
+
+        public TResp request(string proveedor, List<FechaWS> fechas, List<string> contratos, string CCPP)
         {
             try
             {
@@ -29,9 +30,8 @@ namespace SustitucionMOAWS.WSConsumers
 
                     CCPP = CCPP ?? "";
                     contratos = contratos ?? new List<string>();
-                    WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4050[] aplicaciones_out = new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4050[] { };
-                    WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4060[] contratos_in = new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4060[] { };
-                    List<WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4100> fechasSAP = new List<WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4100>() { };
+                    var aplicaciones_out = new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4050[] { };
+                    var fechasSAP = new List<WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4100>() { };
 
                     foreach (FechaWS fecha in fechas)
                     {
@@ -42,8 +42,8 @@ namespace SustitucionMOAWS.WSConsumers
                         });
                     }
 
-                    contratos_in = contratos.Select(x => new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4060 { CONTRATO = x }).ToArray();
-                    WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
+                    var contratos_in = contratos.Select(x => new WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4060 { CONTRATO = x }).ToArray();
+                    var fechasSAPArray = fechasSAP.ToArray();
 
                     var request = new Z_MPMF_MOAOP_APLICACIONES()
                     {
@@ -58,7 +58,6 @@ namespace SustitucionMOAWS.WSConsumers
                     var response = agent.Z_MPMF_MOAOP_APLICACIONES(request);
                     SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_APLICACIONES");
                     return MapSinPI(response);
-
                 }
                 else
                 {
@@ -66,7 +65,6 @@ namespace SustitucionMOAWS.WSConsumers
                     CCPP = CCPP ?? "";
                     contratos = contratos ?? new List<string>();
                     AplicacionesWebServiceMOA.ZMPES4050[] aplicaciones_out = new AplicacionesWebServiceMOA.ZMPES4050[] { };
-                    AplicacionesWebServiceMOA.ZMPES4060[] contratos_in = new AplicacionesWebServiceMOA.ZMPES4060[] { };
                     List<AplicacionesWebServiceMOA.ZMPES4100> fechasSAP = new List<AplicacionesWebServiceMOA.ZMPES4100>() { };
 
                     foreach (FechaWS fecha in fechas)
@@ -78,7 +76,7 @@ namespace SustitucionMOAWS.WSConsumers
                         });
                     }
 
-                    contratos_in = contratos.Select(x => new AplicacionesWebServiceMOA.ZMPES4060 { CONTRATO = x }).ToArray();
+                    var contratos_in = contratos.Select(x => new AplicacionesWebServiceMOA.ZMPES4060 { CONTRATO = x }).ToArray();
                     AplicacionesWebServiceMOA.ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
 
                     service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
@@ -89,11 +87,19 @@ namespace SustitucionMOAWS.WSConsumers
             }
             catch (Exception e)
             {
-                throw e;
+                Log.Error(e, $"Error en AplicacionesConsumerMOA con Proveedor: {proveedor}, CCPP: {CCPP}.");
+                throw;
             }
-
         }
-        protected virtual object MapSinPI(Z_MPMF_MOAOP_APLICACIONESResponse response)
+
+        protected abstract TResp MapSinPI(Z_MPMF_MOAOP_APLICACIONESResponse response);
+
+        protected abstract TResp Map(AplicacionesWebServiceMOA.ZMPES4910 error, AplicacionesWebServiceMOA.ZMPES4050[] aplicaciones_out);
+    }
+
+    public class AplicacionesConsumerMOA : AplicacionesConsumerMoaBase<CartaPorteWSMOAResponse>
+    {
+        protected override CartaPorteWSMOAResponse MapSinPI(Z_MPMF_MOAOP_APLICACIONESResponse response)
         {
             CartaPorteWSMOAResponse result = new CartaPorteWSMOAResponse();
 
@@ -122,11 +128,11 @@ namespace SustitucionMOAWS.WSConsumers
                     idVendedor = aplicacionInfo.ID_VENDEDOR,
                     vendedor = aplicacionInfo.VENDEDOR
                 });
-
             }
             return result;
         }
-        protected virtual object Map(AplicacionesWebServiceMOA.ZMPES4910 error, AplicacionesWebServiceMOA.ZMPES4050[] aplicaciones_out)
+
+        protected override CartaPorteWSMOAResponse Map(AplicacionesWebServiceMOA.ZMPES4910 error, AplicacionesWebServiceMOA.ZMPES4050[] aplicaciones_out)
         {
             CartaPorteWSMOAResponse result = new CartaPorteWSMOAResponse();
 
@@ -161,10 +167,9 @@ namespace SustitucionMOAWS.WSConsumers
         }
     }
 
-    public class AplicacionesExcelConsumerMOA : AplicacionesConsumerMOA
+    public class AplicacionesExcelConsumerMOA : AplicacionesConsumerMoaBase<CartaPorteExcelWSMOAResponse>
     {
-
-        protected override object Map(AplicacionesWebServiceMOA.ZMPES4910 error, AplicacionesWebServiceMOA.ZMPES4050[] aplicaciones_out)
+        protected override CartaPorteExcelWSMOAResponse Map(AplicacionesWebServiceMOA.ZMPES4910 error, AplicacionesWebServiceMOA.ZMPES4050[] aplicaciones_out)
         {
             CartaPorteExcelWSMOAResponse result = new CartaPorteExcelWSMOAResponse();
 
@@ -196,7 +201,8 @@ namespace SustitucionMOAWS.WSConsumers
             }
             return result;
         }
-        protected virtual object MapSinPI(Z_MPMF_MOAOP_APLICACIONESResponse response)
+
+        protected override CartaPorteExcelWSMOAResponse MapSinPI(Z_MPMF_MOAOP_APLICACIONESResponse response)
         {
             CartaPorteExcelWSMOAResponse result = new CartaPorteExcelWSMOAResponse();
 
