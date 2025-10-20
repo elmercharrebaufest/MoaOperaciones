@@ -76,9 +76,23 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Solp")]
         public virtual ICollection<ChatInternoCompras> ChatInternoCompras { get; set; } = new List<ChatInternoCompras>();
 
-        public bool DebeGenerarPoAutomatica => (TrabajoYaHecho ?? false) || (Adicional ?? false) || (CondEspProveedorAsignado ?? false);
-
         public bool CertificacionAutomatica { get; set; }
         public bool AdmiteCertificacionesParciales { get; set; }
+
+        public string OrganizacionDeCompra_Id { get; set; }
+
+        [ForeignKey("OrganizacionDeCompra_Id")]
+        public virtual OrganizacionDeCompra OrganizacionDeCompra { get; set; }
+
+        public string Racional_TextoDeCabecera { get; set; }
+
+        public string Racional_CondicionesDePago { get; set; }
+
+        public string Racional_CondicionesDeEntrega { get; set; }
+
+        public string Racional_Garantias { get; set; }
+
+
+        public bool DebeGenerarPoAutomatica => (TrabajoYaHecho ?? false) || (Adicional ?? false) || (CondEspProveedorAsignado ?? false);
     }
 }

@@ -181,6 +181,7 @@
     <Compile Include="Entities\LiberadorSap.cs" />
     <Compile Include="Entities\MonedaConversion.cs" />
     <Compile Include="Entities\OrdenResiduos.cs" />
+    <Compile Include="Entities\OrganizacionDeCompra.cs" />
     <Compile Include="Entities\PaisesSap.cs" />
     <Compile Include="Entities\ConfiguracionUsuario.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />

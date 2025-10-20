@@ -11,6 +11,7 @@ DECLARE @ValoresRol as TABLE
 
 INSERT INTO @ValoresRol
 VALUES
+--  Codigo                  Nombre              EsEditable, TipoRol
     ('ACCESO QR',		    'Acceso QR',		    1, 2),
     ('ACT',		            'ACTUALIZACIÓN',	    1, 3),
     ('ADM',		            'ADMINISTRACION',	    1, 1),
@@ -44,6 +45,7 @@ VALUES
     ('COMPRADOR',		    'COMPRADOR',            1, 1),
     ('COMPRAS',		        'COMPRAS',		        1, 1),
     ('COMPRASADMIN',		'COMPRAS ADMIN',	    1, 1),
+    ('COMPRASRRHH',		    'COMPRAS RRHH',	        1, 1),
     ('CORR',		        'CORREDOR',		        1, 2),
     ('CRDECPE',		        'CESIÓN Y RECTIFICACIÓN DE CPE', 1, 3),
     ('DDAG',		        'DESHABILITADO EN DATAAGRO', 1, 2),
