@@ -43,7 +43,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             var filas = LeerFilasPrecargaSolp(archivo);
-            if (filas.Count() == 0)
+            if (!filas.Any())
             {
                 response.ErroresValidacion.Add("El archivo no contiene datos");
                 return response;
@@ -54,7 +54,7 @@ namespace SustitucionMOAUtils.Services
             var esMateriales = tipoPosicion.Codigo == "MATERIALES";
             response.ErroresValidacion = ValidarRegistrosPrecargaSolp(registrosPrecarga, tiposImputaciones, monedas, gruposCompras, gruposArticulos, centros, almacenes, unidades, cuentasMayor, imputaciones, esMateriales);
 
-            if (response.ErroresValidacion.Count() > 0)
+            if (response.ErroresValidacion.Any())
             {
                 return response;
             }
@@ -163,7 +163,7 @@ namespace SustitucionMOAUtils.Services
             return response;
         }
 
-        private bool ArchivoPrecargaSolpEsValido(HttpPostedFileBase archivo, ProcesarPrecargaSolpResponse response)
+        private static bool ArchivoPrecargaSolpEsValido(HttpPostedFileBase archivo, ProcesarPrecargaSolpResponse response)
         {
             var extension = Path.GetExtension(archivo.FileName);
             if (extension != ".xlsx" && extension != ".xls")
@@ -179,7 +179,7 @@ namespace SustitucionMOAUtils.Services
             return true;
         }
 
-        private IEnumerable<DataRow> LeerFilasPrecargaSolp(HttpPostedFileBase archivo)
+        private static IEnumerable<DataRow> LeerFilasPrecargaSolp(HttpPostedFileBase archivo)
         {
             var fileStream = archivo.InputStream;
 
@@ -240,7 +240,7 @@ namespace SustitucionMOAUtils.Services
             return registroPrecargaSolp;
         }
 
-        private List<string> ValidarRegistrosPrecargaSolp(List<RegistroPrecargaSolp> registrosPrecarga,
+        private static List<string> ValidarRegistrosPrecargaSolp(List<RegistroPrecargaSolp> registrosPrecarga,
             List<TablaGeneralDto> tiposImputaciones,
             List<TablaSapDto> monedas,
             List<TablaSapDto> gruposCompras,
@@ -322,6 +322,10 @@ namespace SustitucionMOAUtils.Services
                     if (!int.TryParse(reg.NroSubpos, out int _))
                     {
                         errores.Add($"Orden: {ordenFila}. El número de subposición no es válido");
+                    }
+                    if (reg.NombreServicio != null && reg.NombreServicio.Length > 40)
+                    {
+                        errores.Add($"Orden: {ordenFila}. El nombre del servicio no puede tener más de 40 caracteres");
                     }
                 }
                 ordenFila++;

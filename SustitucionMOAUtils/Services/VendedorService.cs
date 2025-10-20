@@ -146,6 +146,7 @@ namespace SustitucionMOAUtils.Services
                 if (estadoProveedor != null)
                 {
                     vendedor.estadoMoa = estadoProveedor.EstadoHomeDescripcion;
+                    vendedor.estado = estadoProveedor.EstadoHomeDescripcion;
                 }
             }
 

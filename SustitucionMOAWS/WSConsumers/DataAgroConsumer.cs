@@ -71,8 +71,12 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ResultEstadoProveedores ObtenerEstadoProveedores(string[] cuits)
         {
-
-            return service.ObtenerEstadoProveedores(cuits);
+            var result = service.ObtenerEstadoProveedores(cuits);
+            foreach (var item in result.Contactos.Where(a => a.OperaConMATBA))
+            {
+                item.EstadoHomeDescripcion = "No Habilitado";
+            }
+            return result;
 
         }
 

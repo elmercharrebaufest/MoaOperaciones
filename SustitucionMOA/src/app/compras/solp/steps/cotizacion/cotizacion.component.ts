@@ -764,28 +764,35 @@ export class CotizacionComponent extends ListBaseComponent {
 
         // SOLP donde ya se tiene el precio (Si se marca Trabajo hecho o Con Presupuesto) 
         if(this.model.trabajoHecho == true && this.model.thServicioPermanente == true){
-            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, rutinario con un proceso de licitación ya ejecutado con anterioridad y que no queda bajo las condiciones de un Acuerdo Marco (AM). El fiscal podrá recibir desde compras el presupuesto, para la carga de la solp; O de tener el fiscal la oferta procederá a cargar la SOLP.")
+            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, rutinario y que no queda bajo las condiciones de un Acuerdo Marco (AM). El fiscal podrá recibir desde compras el presupuesto, para la carga de la SOLP o de tener el fiscal la oferta procederá a cargarla.")
         }
         if(this.model.trabajoHecho == true && this.model.thAjustePolinomica == true){
-            textos.push("Referencia la necesidad de un ajuste por condiciones comerciales (Polinómica de ajuste). El fiscal recibirá el control económico realizado desde compras, generará su propio control y gestionará la carga de la Solp.");
+            textos.push("Referencia la necesidad de un ajuste por condiciones comerciales (Polinómica de ajuste) sobre un servicio ya realizado o producto entregado. El fiscal recibirá el control económico realizado desde compras, generará su propio control y gestionará la carga de la SOLP.");
         }
         if(this.model.trabajoHecho == true && this.model.thProveedorDirecto == true){
-            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado. Define un proveedor directo técnicamente por sus condiciones especiales o particularidad del trabajo; y la carga de la Solp contra un presupuesto que recibe desde compras o que él tiene.");
+            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, no rutinario. El fiscal define un proveedor directo técnicamente por sus condiciones especiales o particularidad del trabajo o producto.El fiscal podrá recibir desde compras el presupuesto para la carga de la SOLP o de tener la oferta procederá a cargar la misma.");
         }
         if(this.model.conPresupuesto == true){
-            textos.push("Para aquellos servicios a realizar o materiales por entregar donde el pedido de presupuesto no se gestionó por los canales de cotización estandarizado en el proceso de compras, se emitirá una petición de oferta (PO) interna que no saldrá a publicar cuando se libera la SOLP. La solp, su alcance cantidad, precio unitario, monto total, justificaciones y presupuesto recibido será vinculada a un proveedor definido, no requerirá aprobación técnica ya que sus instancias ya fueron validadas en la carga de la solp . Podrán emitirse circulares comerciales, validadas estas,  se avanzará con la orden de compra, caso contrario se harán las revisiones comerciales necesarias.");
+            textos.push("Referencia la necesidad de un servicio a realizar o material a entregar, sin un proceso de licitación bajo las condiciones estándar. El fiscal podrá recibir desde compras el presupuesto para la carga de la SOLP o de tener el fiscal la oferta procederá a cargar la misma. La SOLP, con su alcance técnico, cantidad, precio unitario, justificaciones, etc., será vinculada a un proveedor definido. Podrán emitirse circulares comerciales cuando así corresponda, validadas estas se avanzará con la orden de compra.");
         }
 
         // SOLP donde hay que salir a buscar la Oferta
+        if(this.model.trabajoHecho == false && this.model.conPresupuesto == false){
+            textos.push("Generará un proceso de licitación bajo las condiciones estándar.");
+            textos.push("El fiscal al momento de la carga de la SOLP solicitara un alcance técnico del servicio o producto y un precio a cotizar.");
+        }
         if(this.model.condEspProveedorAsignado == true){
-            textos.push("El fiscal al momento de la carga de la solp solicita que se pida precio.");
-            textos.push("SOLP asignada a un proveedor definido técnicamente por sus condiciones especiales o particularidad del trabajo, material, insumo o equipo.");
+            textos.push("Referencia la necesidad de un servicio a realizar o material a entregar.");
+            textos.push("La solp será asignada a un proveedor definido técnicamente por sus condiciones especiales o particularidad del servicio, material, insumo o equipo.");
         }
         if(this.model.adicional == true){
-            textos.push("Estas SOLPS nuevas se agregarán a una OC ya existente.");
+            textos.push("Estas SOLPS nuevas se agregarán a una OC ya existente ya que hubo un proceso de licitación ya ejecutado y adjudicado con anterioridad.");
+        }
+        else{
+            textos.push("Validadas las condiciones técnicas y comerciales cuando así lo requiera, esta SOLP nueva permitirá gestionar una OC puntual.")
         }
         if(this.model.urgencia == true){
-            textos.push("SOLP por una compra urgente de un servicio, material, insumo o equipo.");
+            textos.push("Referencia la necesidad de un servicio realizado o material entregado como urgente.");
         }
 
         // En caso hay tilde de certificación automática
@@ -796,7 +803,19 @@ export class CotizacionComponent extends ListBaseComponent {
             textos.push("VA A REQUERIR DEFINIR DESDE COMPRAS SI ADMITE O NO CERTIFICACIONES PARCIALES EN LOS SERVICIOS.");
         }
 
-
+        if(this.validarCondicionesDeAcuerdoMarco() == true && this.model.trabajoHecho == true && this.model.certificacionAutomatica == true){
+            textos.push("Trabajo Realizado con acuerdo marco.");
+            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, rutinario que queda bajo las condiciones de un Acuerdo Marco (AM).");
+            textos.push("Esta solp nueva permitirá gestionar una OC puntual contra una Acuerdo Marco.");
+            textos.push("LA CERTIFICACION DEL SERVICIO SE HARA DE FORMA AUTOMATICA. EL PROVEEDOR QUEDA AUTORIZADO A COBRAR EL SERVICIO ó MATERIAL.");
+        }
+        if(this.validarCondicionesDeAcuerdoMarco() == true &&this.model.certificacionAutomatica == false){
+            textos.push("Con acuerdo marco.");
+            textos.push("Referencia la necesidad de un servicio a realizar o material a entregar, rutinario que queda bajo las condiciones de un Acuerdo Marco (AM).");
+            textos.push("Esta solp nueva permitirá gestionar una OC puntual contra una Acuerdo Marco.");
+            textos.push("LA CERTIFICACION SE HARA DE FORMA PARCIAL.");
+        }
+        
         // Si hay condiciones especiales, mostrar el info box
         if (textos.length > 0) {
             this.infoBoxText = textos.join("\n");
@@ -804,5 +823,52 @@ export class CotizacionComponent extends ListBaseComponent {
         } else {
             this.mostrarInfoBox = false;
         }
+    }
+
+    validarCondicionesDeAcuerdoMarco() {
+        // Si no hay posiciones, no hay nada que validar
+        if (this.model.posiciones.length === 0) {
+            return false;
+        }
+
+        // Filtrar solo posiciones activas (estado == true)
+        const posicionesActivas = this.model.posiciones.filter(x => x.estado === true);
+        // Si no hay posiciones activas, no hay nada que validar
+        if (posicionesActivas.length === 0) {
+            return true;
+        }
+
+        // 1. Verificar si todas las posiciones activas tienen contrato marco o todas no tienen
+        const tienenContratoMarco = posicionesActivas.filter(
+            x => x.numeroContratoSuperior != null &&
+                x.numeroContratoSuperior !== undefined &&
+                x.numeroContratoSuperior !== ""
+        );
+
+        const sinContratoMarco = posicionesActivas.filter(
+            x => x.numeroContratoSuperior === null ||
+                x.numeroContratoSuperior === undefined ||
+                x.numeroContratoSuperior === ""
+        );
+
+        // 2. Si hay posiciones con contrato marco y sin contrato marco al mismo tiempo,
+        // la función debe devolver false (condición no permitida)
+        if (tienenContratoMarco.length > 0 && sinContratoMarco.length > 0) {
+            return false;
+        }
+
+        // 3. Si todas las posiciones activas tienen contrato marco, es válido
+        // También es válido que posiciones activas tengan diferentes contratos marco
+        if (tienenContratoMarco.length === posicionesActivas.length) {
+            return true;
+        }
+
+        // 4. Si todas las posiciones activas NO tienen contrato marco, también es válido
+        if (sinContratoMarco.length === posicionesActivas.length) {
+            return true;
+        }
+
+        // Este punto no debería alcanzarse, pero por seguridad devolvemos false
+        return false;
     }
 };

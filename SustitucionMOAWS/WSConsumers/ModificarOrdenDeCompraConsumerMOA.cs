@@ -1,21 +1,18 @@
-﻿
-using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAWS.CredentialService;
-using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ModificarOCWebServiceMOA;
+using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using SustitucionMOAWS.Logger;
 using System.IO;
 using System.Linq;
 using System.Text;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
-using SustitucionMOAWS.Util;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -106,22 +103,22 @@ namespace SustitucionMOAWS.WSConsumers
             fileCrear.Directory.Create();
             File.WriteAllText(fileCrear.FullName, xml);
 
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEDCM_ALLVERSIONS[]        ALLVERSIONS = modificarPedidoSAP.ALLVERSIONS?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIPAREX[]                    EXTENSIONIN = modificarPedidoSAP.EXTENSIONIN?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIPAREX[]                    EXTENSIONOUT = modificarPedidoSAP.EXTENSIONOUT?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPI_INVOICE_PLAN_HEADER[]     INVPLANHEADER = modificarPedidoSAP.INVPLANHEADER?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPI_INVOICE_PLAN_HEADERX[]    INVPLANHEADERX = modificarPedidoSAP.INVPLANHEADERX?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPI_INVOICE_PLAN_ITEM[]       INVPLANITEM = modificarPedidoSAP.INVPLANITEM?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPI_INVOICE_PLAN_ITEMX[]      INVPLANITEMX = modificarPedidoSAP.INVPLANITEMX?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNT[]              POACCOUNT = modificarPedidoSAP.POACCOUNT?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS = modificarPedidoSAP.ALLVERSIONS?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIPAREX[] EXTENSIONIN = modificarPedidoSAP.EXTENSIONIN?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIPAREX[] EXTENSIONOUT = modificarPedidoSAP.EXTENSIONOUT?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER = modificarPedidoSAP.INVPLANHEADER?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX = modificarPedidoSAP.INVPLANHEADERX?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM = modificarPedidoSAP.INVPLANITEM?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX = modificarPedidoSAP.INVPLANITEMX?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNT[] POACCOUNT = modificarPedidoSAP.POACCOUNT?.ToArray();
             WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT = modificarPedidoSAP.POACCOUNTPROFITSEGMENT?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNTX[]             POACCOUNTX = modificarPedidoSAP.POACCOUNTX?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOADDRDELIVERY[]         POADDRDELIVERY = modificarPedidoSAP.POADDRDELIVERY?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCOMPONENT[]            POCOMPONENTS = modificarPedidoSAP.POCOMPONENTS?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCOMPONENTX[]           POCOMPONENTSX = modificarPedidoSAP.POCOMPONENTSX?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCOND[]                 POCOND = modificarPedidoSAP.POCOND?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCONDHEADER[]           POCONDHEADER = modificarPedidoSAP.POCONDHEADER?.ToArray();
-            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCONDHEADERX[]          POCONDHEADERX = modificarPedidoSAP.POCONDHEADERX?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOACCOUNTX[] POACCOUNTX = modificarPedidoSAP.POACCOUNTX?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY = modificarPedidoSAP.POADDRDELIVERY?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCOMPONENT[] POCOMPONENTS = modificarPedidoSAP.POCOMPONENTS?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCOMPONENTX[] POCOMPONENTSX = modificarPedidoSAP.POCOMPONENTSX?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCOND[] POCOND = modificarPedidoSAP.POCOND?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCONDHEADER[] POCONDHEADER = modificarPedidoSAP.POCONDHEADER?.ToArray();
+            WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCONDHEADERX[] POCONDHEADERX = modificarPedidoSAP.POCONDHEADERX?.ToArray();
             WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIMEPOCONDX[] POCONDX = modificarPedidoSAP.POCONDX?.ToArray();
             WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIEKES[] POCONFIRMATION = modificarPedidoSAP.POCONFIRMATION?.ToArray();
             WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIESUCC[] POCONTRACTLIMITS = modificarPedidoSAP.POCONTRACTLIMITS?.ToArray();
@@ -152,64 +149,64 @@ namespace SustitucionMOAWS.WSConsumers
             var request = new Z_MMRFC_MODIFICAR_OC()
             {
                 IM_URL = modificarPedidoSAP.IM_URL ?? "",
-                MEMORY_COMPLETE   = modificarPedidoSAP.MEMORY_COMPLETE,
+                MEMORY_COMPLETE = modificarPedidoSAP.MEMORY_COMPLETE,
                 MEMORY_UNCOMPLETE = modificarPedidoSAP.MEMORY_UNCOMPLETE,
-                NO_AUTHORITY      = modificarPedidoSAP.NO_AUTHORITY,
-                NO_MESSAGE_REQ    = modificarPedidoSAP.NO_MESSAGE_REQ,
-                NO_MESSAGING      = modificarPedidoSAP.NO_MESSAGING,
-                NO_PRICE_FROM_PO  = modificarPedidoSAP.NO_PRICE_FROM_PO,
-                PARK_COMPLETE     = modificarPedidoSAP.PARK_COMPLETE,
-                PARK_UNCOMPLETE   = modificarPedidoSAP.PARK_UNCOMPLETE,
-                POADDRVENDOR      = modificarPedidoSAP.POADDRVENDOR,
-                POEXPIMPHEADER    = modificarPedidoSAP.POEXPIMPHEADER,
-                POEXPIMPHEADERX   = modificarPedidoSAP.POEXPIMPHEADERX,
-                POHEADER          = modificarPedidoSAP.POHEADER,
-                POHEADERX         = modificarPedidoSAP.POHEADERX,
-                PURCHASEORDER     = modificarPedidoSAP.PURCHASEORDER,
-                TESTRUN           = modificarPedidoSAP.TESTRUN,
-                VERSIONS          = modificarPedidoSAP.VERSIONS,
-                ALLVERSIONS                = ALLVERSIONS            ,
-                EXTENSIONIN                = EXTENSIONIN            ,
-                EXTENSIONOUT               = EXTENSIONOUT           ,
-                INVPLANHEADER              = INVPLANHEADER          ,
-                INVPLANHEADERX             = INVPLANHEADERX         ,
-                INVPLANITEM                = INVPLANITEM            ,
-                INVPLANITEMX               = INVPLANITEMX           ,
-                POACCOUNT                  = POACCOUNT              ,
-                POACCOUNTPROFITSEGMENT     = POACCOUNTPROFITSEGMENT ,
-                POACCOUNTX                 = POACCOUNTX             ,
-                POADDRDELIVERY             = POADDRDELIVERY         ,
-                POCOMPONENTS               = POCOMPONENTS           ,
-                POCOMPONENTSX              = POCOMPONENTSX          ,
-                POCOND                     = POCOND                 ,
-                POCONDHEADER               = POCONDHEADER           ,
-                POCONDHEADERX              = POCONDHEADERX          ,
-                POCONDX                    = POCONDX                ,
-                POCONFIRMATION             = POCONFIRMATION         ,
-                POCONTRACTLIMITS           = POCONTRACTLIMITS       ,
-                POEXPIMPITEM               = POEXPIMPITEM           ,
-                POEXPIMPITEMX              = POEXPIMPITEMX          ,
-                POHISTORY                  = POHISTORY              ,
-                POHISTORY_MA               = POHISTORY_MA           ,
-                POHISTORY_TOTALS           = POHISTORY_TOTALS       ,
-                POITEM                     = POITEM                 ,
-                POITEMX                    = POITEMX                ,
-                POLIMITS                   = POLIMITS               ,
-                POPARTNER                  = POPARTNER              ,
-                POSCHEDULE                 = POSCHEDULE             ,
-                POSCHEDULEX                = POSCHEDULEX            ,
-                POSERVICES                 = POSERVICES             ,
-                POSERVICESTEXT             = POSERVICESTEXT         ,
-                POSHIPPING                 = POSHIPPING             ,
-                POSHIPPINGEXP              = POSHIPPINGEXP          ,
-                POSHIPPINGX                = POSHIPPINGX            ,
-                POSRVACCESSVALUES          = POSRVACCESSVALUES      ,
-                POTEXTHEADER               = POTEXTHEADER           ,
-                POTEXTITEM                 = POTEXTITEM             ,
-                RETURN                     = RETURN                 ,
-                SERIALNUMBER               = SERIALNUMBER           ,
-                SERIALNUMBERX              = SERIALNUMBERX          ,
-                NFMETALLITMS               = NFMETALLITMS ,
+                NO_AUTHORITY = modificarPedidoSAP.NO_AUTHORITY,
+                NO_MESSAGE_REQ = modificarPedidoSAP.NO_MESSAGE_REQ,
+                NO_MESSAGING = modificarPedidoSAP.NO_MESSAGING,
+                NO_PRICE_FROM_PO = modificarPedidoSAP.NO_PRICE_FROM_PO,
+                PARK_COMPLETE = modificarPedidoSAP.PARK_COMPLETE,
+                PARK_UNCOMPLETE = modificarPedidoSAP.PARK_UNCOMPLETE,
+                POADDRVENDOR = modificarPedidoSAP.POADDRVENDOR,
+                POEXPIMPHEADER = modificarPedidoSAP.POEXPIMPHEADER,
+                POEXPIMPHEADERX = modificarPedidoSAP.POEXPIMPHEADERX,
+                POHEADER = modificarPedidoSAP.POHEADER,
+                POHEADERX = modificarPedidoSAP.POHEADERX,
+                PURCHASEORDER = modificarPedidoSAP.PURCHASEORDER,
+                TESTRUN = modificarPedidoSAP.TESTRUN,
+                VERSIONS = modificarPedidoSAP.VERSIONS,
+                ALLVERSIONS = ALLVERSIONS,
+                EXTENSIONIN = EXTENSIONIN,
+                EXTENSIONOUT = EXTENSIONOUT,
+                INVPLANHEADER = INVPLANHEADER,
+                INVPLANHEADERX = INVPLANHEADERX,
+                INVPLANITEM = INVPLANITEM,
+                INVPLANITEMX = INVPLANITEMX,
+                POACCOUNT = POACCOUNT,
+                POACCOUNTPROFITSEGMENT = POACCOUNTPROFITSEGMENT,
+                POACCOUNTX = POACCOUNTX,
+                POADDRDELIVERY = POADDRDELIVERY,
+                POCOMPONENTS = POCOMPONENTS,
+                POCOMPONENTSX = POCOMPONENTSX,
+                POCOND = POCOND,
+                POCONDHEADER = POCONDHEADER,
+                POCONDHEADERX = POCONDHEADERX,
+                POCONDX = POCONDX,
+                POCONFIRMATION = POCONFIRMATION,
+                POCONTRACTLIMITS = POCONTRACTLIMITS,
+                POEXPIMPITEM = POEXPIMPITEM,
+                POEXPIMPITEMX = POEXPIMPITEMX,
+                POHISTORY = POHISTORY,
+                POHISTORY_MA = POHISTORY_MA,
+                POHISTORY_TOTALS = POHISTORY_TOTALS,
+                POITEM = POITEM,
+                POITEMX = POITEMX,
+                POLIMITS = POLIMITS,
+                POPARTNER = POPARTNER,
+                POSCHEDULE = POSCHEDULE,
+                POSCHEDULEX = POSCHEDULEX,
+                POSERVICES = POSERVICES,
+                POSERVICESTEXT = POSERVICESTEXT,
+                POSHIPPING = POSHIPPING,
+                POSHIPPINGEXP = POSHIPPINGEXP,
+                POSHIPPINGX = POSHIPPINGX,
+                POSRVACCESSVALUES = POSRVACCESSVALUES,
+                POTEXTHEADER = POTEXTHEADER,
+                POTEXTITEM = POTEXTITEM,
+                RETURN = RETURN,
+                SERIALNUMBER = SERIALNUMBER,
+                SERIALNUMBERX = SERIALNUMBERX,
+                NFMETALLITMS = NFMETALLITMS,
             };
             Log.Info($"SAP sin PI Z_MMRFC_MODIFICAR_OC request");
             Log.Info(request.ToXml());
@@ -386,8 +383,6 @@ namespace SustitucionMOAWS.WSConsumers
 
             ModificarPedidoSAP modificarPedidoSAP = new ModificarPedidoSAP();
             modificarPedidoSAP.PURCHASEORDER = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;// "4123001763";
-
-            int numeroPosicion = 0;
             string poItem = "";
             string numeroDeImputacion = "";
             var PCKG_NO = 1000;
@@ -494,7 +489,7 @@ namespace SustitucionMOAWS.WSConsumers
                     TRACKINGNO = string.IsNullOrEmpty(posicion.NroNecesidad) ? "" : "X",
                     MATL_GROUP = "X",
                     INFO_REC = "",
-                    QUANTITY = ((decimal)IM_POITEM.QUANTITY == 0) ? "" : "X",
+                    QUANTITY = (IM_POITEM.QUANTITY == 0) ? "" : "X",
                     PO_UNIT = "X",
                     NET_PRICE = "X",
                     PRICE_UNIT = "X",
@@ -793,8 +788,6 @@ namespace SustitucionMOAWS.WSConsumers
 
             ModificarPedidoSAPSinPI modificarPedidoSAP = new ModificarPedidoSAPSinPI();
             modificarPedidoSAP.PURCHASEORDER = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;// "4123001763";
-
-            int numeroPosicion = 0;
             string poItem = "";
             string numeroDeImputacion = "";
             var PCKG_NO = 1000;
@@ -901,7 +894,7 @@ namespace SustitucionMOAWS.WSConsumers
                     TRACKINGNO = string.IsNullOrEmpty(posicion.NroNecesidad) ? "" : "X",
                     MATL_GROUP = "X",
                     INFO_REC = "",
-                    QUANTITY = ((decimal)IM_POITEM.QUANTITY == 0) ? "" : "X",
+                    QUANTITY = (IM_POITEM.QUANTITY == 0) ? "" : "X",
                     PO_UNIT = "X",
                     NET_PRICE = "X",
                     PRICE_UNIT = "X",
@@ -934,7 +927,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     ITM_NUMBER = poItem,  //el número de ítem al que corresponda la condición
                     COND_TYPE = "ZP01",// siempre va el mismo dato
-                    COND_VALUE = Math.Round(IM_POITEM.NET_PRICE,4), //el importe de la condición
+                    COND_VALUE = Math.Round(IM_POITEM.NET_PRICE, 4), //el importe de la condición
                     ///COND_VALUESpecified = true,
                     CURRENCY = adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo,//moneda de la adjudicacion
                     CHANGE_ID = "U",// siempra va el mismo valor
@@ -1038,7 +1031,7 @@ namespace SustitucionMOAWS.WSConsumers
                         /// este valor no se envia cuando es SIN PI
                         ///subposicionSap.PRICE_UNITSpecified = true;
 
-                        subposicionSap.GR_PRICE = Math.Round(cotizacionSubPosicion.Precio.Value,4);
+                        subposicionSap.GR_PRICE = Math.Round(cotizacionSubPosicion.Precio.Value, 4);
                         /// este valor no se envia cuando es SIN PI
                         ///subposicionSap.GR_PRICESpecified = true;
 
@@ -1051,9 +1044,12 @@ namespace SustitucionMOAWS.WSConsumers
                         if (!modificarPedidoSAP.POACCOUNT.Any(x =>
                                 x.PO_ITEM == $"{poItem:00000}" &&
                                 x.GL_ACCOUNT == getCodigoTablaSap(subposicion.CuentaMayorSap) &&
-                                x.COSTCENTER == getCodigoTablaSap(subposicion.TipoImputacionSap) &&
-                                x.ORDERID == getCodigoTablaSap(subposicion.TipoImputacionSap) &&
-                                x.PROFIT_CTR == getCodigoTablaSap(subposicion.TipoImputacionSap)
+                                x.COSTCENTER == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ?
+                                getCodigoTablaSap(subposicion.TipoImputacionSap) : "") &&
+                                x.ORDERID == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ?
+                                getCodigoTablaSap(subposicion.TipoImputacionSap) : "") &&
+                                x.PROFIT_CTR == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ?
+                                getCodigoTablaSap(subposicion.TipoImputacionSap) : "")
                             ))
                         {
 
@@ -1073,7 +1069,8 @@ namespace SustitucionMOAWS.WSConsumers
                                 getCodigoTablaSap(subposicion.TipoImputacionSap) : "";
                             imputacion.ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ?
                                 getCodigoTablaSap(subposicion.TipoImputacionSap) : "";
-                            imputacion.PROFIT_CTR = getCodigoTablaSap(subposicion.TipoImputacionSap);
+                            imputacion.PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ?
+                                getCodigoTablaSap(subposicion.TipoImputacionSap) : "";
                             imputacion.SUB_NUMBER = "";
                             imputacion.ASSET_NO = "";
                             imputacion.COSTOBJECT = "";
@@ -1095,7 +1092,7 @@ namespace SustitucionMOAWS.WSConsumers
                                 COSTOBJECT = "",
                                 COSTCENTER = (posicion.TipoImputacion?.Codigo.ToLower() == "centrodecosto") ? "X" : "",
                                 ORDERID = (posicion.TipoImputacion?.Codigo.ToLower() == "ordendeot" || posicion.TipoImputacion?.Codigo.ToLower() == "ordendeinversion") ? "X" : "",
-                                PROFIT_CTR = (posicion.TipoImputacion?.Codigo.ToLower() == "siniestrobeneficio") ? "X" : "X"
+                                PROFIT_CTR = (posicion.TipoImputacion?.Codigo.ToLower() == "siniestrobeneficio") ? "X" : ""
                             });
 
                             var imputacionSubPos = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIESKLC()
@@ -1114,9 +1111,12 @@ namespace SustitucionMOAWS.WSConsumers
                             var imputacionUsada = modificarPedidoSAP.POACCOUNT.FirstOrDefault(x =>
                                 x.PO_ITEM == $"{poItem:00000}" &&
                                 x.GL_ACCOUNT == getCodigoTablaSap(subposicion.CuentaMayorSap) &&
-                                x.COSTCENTER == getCodigoTablaSap(subposicion.TipoImputacionSap) &&
-                                x.ORDERID == getCodigoTablaSap(subposicion.TipoImputacionSap) &&
-                                x.PROFIT_CTR == getCodigoTablaSap(subposicion.TipoImputacionSap)
+                                x.COSTCENTER == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ?
+                                getCodigoTablaSap(subposicion.TipoImputacionSap) : "") &&
+                                x.ORDERID == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ?
+                                getCodigoTablaSap(subposicion.TipoImputacionSap) : "") &&
+                                x.PROFIT_CTR == ((getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ?
+                                getCodigoTablaSap(subposicion.TipoImputacionSap) : "")
                                 );
                             imputacionUsada.QUANTITY += subposicion.Cantidad.Value;
 
@@ -1324,7 +1324,7 @@ namespace SustitucionMOAWS.WSConsumers
             public List<ModificarOCWebServiceMOA.BAPIMEPOSERIALNOX> SERIALNUMBERX { get; set; } = new List<ModificarOCWebServiceMOA.BAPIMEPOSERIALNOX>();
             public ModificarOCWebServiceMOA.BAPIEIKP EXPPOEXPIMPHEADER { get; set; }
             public List<ModificarOCWebServiceMOA._NFM_BAPIDOCITM> NFMETALLITMS { get; set; } = new List<ModificarOCWebServiceMOA._NFM_BAPIDOCITM>();
-            public string IM_URL { get;  set; }
+            public string IM_URL { get; set; }
         }
 
         public class ModificarPedidoSAPSinPI

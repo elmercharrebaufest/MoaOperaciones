@@ -65,6 +65,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         private const string TipoContratoFas_Normal = "NORMAL";
         private const string TipoContratoFas_Anticipado = "ANTICIPADO";
+        private const string TipoContratoFas_CuentaYOrdenResponse = "CyO";
+        private const string TipoContratoFas_CuentaYOrdenRequest = "C";
         private const string TipoContratoFas_Todos = "";
 
         public ControlCargaResponseHandler ControlarCarga(ControlCargaRequest datosCarga)
@@ -443,6 +445,7 @@ namespace SustitucionMOAWS.WSConsumers
                         }
                     }
                     string tipoContrato = ConvertirATipoContratoFasSAP(request.TipoContrato);
+                    tipoContrato = ConvertirATipoContratoFasSAP(TipoContratoFAS.Todos);//Eliminar despues de las pruebas
                     tipoContrato = tipoContrato.Length > 0 ? tipoContrato.Substring(0, 1) : tipoContrato;
                     WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4100[] fechasSAPArray = fechasSAP.ToArray();
 
@@ -975,6 +978,7 @@ namespace SustitucionMOAWS.WSConsumers
                 case TipoContratoFAS.Normal: return TipoContratoFas_Normal;
                 case TipoContratoFAS.Anticipado: return TipoContratoFas_Anticipado;
                 case TipoContratoFAS.Todos: return TipoContratoFas_Todos;
+                case TipoContratoFAS.CuentaYOrden: return TipoContratoFas_CuentaYOrdenRequest;
                 default: throw new Exception("Tipo de contrato no mapeado");
             }
         }
@@ -986,6 +990,7 @@ namespace SustitucionMOAWS.WSConsumers
                 case TipoContratoFas_Normal: return TipoContratoFAS.Normal;
                 case TipoContratoFas_Anticipado: return TipoContratoFAS.Anticipado;
                 case TipoContratoFas_Todos: return TipoContratoFAS.Todos;
+                case TipoContratoFas_CuentaYOrdenResponse: return TipoContratoFAS.CuentaYOrden;
                 default: throw new Exception("No se reconoce tipo de contrato " + tipoContrato);
             }
         }

@@ -1867,7 +1867,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     kilosSinConsumir(): number {
         if (!this.esEdicionDeOrden && this.ordenDeCarga.ContratoSeleccionado && this.ordenDeCarga.Cantidad > 0) {
             let KgDisponibles;
-            if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato == TipoContrato.Normal) {
+            if (this.ordenDeCarga.ContratoSeleccionado.TipoContrato == TipoContrato.Normal || this.ordenDeCarga.ContratoSeleccionado.TipoContrato == TipoContrato.CyO) {
                 KgDisponibles = this.ordenDeCarga.ContratoSeleccionado.KgDisponibles;
             } else {
                 KgDisponibles = this.facturaSeleccionada.KgDisponibles;
