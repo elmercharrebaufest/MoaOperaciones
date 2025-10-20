@@ -1618,17 +1618,25 @@ namespace SustitucionMOAUtils.Services
 
         public Archivo ObtenerEPAExistenteCampo(int proveedorId, string cuit, HttpPostedFileBase archivoKmz)
         {
-            var campos = repositorio.Listar<CampoProveedor>(cp => cp.Proveedor_Id == proveedorId && cp.CUIT == cuit);
-            foreach(var campo in campos)
+            // Leer el archivo KMZ subido a memoria para reutilizarlo varias veces
+            byte[] kmzBytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                archivoKmz.InputStream.CopyTo(memoryStream);
+                kmzBytes = memoryStream.ToArray();
+            }
+
+            //Campos que ya hayan presentado evidencia para ser reutilizada.
+            var campos = repositorio.Listar<CampoProveedor>(cp => cp.Proveedor_Id == proveedorId && cp.CUIT == cuit && cp.EvidenciaEPA != null);
+
+            foreach (var campo in campos)
             {
                 var rutaKmzExistente = campo.Archivo.Ruta;
                 if (!string.IsNullOrEmpty(rutaKmzExistente) && File.Exists(rutaKmzExistente))
                 {
                     using (var streamExistente = File.OpenRead(rutaKmzExistente))
+                    using (var kmzStream = new MemoryStream(kmzBytes)) // nuevo stream limpio cada vez
                     {
-                        // Resetear el stream del archivo subido por si ya fue leído
-                        archivoKmz.InputStream.Position = 0;
-                        using (var kmzStream = archivoKmz.InputStream)
                         if (SonKmzIgualesPorPoligono(streamExistente, kmzStream))
                         {
                             return campo.EvidenciaEPA;
@@ -1636,12 +1644,16 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
-       
+
             return null;
         }
 
         private bool SonKmzIgualesPorPoligono(Stream kmzStream1, Stream kmzStream2)
         {
+            // Reiniciar los streams antes de leerlos
+            if (kmzStream1.CanSeek) kmzStream1.Position = 0;
+            if (kmzStream2.CanSeek) kmzStream2.Position = 0;
+
             var coords1 = ExtraerCoordenadasPoligonoKmz(kmzStream1);
             var coords2 = ExtraerCoordenadasPoligonoKmz(kmzStream2);
 
@@ -1662,7 +1674,10 @@ namespace SustitucionMOAUtils.Services
 
         private List<SharpKml.Base.Vector> ExtraerCoordenadasPoligonoKmz(Stream kmzStream)
         {
-            using (var zip = new System.IO.Compression.ZipArchive(kmzStream, System.IO.Compression.ZipArchiveMode.Read, true))
+            if (kmzStream.CanSeek)
+                kmzStream.Position = 0;
+
+            using (var zip = new System.IO.Compression.ZipArchive(kmzStream, System.IO.Compression.ZipArchiveMode.Read, leaveOpen: false))
             {
                 var kmlEntry = zip.Entries.FirstOrDefault(e => e.FullName.EndsWith(".kml", StringComparison.OrdinalIgnoreCase));
                 if (kmlEntry == null)
@@ -1685,11 +1700,13 @@ namespace SustitucionMOAUtils.Services
                     if (poligono == null)
                         return null;
 
-                    var coordinates = poligono.OuterBoundary.LinearRing.Coordinates;
-                    return coordinates?.ToList();
+                    return poligono.OuterBoundary?.LinearRing?.Coordinates?.ToList();
                 }
             }
         }
+
+
+
     }
 
 
