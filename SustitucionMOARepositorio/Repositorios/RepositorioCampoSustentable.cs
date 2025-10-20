@@ -96,7 +96,6 @@ namespace SustitucionMOARepositorio.Repositorios
                     NombreCampo = campoProveedor.CampoCosecha.Campo.Nombre,
                     Renspa = campoProveedor.CampoCosecha.Campo.Renspa,
                     Localidad_Id = campoProveedor.CampoCosecha.Campo.Localidad_Id,
-                    ToneladasAprobadas = campoProveedor.CampoCosecha.ToneladasAprobadas,
                     Latitud = campoProveedor.Latitud,
                     Longitud = campoProveedor.Longitud,
                     CampoCosechaId = campoProveedor.CampoCosecha_Id,

@@ -150,9 +150,6 @@ namespace SustitucionMOAUtils.Services
                 campoProveedor.EvidenciaEPA_Id = null;
             }
 
-            //TODO linea 113 borrar dps
-            campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
-
             campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
             campoProveedor.CampoCosecha.Cosecha = repositorio.Obtener<Cosecha>(campoProveedor.CampoCosecha.Cosecha_Id);
 
@@ -220,7 +217,6 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.HectareasTotales = campoProveedorObj.HectareasTotales;
             campoProveedor.Longitud = campoProveedorObj.Longitud;
             campoProveedor.Latitud = campoProveedorObj.Latitud;
-            campoProveedor.CampoCosecha.ToneladasAprobadas = campoProveedorObj.CampoCosecha.ToneladasAprobadas;
             campoProveedor.CampoCosecha.Campo.Nombre = campoProveedorObj.CampoCosecha.Campo.Nombre;
             campoProveedor.CampoCosecha.Campo.Renspa = campoProveedorObj.CampoCosecha.Campo.Renspa;
             campoProveedor.CampoCosecha.Campo.Localidad_Id = campoProveedorObj.CampoCosecha.Campo.Localidad_Id;
@@ -336,10 +332,10 @@ namespace SustitucionMOAUtils.Services
                     Pais = "Argentina",
                     Provincia = c.CampoCosecha.Campo.Localidad.Provincia.Nombre,
                     Coordenadas = string.Concat(c.Latitud, " ", c.Longitud),
-                    ToneladasAprobadas = c.CampoCosecha.ToneladasAprobadas.ToString(),
+                    ToneladasAprobadas = c.CampoCosecha.CampoCosechaNormativas.FirstOrDefault(x => x.TipoNormativa.Descripcion == "2BSVS").ToneladasAprobadas.ToString(),
                     Partido = c.CampoCosecha.Campo.Localidad.Partido.Descripcion
                 },
-                cp => cp.CUIT == CUIT && cp.CampoCosecha.Cosecha_Id == cosecha.Id && cp.CampoCosecha.ToneladasAprobadas != -1);
+                cp => cp.CUIT == CUIT && cp.CampoCosecha.Cosecha_Id == cosecha.Id && cp.CampoCosecha.CampoCosechaNormativas.Any(x => x.TipoNormativa.Descripcion == "2BSVS" && x.ToneladasAprobadas != -1));
 
             var declaracion = ObtenerDeclaracion(cosechaId, CUIT);
 
@@ -648,7 +644,6 @@ namespace SustitucionMOAUtils.Services
                                 NombreCampo = cp.CampoCosecha.Campo.Nombre,
                                 Renspa = cp.CampoCosecha.Campo.Renspa,
                                 Localidad_Id = cp.CampoCosecha.Campo.Localidad_Id,
-                                ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
                                 Latitud = cp.Latitud,
                                 Longitud = cp.Longitud,
                                 CampoCosechaId = cp.CampoCosecha_Id,
@@ -933,7 +928,6 @@ namespace SustitucionMOAUtils.Services
                     CampoCosecha = new CampoCosecha
                     {
                         Cosecha_Id = campoSugeridoDto.CosechaId,
-                        ToneladasAprobadas = -1,
                         Campo = new CampoSustentable
                         {
                             Nombre = campoSugeridoDto.NombreCampo,

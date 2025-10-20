@@ -281,7 +281,6 @@ namespace SustitucionMOATest.Services
             {
                 Campo = new CampoSustentable { Nombre = "Test", Renspa = "123", Localidad_Id = 5 },
                 Cosecha = new Cosecha { Nombre = "20-21" },
-                ToneladasAprobadas = 5,
                 CampoCosechaNormativas = new List<CampoCosechaNormativa> { normativaEPA }
             };
 
@@ -319,7 +318,6 @@ namespace SustitucionMOATest.Services
                 {
                     Campo = new CampoSustentable { Nombre = "Editado", Renspa = "456", Localidad_Id = 6 },
                     Cosecha = new Cosecha { Nombre = "21-22" },
-                    ToneladasAprobadas = 15
                 },
                 EvidenciaPresentada = false
             };
@@ -495,7 +493,6 @@ namespace SustitucionMOATest.Services
                 {
                     Campo = new CampoSustentable { Nombre = "Test" },
                     Cosecha = new Cosecha { Nombre = "20-21" },
-                    ToneladasAprobadas = 50,
                     CampoCosechaNormativas = new List<CampoCosechaNormativa>
                     {
                         new CampoCosechaNormativa
@@ -967,9 +964,7 @@ namespace SustitucionMOATest.Services
             {
                 Campo = campoSustentable1,
                 Cosecha = new Cosecha { Nombre = "cosecha 1" },
-                ToneladasAprobadas = 29,
                 Cosecha_Id = 1,
-                MotivoRechazo = "motivo rechazo 1",
                 CampoCosechaNormativas = new List<CampoCosechaNormativa>
         {
             new CampoCosechaNormativa
@@ -992,9 +987,7 @@ namespace SustitucionMOATest.Services
             {
                 Campo = campoSustentable2,
                 Cosecha = new Cosecha { Nombre = "cosecha 2" },
-                ToneladasAprobadas = 80,
                 Cosecha_Id = 2,
-                MotivoRechazo = "motivo rechazo 2",
                 CampoCosechaNormativas = new List<CampoCosechaNormativa>
         {
             new CampoCosechaNormativa
@@ -1146,7 +1139,7 @@ namespace SustitucionMOATest.Services
             CampoSustentable campoSustentable1 = new CampoSustentable { IdScato = 1, Nombre = "Campo sustentable 1" };
             CampoSustentable campoSustentable2 = new CampoSustentable { IdScato = 2, Nombre = "Campo sustentable 2" };
 
-            var campoCosecha1 = new CampoCosecha { Campo = campoSustentable1, Cosecha = new Cosecha { Nombre = "cosecha 1" }, ToneladasAprobadas = 29, Cosecha_Id = 1, MotivoRechazo = "motivo rechazo 1",
+            var campoCosecha1 = new CampoCosecha { Campo = campoSustentable1, Cosecha = new Cosecha { Nombre = "cosecha 1" }, Cosecha_Id = 1,
                 CampoCosechaNormativas = new List<CampoCosechaNormativa>
                     {
                         new CampoCosechaNormativa
@@ -1165,7 +1158,7 @@ namespace SustitucionMOATest.Services
                         }
                     }
             };
-            var campoCosecha2 = new CampoCosecha { Campo = campoSustentable2, Cosecha = new Cosecha { Nombre = "cosecha 2" }, ToneladasAprobadas = 80, Cosecha_Id = 2, MotivoRechazo = "motivo rechazo 2",
+            var campoCosecha2 = new CampoCosecha { Campo = campoSustentable2, Cosecha = new Cosecha { Nombre = "cosecha 2" }, Cosecha_Id = 2,
                 CampoCosechaNormativas = new List<CampoCosechaNormativa>
                     {
                         new CampoCosechaNormativa
@@ -1309,18 +1302,14 @@ namespace SustitucionMOATest.Services
             {
                 Campo = campoSustentable1,
                 Cosecha = new Cosecha { Nombre = "cosecha 1" },
-                ToneladasAprobadas = 29,
                 Cosecha_Id = 1,
-                MotivoRechazo = "motivo rechazo 1",
                 CampoCosechaNormativas = new List<CampoCosechaNormativa> { normativa1 }
             };
             var campoCosecha2 = new CampoCosecha
             {
                 Campo = campoSustentable2,
                 Cosecha = new Cosecha { Nombre = "cosecha 2" },
-                ToneladasAprobadas = 80,
                 Cosecha_Id = 2,
-                MotivoRechazo = "motivo rechazo 2",
                 CampoCosechaNormativas = new List<CampoCosechaNormativa> { normativa2 }
             };
 
@@ -1410,18 +1399,14 @@ namespace SustitucionMOATest.Services
             {
                 Campo = campoSustentable1,
                 Cosecha = new Cosecha { Nombre = "cosecha 1" },
-                ToneladasAprobadas = 29,
                 Cosecha_Id = 1,
-                MotivoRechazo = "motivo rechazo 1",
                 CampoCosechaNormativas = new List<CampoCosechaNormativa> { normativaEPA }
             };
             var campoCosecha2 = new CampoCosecha
             {
                 Campo = campoSustentable2,
                 Cosecha = new Cosecha { Nombre = "cosecha 2" },
-                ToneladasAprobadas = 80,
                 Cosecha_Id = 2,
-                MotivoRechazo = "motivo rechazo 2",
                 CampoCosechaNormativas = new List<CampoCosechaNormativa> { normativaBSVS2 }
             };
 
@@ -1540,9 +1525,7 @@ namespace SustitucionMOATest.Services
             {
                 Campo = campoSustentable,
                 Cosecha = new Cosecha { Nombre = "cosecha 1" },
-                ToneladasAprobadas = 29,
                 Cosecha_Id = 1,
-                MotivoRechazo = "motivo rechazo 1",
                 CampoCosechaNormativas = new List<CampoCosechaNormativa>
                 {
                     new CampoCosechaNormativa
@@ -1599,9 +1582,7 @@ namespace SustitucionMOATest.Services
             {
                 Campo = campoSustentable,
                 Cosecha = new Cosecha { Nombre = "cosecha 1" },
-                ToneladasAprobadas = 29,
                 Cosecha_Id = 1,
-                MotivoRechazo = "motivo rechazo 1",
                 CampoCosechaNormativas = new List<CampoCosechaNormativa>
                 {
                     new CampoCosechaNormativa

@@ -152,7 +152,6 @@
     <Build Include="DBO\Stored Procedures\ActualizarIngresosBrutosCoeficienteUnificadoRechazado.sql" />
     <Build Include="DBO\Stored Procedures\ActualizarIngresosBrutosCoeficienteUnificado.sql" />
     <Build Include="DBO\Views\viewIngresosBrutosCoeficienteUnificado.sql" />
-    <Build Include="DBO\Stored Procedures\ActualizarToneladasAprobadasCampo.sql" />
     <Build Include="DBO\Tables\MovimientoIngresosBrutosCoeficienteUnificado.sql" />
     <Build Include="DBO\Tables\OrigenMovimientoIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\PostDeployment\PermisosNotificaciones.sql" />
