@@ -61,7 +61,7 @@ namespace SustitucionMOAWS.WSConsumers
                 KMZnombre = campo.Archivo.FileKey,
                 KMZfileBase64 = kmz.Substring(400),
                 Nombre = campo.CampoCosecha.Campo.Nombre,
-                ToneladasAprobadas = Convert.ToDecimal(campo.CampoCosecha.ToneladasAprobadas),
+                ToneladasAprobadas = Convert.ToDecimal(campo.CampoCosecha.CampoCosechaNormativas.FirstOrDefault().ToneladasAprobadas),
                 HectareasTotales = Convert.ToDecimal(campo.HectareasTotales),
                 HectareasCultivables = Convert.ToDecimal(campo.HectareasSoja),
                 Id = campo.CampoCosecha.Id,

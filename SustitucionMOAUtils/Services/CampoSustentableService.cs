@@ -2,6 +2,8 @@
 using iTextSharp.text.pdf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SharpKml.Base;
+using SharpKml.Engine;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
@@ -9,6 +11,7 @@ using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
+using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Export.CampoSustentable;
 using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Interfaces;
@@ -21,14 +24,17 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -57,10 +63,13 @@ namespace SustitucionMOAUtils.Services
             this.campoSustentablePdfGenerator = campoSustentablePdfGenerator;
         }
 
-        public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz, bool UsarArchivoId)
+        public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz, bool UsarArchivoId, HttpPostedFileBase archivoEPA)
         {
             var ruta = "";
             var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
+
+            if(archivoKmz != null)
+                ValidarCampoPoligonoKmz(campoProveedor, archivoKmz);
 
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
 
@@ -83,31 +92,76 @@ namespace SustitucionMOAUtils.Services
 
             ValidarCampo(campoProveedor, archivoKmz);
 
+            if (!ExisteCarpetaUcropIt(campoProveedor))
+            {
+                EnviarMailCarpetasUCROPIT(campoProveedor);
+                throw new ValidationCustomException("No se encontró la configuración de carpeta para subir el archivo KMZ. Contacte al administrador.");
+            }
+
             var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
 
-            campoProveedor.RazonSocial = declaracion.RazonSocial;
+            if(campoProveedor.BSVS2 && declaracion != null)
+            {
+                campoProveedor.RazonSocial = declaracion.RazonSocial;
+            }
+
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
+            
             if (campoProveedor.Archivo_Id == 0)
             {
-                campoProveedor.Archivo = (new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" });
+                var archivoKmzEntidad = new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" };
+                repositorio.Agregar(archivoKmzEntidad); 
+                campoProveedor.Archivo = archivoKmzEntidad;
             }
             else
             {
                 var archivoCampo = repositorio.ObtenerArchivo(campoProveedor.Archivo_Id);
                 ruta = archivoCampo.Ruta;
             }
-            campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
+
+            //Guardado Evidencia EPA
+
+            if (campoProveedor.EPA)
+            {
+                if (archivoEPA != null && !campoProveedor.EvidenciaPresentada)
+                {
+                    var archivoEPAEntidad = new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" };
+                    repositorio.Agregar(archivoEPAEntidad);
+                    campoProveedor.EvidenciaEPA = archivoEPAEntidad;
+                    campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
+                }
+                else if (campoProveedor.EvidenciaPresentada)
+                {
+                    archivoKmz.InputStream.Position = 0;
+                    var archivoEPAExistente = this.ObtenerEPAExistenteCampo(campoProveedor.Proveedor_Id, campoProveedor.CUIT, archivoKmz);
+                    campoProveedor.EvidenciaEPA = archivoEPAExistente;
+                    campoProveedor.EvidenciaEPA_Id = archivoEPAExistente?.Id;
+                }
+                else
+                {
+                    campoProveedor.EvidenciaEPA = null;
+                    campoProveedor.EvidenciaEPA_Id = null;
+                }
+            }
+            else
+            {
+                campoProveedor.EvidenciaEPA = null;
+                campoProveedor.EvidenciaEPA_Id = null;
+            }
 
             campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
             campoProveedor.CampoCosecha.Cosecha = repositorio.Obtener<Cosecha>(campoProveedor.CampoCosecha.Cosecha_Id);
 
             repositorio.Agregar(campoProveedor);
 
+            this.AgregarNormativas(campoProveedor);
+
             repositorio.GuardarCambios();
             if (!UsarArchivoId)
             {
                 ruta = GuardarArchivoKMZ(campoProveedor, archivoKmz);
+
                 repositorio.GuardarCambios();
             }
 
@@ -118,7 +172,33 @@ namespace SustitucionMOAUtils.Services
             return new Resultado { IdEntidad = campoProveedor.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
         }
 
-        public Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz)
+        private void AgregarNormativas(CampoProveedor campoProveedor)
+        {
+            var normativas = new List<string>();
+
+            if (campoProveedor.BSVS2)
+                normativas.Add("2BSVS");
+
+            if (campoProveedor.EPA)
+                normativas.Add("EPA");
+
+            if (campoProveedor.EUDR)
+                normativas.Add("EUDR");
+
+            foreach (var normativa in normativas)
+            {
+                var tipoNormativa = this.repositorio.Obtener<TipoNormativa>(n => n.Descripcion == normativa);
+                this.repositorio.Agregar(new CampoCosechaNormativa
+                {
+                    CampoCosecha = campoProveedor.CampoCosecha,
+                    TipoNormativa = tipoNormativa,
+                    ToneladasAprobadas = -1,
+                });
+            }
+        }
+
+
+        public Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz, HttpPostedFileBase archivoEPA)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
@@ -137,13 +217,18 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.HectareasTotales = campoProveedorObj.HectareasTotales;
             campoProveedor.Longitud = campoProveedorObj.Longitud;
             campoProveedor.Latitud = campoProveedorObj.Latitud;
-            campoProveedor.CampoCosecha.ToneladasAprobadas = campoProveedorObj.CampoCosecha.ToneladasAprobadas;
             campoProveedor.CampoCosecha.Campo.Nombre = campoProveedorObj.CampoCosecha.Campo.Nombre;
             campoProveedor.CampoCosecha.Campo.Renspa = campoProveedorObj.CampoCosecha.Campo.Renspa;
             campoProveedor.CampoCosecha.Campo.Localidad_Id = campoProveedorObj.CampoCosecha.Campo.Localidad_Id;
+            campoProveedor.BSVS2 = campoProveedorObj.BSVS2;
+            campoProveedor.EPA = campoProveedorObj.EPA;
+            campoProveedor.EUDR = campoProveedorObj.EUDR;
+
+            this.ActualizarNormativas(campoProveedor, archivoEPA);
 
             repositorio.GuardarCambios();
 
+            
             //GuardarArchivoKMZ(campoProveedor, archivoKmz);
 
             //repositorio.GuardarCambios();
@@ -151,6 +236,64 @@ namespace SustitucionMOAUtils.Services
             InformarCampoSustentable(campoProveedor, "");
 
             return new Resultado { IdEntidad = campoProveedorObj.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
+        }
+
+        private void ActualizarNormativas(CampoProveedor campoProveedor, HttpPostedFileBase archivoEPA)
+        {
+            var normativasSeleccionadas = new List<string>();
+            if (campoProveedor.EPA) normativasSeleccionadas.Add("EPA");
+            if (campoProveedor.EUDR) normativasSeleccionadas.Add("EUDR");
+            if (campoProveedor.BSVS2) normativasSeleccionadas.Add("2BSVS");
+
+            // Obtiene las normativas actuales asociadas al CampoCosecha
+            var normativasActuales = campoProveedor.CampoCosecha.CampoCosechaNormativas?.ToList() ?? new List<CampoCosechaNormativa>();
+
+            // Todas las normativas posibles
+            var todasNormativas = repositorio.Listar<TipoNormativa>().Select(x => x.Descripcion);
+
+            foreach (var normativa in todasNormativas)
+            {
+                var tipoNormativa = repositorio.Obtener<TipoNormativa>(n => n.Descripcion == normativa);
+                var normativaActual = normativasActuales.FirstOrDefault(n => n.TipoNormativa.Descripcion == normativa);
+
+                if (normativasSeleccionadas.Contains(normativa))
+                {
+                    // Si está seleccionada y no existe, la agrego
+                    if (normativaActual == null)
+                    {
+                        var nuevaNormativa = new CampoCosechaNormativa
+                        {
+                            CampoCosecha = campoProveedor.CampoCosecha,
+                            TipoNormativa = tipoNormativa,
+                            ToneladasAprobadas = -1
+                        };
+                        repositorio.Agregar(nuevaNormativa);
+                    }
+                }
+                else
+                {
+                    // Si no está seleccionada y existe, la elimino
+                    if (normativaActual != null)
+                    {
+                        repositorio.Remover(normativaActual);
+                        if(normativaActual.TipoNormativa.Descripcion == "EPA")
+                        {
+                            var archEPA = this.repositorio.Obtener<Archivo>(a => a.Id == campoProveedor.EvidenciaEPA_Id);
+                            this.repositorio.Remover(archEPA);
+                        }
+                    }
+                }
+            }
+
+            // Si EPA está seleccionada y hay archivo, actualiza la evidencia
+            if (campoProveedor.EPA && archivoEPA != null && !campoProveedor.EvidenciaPresentada)
+            {
+                if (campoProveedor.EvidenciaEPA == null)
+                {
+                    campoProveedor.EvidenciaEPA = new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" };
+                }
+                campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
+            }
         }
 
         public string Borrar(string mailUsuario, int campoCosechaId, int proveedorId)
@@ -161,7 +304,7 @@ namespace SustitucionMOAUtils.Services
 
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
 
-            if (campoProveedor.CampoCosecha.ToneladasAprobadas > 0)
+            if (campoProveedor.CampoCosecha.CampoCosechaNormativas.Any(n => n.ToneladasAprobadas > 0))
             {
                 throw new ValidationCustomException("No se puede eliminar el campo debido a que ya tiene toneladas aprobadas");
             }
@@ -189,10 +332,10 @@ namespace SustitucionMOAUtils.Services
                     Pais = "Argentina",
                     Provincia = c.CampoCosecha.Campo.Localidad.Provincia.Nombre,
                     Coordenadas = string.Concat(c.Latitud, " ", c.Longitud),
-                    ToneladasAprobadas = c.CampoCosecha.ToneladasAprobadas.ToString(),
+                    ToneladasAprobadas = c.CampoCosecha.CampoCosechaNormativas.FirstOrDefault(x => x.TipoNormativa.Descripcion == "2BSVS").ToneladasAprobadas.ToString(),
                     Partido = c.CampoCosecha.Campo.Localidad.Partido.Descripcion
                 },
-                cp => cp.CUIT == CUIT && cp.CampoCosecha.Cosecha_Id == cosecha.Id && cp.CampoCosecha.ToneladasAprobadas != -1);
+                cp => cp.CUIT == CUIT && cp.CampoCosecha.Cosecha_Id == cosecha.Id && cp.CampoCosecha.CampoCosechaNormativas.Any(x => x.TipoNormativa.Descripcion == "2BSVS" && x.ToneladasAprobadas != -1));
 
             var declaracion = ObtenerDeclaracion(cosechaId, CUIT);
 
@@ -203,7 +346,8 @@ namespace SustitucionMOAUtils.Services
                 RazonSocial = declaracion.RazonSocial,
                 Fecha = declaracion.FechaFirma?.ToString("dd/MM/yyyy"),
                 CantidadParteSoja = declaracion.HectareasDeclaradas.Value,
-                Campos = allCampos
+                Campos = allCampos,
+                DirectivaDDJJCampoSustentable = cosecha.DirectivaDDJJCampoSustentable
             };
 
             //var pdfDeclaracionJurada = GenerarPDFDeclaracion(datosDeclaracionJurada);
@@ -256,7 +400,8 @@ namespace SustitucionMOAUtils.Services
                 CUIT = CUITDeclaracion,
                 RazonSocial = razonSocial,
                 HectareasDeclaracionCampoSustentable = 0,
-                OpcionDeclaracionCampoSustentable = OpcionesDeclaracionCampoSustentable.Totalidad
+                OpcionDeclaracionCampoSustentable = OpcionesDeclaracionCampoSustentable.Totalidad,
+                DirectivaDDJJCampoSustentable = cosecha.DirectivaDDJJCampoSustentable
             };
 
             var declaracion = repositorio.ObtenerDeclaracionDeProveedor(CUITDeclaracion, cosechaId);
@@ -400,11 +545,12 @@ namespace SustitucionMOAUtils.Services
                 RazonSocial = declaracion.RazonSocial,
                 Fecha = declaracion.FechaFirma?.ToString("dd/MM/yyyy"),
                 CantidadParteSoja = declaracion.HectareasDeclaradas.Value,
-                Campos = null
+                Campos = null,
+                DirectivaDDJJCampoSustentable = cosecha.DirectivaDDJJCampoSustentable
             };
 
             var pdfBytes = GenerarPDFDeclaracion(datos);
-            pdfBytes = ReemplazarTextoEnPdf(pdfBytes, @"2018/2001/EC \(RED II\)", @"2023/2413/EC \(RED III\)");
+            pdfBytes = ReemplazarTextoEnPdf(pdfBytes, @"2018/2001/EC \(RED II\)", datos.DirectivaDDJJCampoSustentable);
 
             byte[] archivoResult;
             using (MemoryStream stream = new MemoryStream())
@@ -428,28 +574,57 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            var resultado = ListarCampos(usuario, cp => new CampoProveedorListadoDto()
+            var campos = ListarCampos(usuario, cp => cp); // Trae los CampoProveedor completos
+
+            var resultado = new List<CampoProveedorListadoDto>();
+
+            foreach (var cp in campos)
             {
-                IdScato = cp.CampoCosecha.Campo.IdScato,
-                NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
-                HectareasSoja = cp.HectareasSoja,
-                HectareasTotales = cp.HectareasTotales,
-                NombreCampo = cp.CampoCosecha.Campo.Nombre,
-                ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
-                CampoCosechaId = cp.CampoCosecha_Id,
-                Proveedor = new ProveedorDto()
+                var normativas = new List<(bool flag, string descripcion)>
                 {
-                    Id = cp.Proveedor.Id,
-                    CodigoProveedor = cp.Proveedor.CodigoProveedor,
-                    RazonSocial = cp.Proveedor.RazonSocial
-                },
-                CodigoProveedor = cp.Proveedor.CodigoProveedor,
-                CUITProveedor = cp.CUIT,
-                RazonSocialProveedor = cp.RazonSocial,
-                CosechaId = cp.CampoCosecha.Cosecha_Id,
-                MotivoRechazo = cp.CampoCosecha.MotivoRechazo,
-                FechaCreacion = cp.FechaCreacion
-            });
+                    (cp.BSVS2, "2BSVS"),
+                    (cp.EPA, "EPA"),
+                    (cp.EUDR, "EUDR")
+                };
+
+                foreach (var (flag, descripcion) in normativas.Where(n => n.flag))
+                {
+                    // Busca la normativa correspondiente
+                    var normativa = cp.CampoCosecha.CampoCosechaNormativas?
+                        .FirstOrDefault(n => n.TipoNormativa.Descripcion == descripcion);
+
+                    if (normativa != null)
+                    {
+                        resultado.Add(new CampoProveedorListadoDto
+                        {
+                            IdScato = cp.CampoCosecha.Campo.IdScato,
+                            NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
+                            HectareasSoja = cp.HectareasSoja,
+                            HectareasTotales = cp.HectareasTotales,
+                            NombreCampo = cp.CampoCosecha.Campo.Nombre,
+                            ToneladasAprobadas = normativa.ToneladasAprobadas,
+                            CampoCosechaId = cp.CampoCosecha_Id,
+                            Proveedor = new ProveedorDto
+                            {
+                                Id = cp.Proveedor.Id,
+                                CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                                RazonSocial = cp.Proveedor.RazonSocial
+                            },
+                            CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                            CUITProveedor = cp.CUIT,
+                            RazonSocialProveedor = cp.RazonSocial,
+                            CosechaId = cp.CampoCosecha.Cosecha_Id,
+                            MotivoRechazo = normativa.MotivoRechazo,
+                            FechaCreacion = cp.FechaCreacion,
+                            TipoNormativa = normativa.TipoNormativa.Descripcion,
+                            TipoNormativaId = normativa.TipoNormativa_Id,
+                            Validado = normativa.Validado,
+                            ValidadoPor = normativa.ValidadoPor,
+                            EvidenciaEPA_Id = cp.EvidenciaEPA_Id
+                        });
+                    }
+                }
+            }
 
             return resultado;
         }
@@ -469,7 +644,6 @@ namespace SustitucionMOAUtils.Services
                                 NombreCampo = cp.CampoCosecha.Campo.Nombre,
                                 Renspa = cp.CampoCosecha.Campo.Renspa,
                                 Localidad_Id = cp.CampoCosecha.Campo.Localidad_Id,
-                                ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
                                 Latitud = cp.Latitud,
                                 Longitud = cp.Longitud,
                                 CampoCosechaId = cp.CampoCosecha_Id,
@@ -480,8 +654,19 @@ namespace SustitucionMOAUtils.Services
                                 CUIT = cp.CUIT,
                                 Archivo_Id = cp.Archivo_Id,
                                 Proveedor_Id = cp.Proveedor_Id,
-                                CodigoProveedor = cp.Proveedor.CodigoProveedor
+                                CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                                BSVS2 = cp.BSVS2,
+                                EPA = cp.EPA,
+                                EUDR = cp.EUDR,
+                                EvidenciaEPA_Id = cp.EvidenciaEPA_Id,
                             });
+
+            if (campo.EPA && campo.EvidenciaEPA_Id != null)
+            {
+                var archivo = this.repositorio.Obtener<Archivo>(a => a.Id == campo.EvidenciaEPA_Id);
+                campo.NombreArchivoEPA = Path.GetFileName(archivo.Ruta);
+                campo.ArchivoEPA = File.ReadAllBytes(archivo.Ruta);
+            }
 
             return campo;
         }
@@ -490,48 +675,83 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var esAdminCampos = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
-            var headersBase = new List<string>() { "Cosecha", "Campo", "RENSPA", "Proveedor", "Cuit", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas", "Razon Social", "Fecha Creacion" };
-            dynamic listado;
+            var headersBase = new List<string> { "Cosecha", "Campo", "RENSPA", "Proveedor", "Cuit", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas", "Normativa", "Razon Social", "Fecha Creacion" };
+            var campos = ListarCampos(usuario, cp => cp);
+
+            if (esAdminCampos)
+                headersBase.Insert(0, "Id Scato");
+
+            var normativas = new List<(Func<CampoProveedor, bool> flag, string descripcion)>
+            {
+                (cp => cp.BSVS2, "2BSVS"),
+                (cp => cp.EPA, "EPA"),
+                (cp => cp.EUDR, "EUDR")
+            };
 
             if (esAdminCampos)
             {
-                headersBase.Insert(0, "Id Scato");
-                listado = ListarCampos(usuario, cp => new CampoSustentableExportDTO()
-                {
-                    Campo = cp.CampoCosecha.Campo.Nombre,
-                    Renspa = cp.CampoCosecha.Campo.Renspa,
-                    ProveedorRazonSocial = cp.Proveedor.RazonSocial,
-                    CuitProveedor = cp.Proveedor.CUIT,
-                    Cosecha = cp.CampoCosecha.Cosecha.Nombre,
-                    HectareasSoja = cp.HectareasSoja,
-                    HectareasTotales = cp.HectareasTotales,
-                    IdScato = cp.CampoCosecha.Campo.IdScato,
-                    Motivo = cp.CampoCosecha.MotivoRechazo,
-                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
-                    RazonSocial = cp.RazonSocial,
-                    FechaCreacion = cp.FechaCreacion
-                });
-                ((List<CampoSustentableExportDTO>)listado).ForEach(x => x.Renspa = x.Renspa.ToFormatoRenspa());
+                var listado = campos
+                    .SelectMany(cp => normativas
+                        .Where(n => n.flag(cp))
+                        .Select(n =>
+                        {
+                            var normativa = cp.CampoCosecha.CampoCosechaNormativas?
+                                .FirstOrDefault(x => x.TipoNormativa.Descripcion == n.descripcion);
+                            return normativa == null ? null : new CampoSustentableExportDTO
+                            {
+                                Campo = cp.CampoCosecha.Campo.Nombre,
+                                Renspa = cp.CampoCosecha.Campo.Renspa,
+                                ProveedorRazonSocial = cp.Proveedor.RazonSocial,
+                                CuitProveedor = cp.Proveedor.CUIT,
+                                Cosecha = cp.CampoCosecha.Cosecha.Nombre,
+                                HectareasSoja = cp.HectareasSoja,
+                                HectareasTotales = cp.HectareasTotales,
+                                IdScato = cp.CampoCosecha.Campo.IdScato,
+                                Motivo = normativa.MotivoRechazo,
+                                ToneladasAprobadas = normativa.ToneladasAprobadas,
+                                Normativa = normativa.TipoNormativa.Descripcion,
+                                RazonSocial = cp.RazonSocial,
+                                FechaCreacion = cp.FechaCreacion,
+                            };
+                        })
+                        .Where(x => x != null)
+                    )
+                    .ToList();
+
+                listado.ForEach(x => x.Renspa = x.Renspa.ToFormatoRenspa());
+                return excelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
             }
             else
             {
-                listado = ListarCampos(usuario, cp => new CampoSustentableExportBaseDTO()
-                {
-                    Campo = cp.CampoCosecha.Campo.Nombre,
-                    Renspa = cp.CampoCosecha.Campo.Renspa,
-                    ProveedorRazonSocial = cp.Proveedor.CodigoProveedor,
-                    Cosecha = cp.CampoCosecha.Cosecha.Nombre,
-                    HectareasSoja = cp.HectareasSoja,
-                    HectareasTotales = cp.HectareasTotales,
-                    Motivo = cp.CampoCosecha.MotivoRechazo,
-                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
-                    RazonSocial = cp.RazonSocial,
-                    FechaCreacion = cp.FechaCreacion
-                });
-                ((List<CampoSustentableExportBaseDTO>)listado).ForEach(x => x.Renspa = x.Renspa.ToFormatoRenspa());
-            }
+                var listado = campos
+                    .SelectMany(cp => normativas
+                        .Where(n => n.flag(cp))
+                        .Select(n =>
+                        {
+                            var normativa = cp.CampoCosecha.CampoCosechaNormativas?
+                                .FirstOrDefault(x => x.TipoNormativa.Descripcion == n.descripcion);
+                            return normativa == null ? null : new CampoSustentableExportBaseDTO
+                            {
+                                Campo = cp.CampoCosecha.Campo.Nombre,
+                                Renspa = cp.CampoCosecha.Campo.Renspa,
+                                ProveedorRazonSocial = cp.Proveedor.CodigoProveedor,
+                                Cosecha = cp.CampoCosecha.Cosecha.Nombre,
+                                HectareasSoja = cp.HectareasSoja,
+                                HectareasTotales = cp.HectareasTotales,
+                                Motivo = normativa.MotivoRechazo,
+                                ToneladasAprobadas = normativa.ToneladasAprobadas,
+                                Normativa = normativa.TipoNormativa.Descripcion,
+                                RazonSocial = cp.RazonSocial,
+                                FechaCreacion = cp.FechaCreacion,
+                            };
+                        })
+                        .Where(x => x != null)
+                    )
+                    .ToList();
 
-            return excelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
+                listado.ForEach(x => x.Renspa = x.Renspa.ToFormatoRenspa());
+                return excelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
+            }
         }
 
         public string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId)
@@ -584,15 +804,36 @@ namespace SustitucionMOAUtils.Services
 
             var nuevoArchivo = new Archivo { FileKey = FileKeys.CampoSustentableAnalisisUcrop, Ruta = rutaGuardado };
 
-
-
             repositorio.Agregar(nuevoArchivo);
 
             archivoSinDescargar.Archivo = nuevoArchivo;
             archivoSinDescargar.ProcesadoUcropit = true;
-            archivoSinDescargar.CampoCosecha.ToneladasAprobadas = resultadoProcesadoUcropit.Bsvs2 != null ?
-                    Math.Round(resultadoProcesadoUcropit.Bsvs2.ToneladasAprobadas ?? 0, 2) : 0;
-            archivoSinDescargar.CampoCosecha.MotivoRechazo = resultadoProcesadoUcropit.MotivoRechazo;
+
+            var normativas = new Dictionary<string, (bool flag, dynamic resultado)>
+            {
+                 { "2BSVS", (campoProveedor.BSVS2, resultadoProcesadoUcropit.Bsvs2) },
+                 { "EPA",   (campoProveedor.EPA,   resultadoProcesadoUcropit.Epa) },
+                 { "EUDR",  (campoProveedor.EUDR,  resultadoProcesadoUcropit.Eudr) }
+            };
+
+            foreach (var normativa in normativas)
+            {
+                if (normativa.Value.flag)
+                {
+                    var campoNormativa = archivoSinDescargar.CampoCosecha.CampoCosechaNormativas
+                        .FirstOrDefault(x => x.TipoNormativa.Descripcion == normativa.Key);
+
+                    if (campoNormativa != null)
+                    {
+                        campoNormativa.ToneladasAprobadas = normativa.Value.resultado != null
+                            ? Math.Round(normativa.Value.resultado.ToneladasAprobadas ?? 0, 2)
+                            : 0;
+
+                        campoNormativa.MotivoRechazo = normativa.Value.resultado?.MotivoRechazo ?? null;
+                    }
+                }
+            }
+            
             campoProveedor.HectareasSojaUcropit = resultadoProcesadoUcropit.Bsvs2?.SuperficieElegible;
             campoProveedor.HectareasTotalesUcropit = resultadoProcesadoUcropit.Bsvs2?.SuperficieTotalCampo;
 
@@ -619,6 +860,30 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
+        private void EnviarMailCarpetasUCROPIT(CampoProveedor campoProveedor)
+        {
+            try
+            {
+                var normativas = new List<string>();
+                if (campoProveedor.EPA) normativas.Add("EPA");
+                if (campoProveedor.BSVS2) normativas.Add("2BSVS");
+                if (campoProveedor.EUDR) normativas.Add("EUDR");
+                string normativasTexto = string.Join(", ", normativas);
+
+                var cosecha = this.repositorio.Obtener<Cosecha>(c => c.Id == campoProveedor.CampoCosecha.Cosecha_Id);
+                var cuerpo = $"Estimados, falta configurar carpeta drive, para la cosecha {cosecha} y las siguientes normativas: {normativasTexto}.";
+                string asunto = "Molinos Agro - Falta configurar carpeta UCROPIT";
+                string destinatarios = ConfigurationManager.AppSettings["EmailCarpetasUcropIt"];
+                List<string> listaCorreos = destinatarios.Split(',').Select(x => x.Trim()).ToList();
+                
+                EmailSender.EnviarMail(listaCorreos, asunto, cuerpo, null, null, null, null);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
         public List<SugerenciaCampoDto> ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int cosechaId, string cuitTitularCP)
         {
             return repositorio.ObtenerSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP);
@@ -642,7 +907,7 @@ namespace SustitucionMOAUtils.Services
             return excelExport.ToExcel(listadoExport, headers, "Sugerencias campos nueva cosecha");
         }
 
-        public void AgregarCamposSugeridos(List<SugerenciaCampoDto> camposSugeridosDto, List<HttpPostedFileBase> archivosKmz, string mailUsuario)
+        public void AgregarCamposSugeridos(List<SugerenciaCampoDto> camposSugeridosDto, List<HttpPostedFileBase> archivosKmz, List<HttpPostedFileBase> archivosEPA, string mailUsuario)
         {
             var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
             foreach (var proveedorId in camposSugeridosDto.Select(x => x.Proveedor_Id).Distinct())
@@ -663,7 +928,6 @@ namespace SustitucionMOAUtils.Services
                     CampoCosecha = new CampoCosecha
                     {
                         Cosecha_Id = campoSugeridoDto.CosechaId,
-                        ToneladasAprobadas = -1,
                         Campo = new CampoSustentable
                         {
                             Nombre = campoSugeridoDto.NombreCampo,
@@ -673,10 +937,31 @@ namespace SustitucionMOAUtils.Services
                     },
                     Archivo_Id = campoSugeridoDto.Archivo_Id,
                     FechaCreacion = DateTime.Now,
-                    Borrado = false
+                    Borrado = false,
+                    BSVS2 = campoSugeridoDto.BSVS2,
+                    EPA = campoSugeridoDto.EPA,
+                    EUDR = campoSugeridoDto.EUDR,
+                    EvidenciaPresentada = campoSugeridoDto.EvidenciaPresentada
                 };
 
-                var renspaExisteDto = RenspaExiste(campoProveedor.CampoCosecha.Campo.Renspa, campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id, out CampoCosecha campoCosechaExistente);
+                this.AgregarNormativas(campoProveedor);
+                var fileEPA = archivosEPA?.FirstOrDefault(x => x.FileName == campoSugeridoDto.NombreArchivoEPA);
+                if (campoSugeridoDto.EPA)
+                {
+                    if (fileEPA != null)
+                    {
+                        campoProveedor.EvidenciaEPA = (new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" });
+                        campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, fileEPA);
+                    }
+                    else
+                    {
+                        //Asociamos la existente en la ruta
+                        var epaExistente = this.repositorio.Obtener<Archivo>(a => a.Id == campoSugeridoDto.EvidenciaEPA_Id);
+                        campoProveedor.EvidenciaEPA = epaExistente;
+                    }
+                }
+
+                    var renspaExisteDto = RenspaExiste(campoProveedor.CampoCosecha.Campo.Renspa, campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id, out CampoCosecha campoCosechaExistente);
                 if (renspaExisteDto.RenspaExiste)
                 {
                     if (!renspaExisteDto.MismoCuit)
@@ -700,7 +985,8 @@ namespace SustitucionMOAUtils.Services
 
                     var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
 
-                    campoProveedor.RazonSocial = declaracion.RazonSocial;
+                    if(declaracion != null)
+                        campoProveedor.RazonSocial = declaracion.RazonSocial;
                     campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
 
                     var rutaArchivo = "";
@@ -798,7 +1084,7 @@ namespace SustitucionMOAUtils.Services
 
         private void ValidarCampo(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
-            if (!VerificarDeclaracion(campoProveedor.Proveedor_Id, campoProveedor.CampoCosecha.Cosecha_Id, campoProveedor.CUIT).DeclaracionFirmada)
+            if (campoProveedor.BSVS2 && !VerificarDeclaracion(campoProveedor.Proveedor_Id, campoProveedor.CampoCosecha.Cosecha_Id, campoProveedor.CUIT).DeclaracionFirmada)
             {
                 throw new ValidationCustomException("El proveedor seleccionado no tiene firmada la declaración.");
             }
@@ -825,6 +1111,24 @@ namespace SustitucionMOAUtils.Services
             archivoKmz.SaveAs(rutaArchivo);
 
             campoProveedor.Archivo.Ruta = rutaArchivo;
+            return rutaArchivo;
+        }
+
+        private string GuardarArchivoEPA(CampoProveedor campoProveedor, HttpPostedFileBase archivo)
+        {
+            var fileName = Path.GetFileName(archivo.FileName);
+            var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.CUIT);
+            var rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
+
+            Directory.CreateDirectory(rutaCarpeta);
+
+            if (File.Exists(rutaArchivo))
+            {
+                File.Delete(rutaArchivo);
+            }
+            archivo.SaveAs(rutaArchivo);
+
+            campoProveedor.EvidenciaEPA.Ruta = rutaArchivo;
             return rutaArchivo;
         }
 
@@ -920,20 +1224,41 @@ namespace SustitucionMOAUtils.Services
             var jsonBytes = Encoding.UTF8.GetBytes(reporteCertificadorJson);
 
             var nombreArchivo = ObtenerNombreArchivoDrive(campoProveedor);
+            var inputFolderId = ObtenerInputFolderSegunNormativa(campoProveedor);
 
             var uploadFileKMZ = new GoogleDriveFileUploadRequest()
                 .WithFileUploadName($"{nombreArchivo}{extension}")
                 .WithFilePath(rutaArchivo);
 
-            campoSustentableGoogleDrive.UploadFile(uploadFileKMZ);
+            campoSustentableGoogleDrive.UploadFile(uploadFileKMZ, inputFolderId);
 
             var uploadFileJSON = new GoogleDriveFileUploadRequest()
                 .WithFileUploadName($"{nombreArchivo}.json")
                 .WithMimeType("applications/json")
                 .WithBytes(jsonBytes);
 
-            campoSustentableGoogleDrive.UploadFile(uploadFileJSON);
+            campoSustentableGoogleDrive.UploadFile(uploadFileJSON, inputFolderId);
         }
+
+        private string ObtenerInputFolderSegunNormativa(CampoProveedor campoProveedor)
+        {
+            var carpetaUcropIt = this.repositorio.Obtener<CarpetasUCROPIT>(c => c.Cosecha_Id == campoProveedor.CampoCosecha.Cosecha_Id
+            && c.EPA == campoProveedor.EPA && c.EUDR == campoProveedor.EUDR && c.BSVS2 == campoProveedor.BSVS2);
+            if (carpetaUcropIt == null)
+            {
+                throw new ValidationCustomException("No se encontró la configuración de carpeta para subir el archivo KMZ. Contacte al administrador.");
+            }
+
+            var match = System.Text.RegularExpressions.Regex.Match(carpetaUcropIt.UrlSubida, @"folders\/([a-zA-Z0-9\-_]+)");
+            return match.Success ? match.Groups[1].Value : null;
+        }
+
+        private bool ExisteCarpetaUcropIt(CampoProveedor campoProveedor)
+        {
+            return this.repositorio.Existe<CarpetasUCROPIT>(c => c.EUDR == campoProveedor.EUDR && c.EPA == campoProveedor.EPA &&
+            c.BSVS2 == campoProveedor.BSVS2 && c.Cosecha_Id == campoProveedor.CampoCosecha.Cosecha_Id);
+        }
+
         private void ActualizarPdf(byte[] pdfBytes, MemoryStream stream, DeclaracionCampoSustentableDto datos)
         {
             // open the reader
@@ -964,7 +1289,7 @@ namespace SustitucionMOAUtils.Services
             float xPosition = iTextSharp.text.PageSize.A4.Width / 10;
             float yPosition = iTextSharp.text.PageSize.A4.Height - ((iTextSharp.text.PageSize.A4.Height - 140f) / 5);
 
-            AddTextosSegundaPagina(writer, baseFontBold, fontSizeNormal, fontSize, xPosition, xMargenBase, xMargenTexto, yPosition);
+            AddTextosSegundaPagina(writer, baseFontBold, fontSizeNormal, fontSize, xPosition, xMargenBase, xMargenTexto, yPosition, datos.DirectivaDDJJCampoSustentable);
 
             var logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content", "images", "header", "logo_.png");
             var logoImg = iTextSharp.text.Image.GetInstance(logoPath);
@@ -1025,7 +1350,7 @@ namespace SustitucionMOAUtils.Services
             cb.EndText();
 
         }
-        private void AddTextosSegundaPagina(PdfWriter writer, BaseFont baseFontBold, float fontSizeNormal, float fontSize, float xPosition, float xMargenBase, float xMargenTexto, float yPosition)
+        private void AddTextosSegundaPagina(PdfWriter writer, BaseFont baseFontBold, float fontSizeNormal, float fontSize, float xPosition, float xMargenBase, float xMargenTexto, float yPosition, string directiva)
         {
 
             PdfContentByte under = writer.DirectContentUnder;
@@ -1036,7 +1361,7 @@ namespace SustitucionMOAUtils.Services
             under.SetFontAndSize(baseFontBold, fontSize);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Declaración de Conformidad según criterios de sustentabilidad para la producción de Biomasa, de acuerdo con los"
                 , xPosition + xMargenTexto, yPosition - (15f * 2), 0);
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "requisitos de la Directiva 2023/2413/EC (RED III)"
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "requisitos de la Directiva " + directiva
                 , xPosition + xMargenTexto, yPosition - (15f * 3), 0);
             under.SetFontAndSize(baseFontBold, fontSizeNormal);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "De mi mayor consideración:"
@@ -1153,5 +1478,232 @@ namespace SustitucionMOAUtils.Services
                 return outputStream.ToArray();
             }
         }
+
+        public List<TipoNormativa> ObtenerNormativas()
+        {
+            return repositorio.Listar<TipoNormativa>();
+        }
+
+        public string ObtenerRutaArchivoEPA(int campoCosechaId, int proveedorId)
+        {
+            var campoProveedor = repositorio.Obtener<CampoProveedor>(x => x.Proveedor_Id == proveedorId && x.CampoCosecha_Id == campoCosechaId);
+            return campoProveedor.EvidenciaEPA.Ruta;
+        }
+
+        public string Rechazar(string mailUsuario, int campoCosechaId, int proveedorId, int tipoNormativaId, string motivoRechazo)
+        {
+            var campoProveedor = repositorio.Obtener<CampoProveedor>(cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha_Id == campoCosechaId);
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
+
+            var campoCosechaNormativa = campoProveedor.CampoCosecha.CampoCosechaNormativas.FirstOrDefault(c => c.TipoNormativa_Id == tipoNormativaId);
+            
+            if(campoCosechaNormativa == null)
+            {
+                throw new ValidationCustomException("No existe el campo seleccionado.");
+            }
+
+            campoCosechaNormativa.MotivoRechazo = motivoRechazo;
+            
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.CampoSustentableRechazado;
+        }
+
+        public string Aprobar(string mailUsuario, int campoCosechaId, int proveedorId, int tipoNormativaId)
+        {
+            var campoProveedor = repositorio.Obtener<CampoProveedor>(cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha_Id == campoCosechaId);
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
+
+            var campoCosechaNormativa = campoProveedor.CampoCosecha.CampoCosechaNormativas.FirstOrDefault(c => c.TipoNormativa_Id == tipoNormativaId);
+
+            if (campoCosechaNormativa == null)
+            {
+                throw new ValidationCustomException("No existe el campo seleccionado.");
+            }
+
+            campoCosechaNormativa.Validado = true;
+            campoCosechaNormativa.ValidadoPor = usuario.Id;
+            campoCosechaNormativa.ValidadoFecha = DateTime.Now;
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.CampoSustentableAprobado;
+        }
+
+        private void ValidarCampoPoligonoKmz(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
+        {
+            // Validar que no sea solo un punto
+            if (archivoKmz.ContentLength == 0)
+            {
+                throw new ValidationCustomException("El archivo KMZ está vacío.");
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                archivoKmz.InputStream.CopyTo(memoryStream);
+                memoryStream.Position = 0;
+
+                if (!ContienePoligonoEnKmz(memoryStream))
+                    throw new ValidationCustomException("El archivo KMZ debe contener al menos un polígono.");
+            }
+
+            // Volver a dejar el InputStream original en el inicio
+            archivoKmz.InputStream.Position = 0;
+        }
+
+        private bool ContienePoligonoEnKmz(Stream kmzStream)
+        {
+            using (var zip = new ZipArchive(kmzStream, ZipArchiveMode.Read, true))
+            {
+                var kmlEntry = zip.Entries.FirstOrDefault(e => e.FullName.EndsWith(".kml", StringComparison.OrdinalIgnoreCase));
+                if (kmlEntry == null)
+                    return false;
+
+                using (var kmlStream = kmlEntry.Open())
+                {
+                    var parser = new Parser();
+                    parser.Parse(kmlStream);
+                    var kml = parser.Root as SharpKml.Dom.Kml;
+                    if (kml == null)
+                        return false;
+
+                    return BuscarPoligonoEnKml(kml);
+                }
+            }
+        }
+
+        private bool BuscarPoligonoEnKml(SharpKml.Dom.Kml kml)
+        {
+            // Recorrer todos los elementos y buscar al menos un Polígono
+            foreach (var placemark in kml.Flatten().OfType<SharpKml.Dom.Placemark>())
+            {
+                if (placemark.Geometry is SharpKml.Dom.Polygon)
+                    return true;
+                // También puede haber MultiGeometry con polígonos
+                if (placemark.Geometry is SharpKml.Dom.MultipleGeometry multi)
+                {
+                    if (multi.Geometry.Any(g => g is SharpKml.Dom.Polygon))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public string AdjuntarEPAValidado(string mailUsuario, int campoCosechaId, int proveedorId, HttpPostedFileBase archivoEPA)
+        {
+            var campoProveedor = repositorio.Obtener<CampoProveedor>(cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha_Id == campoCosechaId);
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
+
+            campoProveedor.EvidenciaEPA = (new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" });
+            campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.CampoSustentableActualizado;
+        }
+
+        public Archivo ObtenerEPAExistenteCampo(int proveedorId, string cuit, HttpPostedFileBase archivoKmz)
+        {
+            // Leer el archivo KMZ subido a memoria para reutilizarlo varias veces
+            byte[] kmzBytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                archivoKmz.InputStream.CopyTo(memoryStream);
+                kmzBytes = memoryStream.ToArray();
+            }
+
+            //Campos que ya hayan presentado evidencia para ser reutilizada.
+            var campos = repositorio.Listar<CampoProveedor>(cp => cp.Proveedor_Id == proveedorId && cp.CUIT == cuit && cp.EvidenciaEPA != null);
+
+            foreach (var campo in campos)
+            {
+                var rutaKmzExistente = campo.Archivo.Ruta;
+                if (!string.IsNullOrEmpty(rutaKmzExistente) && File.Exists(rutaKmzExistente))
+                {
+                    using (var streamExistente = File.OpenRead(rutaKmzExistente))
+                    using (var kmzStream = new MemoryStream(kmzBytes)) // nuevo stream limpio cada vez
+                    {
+                        if (SonKmzIgualesPorPoligono(streamExistente, kmzStream))
+                        {
+                            return campo.EvidenciaEPA;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private bool SonKmzIgualesPorPoligono(Stream kmzStream1, Stream kmzStream2)
+        {
+            // Reiniciar los streams antes de leerlos
+            if (kmzStream1.CanSeek) kmzStream1.Position = 0;
+            if (kmzStream2.CanSeek) kmzStream2.Position = 0;
+
+            var coords1 = ExtraerCoordenadasPoligonoKmz(kmzStream1);
+            var coords2 = ExtraerCoordenadasPoligonoKmz(kmzStream2);
+
+            if (coords1 == null || coords2 == null)
+                return false;
+
+            if (coords1.Count != coords2.Count)
+                return false;
+
+            for (int i = 0; i < coords1.Count; i++)
+            {
+                if (!coords1[i].Equals(coords2[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private List<SharpKml.Base.Vector> ExtraerCoordenadasPoligonoKmz(Stream kmzStream)
+        {
+            if (kmzStream.CanSeek)
+                kmzStream.Position = 0;
+
+            using (var zip = new System.IO.Compression.ZipArchive(kmzStream, System.IO.Compression.ZipArchiveMode.Read, leaveOpen: false))
+            {
+                var kmlEntry = zip.Entries.FirstOrDefault(e => e.FullName.EndsWith(".kml", StringComparison.OrdinalIgnoreCase));
+                if (kmlEntry == null)
+                    return null;
+
+                using (var kmlStream = kmlEntry.Open())
+                {
+                    var parser = new Parser();
+                    parser.Parse(kmlStream);
+                    var kml = parser.Root as SharpKml.Dom.Kml;
+                    if (kml == null)
+                        return null;
+
+                    var poligono = kml.Flatten()
+                        .OfType<SharpKml.Dom.Placemark>()
+                        .Select(p => p.Geometry)
+                        .OfType<SharpKml.Dom.Polygon>()
+                        .FirstOrDefault();
+
+                    if (poligono == null)
+                        return null;
+
+                    return poligono.OuterBoundary?.LinearRing?.Coordinates?.ToList();
+                }
+            }
+        }
+
+
+
     }
+
+
 }
+
+

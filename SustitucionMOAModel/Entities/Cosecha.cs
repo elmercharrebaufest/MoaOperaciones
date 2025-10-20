@@ -14,5 +14,6 @@ namespace SustitucionMOAModel.Entities
         public DateTime Fin { get; set; }
         public bool EnviarATSA { get; set; }
         public bool PermitirAltas { get; set; }
+        public string DirectivaDDJJCampoSustentable { get; set; }   
     }
 }

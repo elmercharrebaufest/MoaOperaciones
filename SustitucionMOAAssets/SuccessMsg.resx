@@ -261,4 +261,10 @@
   <data name="VendedorBorradoOK" xml:space="preserve">
     <value>El vendedor se ha borrado correctamente</value>
   </data>
+  <data name="CampoSustentableRechazado" xml:space="preserve">
+    <value>El campo sustentable se ha rechazado correctamente.</value>
+  </data>
+	<data name="CampoSustentableAprobado" xml:space="preserve">
+    <value>El campo sustentable se ha aprobado correctamente.</value>
+  </data>
 </root>

@@ -46,7 +46,8 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   file: File;
   esCorredor: boolean = false;
   operarComo: number = 1;
-
+  directivaDDJJCampoSustentable: string = "";
+  
   @Input() proveedorId: number = 0;
   @Input() nombreCosecha: string = "";
   @Input() cosechaId: number = 0;
@@ -75,7 +76,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
             this.razonSocial = result.RazonSocial;
             this.hectareasTotales = result.HectareasDeclaracionCampoSustentable;
             this.totalidadCosecha = result.OpcionDeclaracionCampoSustentable == 0 ? 1 : 2;
-
+            this.directivaDDJJCampoSustentable = result.DirectivaDDJJCampoSustentable;
             this.abrirModalFirmaDeclaracion()
           }
           else {

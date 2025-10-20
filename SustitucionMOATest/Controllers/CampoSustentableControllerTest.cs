@@ -64,15 +64,16 @@ namespace SustitucionMOATest.Controllers
             };
 
             HttpPostedFileBase file = null;
+            HttpPostedFileBase fileEPA = null;
             bool usarArchivo = false;
 
             string campoProveedorJson = JsonConvert.SerializeObject(campoProveedor);
 
             campoSustentableServiceMock.Setup(s => s.Agregar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
-                                                                  It.IsAny<HttpPostedFileBase>(), It.IsAny<bool>())).Returns(expected);
+                                                                  It.IsAny<HttpPostedFileBase>(), It.IsAny<bool>(), It.IsAny<HttpPostedFileBase>())).Returns(expected);
 
-            var result = target.CampoProveedorAgregar(campoProveedorJson, file, usarArchivo);
+            var result = target.CampoProveedorAgregar(campoProveedorJson, file, usarArchivo, fileEPA);
 
 
             expectedJson = JsonConvert.SerializeObject(expected);
@@ -88,17 +89,19 @@ namespace SustitucionMOATest.Controllers
             var campoProveedor = new CampoProveedor { Proveedor_Id = 1, CampoCosecha_Id = 0, HectareasSoja = 100, HectareasTotales = 100 };
 
             HttpPostedFileBase file = null;
+            HttpPostedFileBase fileEPA = null;
 
             string campoProveedorJson = JsonConvert.SerializeObject(campoProveedor);
 
             campoSustentableServiceMock.Setup(s => s.Agregar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
-                                                                  It.IsAny<HttpPostedFileBase>(), It.IsAny<bool>())).Throws(new ValidationCustomException("Mensaje de error"));
+                                                                  It.IsAny<HttpPostedFileBase>(), It.IsAny<bool>(),
+                                                                  It.IsAny<HttpPostedFileBase>())).Throws(new ValidationCustomException("Mensaje de error"));
 
 
             try
             {
-                target.CampoProveedorAgregar(campoProveedorJson, file, UsarArchivoId);
+                target.CampoProveedorAgregar(campoProveedorJson, file, UsarArchivoId, fileEPA);
             }
             catch (Exception e)
             {
@@ -115,17 +118,19 @@ namespace SustitucionMOATest.Controllers
             var expected = "Mensaje de info";
 
             HttpPostedFileBase file = null;
+            HttpPostedFileBase fileEPA = null;
 
             string campoProveedorJson = JsonConvert.SerializeObject(campoProveedor);
 
             campoSustentableServiceMock.Setup(s => s.Agregar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
-                                                                  It.IsAny<HttpPostedFileBase>(), It.IsAny<bool>())).Throws(new InfoCustomException("Mensaje de info"));
+                                                                  It.IsAny<HttpPostedFileBase>(), It.IsAny<bool>(),
+                                                                  It.IsAny<HttpPostedFileBase>())).Throws(new InfoCustomException("Mensaje de info"));
             expectedJson = JsonConvert.SerializeObject(expected);
 
             try
             {
-                target.CampoProveedorAgregar(campoProveedorJson, file, UsarArchivoId);
+                target.CampoProveedorAgregar(campoProveedorJson, file, UsarArchivoId, fileEPA);
             }
             catch (InfoCustomException e)
             {
@@ -149,12 +154,14 @@ namespace SustitucionMOATest.Controllers
             string campoProveedorJson = JsonConvert.SerializeObject(campoProveedor);
 
             HttpPostedFileBase file = null;
+            HttpPostedFileBase fileEPA = null;
 
             campoSustentableServiceMock.Setup(s => s.Editar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
+                                                                  It.IsAny<HttpPostedFileBase>(), 
                                                                   It.IsAny<HttpPostedFileBase>())).Returns(expected);
 
-            var result = target.CampoProveedorEditar(campoProveedorJson, file);
+            var result = target.CampoProveedorEditar(campoProveedorJson, file, fileEPA);
 
 
             expectedJson = JsonConvert.SerializeObject(expected);
@@ -170,16 +177,17 @@ namespace SustitucionMOATest.Controllers
             var campoProveedor = new CampoProveedor { Proveedor_Id = 1, CampoCosecha_Id = 0, HectareasSoja = 100, HectareasTotales = 100 };
 
             HttpPostedFileBase file = null;
+            HttpPostedFileBase fileEPA = null;
 
             string campoProveedorJson = JsonConvert.SerializeObject(campoProveedor);
 
             campoSustentableServiceMock.Setup(s => s.Editar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
-                                                                  It.IsAny<HttpPostedFileBase>())).Throws(new ValidationCustomException("Mensaje de error"));
+                                                                  It.IsAny<HttpPostedFileBase>(), It.IsAny<HttpPostedFileBase>())).Throws(new ValidationCustomException("Mensaje de error"));
 
             try
             {
-                target.CampoProveedorEditar(campoProveedorJson, file);
+                target.CampoProveedorEditar(campoProveedorJson, file, fileEPA);
             }
             catch (Exception e)
             {
@@ -194,16 +202,18 @@ namespace SustitucionMOATest.Controllers
             var campoProveedor = new CampoProveedor { Proveedor_Id = 1, CampoCosecha_Id = 0, HectareasSoja = 100, HectareasTotales = 100 };
 
             HttpPostedFileBase file = null;
+            HttpPostedFileBase fileEPA = null;
 
             string campoProveedorJson = JsonConvert.SerializeObject(campoProveedor);
 
             campoSustentableServiceMock.Setup(s => s.Editar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
+                                                                  It.IsAny<HttpPostedFileBase>(), 
                                                                   It.IsAny<HttpPostedFileBase>())).Throws(new InfoCustomException("Mensaje de info"));
 
             try
             {
-                target.CampoProveedorEditar(campoProveedorJson, file);
+                target.CampoProveedorEditar(campoProveedorJson, file, fileEPA);
             }
             catch (Exception e)
             {

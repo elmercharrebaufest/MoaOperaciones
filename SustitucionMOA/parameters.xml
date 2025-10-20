@@ -151,6 +151,12 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="EmailCarpetasUcropIt Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailCarpetasUcropIt']
+                           /@value" />
+	</parameter>
+
 	<parameter name="EmailToMesaENTSL Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailToMesaENTSL']

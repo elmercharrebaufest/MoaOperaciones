@@ -66,8 +66,10 @@
     <Compile Include="Dto\ArchivoBoleto\ArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\CrearReqArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ListarReqArchivoBoletoDto.cs" />
+    <Compile Include="Dto\CampoCosechaNormativaDto.cs" />
     <Compile Include="Dto\CampoSustentable\SugerenciaCampoDto.cs" />
     <Compile Include="Dto\CampoSustentable\SugerenciaCampoExportDto.cs" />
+    <Compile Include="Dto\CarpetasUCROPITDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionDtoCopia.cs" />
     <Compile Include="Dto\Compras\AdjudicacionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionPosicionDtoCopia.cs" />
@@ -158,6 +160,7 @@
     <Compile Include="Dto\Scato\DestinoScato.cs" />
     <Compile Include="Dto\SolicitantesSolpedDto.cs" />
     <Compile Include="Dto\SustentableRenspaExisteDto.cs" />
+    <Compile Include="Dto\TipoNormativaDto.cs" />
     <Compile Include="Dto\UnidadMedidaSapDto.cs" />
     <Compile Include="Dto\UsuarioReasignacionDto.cs" />
     <Compile Include="Dto\UsuarioDtos\ProveedorARelacionar.cs" />
@@ -165,6 +168,8 @@
     <Compile Include="Entities\AplicacionCartaPorteCargaMasiva.cs" />
     <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
     <Compile Include="Entities\Aprobaciones.cs" />
+    <Compile Include="Entities\CampoCosechaNormativa.cs" />
+    <Compile Include="Entities\CarpetasUCROPIT.cs" />
     <Compile Include="Entities\CertificacionRegistrada.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\DistanciaDomicilio.cs" />
@@ -184,6 +189,7 @@
     <Compile Include="Entities\ResultadoAnalisisOcr.cs" />
     <Compile Include="Entities\ResultadoOCR.cs" />
     <Compile Include="Entities\SolpDatosPreviosPliegoMultiple.cs" />
+    <Compile Include="Entities\TipoNormativa.cs" />
     <Compile Include="Entities\UsuarioReasignacion.cs" />
     <Compile Include="Entities\VerificarActividadUsuario.cs" />
     <Compile Include="Enums\ComunicacionTipoEnum.cs" />

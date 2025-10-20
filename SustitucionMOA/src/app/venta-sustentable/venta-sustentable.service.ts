@@ -23,22 +23,24 @@ export class VentaSustentableService extends BaseService {
         return this.getCosechas(false);
     }
 
-    campoProveedorAgregar(campoProveedor: CampoProveedor, archivoKmz: File, UsarArchivo_Id: boolean) {
+    campoProveedorAgregar(campoProveedor: CampoProveedor, archivoKmz: File, UsarArchivo_Id: boolean, archivoEpa) {
         var payload = new FormData();
         let camp = JSON.stringify(campoProveedor);
 
         payload.append('archivoKmz', archivoKmz);
         payload.append('campoProveedorJson', camp);
         payload.append('UsarArchivoId', UsarArchivo_Id.toString());
+        payload.append('archivoEpa', archivoEpa);
         return this.http
             .post('/api/CampoSustentable/CampoProveedorAgregar', payload, { headers: this.headersPost });
     }
 
-    campoProveedorEditar(campoProveedor: CampoProveedor, archivoKmz: File) {
+    campoProveedorEditar(campoProveedor: CampoProveedor, archivoKmz: File, archivoEPA: File) {
         var payload = new FormData();
         let camp = JSON.stringify(campoProveedor);
 
         payload.append('archivoKmz', archivoKmz);
+        payload.append('archivoEPA', archivoEPA);
         payload.append('campoProveedorJson', camp);
         return this.http
             .post('/api/CampoSustentable/CampoProveedorEditar', payload, { headers: this.headersPost });
@@ -76,6 +78,27 @@ export class VentaSustentableService extends BaseService {
 
         return this.http
             .post('/api/CampoSustentable/CampoProveedorBorrar', payload, { headers: this.headersPost, });
+    }
+
+    campoProveedorRechazar(campoCosechaId: number, proveedorId: number, tipoNormativaId: number, motivoRechazo: string) {
+        var payload = new FormData();
+        payload.append("campoCosechaId", campoCosechaId.toString());
+        payload.append("proveedorId", proveedorId.toString());
+        payload.append("tipoNormativaId", tipoNormativaId.toString());
+        payload.append("motivoRechazo", motivoRechazo);
+
+        return this.http
+            .post('/api/CampoSustentable/CampoProveedorRechazar', payload, { headers: this.headersPost, });
+    }
+
+        campoProveedorAprobar(campoCosechaId: number, proveedorId: number, tipoNormativaId: number) {
+        var payload = new FormData();
+        payload.append("campoCosechaId", campoCosechaId.toString());
+        payload.append("proveedorId", proveedorId.toString());
+        payload.append("tipoNormativaId", tipoNormativaId.toString());
+
+        return this.http
+            .post('/api/CampoSustentable/CampoProveedorAprobar', payload, { headers: this.headersPost, });
     }
 
     getCampoProveedor(proveedorId: any, campoCosechaId: any): Observable<CampoProveedorDetalle> {
@@ -189,13 +212,17 @@ export class VentaSustentableService extends BaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
-    guardarSugerenciasCamposNuevaCosecha(campos: SugerenciaCampo[], archivosKmz: File[]): Observable<ApiResponse<string>> {
+    guardarSugerenciasCamposNuevaCosecha(campos: SugerenciaCampo[], archivosKmz: File[], archivosEPA: File[]): Observable<ApiResponse<string>> {
         let camposJson = JSON.stringify(campos);
         let payload = new FormData();
         payload.append('camposJson', camposJson);
 
         archivosKmz.forEach((file, index) => {
             payload.append('archivosKmz', file);
+        });
+
+        archivosEPA.forEach((file, index) => {
+            payload.append('archivosEPA', file);
         });
 
         return this.http
@@ -207,5 +234,29 @@ export class VentaSustentableService extends BaseService {
         params = params.append("incluirInactivas", incluirInactivas.toString());
         return this.http
             .get('/api/CampoSustentable/Cosechas', { params: params, headers: this.headers });
+    }
+
+    public getNormativas() {
+        return this.http
+            .get('/api/CampoSustentable/ObtenerNormativas', { headers: this.headers });
+    }
+
+    descargarArchivoEPA(campoCosechaId: number, proveedorId: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("campoCosechaId", campoCosechaId.toString());
+        params = params.set("proveedorId", proveedorId.toString());
+
+        return this.http
+            .get('/api/CampoSustentable/DescargarArchivoEPA', { params: params, headers: this.headers })
+    }
+
+        campoProveedorAjuntarEPAValidado(campoCosechaId: number, proveedorId: number, archivoEPA: File) {
+        var payload = new FormData();
+        payload.append("campoCosechaId", campoCosechaId.toString());
+        payload.append("proveedorId", proveedorId.toString());
+        payload.append("archivoEPA", archivoEPA);
+
+        return this.http
+            .post('/api/CampoSustentable/CampoProveedorAdjuntarEPAValidado', payload, { headers: this.headersPost, });
     }
 }

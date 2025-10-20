@@ -1,0 +1,5 @@
+﻿CREATE TABLE [dbo].[TipoNormativa]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY,
+	[Descripcion] VARCHAR(200) NOT NULL,
+)
