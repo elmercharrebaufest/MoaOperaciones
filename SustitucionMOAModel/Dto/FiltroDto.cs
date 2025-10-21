@@ -37,6 +37,7 @@ namespace SustitucionMOAModel.Dto
         public bool? ListarPendiente { get; set; }
         public bool? EsServicio { get; set; }
         public bool? Agrupada { get; set; }
+        public string OrganizacionDeCompra_Id { get; set; }
     }
 
     public class FiltroServiceDto
@@ -68,5 +69,6 @@ namespace SustitucionMOAModel.Dto
         public bool? Tratada { get; set; }
         public bool EsServicio { get; set; } = true;
         public bool? Agrupada { get; set; }
+        public string OrganizacionDeCompra_Id { get; set; }
     }
 }

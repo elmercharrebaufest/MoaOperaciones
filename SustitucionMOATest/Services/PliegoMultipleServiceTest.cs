@@ -47,7 +47,7 @@ namespace SustitucionMOATest.Services
                            .Returns(pliegos);
 
             // Act
-            var result = pliegoMultipleService.GetPliegosMultiples(null);
+            var result = pliegoMultipleService.GetPliegosMultiples(null, "2029");
 
             // Assert
             Assert.AreEqual(2, result.Count);
@@ -69,7 +69,7 @@ namespace SustitucionMOATest.Services
                            .Returns(pliegos);
 
             // Act
-            var result = pliegoMultipleService.GetPliegosMultiples("Obra1");
+            var result = pliegoMultipleService.GetPliegosMultiples("Obra1", "2029");
 
             // Assert
             Assert.AreEqual(1, result.Count);
