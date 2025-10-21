@@ -848,7 +848,10 @@ namespace SustitucionMOAUtils.Services
         {
             var camposSuperpuestos = this.repositorio.Listar<CampoProveedor>(cp => cp.CampoCosechaSuperposicion_Id == campoProveedorProcesado.CampoCosecha_Id
             && cp.CampoCosecha.CampoCosechaNormativas.Any(n => n.ToneladasAprobadas == -1));
-            
+
+            if (camposSuperpuestos == null || !camposSuperpuestos.Any())
+                return;
+
             foreach(var campo in camposSuperpuestos)
             {
                 var normativasSuperpuesto = campoProveedorProcesado.CampoCosecha.CampoCosechaNormativas
@@ -1757,6 +1760,9 @@ namespace SustitucionMOAUtils.Services
             var campos = this.repositorio.Listar<CampoProveedor>(c => c.CUIT == cp.CUIT
             && c.Proveedor_Id == cp.Proveedor_Id && c.EPA == cp.EPA && c.BSVS2 == cp.BSVS2 &&
             c.EUDR == cp.EUDR);
+
+            if (campos == null || !campos.Any())
+                return null;
 
             Polygon polygonKmzNuevo = CargarPoligonoDesdeKMZ(rutaKmz);
 

@@ -151,6 +151,16 @@ namespace SustitucionMOATest.Services
                     UrlSubida = "https://drive.google.com/drive/folders/abc123"
                 });
 
+            repositorioMock
+                .Setup(r => r.Listar<CampoProveedor>(
+                    It.IsAny<Expression<Func<CampoProveedor, bool>>>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<DirOrden>(),
+                    It.IsAny<IEnumerable<Expression<Func<CampoProveedor, object>>>>()
+                ))
+                .Returns(new List<CampoProveedor>());
+
             var campoCreado = new CampoProveedor
             {
                 Proveedor_Id = proveedorId,
