@@ -561,13 +561,13 @@ namespace SustitucionMOAUtils.Services
 
                 return data;
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {

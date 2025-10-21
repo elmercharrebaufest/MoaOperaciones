@@ -11,7 +11,6 @@ using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
 using System.Configuration;
-using static Google.Apis.Requests.BatchRequest;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -48,14 +47,13 @@ namespace SustitucionMOAWS.WSConsumers
                 Log.Info(request.ToXml());
 
                 var response = agent.Z_MPMF_MOAOP_LISTAR_PESIF(request);
-                Log.Info($"SAP sin PI Z_MPMF_MOAOP_LISTAR_PESIF response");
-                Log.Info(response.ToXml());
+                SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_LISTAR_PESIF");
 
                 return MapSinPI(response);
             }
             else
             {
-                Log.Info($"Con PI SI_MPMF_MOAOP_LISTAR_PESIF" );
+                Log.Info($"Con PI SI_MPMF_MOAOP_LISTAR_PESIF");
 
                 SI_MPMF_MOAOP_LISTAR_PESIFClient service = new SI_MPMF_MOAOP_LISTAR_PESIFClient();
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();

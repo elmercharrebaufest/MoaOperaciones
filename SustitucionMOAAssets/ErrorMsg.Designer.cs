@@ -133,7 +133,7 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error de comunicacion con la base de datos.
+        ///   Looks up a localized string similar to Error de comunicación con la base de datos.
         /// </summary>
         public static string ErrorDBComunicacion {
             get {
@@ -151,7 +151,7 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No se ha podido generar el PFD.
+        ///   Looks up a localized string similar to No se ha podido generar el PDF.
         /// </summary>
         public static string ErrorDescargaPDF {
             get {
@@ -304,7 +304,7 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Temporalmente fuera servicio, vuelva a intentarlo en unos minutos.
+        ///   Looks up a localized string similar to Temporalmente fuera de servicio, vuelva a intentarlo en unos minutos.
         /// </summary>
         public static string ErrorWS {
             get {
@@ -313,7 +313,7 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No puede editar la solicitud debido a que su estado no es &quot;Documentacion pendiente&quot;..
+        ///   Looks up a localized string similar to No puede editar la solicitud debido a que su estado no es &quot;Documentación pendiente&quot;..
         /// </summary>
         public static string EstadoIncorrectoSolicitud {
             get {

@@ -460,8 +460,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info(requestFas.ToXml());
 
                     var response = agent.Z_MPMF_MOAOP_VISUALIZAR_ZFAS(requestFas);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_VISUALIZAR_ZFAS response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_VISUALIZAR_ZFAS");
 
                     var responseFAS = MapOrdenCargaVisualizarCliente(response.EX_SALIDA);
                     return responseFAS;
@@ -590,7 +589,7 @@ namespace SustitucionMOAWS.WSConsumers
         {
             var response = new OrdenCargaVisualizarClienteWSMOAResponse();
             var resultados = new List<SustitucionMOAModel.Models.WSMapMOA.OrdenCarga.Result>();
-            foreach (var item in result)
+            foreach (var item in result.Where(a => a.TIPO_CONTRATO != "CyO"))
             {
                 var resultado = new SustitucionMOAModel.Models.WSMapMOA.OrdenCarga.Result()
                 {
@@ -870,8 +869,7 @@ namespace SustitucionMOAWS.WSConsumers
                 Log.Info($"SAP sin PI Z_MPMF_MOAOP_VISUALIZAR_ZFAS request");
                 Log.Info(request.ToXml());
                 var response = agent.Z_MPMF_MOAOP_VISUALIZAR_ZFAS(request);
-                Log.Info($"SAP sin PI Z_MPMF_MOAOP_VISUALIZAR_ZFAS response");
-                Log.Info(response.ToXml());
+                SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_VISUALIZAR_ZFAS");
                 return response.EX_SALIDA.Length > 0;
 
             }

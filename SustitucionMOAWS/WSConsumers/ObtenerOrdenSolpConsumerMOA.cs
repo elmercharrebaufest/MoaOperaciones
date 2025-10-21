@@ -45,8 +45,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MMRFC_OBTENER_ORDEN(request);
-                    //Log.Info($"SAP sin PI Z_MMRFC_OBTENER_ORDEN response");
-                    //Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MMRFC_OBTENER_ORDEN");
                     return MapSinPI(response);
                 }
                 else

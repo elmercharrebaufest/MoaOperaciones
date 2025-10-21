@@ -139,6 +139,7 @@
     <Compile Include="Interfaces\IServicioSuscriptorAccesosConsumer.cs" />
     <Compile Include="Interfaces\IScatoComandosConsumer.cs" />
     <Compile Include="Interfaces\IScatoConsumer.cs" />
+    <Compile Include="Logger\SapLogHelper.cs" />
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseHandler\EntradadeServicios\EntradasdeServicioResponse.cs" />

@@ -9,9 +9,6 @@ using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -53,8 +50,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_LIQUIDACIONES request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_LIQUIDACIONES(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_LIQUIDACIONES response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_LIQUIDACIONES");
                     return MapSinPI(response.PS_RETURN, response.T_SALIDA);
                 }
                 else
@@ -87,7 +83,7 @@ namespace SustitucionMOAWS.WSConsumers
         protected virtual object Map(string error, LiquidacionesWebServiceMOA.ZMPES4980[] salidas)
         {
             LiquidacionWSMOAResponse result = new LiquidacionWSMOAResponse();
-            
+
             result.error = error;
 
             foreach (LiquidacionesWebServiceMOA.ZMPES4980 liquidacion in salidas)
@@ -121,7 +117,7 @@ namespace SustitucionMOAWS.WSConsumers
                 }
                 );
             }
-            
+
             return result;
         }
         protected virtual object MapSinPI(string error, WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4980[] salidas)

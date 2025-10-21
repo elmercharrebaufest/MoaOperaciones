@@ -29,8 +29,8 @@ namespace SustitucionMOAWS.WSConsumers
                     agent.ClientCredentials.UserName.Password = PassSap;
                     var request = new Z_MPMF_MOAOP_PDF_PROFORMA()
                     {
-                        IM_CONTRATO = contrato,
-                        IM_PEDIDO = pedido
+                        IM_CONTRATO = contrato ?? string.Empty,
+                        IM_PEDIDO = pedido ?? string.Empty
                     };
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_PDF_PROFORMA request");
                     Log.Info(request.ToXml());
@@ -42,19 +42,18 @@ namespace SustitucionMOAWS.WSConsumers
                 }
                 else
                 {
-                    SI_MPMF_MOAOP_PDF_PROFORMAClient service = new SI_MPMF_MOAOP_PDF_PROFORMAClient();
-                    byte[] pdf = new byte[] { };
+                    var service = new SI_MPMF_MOAOP_PDF_PROFORMAClient();
                     service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                     service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                    pdf = service.SI_MPMF_MOAOP_PDF_PROFORMA(contrato, pedido);
+                    var pdf = service.SI_MPMF_MOAOP_PDF_PROFORMA(contrato, pedido);
                     return Map(pdf);
                 }
             }
             catch (Exception e)
             {
-                throw e;
+                Log.Error(e, $"Error al obtener PDF Proforma de SAP con contrato: {contrato} y pedido: {pedido}.");
+                throw;
             }
-
         }
 
         private PDFResponse Map(byte[] pdf)
@@ -70,7 +69,6 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
             return result;
-            
         }
     }
 }

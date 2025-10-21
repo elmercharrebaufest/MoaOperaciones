@@ -330,8 +330,7 @@ namespace SustitucionMOAWS.WSConsumers
             Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 request");
             Log.Info(request.ToXml());
             var response = agent.BAPI_PO_GETDETAIL1(request);
-            Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 response");
-            Log.Info(response.ToXml());
+            SapLogHelper.LogResponse(response.ToXml(), "BAPI_PO_GETDETAIL1");
             return response;
         }
 
@@ -1521,8 +1520,7 @@ namespace SustitucionMOAWS.WSConsumers
             Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 request");
             Log.Info(request.ToXml());
             var response = agent.BAPI_PO_GETDETAIL1(request);
-            Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 response");
-            Log.Info(response.ToXml());
+            SapLogHelper.LogResponse(response.ToXml(), "BAPI_PO_GETDETAIL1");
             return response;
         }
 
