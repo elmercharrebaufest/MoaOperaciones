@@ -35,6 +35,6 @@ namespace SustitucionMOAModel.Entities
         public bool EPA { get; set; }
         public bool EUDR { get; set; }
         public bool EvidenciaPresentada { get; set; }
-
+        public int? CampoCosechaSuperposicion_Id { get; set; }
     }
 }

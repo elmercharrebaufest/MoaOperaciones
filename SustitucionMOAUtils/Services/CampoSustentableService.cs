@@ -23,6 +23,7 @@ using SustitucionMOAWS.GoogleDrive.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -35,6 +36,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
+using NetTopologySuite.Geometries;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -837,7 +839,30 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.HectareasSojaUcropit = resultadoProcesadoUcropit.Bsvs2?.SuperficieElegible;
             campoProveedor.HectareasTotalesUcropit = resultadoProcesadoUcropit.Bsvs2?.SuperficieTotalCampo;
 
+            ActualizarCamposSuperpuestos(campoProveedor);
+
             repositorio.GuardarCambios();
+        }
+
+        public void ActualizarCamposSuperpuestos(CampoProveedor campoProveedorProcesado)
+        {
+            var camposSuperpuestos = this.repositorio.Listar<CampoProveedor>(cp => cp.CampoCosechaSuperposicion_Id == campoProveedorProcesado.CampoCosecha_Id
+            && cp.CampoCosecha.CampoCosechaNormativas.Any(n => n.ToneladasAprobadas == -1));
+            
+            foreach(var campo in camposSuperpuestos)
+            {
+                var normativasSuperpuesto = campoProveedorProcesado.CampoCosecha.CampoCosechaNormativas
+                                       .ToDictionary(x => x.TipoNormativa_Id);
+
+                foreach (var normativa in campo.CampoCosecha.CampoCosechaNormativas)
+                {
+                    if (normativasSuperpuesto.TryGetValue(normativa.TipoNormativa_Id, out var normativaSuperpuesta))
+                    {
+                        normativa.ToneladasAprobadas = normativaSuperpuesta.ToneladasAprobadas;
+                        normativa.MotivoRechazo = normativaSuperpuesta.MotivoRechazo;
+                    }
+                }
+            }
         }
 
         public SustentableRenspaExisteDto RenspaExiste(string renspa, string cuit, int cosechaId, out CampoCosecha campoCosecha)
@@ -1135,17 +1160,45 @@ namespace SustitucionMOAUtils.Services
         private void EnviarCampoACertificadorDeSustentables(string rutaArchivo, CampoProveedor campoProveedor)
         {
             Log.Info($"EnviarCampoACertificadorDeSustentables archivo {rutaArchivo} proveedor id {campoProveedor.Proveedor_Id}");
-            var archivoCampoSustentable = new ArchivoCampoSustentable
-            {
-                CampoCosechaId = campoProveedor.CampoCosecha_Id,
-                IdArchivoRecepcion = 0,
-                ProcesadoUcropit = false,
-                ProveedorId = campoProveedor.Proveedor_Id
-            };
-            repositorio.Agregar(archivoCampoSustentable);
 
-            SubirArchivosAGoogleDrive(rutaArchivo, campoProveedor);
-            repositorio.GuardarCambios();
+            var campoSuperpuesto = this.ObtenerCampoSuperposicion(campoProveedor, rutaArchivo);
+            if (campoSuperpuesto != null)
+            {
+                Log.Info($"El campo '{campoProveedor.CampoCosecha.Campo.Nombre}' se superpone con el campo '{campoSuperpuesto.CampoCosecha.Campo.Nombre}' del proveedor '{campoSuperpuesto.Proveedor.CodigoProveedor}'.");
+
+                campoProveedor.CampoCosechaSuperposicion_Id = campoSuperpuesto.CampoCosecha_Id;
+
+                var archivoCampoSust = this.repositorio.Obtener<ArchivoCampoSustentable>(a => a.CampoCosechaId == campoSuperpuesto.CampoCosecha_Id);
+                if (archivoCampoSust != null && archivoCampoSust.ProcesadoUcropit)
+                {
+                    var normativasSuperpuesto = campoSuperpuesto.CampoCosecha.CampoCosechaNormativas
+                        .ToDictionary(x => x.TipoNormativa_Id);
+
+                    foreach (var normativa in campoProveedor.CampoCosecha.CampoCosechaNormativas)
+                    {
+                        if (normativasSuperpuesto.TryGetValue(normativa.TipoNormativa_Id, out var normativaSuperpuesta))
+                        {
+                            normativa.ToneladasAprobadas = normativaSuperpuesta.ToneladasAprobadas;
+                            normativa.MotivoRechazo = normativaSuperpuesta.MotivoRechazo;
+                        }
+                    }
+                }
+                repositorio.GuardarCambios();
+            }
+            else
+            {
+                var archivoCampoSustentable = new ArchivoCampoSustentable
+                {
+                    CampoCosechaId = campoProveedor.CampoCosecha_Id,
+                    IdArchivoRecepcion = 0,
+                    ProcesadoUcropit = false,
+                    ProveedorId = campoProveedor.Proveedor_Id
+                };
+                repositorio.Agregar(archivoCampoSustentable);
+
+                SubirArchivosAGoogleDrive(rutaArchivo, campoProveedor);
+                repositorio.GuardarCambios();
+            }                
         }
 
         private List<TProyeccion> ListarCampos<TProyeccion>(Usuario usuario, Expression<Func<CampoProveedor, TProyeccion>> proyeccion) where TProyeccion : class
@@ -1697,6 +1750,148 @@ namespace SustitucionMOAUtils.Services
                     return poligono.OuterBoundary?.LinearRing?.Coordinates?.ToList();
                 }
             }
+        }
+
+        public CampoProveedor ObtenerCampoSuperposicion(CampoProveedor cp, string rutaKmz)
+        {
+            var campos = this.repositorio.Listar<CampoProveedor>(c => c.CUIT == cp.CUIT
+            && c.Proveedor_Id == cp.Proveedor_Id && c.EPA == cp.EPA && c.BSVS2 == cp.BSVS2 &&
+            c.EUDR == cp.EUDR);
+
+            Polygon polygonKmzNuevo = CargarPoligonoDesdeKMZ(rutaKmz);
+
+            foreach (var campo in campos)
+            {
+                Polygon polygonKmzExistente = CargarPoligonoDesdeKMZ(campo.Archivo.Ruta);
+                var porcentajeSuperposicion = CalcularSuperposicion(polygonKmzNuevo, polygonKmzExistente);
+                if(porcentajeSuperposicion > 70)
+                {
+                    return campo;
+                }
+            }
+
+            return null;
+        }
+
+        public static double CalcularSuperposicion(Polygon polygon1, Polygon polygon2)
+        {
+            // Revisar si son idénticos
+            if (polygon1.EqualsExact(polygon2))
+            {
+                Console.WriteLine("Los polígonos son idénticos.");
+                return 100.0;
+            }
+
+            // Calcular la intersección
+            var interseccion = polygon1.Intersection(polygon2);
+
+            // Calcular el porcentaje de superposición
+            double areaInterseccion = interseccion.Area;
+            double areaUnion = polygon1.Union(polygon2).Area;
+
+            double porcentajeSuperposicion = (areaInterseccion / areaUnion) * 100.0;
+            //Console.WriteLine($"Porcentaje de superposición: {porcentajeSuperposicion}%");
+            return porcentajeSuperposicion;
+        }
+
+        private static Polygon CargarPoligonoDesdeKMZ(string kmzPath)
+        {
+            // Extraer el archivo KML desde el KMZ
+            string kmlPath = ExtraerKmlDesdeKmz(kmzPath);
+            // Leer y procesar el archivo KML para obtener un polígono
+            return LeerPoligonoDesdeKml(kmlPath);
+        }
+
+        private static string ExtraerKmlDesdeKmz(string kmzPath)
+        {
+            // Si es un archivo .kml directo, devolverlo
+            if (Path.GetExtension(kmzPath).Equals(".kml", StringComparison.OrdinalIgnoreCase))
+                return kmzPath;
+
+            if (!File.Exists(kmzPath))
+                throw new FileNotFoundException($"El archivo {kmzPath} no existe.");
+
+            var fileInfo = new FileInfo(kmzPath);
+            if (fileInfo.Length == 0)
+                throw new InvalidDataException($"El archivo {kmzPath} está vacío o dañado.");
+
+            string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempDir);
+
+            try
+            {
+                using (var zip = ZipFile.OpenRead(kmzPath))
+                {
+                    foreach (var entry in zip.Entries)
+                    {
+                        // Ignorar directorios
+                        if (string.IsNullOrEmpty(entry.Name))
+                            continue;
+
+                        if (entry.FullName.EndsWith(".kml", StringComparison.OrdinalIgnoreCase))
+                        {
+                            string kmlPath = Path.Combine(tempDir, Path.GetFileName(entry.FullName));
+                            entry.ExtractToFile(kmlPath, true);
+                            return kmlPath;
+                        }
+                    }
+                }
+
+                throw new FileNotFoundException("No se encontró un archivo .kml dentro del KMZ.");
+            }
+            catch (InvalidDataException ex)
+            {
+                throw new InvalidOperationException("El archivo KMZ está corrupto o no es un ZIP válido.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Error al extraer el KML desde el KMZ.", ex);
+            }
+        }
+
+
+        private static Polygon LeerPoligonoDesdeKml(string kmlPath)
+        {
+            var doc = XDocument.Load(kmlPath);
+            XNamespace ns = "http://www.opengis.net/kml/2.2";
+
+            var coordinatesElement = doc.Descendants(ns + "coordinates").FirstOrDefault();
+            if (coordinatesElement == null)
+            {
+                throw new InvalidOperationException("No se encontraron coordenadas en el archivo KML.");
+            }
+
+            string coordinatesText = coordinatesElement.Value.Trim();
+            var coordinates = ParseCoordinates(coordinatesText);
+
+            var geometryFactory = new GeometryFactory();
+            var linearRing = geometryFactory.CreateLinearRing(coordinates);
+            return geometryFactory.CreatePolygon(linearRing);
+        }
+
+        private static Coordinate[] ParseCoordinates(string coordinatesText)
+        {
+            var coordinateStrings = coordinatesText.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            var coordinates = new Coordinate[coordinateStrings.Length + 1];
+
+            for (int i = 0; i < coordinateStrings.Length; i++)
+            {
+                var parts = coordinateStrings[i].Split(',');
+                if (parts.Length < 2)
+                {
+                    throw new FormatException("Formato de coordenadas inválido.");
+                }
+
+                double lon = double.Parse(parts[0], CultureInfo.InvariantCulture);
+                double lat = double.Parse(parts[1], CultureInfo.InvariantCulture);
+
+                coordinates[i] = new Coordinate(lon, lat);
+            }
+
+            // Aseguramos que el último punto sea igual al primero
+            coordinates[coordinates.Length - 1] = coordinates[0];
+
+            return coordinates;
         }
 
 

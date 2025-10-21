@@ -19,9 +19,11 @@
     [EUDR] BIT NOT NULL DEFAULT 0, 
     [EvidenciaEPA_Id] INT NULL, 
     [EvidenciaPresentada] BIT NOT NULL DEFAULT 0, 
+    [CampoCosechaSuperposicion_Id] INT NULL, 
     PRIMARY KEY(CampoCosecha_Id, Proveedor_Id),
     CONSTRAINT [FK_CampoProveedor_ToArchivo] FOREIGN KEY ([Archivo_Id]) REFERENCES [Archivo]([Id]),
     CONSTRAINT [FK_CampoProveedor_ToCampoCosecha] FOREIGN KEY ([CampoCosecha_Id]) REFERENCES [CampoCosecha]([Id]),
     CONSTRAINT [FK_CampoProveedor_ToProveedor] FOREIGN KEY ([Proveedor_Id]) REFERENCES [Proveedor]([Id]),
     CONSTRAINT [FK_CampoProveedor_ToArchivoEPA] FOREIGN KEY ([EvidenciaEPA_Id]) REFERENCES [Archivo]([Id]),
+    CONSTRAINT [FK_CampoProveedor_ToCampoCosechaSuperposicion] FOREIGN KEY ([CampoCosechaSuperposicion_Id]) REFERENCES [CampoCosecha]([Id]),
 )
