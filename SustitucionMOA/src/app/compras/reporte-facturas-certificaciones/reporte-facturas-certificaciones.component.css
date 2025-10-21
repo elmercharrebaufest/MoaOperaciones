@@ -1,0 +1,10 @@
+i#btn-exportar {
+    font-size: 1.7rem;
+    float: right;
+    margin-top: .6em;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: .5em;
+    background-color: transparent;
+    cursor: pointer;
+}

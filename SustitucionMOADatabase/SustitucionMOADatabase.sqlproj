@@ -211,9 +211,7 @@
     <Build Include="DBO\Tables\ChatInternoCompras.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaUsuarioAdicional.sql" />
     <None Include="scripts\Comunicacion\ComunicacionTipo.sql" />
-    <Build Include="DBO\Tables\Area.sql" />
     <Build Include="DBO\Tables\Aprobaciones.sql" />
-    <Build Include="DBO\Tables\AreaUsuario.sql" />
     <None Include="scripts\CreacionRolAdminCont.sql" />
     <None Include="scripts\PostDeployment\EstadoOrdenResiduos.sql" />
     <None Include="scripts\PostDeployment\AlmacenMaterial.sql" />

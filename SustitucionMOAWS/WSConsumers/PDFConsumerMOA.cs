@@ -16,8 +16,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class PDFConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
         public PDFResponse request(string documento, string ejercicio, string proveedor, string sociedad)
         {
             try

@@ -55,6 +55,8 @@ export class CotizacionComponent extends ListBaseComponent {
     condicionEspecial: boolean;
     condicionEspecialOriginal: boolean;
     ajustePolinomicaDisabled: boolean;
+    infoBoxText: string;
+    mostrarInfoBox: boolean = false;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
@@ -546,6 +548,8 @@ export class CotizacionComponent extends ListBaseComponent {
         if(value == "Proveedor directo"){
             this.model.thProveedorDirecto = true;
         }
+        // Evaluamos el mensaje a mostrar
+        this.evaluarMostrarInfoBox();
     }
 
     habilitarOC() {
@@ -559,6 +563,7 @@ export class CotizacionComponent extends ListBaseComponent {
         if (!this.model.condEspProveedorAsignado && !this.model.urgencia && !this.model.adicional && !this.model.trabajoHecho && !this.model.conPresupuesto) {
             this.borrarArchivosCargados();
         }
+        this.evaluarMostrarInfoBox();
     }
   
     borrarArchivosCargados(): void {
@@ -679,13 +684,27 @@ export class CotizacionComponent extends ListBaseComponent {
             this.habilitarProveedorSeleccionado(true);
             this.habilitarAdicional(true);
         }
+
+        // Agregar esta nueva lógica para deshabilitar mutuamente "Con Presupuesto" y "Proveedor Asignado"
+        if (this.model.conPresupuesto == true) {
+            this.habilitarCondEspProveedorAsignado(false);
+        } else if (this.model.condEspProveedorAsignado == true) {
+            this.habilitarConPresupuesto(false);
+        } else {
+            // Si ninguno está marcado, habilitar ambos (siempre que no haya otras restricciones)
+            if (!this.model.trabajoHecho && !this.model.adicional) {
+                this.habilitarCondEspProveedorAsignado(true);
+                this.habilitarConPresupuesto(true);
+            }
+        }
     }
 
     onConditionChange(): void {
         this.adjustFormControlsBasedOnConditions();
         if(this.condicionEspecial){
             this.verificarMismoProveedor();
-        } 
+        }
+        this.evaluarMostrarInfoBox();
     }
 
     verificarMismoProveedor(){
@@ -748,5 +767,109 @@ export class CotizacionComponent extends ListBaseComponent {
         else {
             this.formularioCotizacion.controls[control].disable();
         }
+    }
+
+    evaluarMostrarInfoBox(): void {
+        this.infoBoxText = "";
+        this.mostrarInfoBox = false;
+
+        let textos: string[] = [];
+
+        // SOLP donde ya se tiene el precio (Si se marca Trabajo hecho o Con Presupuesto) 
+        if(this.model.trabajoHecho == true && this.model.thServicioPermanente == true){
+            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, rutinario y que no queda bajo las condiciones de un Acuerdo Marco (AM). El fiscal podrá recibir desde compras el presupuesto, para la carga de la SOLP o de tener el fiscal la oferta procederá a cargarla.")
+        }
+        if(this.model.trabajoHecho == true && this.model.thAjustePolinomica == true){
+            textos.push("Referencia la necesidad de un ajuste por condiciones comerciales (Polinómica de ajuste) sobre un servicio ya realizado o producto entregado. El fiscal recibirá el control económico realizado desde compras, generará su propio control y gestionará la carga de la SOLP.");
+        }
+        if(this.model.trabajoHecho == true && this.model.thProveedorDirecto == true){
+            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, no rutinario. El fiscal define un proveedor directo técnicamente por sus condiciones especiales o particularidad del trabajo o producto.El fiscal podrá recibir desde compras el presupuesto para la carga de la SOLP o de tener la oferta procederá a cargar la misma.");
+        }
+        if(this.model.conPresupuesto == true){
+            textos.push("Referencia la necesidad de un servicio a realizar o material a entregar, sin un proceso de licitación bajo las condiciones estándar. El fiscal podrá recibir desde compras el presupuesto para la carga de la SOLP o de tener el fiscal la oferta procederá a cargar la misma. La SOLP, con su alcance técnico, cantidad, precio unitario, justificaciones, etc., será vinculada a un proveedor definido. Podrán emitirse circulares comerciales cuando así corresponda, validadas estas se avanzará con la orden de compra.");
+        }
+
+        // SOLP donde hay que salir a buscar la Oferta
+        if(this.model.condEspProveedorAsignado == true){
+            textos.push("Referencia la necesidad de un servicio a realizar o material a entregar.");
+            textos.push("La solp será asignada a un proveedor definido técnicamente por sus condiciones especiales o particularidad del servicio, material, insumo o equipo.");
+        }
+        if(this.model.trabajoHecho == false && this.model.conPresupuesto == false){
+            textos.push("Generará un proceso de licitación bajo las condiciones estándar.");
+            textos.push("El fiscal al momento de la carga de la SOLP solicitara un alcance técnico del servicio o producto y un precio a cotizar.");
+        }
+
+        if(this.model.adicional == true){
+            textos.push("Estas SOLPS nuevas se agregarán a una OC ya existente ya que hubo un proceso de licitación ya ejecutado y adjudicado con anterioridad.");
+        }
+        else{
+            textos.push("Validadas las condiciones técnicas y comerciales cuando así lo requiera, esta SOLP nueva permitirá gestionar una OC puntual.")
+        }
+        if(this.model.urgencia == true){
+            textos.push("Referencia la necesidad de un servicio realizado o material entregado como urgente.");
+        }
+
+        // En caso hay tilde de certificación automática
+        if (this.model.certificacionAutomatica == true) {
+            textos.push("LA CERTIFICACION DEL SERVICIO SE HARA DE FORMA AUTOMATICA. EL PROVEEDOR QUEDA AUTORIZADO A COBRAR EL SERVICIO.");
+        }
+        if (this.model.certificacionAutomatica == false) {
+            textos.push("VA A REQUERIR DEFINIR DESDE COMPRAS SI ADMITE O NO CERTIFICACIONES PARCIALES EN LOS SERVICIOS.");
+        }
+        
+        // Si hay condiciones especiales, mostrar el info box
+        if (textos.length > 0) {
+            this.infoBoxText = textos.join("\n");
+            this.mostrarInfoBox = true;
+        } else {
+            this.mostrarInfoBox = false;
+        }
+    }
+
+    validarCondicionesDeAcuerdoMarco() {
+        // Si no hay posiciones, no hay nada que validar
+        if (this.model.posiciones.length === 0) {
+            return false;
+        }
+
+        // Filtrar solo posiciones activas (estado == true)
+        const posicionesActivas = this.model.posiciones.filter(x => x.estado === true);
+        // Si no hay posiciones activas, no hay nada que validar
+        if (posicionesActivas.length === 0) {
+            return true;
+        }
+
+        // 1. Verificar si todas las posiciones activas tienen contrato marco o todas no tienen
+        const tienenContratoMarco = posicionesActivas.filter(
+            x => x.numeroContratoSuperior != null &&
+                x.numeroContratoSuperior !== undefined &&
+                x.numeroContratoSuperior !== ""
+        );
+
+        const sinContratoMarco = posicionesActivas.filter(
+            x => x.numeroContratoSuperior === null ||
+                x.numeroContratoSuperior === undefined ||
+                x.numeroContratoSuperior === ""
+        );
+
+        // 2. Si hay posiciones con contrato marco y sin contrato marco al mismo tiempo,
+        // la función debe devolver false (condición no permitida)
+        if (tienenContratoMarco.length > 0 && sinContratoMarco.length > 0) {
+            return false;
+        }
+
+        // 3. Si todas las posiciones activas tienen contrato marco, es válido
+        // También es válido que posiciones activas tengan diferentes contratos marco
+        if (tienenContratoMarco.length === posicionesActivas.length) {
+            return true;
+        }
+
+        // 4. Si todas las posiciones activas NO tienen contrato marco, también es válido
+        if (sinContratoMarco.length === posicionesActivas.length) {
+            return true;
+        }
+
+        // Este punto no debería alcanzarse, pero por seguridad devolvemos false
+        return false;
     }
 };

@@ -1,0 +1,12 @@
+<mat-card class="modern-card backdrop-blur-sm bg-white/90 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+    <mat-card-header class="pb-2">
+        <mat-card-title class="text-xl font-bold text-gray-800 flex items-center">
+            <span>{{title}}</span>
+        </mat-card-title>
+        <mat-card-subtitle class="text-gray-600 opacity-80 mt-1">{{subtitle}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider class="my-4 opacity-20"></mat-divider>
+    <mat-card-content class="text-gray-700">
+        <ng-content />
+    </mat-card-content>
+</mat-card>

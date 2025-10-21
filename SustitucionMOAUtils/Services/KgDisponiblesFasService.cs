@@ -12,9 +12,8 @@ namespace SustitucionMOAUtils.Services
     public class KgDisponiblesFasService : IKgDisponiblesFasService
     {
         public KgDisponiblesFasService()
-        {
+        { }
 
-        }
         public decimal ObtenerKgDisponiblesContrato(Result contratoSAP, List<OrdenDeCarga> ordenesPorEntregar)
         {
             decimal kilosDisponibles = 0;
@@ -46,6 +45,7 @@ namespace SustitucionMOAUtils.Services
 
             return contratoSAP.KilosTotales - kgEntregadosYPendientesEntrega - kilosPedidosPendientesCreacion;
         }
+
         private decimal KgDisponiblesContratoAnticipado(Result contratoSAP, List<OrdenDeCarga> ordenesAnticipadasPendientesDeCrear)
         {
             var kilosEntregaEstandar = ObtenerKgEstandar(contratoSAP);
@@ -58,11 +58,11 @@ namespace SustitucionMOAUtils.Services
 
             return contratoSAP.KilosTotales - kilosConsumidosPorTodosLosPedidos;
         }
+
         private decimal ObtenerKgConsumidosPorGrupoPedidos(
             List<Detail> grupoPedidos,
             List<OrdenDeCarga> ordenesPendientesDeCrear,
-            decimal kilosEntregaEstandar
-        )
+            decimal kilosEntregaEstandar)
         {
             var pedidoPrincipal = AuxObtenerDetallePedidoPrincipal(grupoPedidos);
             if (pedidoPrincipal is null)
@@ -70,22 +70,20 @@ namespace SustitucionMOAUtils.Services
 
             return ObtenerKgConsumidosPorPedido(grupoPedidos, ordenesPendientesDeCrear, kilosEntregaEstandar, pedidoPrincipal);
         }
-        private decimal ObtenerKgConsumidosPorPedido(
+
+        private static decimal ObtenerKgConsumidosPorPedido(
             List<Detail> grupoPedidos,
             List<OrdenDeCarga> ordenesPendientesDeCrear,
             decimal kilosEntregaEstandar,
             Detail pedidoPrincipal)
         {
-            var kilosEntregados = ObtenerKgEntregadosPorPedido(grupoPedidos);
+            var kilosEntregados = grupoPedidos.Sum(det => det.KilosEntrega);
 
             var kilosPorConsumir = ObtenerKgPorEntregarParaPedido(pedidoPrincipal, ordenesPendientesDeCrear, kilosEntregaEstandar);
             return kilosEntregados + kilosPorConsumir;
         }
-        private decimal ObtenerKgEntregadosPorPedido(List<Detail> grupoPedidos)
-        {
-            return grupoPedidos.Sum(det => det.KilosEntrega);
-        }
-        private decimal ObtenerKgPorEntregarParaPedido(Detail pedidoPrincipal, List<OrdenDeCarga> ordenesPendientesDeCrear, decimal kilosEntregaEstandar)
+
+        private static decimal ObtenerKgPorEntregarParaPedido(Detail pedidoPrincipal, List<OrdenDeCarga> ordenesPendientesDeCrear, decimal kilosEntregaEstandar)
         {
             var numeroFactura = pedidoPrincipal.FacturaLegal;
             var ordenesSinEnviar = ordenesPendientesDeCrear.Count(orden =>
@@ -94,11 +92,13 @@ namespace SustitucionMOAUtils.Services
                 (!orden.SinSeleccionarFactura && orden.NumeroFacturaSeleccionada == numeroFactura)));
             return ordenesSinEnviar * kilosEntregaEstandar;
         }
+
         public decimal ObtenerKgEstandar(Result contratoSAP)
         {
             return contratoSAP.Producto.TrimStart('0') == Constante.CODIGO_PELLET_GIRASOL ?
                 Constante.KG_STANDARD_PELLET_GIRASOL : Constante.KG_STANDARD;
         }
+
         public bool PedidoEstaCargado(Detail pedido)
         {
             return !string.IsNullOrEmpty(pedido.Chasis) &&
@@ -107,6 +107,7 @@ namespace SustitucionMOAUtils.Services
                 !string.IsNullOrEmpty(pedido.Destinatario) &&
                 !string.IsNullOrEmpty(pedido.NombreDestinatario);
         }
+
         public decimal ObtenerKgDisponiblesPedido(
             Result contratoSAP,
             List<OrdenDeCarga> ordenesPendientesDeCrear,
@@ -117,6 +118,7 @@ namespace SustitucionMOAUtils.Services
             var kilosEntregaEstandar = ObtenerKgEstandar(contratoSAP);
             return ObtenerKgDisponiblesPedido(grupoPedidos, ordenesPendientesDeCrear, pedidoPrincipal, kilosEntregaEstandar);
         }
+
         public decimal ObtenerKgDisponiblesPedido(
             List<Detail> grupoPedidos,
             List<OrdenDeCarga> ordenesPendientesDeCrear,
@@ -126,6 +128,7 @@ namespace SustitucionMOAUtils.Services
             var kilosConsumidos = ObtenerKgConsumidosPorPedido(grupoPedidos, ordenesPendientesDeCrear, kilosEntregaEstandar, pedidoPrincipal);
             return Math.Round(pedidoPrincipal.CantidadFactura - kilosConsumidos, 2);
         }
+
         public Detail AuxObtenerDetallePedidoPrincipal(List<Detail> grupoPedidos)
         {
             return grupoPedidos.FirstOrDefault(det =>

@@ -19,18 +19,20 @@ namespace SustitucionMOAUtils.Services
         private readonly IComprasSapService comprasServiceSap;
         private readonly IRegistroInfoService registroInfoService;
         private readonly IUnidadMedidaService unidadMedidaService;
-
+        private readonly IMaterialService materialService;
         public ComprasSolicitanteService(IRepositorio repositorio,
                                          IComprasService comprasService,
                                          IComprasSapService comprasServiceSap,
                                          IRegistroInfoService registroInfoService,
-                                         IUnidadMedidaService unidadMedidaService)
+                                         IUnidadMedidaService unidadMedidaService,
+                                         IMaterialService materialService)
         {
             this.repositorio = repositorio;
             this.comprasService = comprasService;
             this.comprasServiceSap = comprasServiceSap;
             this.registroInfoService = registroInfoService;
             this.unidadMedidaService = unidadMedidaService;
+            this.materialService = materialService;
         }
 
         public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
@@ -267,9 +269,19 @@ namespace SustitucionMOAUtils.Services
 
         public List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId)
         {
-            return repositorio.Listar<MaterialSolp>(e =>
-                (e.Descripcion.Contains(valor) || e.CodigoSap.Contains(valor)) && e.Centro_Id == centroId && e.Estado, 0, null, DirOrden.Asc)
-                .ConvertAll(s => new MaterialSolpDto(s));
+            var materiales = repositorio.Listar<MaterialSolp>(e =>
+               (e.Descripcion.Contains(valor) || e.CodigoSap.Contains(valor)) && e.Centro_Id == centroId && e.Estado, 0, null, DirOrden.Asc)
+               .ConvertAll(s => new MaterialSolpDto(s));
+
+            if ((materiales == null || !materiales.Any()) && valor.Length >= 8 && valor.All(char.IsDigit))
+            {
+                string valorCodSap = valor.PadLeft(18, '0');
+                this.materialService.ActualizarMaterialSolpDadoCentroYCod(centroId, valorCodSap);
+                var materialAgregado = this.repositorio.Obtener<MaterialSolp>(m => m.Centro_Id == centroId && m.CodigoSap == valorCodSap);
+                if(materialAgregado != null)
+                    materiales.Add(new MaterialSolpDto(materialAgregado));
+            }
+            return materiales;
         }
 
         public RegistroInfoDto ObtenerUltimoRegistroMaterialConPrecioBase(string material, string centro, string grupoDeCompras)

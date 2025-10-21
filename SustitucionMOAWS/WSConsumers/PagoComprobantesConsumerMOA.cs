@@ -18,8 +18,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class PagoComprobantesConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
         public PagoComprobanteWSMOAResponse request(string documento, DateTime fecha, string sociedad, string fiscalYear)
         {
             try

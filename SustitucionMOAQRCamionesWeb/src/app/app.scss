@@ -1,0 +1,254 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 1px solid var(--gray-200);
+    transition: all var(--transition-base);
+}
+
+.app-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--brand-600) 0%, var(--brand-400) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.nav-menu button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    border-radius: var(--radius-md) !important;
+    transition: all var(--transition-base);
+    font-weight: 500;
+    
+    &:hover {
+        background-color: var(--brand-50) !important;
+        transform: translateY(-1px);
+    }
+    
+    mat-icon {
+        font-size: 1.125rem;
+        width: 1.125rem;
+        height: 1.125rem;
+    }
+}
+
+.global-loading {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    backdrop-filter: blur(2px);
+}
+
+.main-content {
+    flex: 1;
+    min-height: calc(100vh - 64px - 100px); /* toolbar height - footer height */
+    position: relative;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            rgba(102, 126, 234, 0.02) 0%, 
+            rgba(118, 75, 162, 0.02) 100%);
+        pointer-events: none;
+    }
+}
+
+.app-footer {
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    padding: var(--space-lg);
+    text-align: center;
+    border-top: 1px solid var(--gray-200);
+    margin-top: auto;
+    backdrop-filter: blur(8px);
+}
+
+.app-footer p {
+    margin: var(--space-xs) 0;
+    color: var(--gray-600);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    
+    &:first-child {
+        color: var(--gray-700);
+        font-weight: 600;
+    }
+}
+
+.user-info {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--gray-200);
+    background: linear-gradient(135deg, var(--brand-50) 0%, var(--brand-100) 100%);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.user-info p {
+    margin: var(--space-xs) 0;
+    font-size: var(--font-size-sm);
+    color: var(--brand-700);
+    
+    &:first-child {
+        font-weight: 600;
+        color: var(--brand-800);
+    }
+}
+
+// Mejoras específicas para Material Badge
+:deep(.mat-badge-content) {
+    background-color: var(--error-500) !important;
+    color: white !important;
+    font-size: 0.625rem !important;
+    font-weight: 600 !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    line-height: 18px !important;
+    border-radius: 9px !important;
+    border: 2px solid white !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+// Mejoras para el menú de usuario
+.mat-mdc-menu-panel {
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-xl) !important;
+    border: 1px solid var(--gray-200);
+    
+    .mat-mdc-menu-content {
+        padding: var(--space-xs) !important;
+    }
+    
+    .mat-mdc-menu-item {
+        border-radius: var(--radius-md) !important;
+        margin: var(--space-xs) !important;
+        transition: all var(--transition-base);
+        
+        &:hover {
+            background-color: var(--brand-50) !important;
+            transform: translateX(2px);
+        }
+        
+        mat-icon {
+            color: var(--brand-600);
+            margin-right: var(--space-sm);
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .app-toolbar {
+        padding: 0 var(--space-sm);
+        min-height: 56px;
+        
+        .mat-toolbar-row {
+            height: 56px;
+        }
+    }
+    
+    .app-title {
+        font-size: var(--font-size-base);
+        max-width: calc(100vw - 200px); // Menos espacio en móvil
+    }
+    
+    .nav-menu {
+        gap: var(--space-xs);
+        
+        .nav-button span {
+            display: none; // Ocultar texto en móvil
+        }
+        
+        .nav-button {
+            min-width: 40px;
+            padding: var(--space-sm) !important;
+            
+            mat-icon {
+                margin-right: 0;
+            }
+        }
+    }
+
+    .global-loading {
+        top: 56px; /* Mobile toolbar height */
+    }
+
+    .main-content {
+        min-height: calc(100vh - 56px - 100px);
+    }
+    
+    .app-footer {
+        padding: var(--space-md);
+    }
+    
+    .user-info {
+        padding: var(--space-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    .app-title {
+        font-size: var(--font-size-sm);
+        max-width: calc(100vw - 150px); // Aún menos espacio
+    }
+    
+    .nav-menu {
+        .user-menu-button,
+        .lang-button {
+            margin-left: var(--space-xs);
+        }
+    }
+    
+    .app-footer p {
+        font-size: var(--font-size-xs);
+    }
+}
+
+// Mejoras adicionales para el título largo
+@media (max-width: 1024px) {
+    .app-title {
+        font-size: var(--font-size-lg);
+    }
+}
+
+@media (max-width: 900px) {
+    .app-title {
+        font-size: var(--font-size-base);
+    }
+}
+
+// Animación sutil para el título
+@keyframes titleGlow {
+    0%, 100% { 
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); 
+    }
+    50% { 
+        text-shadow: 0 1px 6px rgba(255, 255, 255, 0.3); 
+    }
+}

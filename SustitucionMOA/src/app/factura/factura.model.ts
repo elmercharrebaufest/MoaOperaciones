@@ -15,6 +15,7 @@ export interface GrupoCertificaciones {
     items: Certificacion[];
     esMonedaExtranjera: boolean;
     esFacturaPorDiferenciaTasaDeCambio: boolean;
+    ordenDeCompra: string;
 }
 
 export interface ArchivoAdjunto {

@@ -13,5 +13,7 @@ namespace SustitucionMOAModel.Dto.Compras.Factura
         public List<CertificacionDto> Items { get; set; }
 
         public bool EsFacturaPorDiferenciaTasaDeCambio { get; set; }
+
+        public string OrdenDeCompra { get; set; }
     }
 }

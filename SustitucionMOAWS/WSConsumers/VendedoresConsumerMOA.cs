@@ -17,8 +17,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class VendedoresConsumerMOA: IVendedoresConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
         private readonly SI_MPMF_MOAOP_VENDEDORESClient service;
         public VendedoresConsumerMOA()
         {

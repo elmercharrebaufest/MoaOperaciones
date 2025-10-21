@@ -15,8 +15,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public abstract class AplicacionesConsumerMoaBase<TResp>
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
 
         public TResp request(string proveedor, List<FechaWS> fechas, List<string> contratos, string CCPP)
         {

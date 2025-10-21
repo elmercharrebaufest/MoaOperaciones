@@ -75,7 +75,7 @@ namespace SustitucionMOA.Controllers
         [ValidateInput(false)]
         public ActionResult CrearEntradaServicio(string request)
         {
-            SustitucionMOAWS.Logger.Log.Info("EntradaServicioController.CreateAsync");
+            SustitucionMOAWS.Logger.Log.Info("EntradaServicioController.CrearEntradaServicio");
 
             var payload = JsonConvert.DeserializeObject<CreateEntradaServicioDto>(request);
 

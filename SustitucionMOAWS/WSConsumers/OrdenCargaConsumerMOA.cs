@@ -60,8 +60,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         */
 
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
 
         private const string TipoContratoFas_Normal = "NORMAL";
         private const string TipoContratoFas_Anticipado = "ANTICIPADO";

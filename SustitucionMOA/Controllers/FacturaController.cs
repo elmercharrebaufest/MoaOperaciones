@@ -1,16 +1,12 @@
 ﻿using SustitucionMOAAssets;
-using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Services.Description;
 
 namespace SustitucionMOA.Controllers
 {
@@ -51,8 +47,8 @@ namespace SustitucionMOA.Controllers
             var codigo = SessionPersister.Proveedor;
 
             var data = facturaService.RegistrarCertificaciones(gruposCertificacionesList, mail, proveedorId, files, cuit, codigo);
-            
-            return JsonCustom(new { data });
+
+            return JsonCustom(new { success = "ok" });
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CARGAR_FACT_PROV)]

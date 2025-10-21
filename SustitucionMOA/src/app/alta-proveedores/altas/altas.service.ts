@@ -114,4 +114,13 @@ export class AltaEmpresaService extends BaseService {
             .get('/api/AltaEmpresa/VerificarExistenciaEmpresa', { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
+
+    public volverProveedorCanalDeAltas(cuit: string): Observable<any> {
+        let params: HttpParams = new HttpParams()
+        .append('cuit', cuit.toString())
+
+        return this.http
+            .get('/api/AltaEmpresa/VolverProveedorCanalDeAltas', { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
+    }
 }

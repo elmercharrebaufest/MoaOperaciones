@@ -19,8 +19,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     class EcheqVisualizarDisponibleChequeConsumerMOA : IEcheqVisualizarDisponibleChequeConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
 
         public EcheqVisualizarDisponibleChequeConsumerMOA()
         {
