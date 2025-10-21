@@ -54,6 +54,13 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
+        public ActionResult VolverProveedorCanalDeAltas(string CUIT)
+        { 
+            var resultado = altaEmpresaService.VolverProveedorCanalDeAltas(CUIT);
+            return JsonCustom(new { data = resultado });
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
         [HttpPost]
         public ActionResult SetEstadoAprobacion(int empresaId, EstadoAprobacion estado, string observacion, string observacionParaElProveedor, string estadoSIPER, string razonSocial, string codigoCliente)
         {

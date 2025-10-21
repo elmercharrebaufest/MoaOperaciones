@@ -6,6 +6,7 @@ using NUnit.Framework.Internal;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
@@ -15,6 +16,7 @@ using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAUtils.Services.Email;
 using SustitucionMOAUtils.Services.Email.Dto;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
@@ -33,6 +35,7 @@ namespace SustitucionMOATest.Services
     public class ComprasServiceTest
     {
         private ComprasService target;
+        private ComprasService target2;
         private ComprasSapService targetSap;
         private Mock<IObtenerCecoSolpConsumerMOA> cecoConsumerMock;
         private Mock<IObtenerCuentasSolpConsumerMOA> cuentasConsumerMock;
@@ -65,6 +68,8 @@ namespace SustitucionMOATest.Services
         private Mock<IUnidadMedidaService> unidadMedidaServiceMock;
         private Mock<ITipoCambioService> tipoCambioServiceMock;
         private Mock<IRegistroInfoService> registroInfoServiceMock;
+
+        private Mock<IComprasSapService> mIComprasSapService;
 
         private GuardarCotizacion GuardarCotizacionToClone()
         {
@@ -753,6 +758,8 @@ namespace SustitucionMOATest.Services
             tipoCambioServiceMock = new Mock<ITipoCambioService>();
             registroInfoServiceMock = new Mock<IRegistroInfoService>();
 
+            mIComprasSapService = new Mock<IComprasSapService>();
+
             httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
 
             targetSap = new ComprasSapService(
@@ -790,6 +797,22 @@ namespace SustitucionMOATest.Services
                 mIComprasArchivosService.Object,
                 mIComprasArchivosImportService.Object,
                 targetSap,
+                tipoCambioServiceMock.Object,
+                unidadMedidaServiceMock.Object,
+                registroInfoServiceMock.Object,
+                tablaSapServiceMock.Object
+                );
+
+            target2 = new ComprasService(
+                repositorioComprasMock.Object,
+                vendedorServiceMock.Object,
+                httpContextServiceMock.Object,
+                usuarioServiceMock.Object,
+                emailServiceMock.Object,
+                mIEmailComprasService.Object,
+                mIComprasArchivosService.Object,
+                mIComprasArchivosImportService.Object,
+                mIComprasSapService.Object,
                 tipoCambioServiceMock.Object,
                 unidadMedidaServiceMock.Object,
                 registroInfoServiceMock.Object,
@@ -900,7 +923,7 @@ namespace SustitucionMOATest.Services
             };
 
             this.serviciosConsumerMock
-                .Setup(x => x.request())
+                .Setup(x => x.request(string.Empty))
                 .Returns(servicioWSMOAResponseTest);
 
             List<ServicioSolp> listadoServiciosSolp = new List<ServicioSolp>
@@ -946,7 +969,7 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(3, listadoServiciosSolp[4].CodigoSap);
 
-            this.serviciosConsumerMock.Verify(x => x.request(), Times.Once);
+            this.serviciosConsumerMock.Verify(x => x.request(string.Empty), Times.Once);
             this.repositorioComprasMock.Verify(x => x.GuardarCambios(), Times.Once);
         }
 
@@ -2856,6 +2879,94 @@ namespace SustitucionMOATest.Services
             target.ObtenerDatosReporteSolp();
             repositorioComprasMock.Verify(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(),
                 It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc), Times.AtLeastOnce);
+        }
+
+        [Test]
+        public void EnviarReporteTrabajoYaHecho_Ok()
+        {
+            var ordenesDeCompraUltimaSemana = new List<OrdenCompraDto>
+            {
+                new OrdenCompraDto { Id = 450000001 },
+                new OrdenCompraDto { Id = 450000002 }
+            };
+
+            var ordenCompra1 = new OrdenDeCompraSAPDto
+            {
+                Cabecera = new OrdenDeCompraSAPCabecera
+                {
+                    OrdenDeCompra = "450000001",
+                    CreadoPor = "USRSAP1",
+                    FechaCreacion = new DateTime(2025, 8, 26, 0, 0, 0, DateTimeKind.Local)
+                },
+                Posiciones = new List<OrdenDeCompraSAPPosicion> { new OrdenDeCompraSAPPosicion { NroSolp = "102002021" } }
+            };
+
+            var ordenCompra2 = new OrdenDeCompraSAPDto
+            {
+                Cabecera = new OrdenDeCompraSAPCabecera
+                {
+                    OrdenDeCompra = "450000002",
+                    CreadoPor = "USRSAP2",
+                    FechaCreacion = new DateTime(2025, 8, 27, 0, 0, 0, DateTimeKind.Local)
+                },
+                Posiciones = new List<OrdenDeCompraSAPPosicion> { new OrdenDeCompraSAPPosicion { NroSolp = "102002022" } }
+            };
+
+            var solpsTrabajosHechos = new List<TrabajoYaHechoReporte>
+            {
+                new TrabajoYaHechoReporte
+                {
+                    SolpNro = "102002021",
+                    SolpCreador = "usuario1@moa.com",
+                    SolpFecha = "15/08/2025"
+                },
+                new TrabajoYaHechoReporte
+                {
+                    SolpNro = "102002022",
+                    SolpCreador = "usuario2@moa.com",
+                    SolpFecha = "25/08/2025"
+                }
+            };
+
+            var fechasLiberacionPorOc = new Dictionary<string, DateTime>
+            {
+                { "450000001", new DateTime(2025, 9, 1, 0, 0, 0, DateTimeKind.Local) },
+                { "450000002", new DateTime(2025, 9, 2, 0, 0, 0, DateTimeKind.Local) }
+            };
+
+            var fechaDesde = DateTime.Today.AddDays(-7);
+
+            mIComprasSapService
+                .Setup(s => s.ObtenerOrdenesDeCompra(It.Is<DateTime>(x => x == fechaDesde)))
+                .Returns(ordenesDeCompraUltimaSemana);
+
+            mIComprasSapService
+                .Setup(s => s.ObtenerOrdenDeCompra("450000001"))
+                .Returns(ordenCompra1);
+
+            mIComprasSapService
+                .Setup(s => s.ObtenerOrdenDeCompra("450000002"))
+                .Returns(ordenCompra2);
+
+            repositorioComprasMock
+                .Setup(s => s.ObtenerSolpsReporteTrabajoYaHecho(It.Is<ICollection<string>>(list => list.Contains("102002021") && list.Contains("102002022"))))
+                .Returns(solpsTrabajosHechos);
+
+            repositorioComprasMock
+                .Setup(s => s.ObtenerFechasLiberacionOcs(It.Is<ICollection<string>>(list => list.Contains("450000001") && list.Contains("450000002"))))
+                .Returns(fechasLiberacionPorOc);
+
+            mIEmailComprasService
+                .Setup(s => s.EnviarMailReporteTrabajoYaHecho(It.IsAny<byte[]>(), It.IsAny<string>()));
+
+            target2.EnviarReporteTrabajoYaHecho();
+
+            mIComprasSapService.Verify(s => s.ObtenerOrdenesDeCompra(It.Is<DateTime>(x => x == fechaDesde)), Times.Once);
+            mIComprasSapService.Verify(s => s.ObtenerOrdenDeCompra("450000001"), Times.Once);
+            mIComprasSapService.Verify(s => s.ObtenerOrdenDeCompra("450000002"), Times.Once);
+            repositorioComprasMock.Verify(s => s.ObtenerSolpsReporteTrabajoYaHecho(It.Is<ICollection<string>>(list => list.Contains("102002021") && list.Contains("102002022"))), Times.Once);
+            repositorioComprasMock.Verify(s => s.ObtenerFechasLiberacionOcs(It.Is<ICollection<string>>(list => list.Contains("450000001") && list.Contains("450000002"))), Times.Once);
+            mIEmailComprasService.Verify(s => s.EnviarMailReporteTrabajoYaHecho(It.IsAny<byte[]>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]

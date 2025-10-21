@@ -13,8 +13,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class ObtenerMaterialesSolpConsumerMOA : IObtenerMaterialesSolpConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
 
 
         public ObtenerMaterialesSolpConsumerMOA()
@@ -22,7 +22,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
-        public MaterialWSMOAResponse request(List<string> CentroCodigo, string NombreDeMaterial)
+        public MaterialWSMOAResponse request(List<string> CentroCodigo, string NombreDeMaterial, string CodigoMaterial)
         {
             try
             {
@@ -50,11 +50,18 @@ namespace SustitucionMOAWS.WSConsumers
                             IM_MAX = Convert.ToByte(IM_MAX),
                             IM_PLANT = IM_PLANT
                         };
+
+                        if (CodigoMaterial != null && CodigoMaterial != "")
+                        {
+                            var IM_MaterialList = new List<WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5800>();
+                            IM_MaterialList.Add(new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5800 { SIGN = "I", OPTION = "EQ", LOW = CodigoMaterial });
+                            WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5800[] IM_MATERIAL = IM_MaterialList.ToArray();
+                            request.IM_MATERIAL = IM_MATERIAL;
+                        }
+
                         Log.Info($"SAP sin PI Z_MMRFC_OBTENER_MATERIALES request");
                         Log.Info(request.ToXml());
                         var response = agent.Z_MMRFC_OBTENER_MATERIALES(request);
-                        Log.Info($"SAP sin PI Z_MMRFC_OBTENER_MATERIALES response");
-                        //Log.Info(response.ToXml());
 
                         var resultado = MapSinPI(response);
                         result.Materiales.AddRange(resultado.Materiales);
@@ -71,8 +78,14 @@ namespace SustitucionMOAWS.WSConsumers
                     service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                     service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-                    ObtenerMaterialesSolpWebServiceMOA.ZMPES5800[] IM_MATERIAL = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5800[] { };
-                    ObtenerMaterialesSolpWebServiceMOA.ZMPES5810[] IM_MATL_DESC = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5810[] { };
+                    ObtenerMaterialesSolpWebServiceMOA.ZMPES5800[] IM_MATERIAL   = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5800[] { };
+                    if(CodigoMaterial != null && CodigoMaterial != "")
+                    {
+                        var IM_MaterialList = new List<ObtenerMaterialesSolpWebServiceMOA.ZMPES5800>();
+                        IM_MaterialList.Add(new ObtenerMaterialesSolpWebServiceMOA.ZMPES5800 { SIGN = "I", OPTION = "EQ", LOW = CodigoMaterial });
+                        IM_MATERIAL = IM_MaterialList.ToArray();
+                    }
+                    ObtenerMaterialesSolpWebServiceMOA.ZMPES5810[] IM_MATL_DESC  = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5810[] { };
                     ObtenerMaterialesSolpWebServiceMOA.ZMPES5830[] IM_MATL_GROUP = new ObtenerMaterialesSolpWebServiceMOA.ZMPES5830[] { };
 
                     //ZMPES5820[] IM_PLANT = new List<ZMPES5820>{ new ZMPES5820 { SIGN = "I", OPTION = "EQ", LOW = CentroCodigo },  }.ToArray();

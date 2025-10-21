@@ -7,7 +7,12 @@ namespace SustitucionMOARepositorio.Repositorios.Interfaces
     public interface IRepositorioEntradaServicio : IRepositorio
     {
         bool ExisteRemitoActivoParaProveedor(string remitoNro, string proveedorCodigo);
+        UsuarioReasignacion GetReasignacion(int usuarioId);
+        List<TablaSap> GetTablaSap(string nombreTablaSap);
+        Usuario GetUsuarioPorMail(string mailUsuario);
         string ObtenerMailSuplenteSegunFecha(string mailUsuario, DateTime fechaReasignacion);
+        long ObtenerSiguienteValorSecuencia();
+        List<Solp> ObtenerSolpsAutocertificablesConAcuerdoMarco(List<string> nroSolps);
         List<Solp> ObtenerSolpsAutocertificablesDeOC(List<string> nroSolps);
         Adjudicacion ObtenerUltimaAdjudicacionOC(string nroOC);
     }

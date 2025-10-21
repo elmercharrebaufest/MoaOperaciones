@@ -1,13 +1,14 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
-using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -29,13 +30,13 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IAzureService azureService;
         private readonly IAnalisisDocumentoService analisisDocumentoService;
-        private readonly IRepositorio repositorio;
+        private readonly IRepositorioFactura repositorio;
         private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
         private readonly IEmailService emailService;
         private readonly string EmailFacturasES = ConfigurationManager.AppSettings["EmailFacturasES"];
 
 
-        public FacturaService(IAzureService azureService, IAnalisisDocumentoService analisisDocumentoService, IRepositorio repositorio,
+        public FacturaService(IAzureService azureService, IAnalisisDocumentoService analisisDocumentoService, IRepositorioFactura repositorio,
             IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA, IEmailService emailService)
         {
             this.azureService = azureService ?? throw new ArgumentNullException(nameof(azureService));
@@ -74,21 +75,38 @@ namespace SustitucionMOAUtils.Services
                     List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName);
                     List<ValidationResult> resultado = AnalizarResultados(resultadoAnalisis, codigo);
                     // Flujo nuevo
-                    if (resultado[0].IsValid && resultado[0].Certificaciones?.Count > 0)
+                    if (resultado[0].IsValid)
                     {
+                        var ordenDeCompraValidationResult = resultadoAnalisis.Find(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name);
+                        var certificacionesRegistradasOC = repositorio.Listar<CertificacionRegistrada>(cr => cr.NRO_OC == ordenDeCompraValidationResult.Value);
                         resultado.ForEach(r => r.FileName = file.FileName);
-                        // Buscamos los archivos relacionados a ese nro de certificacion
-                        resultado[0].Certificaciones.ForEach((certificacion) =>
+
+                        if (resultado[0].Certificaciones?.Count > 0)
                         {
-                            List<CertificacionRegistrada> certificacionesRegistradas = repositorio.Listar<CertificacionRegistrada>(c => c.NRO_Certificacion == certificacion.NroCertificacion).ToList();
-                            if (certificacionesRegistradas != null && certificacionesRegistradas.Any())
+                            // Buscamos los archivos relacionados a ese nro de certificacion
+                            resultado[0].Certificaciones.ForEach((certificacion) =>
                             {
-                                certificacionesRegistradas.ForEach(certificacionRegistrada =>
+                                var certificacionesRegistradas = certificacionesRegistradasOC.Where(c => c.NRO_Certificacion == certificacion.NroCertificacion).ToList();
+                                if (certificacionesRegistradas != null && certificacionesRegistradas.Any())
                                 {
-                                    certificacion.Archivo.Add(certificacionRegistrada.Archivo);
-                                });
-                            }
-                        });
+                                    certificacionesRegistradas.ForEach(certificacionRegistrada =>
+                                    {
+                                        certificacion.Archivo.Add(certificacionRegistrada.Archivo);
+                                    });
+                                }
+                            });
+                        }
+
+                        resultado[0].Certificaciones = resultado[0].Certificaciones ?? new List<OrdenDeCompraSAPCertificacion>();
+                        if (certificacionesRegistradasOC.Any(x => x.Archivo.FileKey == FileKeys.FacturaDiferenciaTasaDeCambio))
+                        {
+                            resultado[0].Certificaciones.Add(new OrdenDeCompraSAPCertificacion
+                            {
+                                NroCertificacion = "Factura por diferencia de tipo de cambio",
+                                Moneda = string.Empty,
+                                Archivo = new List<Archivo>(certificacionesRegistradasOC.Where(cr => cr.Archivo.FileKey == FileKeys.FacturaDiferenciaTasaDeCambio).Select(x => x.Archivo))
+                            });
+                        }
                     }
                     // Flujo anterior a registro de certificaciones
                     else
@@ -132,7 +150,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (grupo.EsFacturaPorDiferenciaTasaDeCambio)
                 {
-                    GuardarFacturaPorDiferenciaTasaDeCambio(archivo, cuit, codigoProveedor, usuario);
+                    certificacionesRegistradas.Add(GuardarFacturaPorDiferenciaTasaDeCambio(grupo, archivo, proveedorId, cuit, codigoProveedor, usuario));
                 }
                 else
                 {
@@ -190,17 +208,17 @@ namespace SustitucionMOAUtils.Services
                 GuardarResultadosYArchivo(elementosLeidos, resultadoAnalisis, ruta, usuarioId);
             }
             repositorio.AgregarTodos(certificacionRegistradas);
-            var resp = repositorio.GuardarCambios();
+            repositorio.GuardarCambios();
             return certificacionRegistradas;
         }
 
-        private void GuardarFacturaPorDiferenciaTasaDeCambio(HttpPostedFileBase archivoFactura, string cuit, string codigoProveedor, Usuario usuario)
+        private CertificacionRegistrada GuardarFacturaPorDiferenciaTasaDeCambio(GrupoCertificaciones grupoCertificaciones, HttpPostedFileBase archivoFactura, int proveedorId, string cuit, string codigoProveedor, Usuario usuario)
         {
             var resultadoOcrs = ObtenerElementosArchivoPorOCR(archivoFactura).ToList();
 
             var usuarioId = usuario.Id;
 
-            Log.Info("Procesando documento por diferencia de tasa de cambio: " + archivoFactura.FileName);
+            Log.Info("Procesando documento por diferencia de tipo de cambio: " + archivoFactura.FileName);
 
             var elementosLeidos = resultadoOcrs.Where(a => a.FileName == archivoFactura.FileName).Select(a => a.Input).ToList();
             List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, archivoFactura.FileName);
@@ -211,6 +229,20 @@ namespace SustitucionMOAUtils.Services
 
             var archivo = new Archivo { Ruta = rutaArchivo, FileKey = FileKeys.FacturaDiferenciaTasaDeCambio };
             repositorio.Agregar(archivo);
+
+            var certificacionRegistrada = new CertificacionRegistrada
+            {
+                Archivo = archivo,
+                FechaDeRegistro = DateTime.Now,
+                NombreDeArchivo = archivoFactura.FileName,
+                NRO_OC = grupoCertificaciones.OrdenDeCompra,
+                ProveedorId = proveedorId,
+                UsuarioId = usuarioId,
+                NRO_Certificacion = string.Empty,
+                Importe = 0,
+                Moneda = string.Empty
+            };
+            repositorio.Agregar(certificacionRegistrada);
             repositorio.GuardarCambios();
 
             if (resultado.Exists(r => r.IsValid))
@@ -218,6 +250,7 @@ namespace SustitucionMOAUtils.Services
                 EnviarMail(archivoFactura);
             }
             GuardarResultadosYArchivo(elementosLeidos, resultadoAnalisis, rutaArchivo, usuarioId);
+            return certificacionRegistrada;
         }
 
         private void GuardarResultadosYArchivo(List<string> elementosLeidos, List<ValidationResult> resultadoAnalisis, string ruta, int usuarioId)
@@ -246,6 +279,7 @@ namespace SustitucionMOAUtils.Services
                     Input = item.Input
                 }).ToList();
                 repositorio.AgregarTodos(resultadosAnalisisOcr);
+                repositorio.GuardarCambios();
             }
             catch (Exception e)
             {
@@ -352,31 +386,34 @@ namespace SustitucionMOAUtils.Services
                     return result;
                 }
 
-                if (ordenDeCompraSAP.Cabecera.SaldoDisponible <= 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIO")
+                if (ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIO")
                 {
-                    result.Add(new ValidationResult(false, $"La orden de compra {ordenDeCompraEncontrada.Value} no tiene saldo disponible. Factura no enviada. Deberá certificar y volver a cargarla nuevamente.", typeof(OrdenCompraValidationCommand).Name, "", ordenDeCompraEncontrada.Value));
-                    return result;
-                }
-
-                // Validar si tiene certificaciones
-                if (ordenDeCompraSAP.Certificaciones.Count == 0)
-                {
-                    result.Add(new ValidationResult(false, "La orden de compra no tiene certificaciones pendientes de facturar", typeof(OrdenCompraValidationCommand).Name, "", ""));
-                    return result;
-                }
-
-                if (ordenDeCompraSAP.Cabecera.SaldoDisponible > 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIO")
-                {
-                    result.Add(new ValidationResult
+                    if (ordenDeCompraSAP.Cabecera.SaldoDisponible <= 0)
                     {
-                        IsValid = true,
-                        Message = $"Seleccione las certificaciones para la orden de compra {ordenDeCompraEncontrada.Value}.",
-                        ValidataionType = typeof(OrdenCompraValidationCommand).Name,
-                        Value = ordenDeCompraEncontrada.Value,
-                        Certificaciones = ordenDeCompraSAP.Certificaciones,
-                        EsMonedaExtranjera = ordenDeCompraSAP.Cabecera.Moneda != nameof(Currency.ARP)
-                    });
-                    return result;
+                        result.Add(new ValidationResult(false, $"La orden de compra {ordenDeCompraEncontrada.Value} no tiene saldo disponible. Factura no enviada. Deberá certificar y volver a cargarla nuevamente.", typeof(OrdenCompraValidationCommand).Name, "", ordenDeCompraEncontrada.Value));
+                        return result;
+                    }
+
+                    // Validar si tiene certificaciones
+                    if (ordenDeCompraSAP.Certificaciones.Count == 0)
+                    {
+                        result.Add(new ValidationResult(false, "La orden de compra no tiene certificaciones pendientes de facturar", typeof(OrdenCompraValidationCommand).Name, "", ""));
+                        return result;
+                    }
+
+                    if (ordenDeCompraSAP.Cabecera.SaldoDisponible > 0)
+                    {
+                        result.Add(new ValidationResult
+                        {
+                            IsValid = true,
+                            Message = $"Seleccione las certificaciones para la orden de compra {ordenDeCompraEncontrada.Value}.",
+                            ValidataionType = typeof(OrdenCompraValidationCommand).Name,
+                            Value = ordenDeCompraEncontrada.Value,
+                            Certificaciones = FiltrarCertificacionesNoVigentes(ordenDeCompraSAP.Certificaciones),
+                            EsMonedaExtranjera = ordenDeCompraSAP.Cabecera.Moneda != nameof(Currency.ARP)
+                        });
+                        return result;
+                    }
                 }
             }
 
@@ -423,8 +460,9 @@ namespace SustitucionMOAUtils.Services
         public object ObtenerReporteFacturasCertificaciones(
             string fechaInicio,
             string fechaFin,
+            string mailUsuario,
             string ordenDeCompra = null,
-            string proveedor = null,
+            string proveedorRazonSocial = null,
             int? itemsPorPagina = null,
             int? pagina = null,
             string orden = null,
@@ -433,31 +471,32 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                // Preparar objeto de paginación si se especifican los parámetros
                 Paginacion paginacion = null;
                 if (pagina.HasValue || itemsPorPagina.HasValue)
                 {
                     var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
                     paginacion = new Paginacion(
-                    (!string.IsNullOrEmpty(columna) ? columna : null),
-                    ordenar,
+                        (!string.IsNullOrEmpty(columna) ? columna : null),
+                        ordenar,
                         (pagina == null) ? 0 : pagina.Value,
                         (itemsPorPagina == null || itemsPorPagina == 0) ? 10 : itemsPorPagina.Value
                     );
                 }
 
-                // Validar las fechas
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+                var esUsuarioInternoMoa = usuario.TienePermiso(PermisoEnum.ReporteFacturasCertificaciones);
+                var cuitProveedor = esUsuarioInternoMoa ? null : usuario.ObtenerProveedor().CUIT;
+
                 var fechaInicioParsed = DateTime.Parse(fechaInicio);
                 var fechaFinParsed = DateTime.Parse(fechaFin);
-                var pag = new Paginacion("FechaDeRegistro", DirOrden.Desc, 1, 10);
-                var consulta = new ListarCertificacionRegistradaConsulta(paginacion, ordenDeCompra, proveedor, fechaInicioParsed, fechaFinParsed);
+                var consulta = new ListarCertificacionRegistradaConsulta(paginacion, ordenDeCompra, proveedorRazonSocial, cuitProveedor, fechaInicioParsed, fechaFinParsed);
                 var resultado = repositorio.ListarConsultaPaginada(consulta);
                 var certificacionesSinAreas = resultado.Select(c => new
                 {
                     c.Id,
                     c.Proveedor.RazonSocial,
                     c.NRO_OC,
-                    c.NRO_Certificacion,
+                    NRO_Certificacion = c.Archivo.FileKey != FileKeys.FacturaDiferenciaTasaDeCambio ? c.NRO_Certificacion : "Por diferencia de tipo de cambio",
                     c.Importe,
                     c.Archivo,
                     c.FechaDeRegistro,
@@ -465,7 +504,7 @@ namespace SustitucionMOAUtils.Services
                     c.Moneda
                 }).ToList();
 
-                int totalItems = resultado.Items.Count;
+                int totalItems = resultado.ItemsTotales;
                 itemsPorPagina = paginacion?.ItemsPorPagina ?? totalItems;
                 int paginaActual = paginacion?.Pagina ?? 1;
                 int totalPaginas = (int)Math.Ceiling((decimal)totalItems / itemsPorPagina.Value);
@@ -473,15 +512,15 @@ namespace SustitucionMOAUtils.Services
                 return new
                 {
                     certificaciones = certificacionesSinAreas,
-                    totalItems = totalItems,
-                    totalPaginas = totalPaginas,
-                    paginaActual = paginaActual
+                    totalItems,
+                    totalPaginas,
+                    paginaActual
                 };
 
             }
             catch (Exception ex)
             {
-                Log.Error($"Error en ObtenerReporteFacturasCertificaciones: {ex.Message}", ex);
+                Log.Error($"Error en ObtenerReporteFacturasCertificaciones", ex);
                 throw;
             }
         }
@@ -501,6 +540,20 @@ namespace SustitucionMOAUtils.Services
             Log.Info("Fin ObtenerResultadoOCRAsync: " + archivo.FileName);
 
             return resultadoOcrs;
+        }
+
+        private List<OrdenDeCompraSAPCertificacion> FiltrarCertificacionesNoVigentes(List<OrdenDeCompraSAPCertificacion> certificaciones)
+        {
+            var nrosCertificacionesSap = new HashSet<string>(certificaciones.Select(x => x.NroCertificacion));
+            var estadosCertificaciones = repositorio.ObtenerEstadosCertificaciones(nrosCertificacionesSap);
+            var certificacionesVigentes = certificaciones
+                .Where(x =>
+                    estadosCertificaciones.Any(e =>
+                        e.NumeroCertificacionSap == x.NroCertificacion &&
+                        e.Estado != "Anulada" &&
+                        e.Estado != "Rechazado"));
+
+            return certificacionesVigentes.ToList();
         }
     }
 }

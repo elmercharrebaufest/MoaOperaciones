@@ -57,6 +57,7 @@ export class FacturaComponent extends ListBaseComponent {
 
     certificacionesRegistradasExistentes = [];
     verPendientes: boolean = false;
+    textoNroCertifFacturaDiferenciaTasaCambio: string = 'Factura por diferencia de tipo de cambio';
 
     setTabs() {
         this.setMenuSeccionTab("factura", "Factura");
@@ -132,7 +133,8 @@ export class FacturaComponent extends ListBaseComponent {
                                         nombreArchivo,
                                         items,
                                         esMonedaExtranjera: items && items.length > 0 ? items[0].EsMonedaExtranjera : false,
-                                        esFacturaPorDiferenciaTasaDeCambio: false
+                                        esFacturaPorDiferenciaTasaDeCambio: false,
+                                        ordenDeCompra: items && items.length > 0 ? items[0].NRO_OC : ""
                                     }));
 
                                 }
@@ -197,6 +199,7 @@ export class FacturaComponent extends ListBaseComponent {
                 nombreArchivo: grp.nombreArchivo,
                 esMonedaExtranjera: grp.esMonedaExtranjera,
                 esFacturaPorDiferenciaTasaDeCambio: grp.esFacturaPorDiferenciaTasaDeCambio,
+                ordenDeCompra: grp.ordenDeCompra,
                 items: grp.esFacturaPorDiferenciaTasaDeCambio ? [] : grp.items.filter(cert => cert.Seleccionada)
             }));
             
@@ -368,7 +371,7 @@ export class FacturaComponent extends ListBaseComponent {
         const checked = (event.target as HTMLInputElement).checked;
 
         grupo.items.forEach(cert => {
-            if (!this.verPendientes || !cert.Archivo || cert.Archivo.length === 0) {
+            if ((!this.verPendientes || !cert.Archivo || cert.Archivo.length === 0) && cert.NRO_Certificacion != this.textoNroCertifFacturaDiferenciaTasaCambio) {
                 cert.Seleccionada = checked;
             }
         });

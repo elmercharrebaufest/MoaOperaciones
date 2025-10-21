@@ -274,6 +274,12 @@ namespace SustitucionMOAUtils.Services.Email
                     .ThenByDescending(x => x.NombreColumnaCambio == "PatenteAcoplado"))
                 {
                     var nombreColumna = cambio.NombreColumnaCambio == "ChasisAcoplado" ? "PatenteChasis" : cambio.NombreColumnaCambio;
+                    bool antesEsBool = string.Equals(cambio.Antes, "true", StringComparison.OrdinalIgnoreCase) || string.Equals(cambio.Antes, "false", StringComparison.OrdinalIgnoreCase);
+                    bool despuesEsBool = string.Equals(cambio.Despues, "true", StringComparison.OrdinalIgnoreCase) || string.Equals(cambio.Despues, "false", StringComparison.OrdinalIgnoreCase);
+
+                    if (antesEsBool || despuesEsBool)
+                        continue;
+
                     cambios.AppendLine($"<tr><td>{(nombreColumna)}</td><td>{cambio.Antes}</td><td>{cambio.Despues}</td><td>{cambio.FechaCambio}</td></tr>");
                 }
 

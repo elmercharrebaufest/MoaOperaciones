@@ -173,7 +173,7 @@ namespace SustitucionMOATest.Services
                 }
             };
 
-            serviciosConsumerMock.Setup(x => x.request()).Returns(rfcResultMock);
+            serviciosConsumerMock.Setup(x => x.request(string.Empty)).Returns(rfcResultMock);
 
             List<TablaSapDto> expected = new List<TablaSapDto>
             {
@@ -183,6 +183,29 @@ namespace SustitucionMOATest.Services
             var result = target.ObtenerServiciosSap();
 
             Assert.AreEqual(expected.Count, result.Count);
+        }
+
+        [Test()]
+        public void ObtenerServiciosSapPorCodigoTest()
+        {
+            var codigo = "12345";
+            var rfcResultMock = new ServicioWSMOAResponse()
+            {
+                Servicios = new List<Servicio>()
+                {
+                    new Servicio() { Descripcion = "Servicio Test", Codigo = codigo, Serv = "TEST" }
+                }
+            };
+
+            // Configura el mock para que devuelva el resultado cuando se llama con el parámetro
+            serviciosConsumerMock.Setup(x => x.request(codigo)).Returns(rfcResultMock);
+
+            var result = target.ObtenerServicioSapRawPorCodigo(codigo);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(codigo, result[0].Codigo);
+            Assert.AreEqual("Servicio Test", result[0].Descripcion);
         }
     }
 }

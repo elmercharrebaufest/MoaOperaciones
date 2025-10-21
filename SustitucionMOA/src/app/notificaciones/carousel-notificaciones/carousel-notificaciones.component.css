@@ -45,13 +45,12 @@ strong {
 }
 
 .text-title {
-    height: 30%;
+    height: auto;
     font-family: "Roboto Condensed", Arial, sans-serif;
     color: #3f4845;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 228px;
+    white-space: normal;
+    overflow: visible;
+    word-wrap: break-word;
 }
 
 .read-button {

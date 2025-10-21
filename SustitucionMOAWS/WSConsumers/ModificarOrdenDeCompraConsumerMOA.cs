@@ -18,8 +18,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class ModificarOrdenDeCompraConsumerMOA : IModificarOrdenDeCompraConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
 
         private readonly string rutaArchivosXmls = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private readonly ObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraconsumerMOA;

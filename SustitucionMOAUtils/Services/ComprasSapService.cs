@@ -1570,7 +1570,13 @@ namespace SustitucionMOAUtils.Services
 
         public List<Servicio> ObtenerServiciosSapRaw()
         {
-            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request(string.Empty);
+            return resultSap.Servicios;
+        }
+      
+        public List<Servicio> ObtenerServicioSapRawPorCodigo(string codigo)
+        {
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request(codigo);
             return resultSap.Servicios;
         }
 
@@ -1614,6 +1620,13 @@ namespace SustitucionMOAUtils.Services
             }
 
             return ordenesDeCompraSap.Distinct().ToList();
+        }
+
+        public List<OrdenCompraDto> ObtenerOrdenesDeCompra(DateTime fechaDesde)
+        {
+            var orderParams = new OrderParamsDto { fechaInicio = fechaDesde.ToString("yyyy-MM-dd") };
+            var ordenesDeCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(orderParams);
+            return ordenesDeCompra;
         }
 
         private AdjudicacionEditarDto ConvertirAjudicacionDtoEnAdjudicacionSAP(AdjudicacionDto adjudicacionDto)
@@ -2882,7 +2895,5 @@ namespace SustitucionMOAUtils.Services
             return resultadoEditarOC;
 
         }
-
-
     }
 }

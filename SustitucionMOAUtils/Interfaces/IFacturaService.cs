@@ -15,8 +15,9 @@ namespace SustitucionMOAUtils.Interfaces
         object ObtenerReporteFacturasCertificaciones(
             string fechaInicio,
             string fechaFin,
+            string mailUsuario,
             string ordenDeCompra = null,
-            string proveedor = null,
+            string proveedorRazonSocial = null,
             int? itemsPorPagina = null,
             int? pagina = null,
             string orden = null,

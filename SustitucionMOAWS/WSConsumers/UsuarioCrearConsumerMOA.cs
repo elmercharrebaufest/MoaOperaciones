@@ -16,8 +16,8 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class UsuarioCrearConsumerMOA
     {
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
         public UsuarioCrearWSMOAResponse request(string mail, string proveedor, string perfil, string tipo)
         {
             try

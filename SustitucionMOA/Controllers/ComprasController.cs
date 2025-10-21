@@ -1232,7 +1232,7 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(new SustitucionMOAApiResponse());
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.REPORTE_FACTURAS_CERTIFICACIONES)]
+        [CustomPermisoAuthorize(Roles = Permiso.CARGAR_FACT_PROV)]
         [HttpGet]
         public ActionResult ObtenerReporteFacturasCertificaciones(
             string fechaInicio,
@@ -1241,15 +1241,17 @@ namespace SustitucionMOA.Controllers
             int? itemsPorPagina = null,
             string orden = null,
             string columna = null,
-            string ordenDeCompra = null,  // Nuevo parámetro para filtrar por orden de compra
+            string ordenDeCompra = null,
             string proveedor = null)
         {
             try
             {
-                // Llama al servicio para obtener las certificaciones con paginación y los nuevos filtros
+                var mailUsuario = SessionPersister.Mail;
+
                 var certificacionesPaginadas = facturaService.ObtenerReporteFacturasCertificaciones(
                     fechaInicio,
                     fechaFin,
+                    mailUsuario,
                     ordenDeCompra,
                     proveedor,
                     itemsPorPagina,
@@ -1258,12 +1260,10 @@ namespace SustitucionMOA.Controllers
                     columna
                 );
 
-                // Convertir el resultado a un tipo compatible con ActionResult
                 return JsonCustom(certificacionesPaginadas);
             }
             catch (Exception ex)
             {
-                // Manejo de errores
                 Log.Error($"Error al obtener reporte de facturas: {ex.Message}", ex);
                 return JsonCustom(new { error = "Error al obtener certificaciones", mensaje = ex.Message });
             }

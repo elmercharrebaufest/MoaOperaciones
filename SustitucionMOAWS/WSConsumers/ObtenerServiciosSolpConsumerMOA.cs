@@ -14,15 +14,15 @@ namespace SustitucionMOAWS.WSConsumers
     public class ObtenerServiciosSolpConsumerMOA : IObtenerServiciosSolpConsumerMOA
     {
 
-        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserS4"];
-        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassS4"];
+        private readonly string UserSap = ConfigurationManager.AppSettings["SapUserSinPI"];
+        private readonly string PassSap = ConfigurationManager.AppSettings["SapPassSinPI"];
 
         public ObtenerServiciosSolpConsumerMOA()
         {
 
         }
 
-        public object request()
+        public object request(string codigo)
         {
             try
             {
@@ -37,14 +37,18 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_SRVSHORTTEXTSELECTION = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASKRAN[] { }
                     };
 
+                    if (!string.IsNullOrEmpty(codigo))
+                    {
+                        var IM_ServiceSelectionList = new List<WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASNRAN>();
+                        IM_ServiceSelectionList.Add(new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASNRAN { SIGN = "I", OPTION = "EQ", SERVICE_LOW = codigo });
+                        WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIASNRAN[] IM_SERVICESELECTION = IM_ServiceSelectionList.ToArray();
+                        request.IM_SERVICESELECTION = IM_SERVICESELECTION;
+                    }
+
                     Log.Info($"SAP sin PI Z_MMRFC_OBTENER_SERVICIOS request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MMRFC_OBTENER_SERVICIOS(request);
-                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_SERVICIOS response");
-                    //Log.Info(response.ToXml());
                     return MapSinPI(response);
-
-
                 }
                 else
                 {
@@ -55,6 +59,14 @@ namespace SustitucionMOAWS.WSConsumers
                     service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
                     ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN[] EX_SERVICESELECTION = new ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN[] { };
+
+                    if (!string.IsNullOrEmpty(codigo))
+                    {
+                        var IM_ServiceSelectionList = new List<ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN>();
+                        IM_ServiceSelectionList.Add(new ObtenerServiciosSolpWebServiceMOA.BAPIASNRAN { SIGN = "I", OPTION = "EQ", SERVICE_LOW = codigo });
+                        EX_SERVICESELECTION = IM_ServiceSelectionList.ToArray();
+                    }
+
                     ObtenerServiciosSolpWebServiceMOA.BAPIASKRAN[] EX_SRVSHORTTEXTSELECTION = new ObtenerServiciosSolpWebServiceMOA.BAPIASKRAN[] { };
                     ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] IM_RETURN = new ObtenerServiciosSolpWebServiceMOA.BAPIRET2[] { };
                     ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] IM_SERVICELIST = new ObtenerServiciosSolpWebServiceMOA.ZMPES5710[] { };

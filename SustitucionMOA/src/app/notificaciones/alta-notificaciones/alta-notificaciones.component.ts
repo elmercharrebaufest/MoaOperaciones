@@ -288,6 +288,13 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
             return false;
         }
 
+        if (this.notificacion.Nombre !== undefined && this.notificacion.Nombre.length > 70) {
+            this.mensajeError = "El campo nombre no puede tener más de 70 caracteres.";
+            this.focusSection("Nombre");
+            this.messageService.add({ key: 'tc', severity: 'warn', summary: 'Nombre', detail: this.mensajeError });
+            return false;
+        }
+
         if (this.fecha_inicio.length == 0) {
             this.mensajeError = "Ingrese fecha desde.";
             this.focusSection("noCursor");

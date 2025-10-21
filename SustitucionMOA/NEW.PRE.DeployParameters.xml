@@ -10,8 +10,8 @@
 
   <setParameter name="PasswordSap Config" value="prueba" />
   <setParameter name="SAPsinPI Config" value="1" />
-  <setParameter name="SapUserS4 Config" value="GWEBSRV_GOL" />
-  <setParameter name="SapPassS4 Config" value="prueba" />
+  <setParameter name="SapUserSinPI Config" value="GWEBSRV_GOL" />
+  <setParameter name="SapPassSinPI Config" value="prueba" />
 
   <setParameter name="EsLocal Config" value="false" />
 
@@ -42,6 +42,7 @@
 
 	<setParameter name="EmailToMesaENTSL Config" value="moaoperaciones@baufest.com;emartin@baufest.com;Ivan.Curtis@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar" />
 	<setParameter name="EmailToMesaVentaFas Config" value="moaoperaciones@baufest.com;Ivan.Curtis@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
+	<setParameter name="EmailToReporteTrabajoHecho Config" value="moaoperaciones@baufest.com" />
 	<setParameter name="EmailToCobranzas Config" value="moaoperaciones@baufest.com;emartin@baufest.com;Ivan.Curtis@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar" />
 	<setParameter name="EmailToComerciales Config" value="moaoperaciones@baufest.com;Ivan.Curtis@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
 	<setParameter name="EmailToComercialesAlimAnimal Config" value="moaoperaciones@baufest.com;Ivan.Curtis@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
@@ -228,4 +229,15 @@
   <setParameter value="https://gviceccqa.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_moaop_compras_direct/400/z_ws_moaop_compras_direct/z_ws_moaop_compras_direct" name="Z_WS_MOAOP_COMPRAS_DIRECT Service Endpoint Address" />
   <setParameter value="https://gviceccqa.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_moaop_direct/400/z_ws_moaop_direct/z_ws_moaop_direct" name="Z_WS_MOAOP_DIRECT Service Endpoint Address" />
   <setParameter value="https://gviceccqa.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_panol_direct/400/z_ws_panol_direct/z_ws_panol_direct" name="Z_WS_PANOL_DIRECT Service Endpoint Address" />
+
+  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MLBO Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_2012 Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MEWI Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MEWP Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MEWQ Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_BAPT Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_MOAOP_COMPRAS_DIRECT Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_MOAOP_DIRECT Binding Configuration" />
+  <setParameter value="sap_sin_pi_https" name="Z_WS_PANOL_DIRECT Binding Configuration" />
+  
 </parameters>

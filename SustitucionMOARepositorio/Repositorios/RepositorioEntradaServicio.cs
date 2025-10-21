@@ -11,6 +11,16 @@ namespace SustitucionMOARepositorio.Repositorios
     {
         public RepositorioEntradaServicio(DbContext context) : base(context) { }
 
+        public Usuario GetUsuarioPorMail(string mailUsuario)
+        {
+            return Obtener<Usuario>(x => x.Mail == mailUsuario);
+        }
+
+        public UsuarioReasignacion GetReasignacion(int usuarioId)
+        {
+            return Obtener<UsuarioReasignacion>(x => x.Usuario_Id == usuarioId);
+        }
+
         public List<Solp> ObtenerSolpsAutocertificablesDeOC(List<string> nroSolps)
         {
             var solpsQry =
@@ -19,6 +29,20 @@ namespace SustitucionMOARepositorio.Repositorios
                     nroSolps.Contains(solp.NroSolp)
                     && solp.CertificacionAutomatica
                     && solp.TipoSolpSap != 2
+                select solp;
+
+            return solpsQry.ToList();
+        }
+
+        public List<Solp> ObtenerSolpsAutocertificablesConAcuerdoMarco(List<string> nroSolps)
+        {
+            var solpsQry =
+                from solp in Set<Solp>()
+                where
+                    nroSolps.Contains(solp.NroSolp)
+                    && solp.CertificacionAutomatica
+                    && solp.TipoSolpSap != 2
+                    && solp.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))
                 select solp;
 
             return solpsQry.ToList();
@@ -65,6 +89,16 @@ namespace SustitucionMOARepositorio.Repositorios
                 select usuario.Suplente;
 
             return qrySuplente.FirstOrDefault();
+        }
+
+        public List<TablaSap> GetTablaSap(string nombreTablaSap)
+        {
+            return Listar<TablaSap>(a => a.Tabla == nombreTablaSap);
+        }
+
+        public long ObtenerSiguienteValorSecuencia()
+        {
+            return ExecuteQuery<long>("EXEC ObtenerSiguienteValorSecuencia").Single();
         }
     }
 }

@@ -117,6 +117,16 @@ namespace SustitucionMOA
               j => j.Execute(),
               "0 10 1,15 * *", tz);
 
+            RecurringJob.AddOrUpdate<Jobs.IEnviarMailReporteTrabajoYaHechoJob>(
+                "EnviarMailReporteTrabajoYaHechoJob",
+                j => j.Execute(),
+                "0 7 * * 2,4", tz);
+
+            RecurringJob.AddOrUpdate<Jobs.ICertificarOrdenesCompraContratoMarcoJob>(
+                "CertificarOrdenesCompraContratoMarcoJob",
+                j => j.Execute(),
+                "15 6 * * *", tz);
+
             RecurringJob.AddOrUpdate<Jobs.INotificacionErroresJob>(
             "NotificacionErroresJob",
             j => j.Execute(),
