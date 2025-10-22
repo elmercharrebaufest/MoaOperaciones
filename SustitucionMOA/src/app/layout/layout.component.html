@@ -694,13 +694,13 @@
                                 </a>
                             </div>
 
-                            <div *ngIf="isAuthorized('VER AGRUPAR PO')">
+                            <div *ngIf="isAuthorized('VER AGRUPAR PO') && !isAuthorized('COMPRAS RRHH')">
                                 <a (click)="goToSeccion('/compras/agrupar-po-th')" href="#">
                                     AGRUPAR PO TH
                                 </a>
                             </div>
 
-                            <div *ngIf="isAuthorized('ABM SOLP')">
+                            <div *ngIf="isAuthorized('ABM SOLP') && !isAuthorized('COMPRAS RRHH')">
                                 <a (click)="goToSeccion('/compras/dashboardPliegoMultiple')" href="#">
                                     PLIEGO MÚLTIPLE
                                 </a>

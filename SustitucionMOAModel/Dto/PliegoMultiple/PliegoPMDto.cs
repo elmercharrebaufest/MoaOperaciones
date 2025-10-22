@@ -19,7 +19,7 @@ namespace SustitucionMOAModel.Dto.PliegoMultiple
 
         public bool MultipleFinalizado { get; set; }
 
-        public static PliegoPMDto FromPliego(Pliego pliego)
+        public static PliegoPMDto FromPliego(Pliego pliego, string organizacionDeCompraId)
         {
             return new PliegoPMDto
             {
@@ -27,14 +27,12 @@ namespace SustitucionMOAModel.Dto.PliegoMultiple
                 NombreObra = pliego.NombreObra,
                 FechaAlta = pliego.FechaAlta,
                 FechaModificacion = pliego.FechaModificacion,
-                Solps = pliego.Solps?.Select(s => s.NroSolp),
+                Solps = pliego.Solps?
+                            .Where(s => s.OrganizacionDeCompra_Id == organizacionDeCompraId)
+                            .Select(s => s.NroSolp)
+                            .ToList(),
                 MultipleFinalizado = pliego.MultipleFinalizado
             };
-        }
-
-        public static explicit operator PliegoPMDto(Pliego v)
-        {
-            return FromPliego(v);
         }
     }
 }

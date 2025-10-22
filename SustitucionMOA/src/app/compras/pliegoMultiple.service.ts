@@ -18,10 +18,13 @@ export class PliegoMultipleService extends BaseService {
     }
 
 
-    public getPliegoMultiple(nombrePliego?: string): Observable<PliegoDto[]> {
+    public getPliegoMultiple(nombrePliego?: string, organizacionDeCompraId?: string): Observable<PliegoDto[]> {
         let params: HttpParams = new HttpParams();
         if (nombrePliego) {
             params = params.set('nombrePliego', nombrePliego);
+        }
+        if (organizacionDeCompraId) {
+            params = params.set('organizacionDeCompraId', organizacionDeCompraId);
         }
 
         return this.http
@@ -41,6 +44,7 @@ export class PliegoMultipleService extends BaseService {
         contratoMarco: boolean,
         pliegoId: number | null,
         incluirGuardadas: boolean,
+        organizacionDeCompraId: string
     ): Observable<SolpDto[]> {
         let params: HttpParams = new HttpParams();
         if (numeroSolp) {
@@ -89,6 +93,10 @@ export class PliegoMultipleService extends BaseService {
 
         if (pliegoId) {
             params = params.set('pliegoId', pliegoId.toString());
+        }
+
+        if (organizacionDeCompraId) {
+            params = params.set('organizacionDeCompraId', organizacionDeCompraId);
         }
 
         params = params.set('incluirGuardadas', incluirGuardadas.toString());

@@ -36,7 +36,7 @@ namespace SustitucionMOAUtils.Services
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1155:Use StringComparison when comparing strings", Justification = "Not supported by EF")]
-        public List<PliegoPMDto> GetPliegosMultiples(string nombrePliego)
+        public List<PliegoPMDto> GetPliegosMultiples(string nombrePliego, string organizacionDeCompraId)
         {
             IQueryable<Pliego> pliegos = repositorio.ListarConsultable<Pliego>(pliego => pliego.Multiple);
             Console.WriteLine(pliegos.ToString());
@@ -44,14 +44,14 @@ namespace SustitucionMOAUtils.Services
             {
                 return pliegos
                     .ToList()
-                    .ConvertAll(pliego => (PliegoPMDto)pliego);
+                    .ConvertAll(pliego => PliegoPMDto.FromPliego(pliego, organizacionDeCompraId));
             }
             else
             {
                 return pliegos
                     .Where(p => p.NombreObra.ToLower().Contains(nombrePliego.ToLower()))
                     .ToList()
-                    .ConvertAll(pliego => (PliegoPMDto)pliego);
+                    .ConvertAll(pliego => PliegoPMDto.FromPliego(pliego, organizacionDeCompraId));
             }
         }
 
@@ -61,6 +61,7 @@ namespace SustitucionMOAUtils.Services
                                                                DateTime? fechaFin,
                                                                IEnumerable<int> creador,
                                                                IEnumerable<string> fiscal,
+                                                               string organizacionDeCompraId,
                                                                bool sap,
                                                                bool mantenimiento,
                                                                bool web = false,
@@ -83,6 +84,7 @@ namespace SustitucionMOAUtils.Services
                         && !(solpQuery.TrabajoYaHecho == true || solpQuery.Adicional == true || solpQuery.Urgencia == true || solpQuery.CondEspProveedorAsignado == true || solpQuery.ConPresupuesto == true)
                         && !solpQuery.Pliego.Multiple
                         && !solpQuery.Posiciones.Any(posicion => posicion.AdjudicacionPosiciones.Any())
+                        && solpQuery.OrganizacionDeCompra_Id == organizacionDeCompraId
                     )
                 ;
 

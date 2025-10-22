@@ -61,7 +61,14 @@ export class DashboardPliegoMultipleComponent
     public getPliegos() {
         this.cargaCompleta = false;
         this.spinnerComponent.showIt();
-        this.service.getPliegoMultiple(this.nombrePliego).subscribe((pliegos: PliegoDto[]) => {
+        let organizacionDeCompraId:string;
+        if(this.securityService.tienePermiso("COMPRAS RRHH")){
+            organizacionDeCompraId = "4010";
+        }
+        else{
+            organizacionDeCompraId = "2029";
+        }
+        this.service.getPliegoMultiple(this.nombrePliego, organizacionDeCompraId).subscribe((pliegos: PliegoDto[]) => {
             this.pliegos = pliegos;
             this.cargaCompleta = true;
             this.spinnerComponent.hideIt();
