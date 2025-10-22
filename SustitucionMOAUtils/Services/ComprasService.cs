@@ -7834,7 +7834,8 @@ namespace SustitucionMOAUtils.Services
                             pos.Solp.Adicional != true &&
                             pos.Solp.CondEspProveedorAsignado != true &&
                             (pos.Solp.EstadoSolpSap.CodigoSap == "05" ||
-                            pos.Solp.EstadoSolpSap.CodigoSap == "02");
+                            pos.Solp.EstadoSolpSap.CodigoSap == "02")
+                     && (pos.Solp.OrganizacionDeCompra_Id == OrganizacionDeCompraEnum.Estrategica);
 
             return ListarPosicionesPOMultipleCommonFilter;
         }
