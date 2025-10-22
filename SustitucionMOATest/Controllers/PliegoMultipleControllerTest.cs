@@ -32,7 +32,7 @@ namespace SustitucionMOATest.Controllers
         {
             // Arrange
             var pliegos = new List<PliegoPMDto>();
-            mockPliegoMultipleService.Setup(service => service.GetPliegosMultiples(It.IsAny<string>(), It.IsAny<string>())).Returns(pliegos);
+            mockPliegoMultipleService.Setup(service => service.GetPliegosMultiples(It.IsAny<string>())).Returns(pliegos);
 
             // Act
             var result = controller.GetPliegosMultiples("test");
@@ -55,7 +55,6 @@ namespace SustitucionMOATest.Controllers
                     It.IsAny<DateTime?>(),
                     It.IsAny<IEnumerable<int>>(),
                     It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<string>(),
                     It.IsAny<bool>(),
                     It.IsAny<bool>(),
                     It.IsAny<bool>(),
@@ -66,7 +65,7 @@ namespace SustitucionMOATest.Controllers
                 .Returns(solps);
 
             // Act
-            var result = controller.GetSolpDisponiblesPliegosMultiple("test", "testNombrePliego", null, null, "1,2", "fiscal", "2029" ,false, false, false, false, false, false, null);
+            var result = controller.GetSolpDisponiblesPliegosMultiple("test", "testNombrePliego", null, null, "1,2", "fiscal", false, false, false, false, false, false, null);
 
             // Assert
             Assert.IsNotNull(result);

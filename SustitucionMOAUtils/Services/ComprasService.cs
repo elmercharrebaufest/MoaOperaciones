@@ -8530,7 +8530,7 @@ namespace SustitucionMOAUtils.Services
                 EstadoCotizacion = filtro.EstadoCotizacion,
                 Agrupada = filtro.Agrupada,
                 NroPo = !string.IsNullOrEmpty(filtro.NroPo) ? filtro.NroPo.Trim() : "",
-                OrganizacionDeCompra_Id = filtro.OrganizacionDeCompra_Id
+                OrganizacionDeCompra_Id = OrganizacionDeCompraEnum.Estrategica
             };
         }
 

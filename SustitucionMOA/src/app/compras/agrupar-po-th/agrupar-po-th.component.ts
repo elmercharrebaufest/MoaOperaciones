@@ -96,7 +96,6 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     proveedorSeleccionado: any = {};
     proveedores: any[] = new Array();
     displayAdjuntosSolp: boolean = false;
-    organizacionDeCompraId: string;
 
 
     Agrupada: SelectItem[] = [{ label: "Si", value: true }, { label: "No", value: false }, { label: "Todas", value: null }];
@@ -136,11 +135,9 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         CodigoProveedor: '',
         ListarPendiente: false,
         Agrupada: false,
-        OrganizacionDeCompra_Id: ''
     };
 
     ngOnInit() {
-        this.obtenerOrganizacionDeCompraId();
         this.recuperarFiltros();
     }
 
@@ -150,15 +147,6 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
 
     ngOnChanges() {
         this.recuperarFiltros();
-    }
-
-    obtenerOrganizacionDeCompraId() {
-        if (this.securityService.tienePermiso("COMPRAS RRHH")) {
-            this.organizacionDeCompraId = "4010";
-        }
-        else{
-            this.organizacionDeCompraId = "2029";
-        }
     }
 
     getCombos() {
@@ -273,7 +261,6 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
             this.filtrosPOAgrupada.FechaDesde = null;
             this.filtrosPOAgrupada.FechaHasta = null;
         }
-        this.filtrosPOAgrupada.OrganizacionDeCompra_Id = this.organizacionDeCompraId;
 
         sessionStorage.setItem('filtrosPOAgrupada', JSON.stringify(this.filtrosPOAgrupada));
         sessionStorage.setItem('proveedorSeleccionado', JSON.stringify(this.proveedorSeleccionado));
@@ -338,7 +325,6 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
             this.selectAgrupada = filtrosGuardados.Agrupada;
             this.selectTipoPosicion = filtrosGuardados.EsServicio;
             this.rangeDates = rangeDatesGuardado;
-            this.organizacionDeCompraId = filtrosGuardados.OrganizacionDeCompra_Id || this.organizacionDeCompraId;
 
             if(this.rangeDates != undefined){
                 this.rangeDates = [this.fechaInicio, this.fechaFin];

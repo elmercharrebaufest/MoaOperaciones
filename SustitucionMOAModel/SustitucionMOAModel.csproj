@@ -379,6 +379,7 @@
     <Compile Include="Enums\EstadoListarTratamientoSolp.cs" />
     <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
     <Compile Include="Enums\FlujoActualizacionOrdenResiduos.cs" />
+    <Compile Include="Enums\OrganizacionDeCompraEnum.cs" />
     <Compile Include="Enums\TipoConfiguracionUsuario.cs" />
     <Compile Include="Enums\TipoLegajo.cs" />
     <Compile Include="Enums\RolEnum.cs" />
