@@ -245,53 +245,58 @@ namespace SustitucionMOAUtils.Services
             if (campoProveedor.EUDR) normativasSeleccionadas.Add("EUDR");
             if (campoProveedor.BSVS2) normativasSeleccionadas.Add("2BSVS");
 
-            // Obtiene las normativas actuales asociadas al CampoCosecha
-            var normativasActuales = campoProveedor.CampoCosecha.CampoCosechaNormativas?.ToList() ?? new List<CampoCosechaNormativa>();
+            var tiposNormativas = repositorio.Listar<TipoNormativa>().ToList();
+            var normativasCampo = campoProveedor.CampoCosecha.CampoCosechaNormativas?.ToList()
+                                     ?? new List<CampoCosechaNormativa>();
 
-            // Todas las normativas posibles
-            var todasNormativas = repositorio.Listar<TipoNormativa>().Select(x => x.Descripcion);
+            var normativasCampoAgregar = new List<TipoNormativa>();
+            var normativasCampoEliminar = new List<CampoCosechaNormativa>();
 
-            foreach (var normativa in todasNormativas)
+            foreach (var tipo in tiposNormativas)
             {
-                var tipoNormativa = repositorio.Obtener<TipoNormativa>(n => n.Descripcion == normativa);
-                var normativaActual = normativasActuales.FirstOrDefault(n => n.TipoNormativa.Descripcion == normativa);
+                bool estaSeleccionada = normativasSeleccionadas.Contains(tipo.Descripcion);
+                var existente = normativasCampo.FirstOrDefault(n =>
+                    n?.TipoNormativa?.Descripcion == tipo.Descripcion);
 
-                if (normativasSeleccionadas.Contains(normativa))
+                if (estaSeleccionada && existente == null)
                 {
-                    // Si está seleccionada y no existe, la agrego
-                    if (normativaActual == null)
-                    {
-                        var nuevaNormativa = new CampoCosechaNormativa
-                        {
-                            CampoCosecha = campoProveedor.CampoCosecha,
-                            TipoNormativa = tipoNormativa,
-                            ToneladasAprobadas = -1
-                        };
-                        repositorio.Agregar(nuevaNormativa);
-                    }
+                    normativasCampoAgregar.Add(tipo);
                 }
-                else
+                else if (!estaSeleccionada && existente != null)
                 {
-                    // Si no está seleccionada y existe, la elimino
-                    if (normativaActual != null)
-                    {
-                        repositorio.Remover(normativaActual);
-                        if(normativaActual.TipoNormativa.Descripcion == "EPA")
-                        {
-                            var archEPA = this.repositorio.Obtener<Archivo>(a => a.Id == campoProveedor.EvidenciaEPA_Id);
-                            this.repositorio.Remover(archEPA);
-                        }
-                    }
+                    normativasCampoEliminar.Add(existente);
                 }
             }
 
-            // Si EPA está seleccionada y hay archivo, actualiza la evidencia
+            // Agregar las nuevas normativas
+            foreach (var tipoNormativa in normativasCampoAgregar)
+            {
+                var nuevaNormativa = new CampoCosechaNormativa
+                {
+                    CampoCosecha = campoProveedor.CampoCosecha,
+                    TipoNormativa = tipoNormativa,
+                    ToneladasAprobadas = -1
+                };
+                repositorio.Agregar(nuevaNormativa);
+            }
+
+            // Eliminar las normativas desmarcadas
+            foreach (var normativa in normativasCampoEliminar)
+            {
+                if (normativa.TipoNormativa?.Descripcion == "EPA")
+                {
+                    campoProveedor.EvidenciaEPA = null;
+                    campoProveedor.EvidenciaEPA_Id = null;
+                }
+                repositorio.Remover(normativa);
+            }
+
+            // Si EPA está seleccionada y hay archivo, actualizar la evidencia
             if (campoProveedor.EPA && archivoEPA != null && !campoProveedor.EvidenciaPresentada)
             {
                 if (campoProveedor.EvidenciaEPA == null)
-                {
                     campoProveedor.EvidenciaEPA = new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" };
-                }
+
                 campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
             }
         }

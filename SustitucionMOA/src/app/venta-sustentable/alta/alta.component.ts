@@ -564,6 +564,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg("Falta adjuntar el archivo de evidencia EPA.");
             return true;
         }
+
+        if (!this.normEPA && !this.normBSVS2 && !this.normEUDR) {
+            this.mensajeComponent.setErrorMsg("Debe seleccionar al menos una normativa.");
+            return true;
+        }
         return false
     }
 
