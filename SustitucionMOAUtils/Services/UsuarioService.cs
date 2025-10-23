@@ -665,20 +665,20 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Id == id);
+                var usuario = repositorio.Obtener<Usuario>(x => x.Id == id)
+                    ?? throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Usuario", id));
 
-                if (usuario == null)
+                var ret = new UsuarioDto(usuario)
                 {
-                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Usuario", id));
-                }
-                var ret = new UsuarioDto(usuario);
-                ret.Permisos = usuario.ObtenerPermisos();
-                ret.NuevoUsuario = usuario.EsNuevoUsuario();
+                    Permisos = usuario.ObtenerPermisos(),
+                    NuevoUsuario = usuario.EsNuevoUsuario()
+                };
 
                 return ret;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error($"Error al obtener usuario {id}.", ex);
                 throw;
             }
         }
@@ -714,6 +714,7 @@ namespace SustitucionMOAUtils.Services
             }
             return listaTipoUsuarios;
         }
+
         public List<string> ValidarMailUsuario(UsuarioModificacionDto usuarioModificacionDto)
         {
             List<string> listaValidacion = new List<string>();
@@ -721,6 +722,7 @@ namespace SustitucionMOAUtils.Services
             if (usuarios.Count > 0) listaValidacion.Add("El correo ya existe para otro usuario");
             return listaValidacion;
         }
+        
         public List<ProveedorAuditoriaDto> GetProveedorAuditoriaPorUsuario(int usuarioId)
         {
             List<ProveedorAuditoriaDto> listaAuditoria = new List<ProveedorAuditoriaDto>();
@@ -745,14 +747,16 @@ namespace SustitucionMOAUtils.Services
             }
             return listaAuditoria;
         }
+        
         private void GuardarProveedorAuditoria(Proveedor proveedorActual, ProveedoresModificacionDto proveedorModificado, UsuarioModificacionDto usuarioModificacionDto)
         {
             if (!proveedorActual.Mail.Equals(usuarioModificacionDto.Mail) ||
                 !proveedorActual.CUIT.Equals(proveedorModificado.Cuit) ||
                  proveedorActual.TipoProveedor.Id != proveedorModificado.IdTipoProveedor ||
-                !proveedorActual.RazonSocial.Equals(proveedorModificado.RazonSocial) || !proveedorActual.CodigoProveedor.Equals(proveedorModificado.CodigoProveedor) ||
+                !proveedorActual.RazonSocial.Equals(proveedorModificado.RazonSocial) ||
+                !proveedorActual.CodigoProveedor.Equals(proveedorModificado.CodigoProveedor) ||
                  proveedorActual.CodigoProveedor != proveedorModificado.CodigoProveedor ||
-                 proveedorActual.EsRevendedor != proveedorModificado.EsRevendedor || proveedorActual.OrganizacionDeCompra != usuarioModificacionDto.OrganizacionDeCompra)
+                 proveedorActual.EsRevendedor != proveedorModificado.EsRevendedor)
             {
                 ProveedorAuditoria proveedorAuditoria = new ProveedorAuditoria();
                 proveedorAuditoria.Proveedor_Id = proveedorActual.Id;
@@ -765,26 +769,28 @@ namespace SustitucionMOAUtils.Services
                 proveedorAuditoria.FechaActualizacion = DateTime.Now;
                 proveedorAuditoria.UsuarioActualizacion = usuarioModificacionDto.UsuarioModificacion;
                 proveedorAuditoria.EsRevendedor = proveedorModificado.EsRevendedor;
-                proveedorAuditoria.OrganizacionDeCompra = usuarioModificacionDto.OrganizacionDeCompra;
                 repositorio.Agregar(proveedorAuditoria);
             }
         }
+        
         public string ModificarUsuario(UsuarioModificacionDto usuarioModificacionDto)
         {
             string resultado = string.Empty;
             try
             {
-                Usuario usuario = repositorio.Obtener<Usuario>(x => x.Id == usuarioModificacionDto.Id);
+                var usuario = repositorio.Obtener<Usuario>(x => x.Id == usuarioModificacionDto.Id);
+
                 usuario.CUITRegistro = usuarioModificacionDto.Cuit;
                 usuario.Mail = usuarioModificacionDto.Mail;
                 usuario.TipoUsuario = repositorio.Obtener<TipoUsuario>(x => x.Id == usuarioModificacionDto.IdTipoUsuario);
-                usuario.OrganizacionDeCompra = usuarioModificacionDto.OrganizacionDeCompra;
+
                 repositorio.GuardarCambios();
+                
                 if (usuarioModificacionDto.Proveedores != null)
                 {
                     foreach (var proveedor in usuario.Proveedores)
                     {
-                        var proveedorModificado = usuarioModificacionDto.Proveedores.Where(x => x.Id == proveedor.Id).FirstOrDefault();
+                        var proveedorModificado = usuarioModificacionDto.Proveedores.FirstOrDefault(x => x.Id == proveedor.Id);
                         if (proveedorModificado != null)
                         {
                             GuardarProveedorAuditoria(proveedor, proveedorModificado, usuarioModificacionDto);

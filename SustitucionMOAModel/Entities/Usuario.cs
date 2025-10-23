@@ -31,7 +31,6 @@ namespace SustitucionMOAModel.Entities
         public string ApiKey { get; set; }
         //public virtual ICollection<Archivo> Archivos { get; set; }
         public string UsuarioSap { get; set; }
-        public string OrganizacionDeCompra { get; set; }
         public string Suplente { get; set; }
         public bool? Externo { get; set; }
 

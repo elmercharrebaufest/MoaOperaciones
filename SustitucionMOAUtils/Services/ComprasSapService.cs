@@ -957,11 +957,6 @@ namespace SustitucionMOAUtils.Services
             var respuesta = new RespuestaCrearOrdenDeCompra();
             respuesta.Errores = new List<string>();
             CrearPedidoConsumerMOAResponse resultadoCrearPedido;
-            if (string.IsNullOrEmpty(AdjudicacionEntity.Usuario.OrganizacionDeCompra))
-            {
-                respuesta.Errores.Add("El usuario creador no tiene una organización de compra registrada en su perfil. Comunicarse con sistemas para agregarla.");
-                return respuesta;
-            }
 
             if (AdjudicacionEntity.Posiciones.FirstOrDefault().Posicion.Solp.Adicional == true)
             {

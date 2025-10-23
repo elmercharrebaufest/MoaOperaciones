@@ -22,14 +22,14 @@ namespace SustitucionMOAModel.Dto
         public string UsuarioSap { get; set; }
         public string RazonSocial { get; set; }
         public TipoUsuarioDto TipoUsuario { get; set; }
-        public string OrganizacionDeCompra { get; set; }
+        
+        public string Suplente { get; set; }
+        public bool? Externo { get; set; }
+
         public UsuarioDto()
         {
             Permisos = new List<string>();
         }
-        public string Suplente { get; set; }
-        public bool? Externo { get; set; }
-
 
         public UsuarioDto(Usuario usuario)
         {
@@ -60,16 +60,14 @@ namespace SustitucionMOAModel.Dto
             CodigoProveedor = ObtenerCodigoProveedor();
             Permisos = usuario.ObtenerPermisos();
             RazonSocial = usuario.ObtenerRazonSocial();
-            OrganizacionDeCompra = usuario.OrganizacionDeCompra;
             Suplente = usuario.Suplente;
             Externo = usuario.Externo;
-    }
+        }
 
         private string ObtenerCodigoProveedor()
         {
             try
             {
-                //
                 if (string.IsNullOrEmpty(CUIT))
                     return "";
 
@@ -86,7 +84,6 @@ namespace SustitucionMOAModel.Dto
             {
                 return "CUIT INVALIDO";
             }
-
         }
     }
 }

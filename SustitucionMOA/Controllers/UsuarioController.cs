@@ -614,6 +614,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
         public ActionResult ModificarUsuario(UsuarioModificacionDto usuarioModificacionDto)
         {

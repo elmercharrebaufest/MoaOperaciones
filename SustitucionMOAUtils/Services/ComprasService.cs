@@ -6818,15 +6818,20 @@ namespace SustitucionMOAUtils.Services
 
             return registros;
         }
+
         private RegistroInfoDto CrearRegistroInfoDto(
             CotizacionPosicion cotizacionPosicion,
             SolpPosicion solpPosicion,
             IEnumerable<UnidadesDeMedida> unidadesDeMedidaSap,
-            Cotizacion cotizacion = null
-            )
+            Cotizacion cotizacion = null)
         {
-            RegistroInfoDto ultimoRegistroInfoSap = registroInfoService.ObtenerUltimoRegistroPorMaterialYProveedor(cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
-                    cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo, "2029", cotizacionPosicion.Cotizacion.UsuarioCreador.ObtenerCodigoProveedor());
+            var organizacionDeCompra = solpPosicion.Solp.OrganizacionDeCompra_Id;
+
+            RegistroInfoDto ultimoRegistroInfoSap = registroInfoService.ObtenerUltimoRegistroPorMaterialYProveedor(
+                cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
+                cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo,
+                organizacionDeCompra,
+                cotizacionPosicion.Cotizacion.UsuarioCreador.ObtenerCodigoProveedor());
 
             var registro = new RegistroInfoDto
             {
@@ -6835,7 +6840,7 @@ namespace SustitucionMOAUtils.Services
                 Cuit = cotizacion != null ? cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor()
                         : cotizacionPosicion.Cotizacion.UsuarioCreador.ObtenerCodigoProveedor(),
                 Unidad = cotizacionPosicion.UnidadDeMedida.Codigo,
-                OrganizacionDeCompra = "2029",
+                OrganizacionDeCompra = organizacionDeCompra,
                 Centro = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo,
                 Moneda = cotizacionPosicion.Moneda.Codigo,
                 Precio = cotizacionPosicion.Precio.Value,

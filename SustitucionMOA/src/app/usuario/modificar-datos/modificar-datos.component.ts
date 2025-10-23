@@ -66,7 +66,6 @@ export class ModificarDatosComponent implements OnInit, OnDestroy {
             cuit: [''],
             usuarioModificacion: [''],
             idTipoUsuario: [0],
-            organizacionDeCompra: [''],
             proveedores: this.formBuilder.array([]),
         });
     }
@@ -80,7 +79,6 @@ export class ModificarDatosComponent implements OnInit, OnDestroy {
         this.modificarDatosForm.controls['cuit'].setValue(usuario.CUIT);
         this.modificarDatosForm.controls['usuarioModificacion'].setValue(usuarioModificacion);
         this.modificarDatosForm.controls['idTipoUsuario'].setValue(usuario.TipoUsuario.Id);
-        this.modificarDatosForm.controls['organizacionDeCompra'].setValue(usuario.OrganizacionDeCompra);
         let listaProveedores: Proveedor[];
         this.existeProveedores = true;
         this.service.getProvedoresEmail(usuario.TipoUsuario.Id, usuario.Mail, usuario.CUIT).subscribe(proveedores => {
@@ -118,7 +116,6 @@ export class ModificarDatosComponent implements OnInit, OnDestroy {
             cuit: modificarDatos.controls["cuit"].value,
             usuarioModificacion: modificarDatos.controls["usuarioModificacion"].value,
             idTipoUsuario: modificarDatos.controls["idTipoUsuario"].value,
-            organizacionDeCompra: modificarDatos.controls["organizacionDeCompra"].value,
             proveedores: proveedores,
         }
         return modificarUsuario;
@@ -200,8 +197,7 @@ export class ModificarDatosComponent implements OnInit, OnDestroy {
                 razonSocial: proveedor.RazonSocial,
                 codigoProveedor: proveedor.CodigoProveedor,
                 idTipoProveedor: { value: proveedor.IdTipoProveedor, disabled: true },
-                esRevendedor: proveedor.EsRevendedor,
-                organizacionDeCompra: proveedor.OrganizacionDeCompra
+                esRevendedor: proveedor.EsRevendedor
             })
         } else {
             return this.formBuilder.group({

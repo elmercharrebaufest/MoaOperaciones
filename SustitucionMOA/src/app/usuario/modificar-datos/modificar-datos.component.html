@@ -25,16 +25,6 @@
                                 autocomplete="chrome-off" (change)="onActualizaCuitProveedor()" maxlength="13" />
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="formulario-label">
-                            Código de Organización de Compra
-                        </div>
-                        <div class="styled-select">
-                            <input type="text" formControlName="organizacionDeCompra" class="form-control"
-                                autocomplete="chrome-off" maxlength="20"
-                                onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
-                        </div>
-                    </div>
                 </div>
                 <br />
                 <div class="div-division" *ngIf="!existeProveedores">
