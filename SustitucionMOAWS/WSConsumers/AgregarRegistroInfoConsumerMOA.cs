@@ -291,14 +291,14 @@ namespace SustitucionMOAWS.WSConsumers
                         CURRENCY = registro.Moneda,
                         MIN_PO_QTY = 0,
                         NRM_PO_QTY = 1,
-                        PLND_DELRY = CalcularFecha(registro.FechaVigenciaFormateada, hoy), //es la fecha de vigencia
+                        PLND_DELRY = CalcularFecha(registro.FechaVigenciaFormateada, hoy),
                         QUOTATION = "LICITACION",
                         QUOT_DATE = CalcularFechaString(registro.FechaVigenciaFormateada, hoy),//es la fecha de vigencia
                         NET_PRICE = registro.Precio,
                         EFF_PRICE = registro.Precio,
                         PRICE_UNIT = 1,
                         ORDERPR_UN = unidadMedidaCodigo,
-                        PRICE_DATE = CalcularFechaString(registro.FechaVigenciaFormateada, hoy),//es la fecha de vigencia
+                        PRICE_DATE = CalcularFechaString(registro.FechaVigenciaFormateada, hoy),//es la fecha que se creo el precio
                         PERIOD_IND_EXPIRATION_DATE = "D",
                         //PRICE_UNITSpecified = true,
                         //NRM_PO_QTYSpecified = true,
