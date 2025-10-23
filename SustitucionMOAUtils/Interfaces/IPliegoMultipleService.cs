@@ -8,7 +8,7 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IPliegoMultipleService
     {
-        List<PliegoPMDto> GetPliegosMultiples(string nombrePliego, string organizacionDeCompraId);
+        List<PliegoPMDto> GetPliegosMultiples(string nombrePliego);
 
         List<SolpPMDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp,
                                                         string nombrePliego,
@@ -16,7 +16,6 @@ namespace SustitucionMOAUtils.Interfaces
                                                         DateTime? fechaFin,
                                                         IEnumerable<int> creador,
                                                         IEnumerable<string> fiscal,
-                                                        string organizacionDeCompraId,
                                                         bool sap,
                                                         bool mantenimiento,
                                                         bool web = false,

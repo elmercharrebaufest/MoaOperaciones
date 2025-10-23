@@ -27,9 +27,9 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetPliegosMultiples(string nombrePliego = "", string organizacionDeCompraId = "")
+        public JsonResult GetPliegosMultiples(string nombrePliego = "")
         {
-            return JsonCustom(pliegoMultipleService.GetPliegosMultiples(nombrePliego, organizacionDeCompraId));
+            return JsonCustom(pliegoMultipleService.GetPliegosMultiples(nombrePliego));
         }
 
         [HttpGet]
@@ -39,7 +39,6 @@ namespace SustitucionMOA.Controllers
                                                             DateTime? fechaFin,
                                                             string creador,
                                                             string fiscal,
-                                                            string organizacionDeCompraId,
                                                             bool sap = false,
                                                             bool mantenimiento = false,
                                                             bool web = false,
@@ -62,7 +61,6 @@ namespace SustitucionMOA.Controllers
                                                                                       fechaFin,
                                                                                       creadorList,
                                                                                       fiscalList,
-                                                                                      organizacionDeCompraId,
                                                                                       sap,
                                                                                       mantenimiento,
                                                                                       web,

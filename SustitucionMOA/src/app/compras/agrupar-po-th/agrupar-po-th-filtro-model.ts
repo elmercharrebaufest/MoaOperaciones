@@ -25,5 +25,4 @@ export interface FiltroDto {
     ListarPendiente?: boolean;
     EsServicio?: boolean;
     Agrupada?: boolean;
-    OrganizacionDeCompra_Id?: string;
 }

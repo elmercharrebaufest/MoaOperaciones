@@ -7,7 +7,6 @@ import { FiltroFechaComponent } from '../../../../common/view-child/filtro-fecha
 import { ComprasService } from '../../../compras.service';
 import { PliegoMultipleService } from '../../../pliegoMultiple.service';
 import { SolpDto } from './solpDto.interface';
-import { SecurityService } from '../../../../common/services/SecurityService';
 
 @Component({
     selector: 'vincular-solp-pliego-multiple',
@@ -56,7 +55,7 @@ export class VincularSolpPliegoMultipleComponent
 
     public solps: SolpDto[];
 
-    constructor(protected service: PliegoMultipleService, protected comprasService: ComprasService, private securityService: SecurityService) { }
+    constructor(protected service: PliegoMultipleService, protected comprasService: ComprasService) { }
 
     ngOnInit() {
         this.cargarFiltrosUsuario();
@@ -112,16 +111,8 @@ export class VincularSolpPliegoMultipleComponent
     public getSolps() {
         try {
             this.blockUI.start("Cargando");
-            let organizacionDeCompraId:string;
 
-            if(this.securityService.tienePermiso("COMPRAS RRHH")){
-                organizacionDeCompraId = "4010";
-            }
-            else{
-                organizacionDeCompraId = "2029";
-            }
-
-            this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.nombrePliego, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco, this.pliegoId, this.incluirGuardadas, organizacionDeCompraId)
+            this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.nombrePliego, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco, this.pliegoId, this.incluirGuardadas)
                 .subscribe(
                     (result: any) => {
                         if (result.logout == true) {

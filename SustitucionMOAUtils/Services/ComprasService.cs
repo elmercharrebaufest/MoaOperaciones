@@ -7834,7 +7834,8 @@ namespace SustitucionMOAUtils.Services
                             pos.Solp.Adicional != true &&
                             pos.Solp.CondEspProveedorAsignado != true &&
                             (pos.Solp.EstadoSolpSap.CodigoSap == "05" ||
-                            pos.Solp.EstadoSolpSap.CodigoSap == "02");
+                            pos.Solp.EstadoSolpSap.CodigoSap == "02")
+                     && (pos.Solp.OrganizacionDeCompra_Id == OrganizacionDeCompraEnum.Estrategica);
 
             return ListarPosicionesPOMultipleCommonFilter;
         }
@@ -8530,7 +8531,7 @@ namespace SustitucionMOAUtils.Services
                 EstadoCotizacion = filtro.EstadoCotizacion,
                 Agrupada = filtro.Agrupada,
                 NroPo = !string.IsNullOrEmpty(filtro.NroPo) ? filtro.NroPo.Trim() : "",
-                OrganizacionDeCompra_Id = filtro.OrganizacionDeCompra_Id
+                OrganizacionDeCompra_Id = OrganizacionDeCompraEnum.Estrategica
             };
         }
 
