@@ -130,7 +130,8 @@ namespace SustitucionMOAWS.WSConsumers
             }
             catch (Exception e)
             {
-                throw e;
+                Log.Error(e, $"Error al obtener de SAP orden de compra {nroOC}.");
+                throw;
             }
         }
 

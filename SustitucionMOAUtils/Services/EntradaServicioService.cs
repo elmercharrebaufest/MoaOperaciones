@@ -959,7 +959,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (ordenParams.OrdenCompraId != documento.entradaServicioDetalle[0].OrdenCompra || string.IsNullOrEmpty(ordenParams.OrdenCompraId))
                     {
-                        var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(documento.entradaServicioDetalle[0].OrdenCompra);
+                        var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFCSinPI(documento.entradaServicioDetalle[0].OrdenCompra);
                         ModificarPedidoSAP POSCHEDULE = new ModificarPedidoSAP
                         {
                             NRO_SOLP = ocSap.POSCHEDULE.FirstOrDefault().PREQ_NO
