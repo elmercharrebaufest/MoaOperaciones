@@ -1543,6 +1543,11 @@ namespace SustitucionMOAUtils.Services
 
         private void ValidarCampoPoligonoKmz(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
+            if (Path.GetExtension(archivoKmz.FileName).ToLower() != ".kmz")
+            {
+                throw new ValidationCustomException("El archivo debe tener formato KMZ.");
+            }
+
             // Validar que no sea solo un punto
             if (archivoKmz.ContentLength == 0)
             {

@@ -336,6 +336,12 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }
     }
 
+    public onCheck2BSVS(value: any) {
+        if (value) {
+            this.validarModalDeclaracion();
+        }
+    }
+
     private validarModalDeclaracion() {
         if (this.cosechaId > 0) {
             if (this.esCorredor) {
@@ -441,9 +447,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     verificarCUITIngresado() {
-        this.declaracionComformidad.CUITDeclaracion = this.CUIT;
-
-        this.revisarDeclaracionJurada()
+        if (this.normBSVS2) {
+            this.declaracionComformidad.CUITDeclaracion = this.CUIT;
+            this.revisarDeclaracionJurada()
+        }
     }
 
     getCosechas() {
@@ -579,7 +586,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     onResultadoDeclaracion(result: boolean) {
         if (!result) {
             this.cosechaId = 0;
-        }else{
+        }else if(this.camposNuevosSugeridos.length > 0){
         this.mostrarSugerenciasCamposNuevos = true;
         }
         /*else {
@@ -637,7 +644,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
         let cosechaId: number = this.cosechaId;
         let cuitTitularCP: string = this.CUIT;
         this.mensajeCamposSugeridos.setMsgsEmpty();
-
+        this.camposNuevosSugeridos = [];
         if (proveedorId && cosechaId && cuitTitularCP) {
             this.spinnerComponent.showIt();
             this.subscription = this.service.obtenerSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP).subscribe(
@@ -649,7 +656,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
                             x.CosechaId = cosechaId;
                             return x;
                         });
-                        this.mostrarConfirmacionSugeridos2BSVS = true;
+                        if(camposSugeridos.length > 0){
+                            this.mostrarConfirmacionSugeridos2BSVS = true;
+                        }
                     }
                 },
                 error => {

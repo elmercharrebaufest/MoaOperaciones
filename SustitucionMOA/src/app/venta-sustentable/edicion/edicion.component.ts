@@ -69,7 +69,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
   fileEPA: any;
   proveedorNombre: any;
   campoCosechaId: any;
-  NombreCosecha: any;
+  NombreCosecha: string = "";
   localidadNombre: string;
   evidenciaEpaPresentada: boolean = false;
 
@@ -138,7 +138,9 @@ export class EdicionComponent extends BaseComponent implements OnInit {
   }
 
   procesarArchivo(result: any) {
-      // Detecta el tipo MIME por la extensión del nombre de archivo
+    if(result.EvidenciaEPA_Id == null || result.ArchivoEPA  == null)
+      return;  
+    // Detecta el tipo MIME por la extensión del nombre de archivo
       let mimeType = 'application/octet-stream'; // Valor por defecto
       if (result.NombreArchivoEPA.endsWith('.pdf')) {
         mimeType = 'application/pdf';
