@@ -102,7 +102,7 @@ namespace SustitucionMOA.Controllers
                 TipoPosicion = tiposPosicionSolp,
                 TipoImputacion = service.ObtenerTiposImputaciones(),
 
-                Usuarios = usuarioService.ListarUsuarioCreadorSolp(),
+                Usuarios = usuarioService.ListarUsuarioCreadorSolp(ObtenerUsuarioActual()),
                 Regiones = service.ListarRegionesSap(),
                 CondicionesDeImportacion = comprasSapService.ObtenerTablaSap(TablasSap.CondicionesDeImportacion),
                 CondicionesDePago = comprasSapService.ObtenerTablaSap(TablasSap.CondicionesDePago),
@@ -784,7 +784,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ListarUsuarioCreadorSolp()
         {
-            return JsonCustom(new { data = usuarioService.ListarUsuarioCreadorSolp() });
+            return JsonCustom(new { data = usuarioService.ListarUsuarioCreadorSolp(ObtenerUsuarioActual()) });
         }
 
         [HttpGet]

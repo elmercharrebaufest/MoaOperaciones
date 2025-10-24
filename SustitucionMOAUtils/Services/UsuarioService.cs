@@ -633,13 +633,26 @@ namespace SustitucionMOAUtils.Services
             return resultado;
         }
 
-        public IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp()
+        public IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp(UsuarioDto user)
         {
-            return repositorio.Listar<Solp, UsuarioDto>(solp => new UsuarioDto
-            {
-                Mail = solp.UsuarioCreacion.Mail,
-                Id = solp.UsuarioCreacion.Id
-            }).GroupBy(x => x.Id);
+            Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == user.Id);
+            var esUsuarioComprasRRHH = usuario.Roles.Any(r => r.Codigo == "COMPRASRRHH");
+            return esUsuarioComprasRRHH
+                ? repositorio.Listar<Solp, UsuarioDto>(
+                    solp => new UsuarioDto
+                    {
+                        Mail = solp.UsuarioCreacion.Mail,
+                        Id = solp.UsuarioCreacion.Id
+                    },
+                    solp => solp.UsuarioCreacion != null && solp.UsuarioCreacion.Roles.Any(r => r.Codigo == "COMPRASRRHH")
+                ).GroupBy(x => x.Id)
+                : repositorio.Listar<Solp, UsuarioDto>(
+                    solp => new UsuarioDto
+                    {
+                        Mail = solp.UsuarioCreacion.Mail,
+                        Id = solp.UsuarioCreacion.Id
+                    }
+                ).GroupBy(x => x.Id);
         }
 
         public IEnumerable<string> ListarFiscalesSolp()
