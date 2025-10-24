@@ -1,12 +1,12 @@
-import { Component, inject, OnInit, computed } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CargoTrackingService } from '../../infrastructure/services/cargo-tracking.service';
 import { ShipmentCardComponent } from '../shipment-card/shipment-card';
-import { StageProgressComponent } from '../stage-progress/stage-progress';
 import { ProgressStepperComponent } from '../progress-stepper/progress-stepper';
+import { StagesListComponent } from '../stages-list/stages-list';
 import { ExpandableSectionComponent } from '../expandable-section/expandable-section';
 import { ContainerComponent } from '../../shared/container/container';
 import { SectionWrapperComponent } from '../section-wrapper/section-wrapper';
+import { MOCK_CARGO_DATA } from '../../data/mock-cargo-tracking.data';
 
 @Component({
   selector: 'app-cargo-tracking-page',
@@ -14,8 +14,8 @@ import { SectionWrapperComponent } from '../section-wrapper/section-wrapper';
   imports: [
     CommonModule,
     ShipmentCardComponent,
-    StageProgressComponent,
     ProgressStepperComponent,
+    StagesListComponent,
     ExpandableSectionComponent,
     ContainerComponent,
     SectionWrapperComponent
@@ -23,47 +23,35 @@ import { SectionWrapperComponent } from '../section-wrapper/section-wrapper';
   templateUrl: './cargo-tracking-page.html',
   styleUrls: ['./cargo-tracking-page.scss']
 })
-export class CargoTrackingPageComponent implements OnInit {
-  private cargoTrackingService = inject(CargoTrackingService);
-  
-  // Get data from service
-  cargoData = this.cargoTrackingService.cargoTrackingData;
-  
-  // Computed values
+export class CargoTrackingPageComponent {
+  cargoData = signal(MOCK_CARGO_DATA);
+  currentStageIndex = signal(0);
+  isExpanded = signal(false);
+
   currentStage = computed(() => {
     const data = this.cargoData();
-    if (!data) return null;
-    return {
-      name: data.etapas[data.currentStageIndex],
-      index: data.currentStageIndex + 1,
-      total: data.etapas.length,
-      date: data.stageDate,
-      estimatedTime: data.estimatedTime
-    };
+    const index = this.currentStageIndex();
+    if (data && data.etapas && data.etapas[index]) {
+      return {
+        index: index,
+        total: data.etapas.length,
+        name: data.etapas[index].nombre,
+        date: data.etapas[index].fecha,
+        estimatedTime: data.etapas[index].tiempoEstimado
+      };
+    }
+    return null;
   });
 
-  ngOnInit() {
-    // Load mock data on init
-    this.cargoTrackingService.loadMockData();
-    
-    // Or fetch from API:
-    // this.cargoTrackingService.getCargoTrackingInfo('098765123456')
-    //   .subscribe(data => {
-    //     this.cargoTrackingService.cargoTrackingData.set({
-    //       ...data,
-    //       currentStageIndex: 0,
-    //       stageDate: new Date(),
-    //       estimatedTime: 'aprox. 10 min'
-    //     });
-    //   });
+  onStageChange(stageIndex: number) {
+    this.currentStageIndex.set(stageIndex);
+  }
+
+  toggleExpanded() {
+    this.isExpanded.update(value => !value);
   }
 
   consultarOtraCTG() {
-    // Navigate to search or reset
     console.log('Consultar otra CTG');
-  }
-  
-  onStageChange(stageIndex: number) {
-    this.cargoTrackingService.updateCurrentStage(stageIndex);
   }
 }

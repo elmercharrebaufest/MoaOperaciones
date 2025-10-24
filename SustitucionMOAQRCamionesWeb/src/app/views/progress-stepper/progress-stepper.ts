@@ -1,4 +1,4 @@
-import { Component, input, output, computed, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,25 +11,20 @@ import { CommonModule } from '@angular/common';
 export class ProgressStepperComponent {
   totalSteps = input.required<number>();
   currentStep = input.required<number>();
+  isExpanded = input.required<boolean>();
+  
   stageChanged = output<number>();
-  
-  isExpanded = signal(false);
-  
-  steps = computed(() => Array.from({ length: this.totalSteps() }, (_, i) => i + 1));
-  
-  goToPrevious() {
-    if (this.currentStep() > 1) {
-      this.stageChanged.emit(this.currentStep() - 2); // -2 because index is 0-based
-    }
+  toggleExpanded = output<void>();
+
+  getSteps() {
+    return Array.from({ length: this.totalSteps() }, (_, i) => i);
   }
-  
-  goToNext() {
-    if (this.currentStep() < this.totalSteps()) {
-      this.stageChanged.emit(this.currentStep()); // currentStep is already the next index
-    }
+
+  onStepClick(step: number) {
+    this.stageChanged.emit(step);
   }
-  
-  toggleExpanded() {
-    this.isExpanded.update(v => !v);
+
+  onToggleExpanded() {
+    this.toggleExpanded.emit();
   }
 }

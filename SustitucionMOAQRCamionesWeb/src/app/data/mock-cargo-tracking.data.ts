@@ -1,45 +1,76 @@
-import { CargoTrackingState } from '../models/cargo-tracking.model';
+import { CargoTrackingData } from '../models/cargo-tracking.model';
 
-export const MOCK_CARGO_TRACKING_DATA: CargoTrackingState = {
-  ctg: "098765123456",
-  titularCartaPorte: "EL NORTE CORDOBES SRL",
-  remitenteComercial: "SYNGENTA AGRO SOCIEDAD ANONIMA",
-  remitenteComercialVtaPrim: "FYO ACOPIO S.A.",
-  entregador: "MARTINO Y CIA SA",
-  transportista: "BORLETTO LOG Y SERV SRL",
-  chofer: {
-    cuil: "20-23456789-6",
-    tipoDocumento: "DNI",
-    numeroDocumento: "23456789",
-    extranjero: false,
-    nombreApellido: "JAVIER MONTENEGRO"
-  },
+export const MOCK_CARGO_DATA: CargoTrackingData = {
+  ctg: '098765123456',
+  fechaHoraIngreso: '19/09/2025 a las 12:45h',
+  titularCartaPorte: 'EL NORTE CORDOBÉS SRL',
+  remitenteComercial: 'SYNGENTA AGRO SOCIEDAD ANONIMA',
+  remitenteComercialVtaPrim: 'FYO ACOPIO S.A.',
+  entregador: 'MARTINO Y CIA SA',
+  transportista: 'BORLETTO LOG Y SERV SRL',
   camion: {
-    patente: "EJE977",
-    patenteAcoplado: "DWG633"
+    patente: 'EJE977',
+    patenteAcoplado: 'DWG633'
+  },
+  chofer: {
+    cuil: '20-23456789-6',
+    tipoDocumento: 'DNI',
+    numeroDocumento: '23.456.789',
+    extranjero: 'NO',
+    nombreApellido: 'JAVIER MONTENEGRO'
   },
   granos: {
-    material: "Poroto de Soja"
+    material: 'Poroto de soja'
   },
   etapas: [
-    "Ingreso",
-    "Pre Calado",
-    "Calado",
-    "Post Calado",
-    "Pesaje Bruto",
-    "Descarga",
-    "Cierre",
-    // { nombre: "Ingreso", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 15 },
-    // { nombre: "Pre Calado", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 15 },
-    // { nombre: "Calado", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 30 },
-    // { nombre: "Post Calado", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 20 },
-    // { nombre: "Pesaje Bruto", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 35 },
-    // { nombre: "Descarga", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 20 },
-    // { nombre: "Cierre", fecha: new Date('2025-10-09T12:30:00'), tiempoEstimado: 15 },
-  ],
-
-  
-  currentStageIndex: 0,
-  stageDate: new Date('2025-09-19T12:30:00'),
-  estimatedTime: 'aprox. 10 min'
+    {
+      nombre: 'Ingreso',
+      fecha: '19/09/2025 12:30h',
+      tiempoEstimado: '10 minutos',
+      estado: 'en-proceso',
+      icono: 'ingreso'
+    },
+    {
+      nombre: 'Pre-calado',
+      fecha: '',
+      tiempoEstimado: '15 minutos',
+      estado: 'pendiente',
+      icono: 'pre-calado'
+    },
+    {
+      nombre: 'Calado',
+      fecha: '',
+      tiempoEstimado: '20 minutos',
+      estado: 'pendiente',
+      icono: 'calado'
+    },
+    {
+      nombre: 'Post-calado',
+      fecha: '',
+      tiempoEstimado: '15 minutos',
+      estado: 'pendiente',
+      icono: 'post-calado'
+    },
+    {
+      nombre: 'Pesaje inicial',
+      fecha: '',
+      tiempoEstimado: '10 minutos',
+      estado: 'pendiente',
+      icono: 'pesaje'
+    },
+    {
+      nombre: 'Descarga',
+      fecha: '',
+      tiempoEstimado: '30 minutos',
+      estado: 'pendiente',
+      icono: 'descarga'
+    },
+    {
+      nombre: 'Cierre',
+      fecha: '',
+      tiempoEstimado: '5 minutos',
+      estado: 'pendiente',
+      icono: 'cierre'
+    }
+  ]
 };

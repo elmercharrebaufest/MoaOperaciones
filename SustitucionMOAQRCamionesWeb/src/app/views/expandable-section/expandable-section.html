@@ -1,23 +1,6 @@
-<div class="expandable-section" (click)="toggle()">
+<button class="expandable-section" (click)="onClick()">
   <span class="section-title">{{ title() }}</span>
-  <svg 
-    class="chevron" 
-    [class.rotated]="isExpanded()"
-    width="20" 
-    height="20" 
-    viewBox="0 0 20 20" 
-    fill="none">
-    <path 
-      d="M8 6l4 4-4 4" 
-      stroke="currentColor" 
-      stroke-width="2" 
-      stroke-linecap="round" 
-      stroke-linejoin="round"/>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
-</div>
-
-@if (isExpanded()) {
-  <div class="section-content">
-    <ng-content></ng-content>
-  </div>
-}
+</button>

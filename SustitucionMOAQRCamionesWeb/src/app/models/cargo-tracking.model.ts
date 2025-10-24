@@ -1,42 +1,32 @@
-export interface Chofer {
-  cuil: string;
-  tipoDocumento: string;
-  numeroDocumento: string;
-  extranjero: boolean;
-  nombreApellido: string;
-}
-
-export interface Camion {
-  patente: string;
-  patenteAcoplado: string;
-}
-
-export interface Granos {
-  material: string;
-}
-
 export interface Etapa {
   nombre: string;
-  fecha: Date;
-  tiempoEstimado: number;
+  fecha: string;
+  tiempoEstimado: string;
+  estado: 'completado' | 'en-proceso' | 'pendiente';
+  icono: string;
 }
 
-export interface CargoTrackingInfo {
+export interface CargoTrackingData {
   ctg: string;
+  fechaHoraIngreso: string;
   titularCartaPorte: string;
   remitenteComercial: string;
   remitenteComercialVtaPrim: string;
   entregador: string;
   transportista: string;
-  chofer: Chofer;
-  camion: Camion;
-  granos: Granos;
-  etapas: string[];
-}
-
-// Extended model for UI state
-export interface CargoTrackingState extends CargoTrackingInfo {
-  currentStageIndex: number;
-  stageDate: Date;
-  estimatedTime: string;
+  camion: {
+    patente: string;
+    patenteAcoplado: string;
+  };
+  chofer: {
+    cuil: string;
+    tipoDocumento: string;
+    numeroDocumento: string;
+    extranjero: string;
+    nombreApellido: string;
+  };
+  granos: {
+    material: string;
+  };
+  etapas: Etapa[];
 }

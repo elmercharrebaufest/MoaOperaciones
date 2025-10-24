@@ -1,47 +1,40 @@
 .shipment-card {
-  // Removed: background, border-radius, box-shadow, margin-bottom
-  // Keep only internal layout styles
-  padding: 1.25rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  
-  .truck-icon {
-    color: #1e40af;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+}
+
+.shipment-icon {
+  flex-shrink: 0;
+  color: #003087;
+}
+
+.shipment-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-row {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+
+  .label {
+    color: #666;
+    font-weight: 500;
   }
-  
-  .shipment-details {
-    flex: 1;
-    font-size: 0.875rem;
-    
-    .detail-row {
-      margin-bottom: 0.25rem;
-      color: #333;
-      font-weight: 500;
-      
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
+
+  .value {
+    color: #1a1a1a;
   }
-  
-  .expand-button {
-    background: none;
-    border: none;
-    color: #1e40af;
-    cursor: pointer;
-    padding: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s ease;
-    
-    &:hover {
-      transform: scale(1.1);
-    }
-  }
+}
+
+.chevron-icon {
+  flex-shrink: 0;
+  color: #666;
 }
