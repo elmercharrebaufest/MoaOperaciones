@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { RecaptchaModule, RecaptchaComponent } from "ng-recaptcha-2";
 import { environment } from '../../../environments/environment';
 
 interface LoginRequest {
@@ -19,7 +20,7 @@ interface LoginResponse {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RecaptchaModule],
   templateUrl: './login.html',
   styleUrls: ['./login.scss']
 })
@@ -27,26 +28,21 @@ export class LoginComponent {
   ctg = signal('');
   patente = signal('');
   isLoading = signal(false);
-  recaptchaVerified = signal(false);
+  captchaOk: any = null;
+
+  recaptchaSiteKey = environment.recaptchaSiteKey;
+  isProduction = environment.production;
+
+  @ViewChild('recaptchaComponent')
+  protected captcha!: RecaptchaComponent;
 
   constructor(
     private http: HttpClient,
     private router: Router
-  ) {
-    this.loadRecaptchaScript();
-  }
+  ) {}
 
-  loadRecaptchaScript() {
-    const script = document.createElement('script');
-    script.src = 'https://www.google.com/recaptcha/api.js';
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-
-    // Setup callback for reCAPTCHA
-    (window as any).onRecaptchaSuccess = () => {
-      this.recaptchaVerified.set(true);
-    };
+  handleCorrectCaptcha(event: any) {
+    this.captchaOk = event;
   }
 
   onSubmit() {
@@ -55,9 +51,11 @@ export class LoginComponent {
       return;
     }
 
-    if (!this.recaptchaVerified()) {
-      alert('Por favor, complete el reCAPTCHA');
-      return;
+    if (environment.production) {
+      if (this.captchaOk == null) {
+        alert('Debe completar el Captcha');
+        return;
+      }
     }
 
     this.isLoading.set(true);
@@ -73,12 +71,10 @@ export class LoginComponent {
           this.isLoading.set(false);
           
           if (response.resultado && response.data) {
-            // Success with data - navigate to cargo tracking page
             this.router.navigate(['/cargo-tracking'], { 
               state: { trackingData: response.data } 
             });
           } else {
-            // Success but no data or error - navigate to error page
             this.router.navigate(['/error-login'], {
               queryParams: { mensaje: response.mensaje }
             });
@@ -86,7 +82,7 @@ export class LoginComponent {
         },
         error: (error) => {
           this.isLoading.set(false);
-          this.router.navigate(['/error-login'], {
+          this.router.navigate(['/login-error'], {
             queryParams: { mensaje: error.error?.mensaje || 'Error de conexión' }
           });
         }

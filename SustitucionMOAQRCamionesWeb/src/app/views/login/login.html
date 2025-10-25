@@ -1,5 +1,4 @@
 <div class="login-container">
-  <!-- Desktop & Tablet: Image on left/top -->
   <div class="image-section">
     <img 
       src="assets/login_image.jpg" 
@@ -7,7 +6,7 @@
       class="background-image"
     />
     <img 
-      src="assets/moa_logo.svg" 
+      src="assets/moa_full_logo.svg" 
       alt="Molinos Agro Logo" 
       class="logo-overlay"
     />
@@ -21,49 +20,50 @@
     </div>
 
     <form (ngSubmit)="onSubmit()" class="login-form">
-      <!-- CTG Input -->
+      
       <div class="form-group">
         <label for="ctg" class="form-label">CTG</label>
         <input
           id="ctg"
           type="text"
           class="form-input"
-          [(ngModel)]="ctg"
+          [ngModel]="ctg()"
+          (ngModelChange)="ctg.set($event)"
           name="ctg"
           placeholder=""
           [disabled]="isLoading()"
+          autocomplete="off"
         />
         <p class="form-helper">Código de Trazabilidad de Granos</p>
       </div>
 
-      <!-- Patente Input -->
       <div class="form-group">
         <label for="patente" class="form-label">Patente del camión</label>
         <input
           id="patente"
           type="text"
           class="form-input"
-          [(ngModel)]="patente"
+          [ngModel]="patente()"
+          (ngModelChange)="patente.set($event)"
           name="patente"
           placeholder=""
           [disabled]="isLoading()"
+          autocomplete="off"
         />
       </div>
 
-      <!-- reCAPTCHA -->
       <div class="recaptcha-container">
-        <div 
-          class="g-recaptcha" 
-          data-sitekey="YOUR_RECAPTCHA_SITE_KEY"
-          data-callback="onRecaptchaSuccess">
-        </div>
+        <re-captcha
+          #recaptchaComponent
+          (resolved)="handleCorrectCaptcha($event)"
+          [siteKey]="recaptchaSiteKey"
+        ></re-captcha>
       </div>
 
-      <!-- Submit Button -->
       <button
         type="submit"
         class="submit-button"
-        [disabled]="isLoading() || !recaptchaVerified()"
+        [disabled]="isLoading() || (isProduction && captchaOk == null)"
         [class.loading]="isLoading()">
         @if (isLoading()) {
           <span class="spinner"></span>
