@@ -3,6 +3,8 @@ import { inject } from '@angular/core';
 import { AuthService } from './infrastructure/services/auth.service';
 import { CargoTrackingPageComponent } from './views/cargo-tracking-page/cargo-tracking-page'
 import { InformationDetailComponent } from './views/information-detail/information-detail';
+import { LoginComponent } from './views/login/login';
+import { LoginErrorComponent } from './views/login-error/login-error';
 
 // Functional guards
 const canEnter = () => {
@@ -78,5 +80,15 @@ export const appRoutes: Routes = [
     path: 'information-detail',
     loadComponent: () => import('./views/information-detail/information-detail').then(m => m.InformationDetailComponent),
     title: 'Información detallada'
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./views/login/login').then(m => m.LoginComponent),
+    title: 'Login'
+  },
+  {
+    path: 'login-error',
+    loadComponent: () => import('./views/login-error/login-error').then(m => m.LoginErrorComponent),
+    title: 'Error al loguearse'
   }
 ];

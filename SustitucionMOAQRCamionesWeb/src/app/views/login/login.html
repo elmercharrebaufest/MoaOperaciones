@@ -1,0 +1,77 @@
+<div class="login-container">
+  <!-- Desktop & Tablet: Image on left/top -->
+  <div class="image-section">
+    <img 
+      src="assets/login_image.jpg" 
+      alt="Molinos Agro" 
+      class="background-image"
+    />
+    <img 
+      src="assets/moa_logo.svg" 
+      alt="Molinos Agro Logo" 
+      class="logo-overlay"
+    />
+  </div>
+
+  <!-- Form Section -->
+  <div class="form-section">
+    <!-- Desktop: Logo at top of form -->
+    <div class="logo-desktop">
+      <img src="assets/moa_full_logo.svg" alt="Molinos Agro" />
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <!-- CTG Input -->
+      <div class="form-group">
+        <label for="ctg" class="form-label">CTG</label>
+        <input
+          id="ctg"
+          type="text"
+          class="form-input"
+          [(ngModel)]="ctg"
+          name="ctg"
+          placeholder=""
+          [disabled]="isLoading()"
+        />
+        <p class="form-helper">Código de Trazabilidad de Granos</p>
+      </div>
+
+      <!-- Patente Input -->
+      <div class="form-group">
+        <label for="patente" class="form-label">Patente del camión</label>
+        <input
+          id="patente"
+          type="text"
+          class="form-input"
+          [(ngModel)]="patente"
+          name="patente"
+          placeholder=""
+          [disabled]="isLoading()"
+        />
+      </div>
+
+      <!-- reCAPTCHA -->
+      <div class="recaptcha-container">
+        <div 
+          class="g-recaptcha" 
+          data-sitekey="YOUR_RECAPTCHA_SITE_KEY"
+          data-callback="onRecaptchaSuccess">
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="submit-button"
+        [disabled]="isLoading() || !recaptchaVerified()"
+        [class.loading]="isLoading()">
+        @if (isLoading()) {
+          <span class="spinner"></span>
+          Cargando...
+        } @else {
+          Ingresar
+        }
+      </button>
+    </form>
+  </div>
+</div>

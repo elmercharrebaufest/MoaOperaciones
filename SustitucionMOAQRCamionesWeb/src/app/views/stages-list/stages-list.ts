@@ -1,12 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-interface Etapa {
-  nombre: string;
-  estado: 'completo' | 'pendiente' | 'en_curso';
-  fecha?: string;
-  tiempoEstimado?: string;
-}
+import { Etapa } from '../../models/cargo-tracking.model';
 
 @Component({
   selector: 'app-stages-list',

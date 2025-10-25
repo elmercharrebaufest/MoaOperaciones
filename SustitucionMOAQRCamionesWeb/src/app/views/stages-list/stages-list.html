@@ -23,15 +23,17 @@
           <span class="stage-number text-xs font-medium text-gray-500 uppercase tracking-wider">
             ETAPA {{ $index + 1 }} de {{ stages().length }}
           </span>
+          
           @if (stage.estado === 'pendiente') {
             <span class="stage-badge bg-gray-200 text-gray-700">PENDIENTE</span>
           }
-          @if (stage.estado === 'completo') {
-            <span class="stage-badge bg-green-100 text-green-700">COMPLETO</span>
+          @if (stage.estado === 'completado') {
+            <span class="stage-badge bg-green-100 text-green-700">COMPLETADO</span>
           }
-          @if (stage.estado === 'en_curso') {
-            <span class="stage-badge bg-yellow-100 text-yellow-700">EN CURSO</span>
+          @if (stage.estado === 'en-proceso') {
+            <span class="stage-badge bg-yellow-100 text-yellow-700">EN PROCESO</span>
           }
+          
         </div>
         <div class="stage-name text-base text-gray-800 font-medium">{{ stage.nombre }}</div>
       </div>
