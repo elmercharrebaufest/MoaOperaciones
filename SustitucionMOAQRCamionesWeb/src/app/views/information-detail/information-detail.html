@@ -1,8 +1,10 @@
 <div class="information-detail-container">
+  <!-- Logo Section -->
   <div class="logo-section">
     <img src="assets/moa_logo.svg" alt="Molinos agro" class="logo">
   </div>
 
+  <!-- Full-width Blue Header -->
   <button class="back-header" (click)="goBack()">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="back-icon">
       <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -10,13 +12,18 @@
     <span class="back-title">{{ getTitle() }}</span>
   </button>
 
+  <!-- Content Section with Centered Containers -->
   <div class="content-section">
-    <app-container>
+    <!-- Fecha y hora de ingreso -->
+    <app-container [padding]="'p-2'">
       <div class="info-section">
         <p class="section-label">Fecha y hora de ingreso</p>
         <p class="section-value">{{ cargoData().fechaHoraIngreso }}</p>
       </div>
+    </app-container>
 
+    <!-- Datos del traslado de granos -->
+    <app-container [padding]="'p-2'">
       <div class="info-section">
         <h2 class="section-title">Datos del traslado de granos</h2>
         
@@ -45,7 +52,10 @@
           <p class="field-value">{{ cargoData().transportista }}</p>
         </div>
       </div>
+    </app-container>
 
+    <!-- Datos del chofer -->
+    <app-container [padding]="'p-2'">
       <div class="info-section">
         <h2 class="section-title">Datos del chofer</h2>
         
@@ -74,7 +84,10 @@
           <p class="field-value">{{ cargoData().chofer.nombreApellido }}</p>
         </div>
       </div>
+    </app-container>
 
+    <!-- Datos del camión -->
+    <app-container [padding]="'p-2'">
       <div class="info-section">
         <h2 class="section-title">Datos del camión</h2>
         
@@ -88,13 +101,16 @@
           <p class="field-value">{{ cargoData().camion.patenteAcoplado }}</p>
         </div>
       </div>
+    </app-container>
 
+    <!-- Datos de Granos -->
+    <app-container [padding]="'p-2'">
       <div class="info-section">
         <h2 class="section-title">Datos de Granos</h2>
         
         <div class="field-group">
           <p class="field-label">Material</p>
-          <p class="field-value">{{ cargoData().granos.material }}</p>
+          <p class="field-value">{{ cargoData().material }}</p>
         </div>
       </div>
     </app-container>

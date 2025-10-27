@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Etapa } from '../../models/cargo-tracking.model';
+import { Etapa } from '../../models/estado-etapas.model';
 
 @Component({
   selector: 'app-stages-list',

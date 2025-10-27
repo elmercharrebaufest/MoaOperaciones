@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from './infrastructure/services/auth.service';
-import { CargoTrackingPageComponent } from './views/cargo-tracking-page/cargo-tracking-page'
+import { TrackingPageComponent } from './views/tracking-page/tracking-page'
 import { InformationDetailComponent } from './views/information-detail/information-detail';
 import { LoginComponent } from './views/login/login';
 import { LoginErrorComponent } from './views/login-error/login-error';
@@ -68,12 +68,12 @@ export const appRoutes: Routes = [
   // },
   {
     path: '',
-    loadComponent: () => import('./views/cargo-tracking-page/cargo-tracking-page').then(m => m.CargoTrackingPageComponent),
+    loadComponent: () => import('./views/tracking-page/tracking-page').then(m => m.TrackingPageComponent),
     title: 'QR Camiones'
   },
   {
-    path: 'cargo-tracking',
-    loadComponent: () => import('./views/cargo-tracking-page/cargo-tracking-page').then(m => m.CargoTrackingPageComponent),
+    path: 'tracking',
+    loadComponent: () => import('./views/tracking-page/tracking-page').then(m => m.TrackingPageComponent),
     title: 'QR Camiones'
   },
   {

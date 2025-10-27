@@ -1,4 +1,6 @@
-<div 
-  [class]="background() + ' ' + rounded() + ' ' + shadow() + ' ' + padding() + ' ' + maxWidth() + ' ' + gap() + ' w-full min-w-[384px] flex flex-col transition-shadow hover:shadow-lg'">
-  <ng-content></ng-content>
+<div class="container-wrapper">
+  <div 
+    [class]="background() + ' ' + rounded() + ' ' + shadow() + ' ' + padding() + ' ' + maxWidth() + ' ' + gap() + ' w-full min-w-[384px] flex flex-col transition-shadow hover:shadow-lg'">
+    <ng-content></ng-content>
+  </div>
 </div>

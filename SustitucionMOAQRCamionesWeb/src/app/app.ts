@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 
 import { AuthService } from './infrastructure/services/auth.service';
 import { DataService } from './infrastructure/services/data.service';
@@ -12,8 +12,7 @@ import { MATERIAL } from './shared/material';
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet, 
-    RouterLink, 
+    RouterOutlet,
     CommonModule,
     ...MATERIAL
   ],
