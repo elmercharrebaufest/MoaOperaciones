@@ -1,0 +1,46 @@
+<div class="stages-list">
+  @for (stage of stages(); track $index; let isLast = $last) {
+    <div 
+      class="stage-item cursor-pointer transition-colors duration-200"
+      [ngClass]="{ 
+        'bg-indigo-50/50 text-indigo-800 font-semibold': $index === currentStageIndex(),
+        'hover:bg-gray-50': $index !== currentStageIndex()
+      }"
+      (click)="onStageClick($index)">
+      
+      <div class="stage-icon">
+        <img 
+          [src]="getIconPath(stage.nombre)" 
+          [alt]="stage.nombre + ' icon'" 
+          class="w-8 h-8 flex-shrink-0"
+          onerror="this.onerror=null; this.src='assets/etapas/ingreso_icon.svg';" 
+          loading="lazy"
+        />
+      </div>
+
+      <div class="stage-content">
+        <div class="stage-header">
+          <span class="stage-number text-xs font-medium text-gray-500 uppercase tracking-wider">
+            ETAPA {{ $index + 1 }} de {{ stages().length }}
+          </span>
+          
+          @if (stage.estado === 'pendiente') {
+            <span class="stage-badge bg-gray-200 text-gray-700">PENDIENTE</span>
+          }
+          @if (stage.estado === 'completado') {
+            <span class="stage-badge bg-green-100 text-green-700">COMPLETADO</span>
+          }
+          @if (stage.estado === 'en-proceso') {
+            <span class="stage-badge bg-yellow-100 text-yellow-700">EN PROCESO</span>
+          }
+          
+        </div>
+        <div class="stage-name text-base text-gray-800 font-medium">{{ stage.nombre }}</div>
+      </div>
+    </div>
+    
+    @if (!isLast) {
+      <hr class="stage-divider">
+    }
+  }
+</div>
