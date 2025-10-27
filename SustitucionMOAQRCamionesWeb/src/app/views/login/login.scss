@@ -1,0 +1,245 @@
+.login-container {
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  flex-direction: column;
+
+  // Desktop layout
+  @media (min-width: 1366px) {
+    flex-direction: row;
+    height: 100vh;
+  }
+}
+
+.image-section {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  flex-shrink: 0;
+
+  // Phone - smaller image
+  height: 200px;
+
+  // Tablet - medium image
+  @media (min-width: 768px) and (max-width: 1365px) {
+    height: 300px;
+  }
+
+  // Desktop - full height, 60% width
+  @media (min-width: 1366px) {
+    width: 60%;
+    height: 100vh;
+  }
+
+  .background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .logo-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 180px;
+    height: auto;
+    max-width: 80%;
+
+    @media (min-width: 768px) {
+      width: 220px;
+    }
+
+    // Hide on desktop (logo shows in form section)
+    @media (min-width: 1366px) {
+      display: none;
+    }
+  }
+}
+
+.form-section {
+  background: white;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+
+  // Tablet
+  @media (min-width: 768px) and (max-width: 1365px) {
+    padding: 2.5rem 2rem;
+  }
+
+  // Desktop
+  @media (min-width: 1366px) {
+    width: 40%;
+    height: 100vh;
+    padding: 3rem 2rem;
+  }
+}
+
+.logo-desktop {
+  display: none;
+  margin-bottom: 2rem;
+
+  // Only show on desktop
+  @media (min-width: 1366px) {
+    display: block;
+  }
+
+  img {
+    height: 50px;
+    width: auto;
+
+    @media (min-width: 1366px) {
+      height: 60px;
+    }
+  }
+}
+
+.login-form {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  @media (min-width: 768px) {
+    gap: 1.5rem;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1a1a1a;
+
+  @media (max-width: 374px) {
+    font-size: 0.8125rem;
+  }
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+
+  @media (max-width: 374px) {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9375rem;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #003087;
+    box-shadow: 0 0 0 3px rgba(0, 48, 135, 0.1);
+  }
+
+  &:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+  }
+}
+
+.form-helper {
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+
+  @media (max-width: 374px) {
+    font-size: 0.6875rem;
+  }
+}
+
+.recaptcha-container {
+  display: flex;
+  justify-content: center;
+  margin: 0.5rem 0;
+  width: 100%;
+
+  // Ensure reCAPTCHA scales on small screens
+  > div {
+    transform: scale(0.9);
+    transform-origin: center;
+
+    @media (min-width: 375px) {
+      transform: scale(1);
+    }
+  }
+}
+
+.submit-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: #0d7c4d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (max-width: 374px) {
+    padding: 0.875rem;
+    font-size: 0.9375rem;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #0a6640;
+  }
+
+  &:active:not(:disabled) {
+    background-color: #085533;
+  }
+
+  &:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+  }
+
+  &.loading {
+    background-color: #9ca3af;
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
