@@ -27,11 +27,6 @@ const adminGuard = () => {
 
 export const appRoutes: Routes = [
   // {
-  //   path: '',
-  //   loadComponent: () => import('./views/home/home').then(m => m.Home),
-  //   title: 'Home - Angular 20 Demo'
-  // },
-  // {
   //   path: 'auth',
   //   loadChildren: () => import('./views/auth/auth.routes').then(m => m.authRoutes),
   //   title: 'Authentication'

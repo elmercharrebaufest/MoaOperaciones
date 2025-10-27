@@ -7,6 +7,7 @@ import { ExpandableSectionComponent } from '../expandable-section/expandable-sec
 import { ContainerComponent } from '../../shared/container/container';
 import { SectionWrapperComponent } from '../section-wrapper/section-wrapper';
 import { MOCK_CARGO_DATA } from '../../data/mock-tracking.data';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tracking-page',
@@ -43,6 +44,10 @@ export class TrackingPageComponent {
     return null;
   });
 
+  constructor(
+    private router: Router
+  ) {}
+
   onStageChange(stageIndex: number) {
     this.currentStageIndex.set(stageIndex);
   }
@@ -52,6 +57,6 @@ export class TrackingPageComponent {
   }
 
   consultarOtraCTG() {
-    console.log('Consultar otra CTG');
+    this.router.navigate(['/login']);
   }
 }

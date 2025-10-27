@@ -21,7 +21,7 @@ import { MATERIAL } from './shared/material';
   styleUrls: ['./app.scss']
 })
 export class App {
-  protected readonly title = signal('Angular 20 Demo');
+  protected readonly title = signal('QR Camiones');
   public readonly authService = inject(AuthService);
   public readonly dataService = inject(DataService);
   public readonly i18n = inject(I18nService);

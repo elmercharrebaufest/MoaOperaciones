@@ -71,11 +71,11 @@ export class LoginComponent {
           this.isLoading.set(false);
           
           if (response.resultado && response.data) {
-            this.router.navigate(['/cargo-tracking'], { 
+            this.router.navigate(['/tracking'], { 
               state: { trackingData: response.data } 
             });
           } else {
-            this.router.navigate(['/error-login'], {
+            this.router.navigate(['/login-error'], {
               queryParams: { mensaje: response.mensaje }
             });
           }
