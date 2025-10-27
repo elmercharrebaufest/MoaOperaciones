@@ -1,29 +1,34 @@
 <div class="progress-stepper">
-  <div class="stepper-dots">
+  <div class="steps-container">
     @for (step of getSteps(); track step) {
       <div class="step-wrapper">
-        @if (step > 0) {
-          <div 
-            class="step-line"
-            [class.completed]="step <= currentStep()">
-          </div>
-        }
-        <button
-          class="step-dot"
+        <button 
+          class="step-circle"
           [class.active]="step === currentStep()"
           [class.completed]="step < currentStep()"
           (click)="onStepClick(step)">
+          @if (step < currentStep()) {
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M20 6L9 17l-5-5" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          } @else {
+            <span class="step-number">{{ step + 1 }}</span>
+          }
         </button>
+        
+        @if (step < totalSteps() - 1) {
+          <div class="step-line" [class.completed]="step < currentStep()"></div>
+        }
       </div>
     }
   </div>
-
-  <button 
-    class="expand-button"
-    (click)="onToggleExpanded()">
+  
+  <!-- Expand/Collapse button -->
+  <button class="expand-button" (click)="onToggleExpanded()">
+    <span>{{ isExpanded() ? 'Ver menos' : 'Ver todas las etapas' }}</span>
     <svg 
-      width="24" 
-      height="24" 
+      width="20" 
+      height="20" 
       viewBox="0 0 24 24" 
       fill="none"
       [class.rotated]="isExpanded()">
