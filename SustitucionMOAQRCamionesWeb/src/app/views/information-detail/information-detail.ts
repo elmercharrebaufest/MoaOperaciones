@@ -2,7 +2,7 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ContainerComponent } from '../../shared/container/container';
-import { MOCK_CARGO_DATA } from '../../data/mock-cargo-tracking.data';
+import { MOCK_CARGO_DATA } from '../../data/mock-tracking.data';
 
 @Component({
   selector: 'app-information-detail',

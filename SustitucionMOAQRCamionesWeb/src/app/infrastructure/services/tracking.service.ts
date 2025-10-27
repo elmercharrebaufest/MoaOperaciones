@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { TrackingData } from '../../models/tracking-data.model';
-import { MOCK_CARGO_DATA } from '../../data/mock-cargo-tracking.data';
+import { MOCK_CARGO_DATA } from '../../data/mock-tracking.data';
 
 @Injectable({
   providedIn: 'root'

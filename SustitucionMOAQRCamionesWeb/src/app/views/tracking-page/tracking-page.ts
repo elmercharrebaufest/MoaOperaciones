@@ -6,10 +6,10 @@ import { StagesListComponent } from '../stages-list/stages-list';
 import { ExpandableSectionComponent } from '../expandable-section/expandable-section';
 import { ContainerComponent } from '../../shared/container/container';
 import { SectionWrapperComponent } from '../section-wrapper/section-wrapper';
-import { MOCK_CARGO_DATA } from '../../data/mock-cargo-tracking.data';
+import { MOCK_CARGO_DATA } from '../../data/mock-tracking.data';
 
 @Component({
-  selector: 'app-cargo-tracking-page',
+  selector: 'app-tracking-page',
   standalone: true,
   imports: [
     CommonModule,
@@ -20,10 +20,10 @@ import { MOCK_CARGO_DATA } from '../../data/mock-cargo-tracking.data';
     ContainerComponent,
     SectionWrapperComponent
   ],
-  templateUrl: './cargo-tracking-page.html',
-  styleUrls: ['./cargo-tracking-page.scss']
+  templateUrl: './tracking-page.html',
+  styleUrls: ['./tracking-page.scss']
 })
-export class CargoTrackingPageComponent {
+export class TrackingPageComponent {
   cargoData = signal(MOCK_CARGO_DATA);
   currentStageIndex = signal(0);
   isExpanded = signal(false);
