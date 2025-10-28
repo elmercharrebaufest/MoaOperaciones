@@ -3,7 +3,7 @@ import { DatosAdicionales, Etapa } from "./estado-etapas.model";
 export interface TrackingData {
   workflow: string;
   ctg: string;
-  fechaHoraIngreso: string;
+  fechaHoraIngreso: Date;
   titularCartaPorte: string;
   remitenteComercial: string;
   remitenteComercialVtaPrim: string;

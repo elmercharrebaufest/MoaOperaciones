@@ -8,6 +8,7 @@ import { ContainerComponent } from '../../shared/container/container';
 import { SectionWrapperComponent } from '../section-wrapper/section-wrapper';
 import { MOCK_CARGO_DATA } from '../../data/mock-tracking.data';
 import { Router } from '@angular/router';
+import { formatDate } from '../../shared/helpers/date.helper';
 
 @Component({
   selector: 'app-tracking-page',
@@ -37,7 +38,7 @@ export class TrackingPageComponent {
         index: index,
         total: data.etapas.length,
         name: data.etapas[index].nombre,
-        date: data.etapas[index].fecha,
+        date: formatDate(data.etapas[index].fecha),
         estimatedTime: data.etapas[index].tiempoEstimado
       };
     }

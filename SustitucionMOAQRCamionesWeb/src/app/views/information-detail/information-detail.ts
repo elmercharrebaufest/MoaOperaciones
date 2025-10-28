@@ -3,6 +3,7 @@ import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ContainerComponent } from '../../shared/container/container';
 import { MOCK_CARGO_DATA } from '../../data/mock-tracking.data';
+import { formatDate } from '../../shared/helpers/date.helper';
 
 @Component({
   selector: 'app-information-detail',
@@ -32,5 +33,9 @@ export class InformationDetailComponent implements OnInit {
 
   getTitle(): string {
     return this.detailType() === 'carga' ? 'Información de la carga' : 'Información de la planta';
+  }
+
+  formatFechaHoraIngreso(): string {
+    return formatDate(this.cargoData().fechaHoraIngreso);
   }
 }
