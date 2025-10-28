@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkqr_camiones=self.webpackChunkqr_camiones||[]).push([[862],{9862:(h,t,s)=>{s.r(t),s.d(t,{postsRoutes:()=>o});const o=[{path:"",loadComponent:()=>s.e(43).then(s.bind(s,1043)).then(n=>n.PostsListComponent),title:"Posts List"}]}}]);
