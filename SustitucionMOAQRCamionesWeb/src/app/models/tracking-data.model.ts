@@ -10,7 +10,7 @@ export interface TrackingData {
   entregador: string;
   transportista: string; 
   material: string;
-  rechazado: string;
+  rechazado: boolean;
   camion: { 
     patente: string; 
     patenteAcoplado: string; 
