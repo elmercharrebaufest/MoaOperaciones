@@ -104,8 +104,13 @@ namespace SustitucionMOAUtils.Services
             {
                 campoProveedor.RazonSocial = declaracion.RazonSocial;
             }
+            else
+            {
+                var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == campoProveedor.Proveedor_Id);
+                campoProveedor.RazonSocial = proveedor.RazonSocial ?? string.Empty;
+            }
 
-            campoProveedor.FechaCreacion = DateTime.Now;
+                campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
             
             if (campoProveedor.Archivo_Id == 0)
