@@ -18,7 +18,7 @@ export class ExpandableSectionComponent {
   onClick() {
     const navType = this.navigateTo();
     if (navType) {
-      this.router.navigate(['/information-detail'], {
+      this.router.navigate(['/information'], {
         queryParams: { type: navType }
       });
     }

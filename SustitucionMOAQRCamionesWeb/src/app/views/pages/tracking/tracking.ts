@@ -58,6 +58,6 @@ export class TrackingComponent {
   }
 
   consultarOtraCTG() {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/search']);
   }
 }

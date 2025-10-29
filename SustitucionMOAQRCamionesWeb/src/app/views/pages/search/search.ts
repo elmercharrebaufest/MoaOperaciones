@@ -75,14 +75,14 @@ export class SearchComponent {
               state: { trackingData: response.data } 
             });
           } else {
-            this.router.navigate(['/login-error'], {
+            this.router.navigate(['/search-error'], {
               queryParams: { mensaje: response.mensaje }
             });
           }
         },
         error: (error) => {
           this.isLoading.set(false);
-          this.router.navigate(['/login-error'], {
+          this.router.navigate(['/search-error'], {
             queryParams: { mensaje: error.error?.mensaje || 'Error de conexión' }
           });
         }

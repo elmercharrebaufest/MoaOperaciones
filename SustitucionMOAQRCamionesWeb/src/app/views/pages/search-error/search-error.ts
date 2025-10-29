@@ -26,6 +26,6 @@ export class SearchErrorComponent implements OnInit {
   }
 
   onRetry() {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/search']);
   }
 }
