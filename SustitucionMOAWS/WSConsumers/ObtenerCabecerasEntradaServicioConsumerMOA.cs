@@ -56,7 +56,8 @@ namespace SustitucionMOAWS.WSConsumers
                     agent.ClientCredentials.UserName.Password = PassSap;
                     var request = new BAPI_ENTRYSHEET_GETLIST()
                     {
-                         ENTRYSHEET_DATE = fechaDesde
+                         ENTRYSHEET_DATE = fechaDesde,
+                         ENTRYSHEET_HEADER = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSR[] { }
                     };
                     Log.Info($"SAP sin PI BAPI_ENTRYSHEET_GETLIST request");
                     Log.Info(request.ToXml());
