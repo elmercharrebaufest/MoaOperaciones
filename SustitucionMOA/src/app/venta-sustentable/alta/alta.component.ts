@@ -689,6 +689,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
                 this.renspaExiste = result;
                 this.consultarCamposAnterioresParaSugerir();
             });
+        }else if(this.cosechaId){
+            this.consultarCamposAnterioresParaSugerir();
         }
     }
 
