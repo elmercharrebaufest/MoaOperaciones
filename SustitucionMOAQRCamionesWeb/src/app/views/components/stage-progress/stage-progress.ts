@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { formatDate } from '../../shared/helpers/date.helper';
+import { formatDate } from '../../../shared/helpers/date.helper';
 
 @Component({
   selector: 'app-stage-progress',

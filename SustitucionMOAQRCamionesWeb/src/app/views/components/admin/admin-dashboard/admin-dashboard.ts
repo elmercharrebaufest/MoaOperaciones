@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MATERIAL } from '../../../shared/material';
+import { MATERIAL } from '../../../../shared/material';
 
 
 @Component({

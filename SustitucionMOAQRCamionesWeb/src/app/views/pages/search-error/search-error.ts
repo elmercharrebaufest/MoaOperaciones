@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-error-login',
+  selector: 'app-search-error',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './login-error.html',
-  styleUrls: ['./login-error.scss']
+  templateUrl: './search-error.html',
+  styleUrls: ['./search-error.scss']
 })
-export class LoginErrorComponent implements OnInit {
+export class SearchErrorComponent implements OnInit {
   mensaje = signal('No encontramos resultados con las credenciales ingresadas');
 
   constructor(

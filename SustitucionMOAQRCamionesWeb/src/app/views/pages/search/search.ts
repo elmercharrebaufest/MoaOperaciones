@@ -4,27 +4,27 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { RecaptchaModule, RecaptchaComponent } from "ng-recaptcha-2";
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
-interface LoginRequest {
+interface SearchRequest {
   ctg: string;
   patente: string;
 }
 
-interface LoginResponse {
+interface SearchResponse {
   resultado: boolean;
   mensaje: string;
   data: any;
 }
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-search',
   standalone: true,
   imports: [CommonModule, FormsModule, RecaptchaModule],
-  templateUrl: './login.html',
-  styleUrls: ['./login.scss']
+  templateUrl: './search.html',
+  styleUrls: ['./search.scss']
 })
-export class LoginComponent {
+export class SearchComponent {
   ctg = signal('');
   patente = signal('');
   isLoading = signal(false);
@@ -60,12 +60,12 @@ export class LoginComponent {
 
     this.isLoading.set(true);
 
-    const loginData: LoginRequest = {
+    const loginData: SearchRequest = {
       ctg: this.ctg(),
       patente: this.patente()
     };
 
-    this.http.post<LoginResponse>(`${environment.apiUrl}/api/qrcamiones/login`, loginData)
+    this.http.post<SearchResponse>(`${environment.apiUrl}/api/qrcamiones/login`, loginData)
       .subscribe({
         next: (response) => {
           this.isLoading.set(false);

@@ -1,14 +1,14 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ShipmentCardComponent } from '../shipment-card/shipment-card';
-import { ProgressStepperComponent } from '../progress-stepper/progress-stepper';
-import { StagesListComponent } from '../stages-list/stages-list';
-import { ExpandableSectionComponent } from '../expandable-section/expandable-section';
-import { ContainerComponent } from '../../shared/container/container';
-import { SectionWrapperComponent } from '../section-wrapper/section-wrapper';
-import { MOCK_CARGO_DATA } from '../../data/mock-tracking.data';
+import { ShipmentCardComponent } from '../../components/shipment-card/shipment-card';
+import { ProgressStepperComponent } from '../../components/progress-stepper/progress-stepper';
+import { StagesListComponent } from '../../components/stages-list/stages-list';
+import { ExpandableSectionComponent } from '../../components/expandable-section/expandable-section';
+import { ContainerComponent } from '../../../shared/container/container';
+import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper';
+import { MOCK_CARGO_DATA } from '../../../data/mock-tracking.data';
 import { Router } from '@angular/router';
-import { formatDate } from '../../shared/helpers/date.helper';
+import { formatDate } from '../../../shared/helpers/date.helper';
 
 @Component({
   selector: 'app-tracking-page',
@@ -22,10 +22,10 @@ import { formatDate } from '../../shared/helpers/date.helper';
     ContainerComponent,
     SectionWrapperComponent
   ],
-  templateUrl: './tracking-page.html',
-  styleUrls: ['./tracking-page.scss']
+  templateUrl: './tracking.html',
+  styleUrls: ['./tracking.scss']
 })
-export class TrackingPageComponent {
+export class TrackingComponent {
   cargoData = signal(MOCK_CARGO_DATA);
   currentStageIndex = signal(0);
   isExpanded = signal(false);

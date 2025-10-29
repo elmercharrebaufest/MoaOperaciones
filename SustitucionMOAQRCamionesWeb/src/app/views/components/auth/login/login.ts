@@ -4,10 +4,10 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { AuthService } from '../../../infrastructure/services/auth.service';
-import { I18nService } from '../../../infrastructure/services/i18n.service';
-import { LoadingService } from '../../../infrastructure/services/loading.service';
-import { MATERIAL } from '../../../shared/material';
+import { AuthService } from '../../../../infrastructure/services/auth.service';
+import { I18nService } from '../../../../infrastructure/services/i18n.service';
+import { LoadingService } from '../../../../infrastructure/services/loading.service';
+import { MATERIAL } from '../../../../shared/material';
 
 
 @Component({

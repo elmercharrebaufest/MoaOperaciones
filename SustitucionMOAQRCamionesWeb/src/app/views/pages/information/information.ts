@@ -1,18 +1,18 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { ContainerComponent } from '../../shared/container/container';
-import { MOCK_CARGO_DATA } from '../../data/mock-tracking.data';
-import { formatDate } from '../../shared/helpers/date.helper';
+import { ContainerComponent } from '../../../shared/container/container';
+import { MOCK_CARGO_DATA } from '../../../data/mock-tracking.data';
+import { formatDate } from '../../../shared/helpers/date.helper';
 
 @Component({
-  selector: 'app-information-detail',
+  selector: 'app-information',
   standalone: true,
   imports: [CommonModule, ContainerComponent],
-  templateUrl: './information-detail.html',
-  styleUrls: ['./information-detail.scss']
+  templateUrl: './information.html',
+  styleUrls: ['./information.scss']
 })
-export class InformationDetailComponent implements OnInit {
+export class InformationComponent implements OnInit {
   detailType = signal<'carga' | 'planta'>('carga');
   cargoData = signal(MOCK_CARGO_DATA);
 

@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from './infrastructure/services/auth.service';
-import { TrackingPageComponent } from './views/tracking-page/tracking-page'
-import { InformationDetailComponent } from './views/information-detail/information-detail';
-import { LoginComponent } from './views/login/login';
-import { LoginErrorComponent } from './views/login-error/login-error';
+import { TrackingComponent } from './views/pages/tracking/tracking'
+import { InformationComponent } from './views/pages/information/information';
+import { SearchComponent } from './views/pages/search/search';
+import { SearchErrorComponent } from './views/pages/search-error/search-error';
 
 // Functional guards
 const canEnter = () => {
@@ -63,27 +63,27 @@ export const appRoutes: Routes = [
   // },
   {
     path: '',
-    loadComponent: () => import('./views/tracking-page/tracking-page').then(m => m.TrackingPageComponent),
+    loadComponent: () => import('./views/pages/tracking/tracking').then(m => m.TrackingComponent),
     title: 'QR Camiones'
   },
   {
     path: 'tracking',
-    loadComponent: () => import('./views/tracking-page/tracking-page').then(m => m.TrackingPageComponent),
+    loadComponent: () => import('./views/pages/tracking/tracking').then(m => m.TrackingComponent),
     title: 'QR Camiones'
   },
   {
-    path: 'information-detail',
-    loadComponent: () => import('./views/information-detail/information-detail').then(m => m.InformationDetailComponent),
+    path: 'information',
+    loadComponent: () => import('./views/pages/information/information').then(m => m.InformationComponent),
     title: 'Información detallada'
   },
   {
-    path: 'login',
-    loadComponent: () => import('./views/login/login').then(m => m.LoginComponent),
-    title: 'Login'
+    path: 'search',
+    loadComponent: () => import('./views/pages/search/search').then(m => m.SearchComponent),
+    title: 'Busqueda por CTG y Patente'
   },
   {
-    path: 'login-error',
-    loadComponent: () => import('./views/login-error/login-error').then(m => m.LoginErrorComponent),
-    title: 'Error al loguearse'
+    path: 'search-error',
+    loadComponent: () => import('./views/pages/search-error/search-error').then(m => m.SearchErrorComponent),
+    title: 'Error al buscar'
   }
 ];
