@@ -4,26 +4,25 @@
       <div class="step-wrapper">
         <button 
           class="step-circle"
-          [class.active]="step === currentStep()"
-          [class.completed]="step < currentStep()"
+          [ngClass]="getButtonClass(step)"
           (click)="onStepClick(step)">
-          @if (step < currentStep()) {
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M20 6L9 17l-5-5" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          } @else {
-            <span class="step-number">{{ step + 1 }}</span>
+          @if (step === currentStep()) {
+            <img 
+              [src]="getIconPath(stages()[step].nombre)"
+              [alt]="stages()[step].nombre"
+              class="step-icon"
+              onerror="this.onerror=null; this.src='assets/etapas/ingreso_icon.svg';"
+            />
           }
         </button>
         
         @if (step < totalSteps() - 1) {
-          <div class="step-line" [class.completed]="step < currentStep()"></div>
+          <div class="step-line"></div>
         }
       </div>
     }
   </div>
   
-  <!-- Expand/Collapse button -->
   <button class="expand-button" (click)="onToggleExpanded()">
     <span>{{ isExpanded() ? 'Ver menos' : 'Ver todas las etapas' }}</span>
     <svg 

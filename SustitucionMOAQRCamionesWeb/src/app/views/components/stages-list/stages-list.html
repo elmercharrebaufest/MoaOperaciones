@@ -12,12 +12,12 @@
         <img 
           [src]="getIconPath(stage.nombre)" 
           [alt]="stage.nombre + ' icon'" 
-          class="w-8 h-8 flex-shrink-0"
           onerror="this.onerror=null; this.src='assets/etapas/ingreso_icon.svg';" 
           loading="lazy"
         />
       </div>
 
+      <!-- Rest of your HTML remains the same -->
       <div class="stage-content">
         <div class="stage-header">
           <span class="stage-number text-xs font-medium text-gray-500 uppercase tracking-wider">

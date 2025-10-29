@@ -24,41 +24,52 @@
 }
 
 .step-circle {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  border: 2px solid #d1d5db;
-  background-color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  
-  &.active {
-    border-color: #003087;
-    background-color: #003087;
-    
-    .step-number {
-      color: white;
-      font-weight: 600;
+  padding: 0;
+  border: none;
+
+  // Default
+  &.stepper-button-default {
+    background-color: #d1d5db;
+  }
+
+  // en-proceso & pendiente
+  &.stepper-button-active {
+    background-color: #061C81;
+    .step-icon {
+      filter: brightness(0) invert(1); // Make icon white
     }
   }
   
-  &.completed {
-    border-color: #10b981;
-    background-color: #10b981;
+  &.stepper-button-completed {
+    background-color: #00843D;
+    .step-icon {
+      filter: brightness(0) invert(1); // Make icon white
+    }
   }
   
-  &:hover:not(.active):not(.completed) {
-    border-color: #9ca3af;
+  &.stepper-button-rejected {
+    background-color: #FD443F;
+    .step-icon {
+      filter: brightness(0) invert(1); // Make icon white
+    }
   }
-  
-  .step-number {
-    font-size: 0.875rem;
-    color: #6b7280;
-    font-weight: 500;
+
+  .step-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  &:hover:not(.active) {
+    opacity: 0.9;
   }
 }
 
@@ -67,11 +78,6 @@
   height: 2px;
   background-color: #d1d5db;
   margin: 0 0.5rem;
-  transition: background-color 0.3s ease;
-  
-  &.completed {
-    background-color: #10b981;
-  }
 }
 
 .expand-button {

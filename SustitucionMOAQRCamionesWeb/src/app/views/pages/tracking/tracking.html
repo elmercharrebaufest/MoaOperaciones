@@ -41,6 +41,8 @@
             [totalSteps]="stage.total"
             [currentStep]="stage.index"
             [isExpanded]="isExpanded()"
+            [stages]="cargoData().etapas"
+            [rechazado]="cargoData().rechazado"
             (stageChanged)="onStageChange($event)"
             (toggleExpanded)="toggleExpanded()">
           </app-progress-stepper>

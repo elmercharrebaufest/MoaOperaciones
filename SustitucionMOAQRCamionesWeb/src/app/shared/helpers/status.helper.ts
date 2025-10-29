@@ -46,6 +46,26 @@ export function returnStatusClass(status: string, rechazado = false): string {
   }
 }
 
+export function returnStepperButtonClass(status: string, rechazado = false): string {
+  if (hasTheWorkflowBeenRejected(rechazado, status)) {
+    return 'stepper-button-rejected';
+  }
+
+  switch (status) {
+    case 'completado':
+    case Status.COMPLETADO:
+      return 'stepper-button-completed';
+    case 'en-proceso':
+    case Status.EN_PROCESO:
+    case 'pendiente':
+    case Status.PENDIENTE:
+      return 'stepper-button-active';
+
+    default:
+      return 'stepper-button-default';
+  }
+}
+
 function hasTheWorkflowBeenRejected(rechazado: boolean, status: string): boolean {
   return Boolean(
     rechazado === true &&
