@@ -10,7 +10,7 @@ export const MOCK_CARGO_DATA: TrackingData = {
   entregador: 'MARTINO Y CIA SA',
   transportista: 'BORLETTO LOG Y SERV SRL',
   material: 'Poroto de soja',
-  rechazado: false,
+  rechazado: true,
   camion: {
     patente: 'EJE977',
     patenteAcoplado: 'DWG633'

@@ -69,8 +69,13 @@
     color: #061C81;
   }
 
+  &.status-rechazado {
+    background-color: #FCA5A5;
+    color: #7F1D1D;
+  }
+
   &.status-pendiente {
     background-color: #D7D6D6;
     color: #999999;
-  }
+  }  
 }

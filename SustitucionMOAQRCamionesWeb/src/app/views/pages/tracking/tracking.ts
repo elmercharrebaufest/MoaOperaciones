@@ -38,13 +38,15 @@ export class TrackingComponent {
     const data = this.cargoData();
     const index = this.currentStageIndex();
     if (data && data.etapas && data.etapas[index]) {
+      const estadoSinAlterar = data.etapas[index].estado
       return {
         index: index,
         total: data.etapas.length,
         name: data.etapas[index].nombre,
         date: formatDate(data.etapas[index].fecha),
         estimatedTime: data.etapas[index].tiempoEstimado,
-        status: this.getStatusUppercase(data.etapas[index].estado)
+        status: this.getStatusUppercase(estadoSinAlterar),
+        rawStatus: estadoSinAlterar
       };
     }
     return null;
@@ -67,10 +69,10 @@ export class TrackingComponent {
   }
 
   getStatusUppercase(status: string): string {
-    return returnStatusUppercase(status);
+    return returnStatusUppercase(status, this.cargoData().rechazado);
   }
 
   getStatusClass(status: string): string {
-    return returnStatusClass(status);
+    return returnStatusClass(status, this.cargoData().rechazado);
   }
 }

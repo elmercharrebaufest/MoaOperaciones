@@ -13,6 +13,7 @@ import { returnStatusUppercase, returnStatusClass } from '../../../shared/helper
 })
 export class StagesListComponent {
   stages = input.required<Etapa[]>();
+  rechazado = input.required<boolean>();
   currentStageIndex = input.required<number>();
   stageClicked = output<number>();
 
@@ -26,10 +27,12 @@ export class StagesListComponent {
   }
 
   getStatusUppercase(status: string): string {
-    return returnStatusUppercase(status);
+    const rej = typeof this.rechazado === 'function' ? this.rechazado() : this.rechazado;
+    return returnStatusUppercase(status, rej);
   }
 
   getStatusClass(status: string): string {
-    return returnStatusClass(status);
+    const rej = typeof this.rechazado === 'function' ? this.rechazado() : this.rechazado;
+    return returnStatusClass(status, rej);
   }
 }

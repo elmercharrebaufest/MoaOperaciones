@@ -107,6 +107,11 @@
     color: #999999;
   }
 
+  &.status-rechazado {
+    background-color: #FCA5A5;
+    color: #7F1D1D;
+  }
+
   &.status-default {
     background-color: #E0E0E0;
     color: #555;
