@@ -65,7 +65,7 @@ export class SearchComponent {
       patente: this.patente()
     };
 
-    this.http.post<SearchResponse>(`${environment.apiUrl}/api/qrcamiones/login`, loginData)
+    this.http.post<SearchResponse>(`${environment.apiUrl}/api/qrcamiones/search`, loginData)
       .subscribe({
         next: (response) => {
           this.isLoading.set(false);
