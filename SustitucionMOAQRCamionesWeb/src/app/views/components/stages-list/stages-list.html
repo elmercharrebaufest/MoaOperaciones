@@ -1,0 +1,40 @@
+<div class="stages-list">
+  @for (stage of stages(); track $index; let isLast = $last) {
+    <div 
+      class="stage-item cursor-pointer transition-colors duration-200"
+      [ngClass]="{ 
+        'bg-indigo-50/50 text-indigo-800 font-semibold': $index === currentStageIndex(),
+        'hover:bg-gray-50': $index !== currentStageIndex()
+      }"
+      (click)="onStageClick($index)">
+      
+      <div class="stage-icon">
+        <img 
+          [src]="getIconPath(stage.nombre)" 
+          [alt]="stage.nombre + ' icon'" 
+          onerror="this.onerror=null; this.src='assets/etapas/ingreso_icon.svg';" 
+          loading="lazy"
+        />
+      </div>
+
+      <!-- Rest of your HTML remains the same -->
+      <div class="stage-content">
+        <div class="stage-header">
+          <span class="stage-number text-xs font-medium text-gray-500 uppercase tracking-wider">
+            ETAPA {{ $index + 1 }} de {{ stages().length }}
+          </span>
+          
+          <div class="stage-status" [ngClass]="getStatusClass(stage.estado)">
+            {{ getStatusUppercase(stage.estado) }}
+          </div>
+          
+        </div>
+        <div class="stage-name text-base text-gray-800 font-medium">{{ stage.nombre }}</div>
+      </div>
+    </div>
+    
+    @if (!isLast) {
+      <hr class="stage-divider">
+    }
+  }
+</div>

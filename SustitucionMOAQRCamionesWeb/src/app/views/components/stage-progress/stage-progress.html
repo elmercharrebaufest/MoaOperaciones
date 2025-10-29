@@ -1,0 +1,11 @@
+<div class="stage-progress">
+  <div class="stage-header">
+    <span class="stage-label">
+      ETAPA ACTUAL {{ currentStage() }} de {{ totalStages() }}
+    </span>
+    <span class="status-badge">EN PROCESO</span>
+  </div>
+  <h2 class="stage-name">{{ stageName() }}</h2>
+  <p class="stage-date">{{ formatStageDate() }}h.</p>
+  <p class="stage-time">Tiempo estimado: {{ estimatedTime() }}.</p>
+</div>

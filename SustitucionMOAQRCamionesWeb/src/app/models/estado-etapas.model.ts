@@ -1,6 +1,6 @@
 export interface Etapa {
   nombre: string;
-  fecha: string;
+  fecha: Date;
   tiempoEstimado: string;
   estado: 'completado' | 'en-proceso' | 'pendiente';
 }
