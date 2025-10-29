@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { ShipmentCardComponent } from '../../components/shipment-card/shipment-card';
 import { ProgressStepperComponent } from '../../components/progress-stepper/progress-stepper';
 import { StagesListComponent } from '../../components/stages-list/stages-list';
-import { ExpandableSectionComponent } from '../../components/expandable-section/expandable-section';
+import { InformationButtonComponent } from '../../components/information-button/information-button';
 import { ContainerComponent } from '../../../shared/container/container';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper';
 // Helpers
@@ -22,7 +22,7 @@ import { MOCK_CARGO_DATA } from '../../../data/mock-tracking.data';
     ShipmentCardComponent,
     ProgressStepperComponent,
     StagesListComponent,
-    ExpandableSectionComponent,
+    InformationButtonComponent,
     ContainerComponent,
     SectionWrapperComponent
   ],

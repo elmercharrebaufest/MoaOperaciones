@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-expandable-section',
+  selector: 'app-information-button',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './expandable-section.html',
-  styleUrls: ['./expandable-section.scss']
+  templateUrl: './information-button.html',
+  styleUrls: ['./information-button.scss']
 })
-export class ExpandableSectionComponent {
+export class InformationButtonComponent {
   title = input.required<string>();
   navigateTo = input<'carga' | 'planta' | null>(null);
 
