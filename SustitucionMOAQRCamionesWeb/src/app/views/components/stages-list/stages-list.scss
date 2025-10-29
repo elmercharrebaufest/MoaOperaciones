@@ -48,3 +48,29 @@
   width: calc(100% - 3rem);
   align-self: flex-end;
 }
+
+.stage-status {
+  background-color: #BFD6EC;
+  color: #061C81;
+  padding: 0.2rem 0.3rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &.status-completado {
+    background-color: #CAE6CA;
+    color: #00843D;
+  }
+
+  &.status-en-proceso {
+    background-color: #BFD6EC;
+    color: #061C81;
+  }
+
+  &.status-pendiente {
+    background-color: #D7D6D6;
+    color: #999999;
+  }
+}

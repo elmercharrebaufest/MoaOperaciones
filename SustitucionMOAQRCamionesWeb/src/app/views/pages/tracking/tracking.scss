@@ -91,6 +91,26 @@
   font-weight: bold;
   white-space: nowrap;
   flex-shrink: 0;
+
+  &.status-completado {
+    background-color: #CAE6CA;
+    color: #00843D;
+  }
+
+  &.status-en-proceso {
+    background-color: #BFD6EC;
+    color: #061C81;
+  }
+
+  &.status-pendiente {
+    background-color: #D7D6D6;
+    color: #999999;
+  }
+
+  &.status-default {
+    background-color: #E0E0E0;
+    color: #555;
+  }
 }
 
 .stage-description {

@@ -1,6 +1,8 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Etapa } from '../../../models/estado-etapas.model';
+// Helpers
+import { returnStatusUppercase, returnStatusClass } from '../../../shared/helpers/status.helper'
 
 @Component({
   selector: 'app-stages-list',
@@ -21,5 +23,13 @@ export class StagesListComponent {
   getIconPath(stageName: string): string {
     const normalizedName = stageName.toLowerCase().replace(/[^a-z0-9]/g, '_');
     return `assets/etapas/${normalizedName}_icon.svg`;
+  }
+
+  getStatusUppercase(status: string): string {
+    return returnStatusUppercase(status);
+  }
+
+  getStatusClass(status: string): string {
+    return returnStatusClass(status);
   }
 }

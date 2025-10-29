@@ -1,14 +1,18 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+// Components
 import { ShipmentCardComponent } from '../../components/shipment-card/shipment-card';
 import { ProgressStepperComponent } from '../../components/progress-stepper/progress-stepper';
 import { StagesListComponent } from '../../components/stages-list/stages-list';
 import { ExpandableSectionComponent } from '../../components/expandable-section/expandable-section';
 import { ContainerComponent } from '../../../shared/container/container';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper';
-import { MOCK_CARGO_DATA } from '../../../data/mock-tracking.data';
-import { Router } from '@angular/router';
+// Helpers
 import { formatDate } from '../../../shared/helpers/date.helper';
+import { returnStatusUppercase, returnStatusClass } from '../../../shared/helpers/status.helper'
+// MOCK
+import { MOCK_CARGO_DATA } from '../../../data/mock-tracking.data';
 
 @Component({
   selector: 'app-tracking-page',
@@ -39,7 +43,8 @@ export class TrackingComponent {
         total: data.etapas.length,
         name: data.etapas[index].nombre,
         date: formatDate(data.etapas[index].fecha),
-        estimatedTime: data.etapas[index].tiempoEstimado
+        estimatedTime: data.etapas[index].tiempoEstimado,
+        status: this.getStatusUppercase(data.etapas[index].estado)
       };
     }
     return null;
@@ -59,5 +64,13 @@ export class TrackingComponent {
 
   consultarOtraCTG() {
     this.router.navigate(['/search']);
+  }
+
+  getStatusUppercase(status: string): string {
+    return returnStatusUppercase(status);
+  }
+
+  getStatusClass(status: string): string {
+    return returnStatusClass(status);
   }
 }

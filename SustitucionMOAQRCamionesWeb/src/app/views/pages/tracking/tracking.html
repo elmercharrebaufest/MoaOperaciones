@@ -26,7 +26,7 @@
                 <div class="stage-name">{{ stage.name }}</div>
                 <div class="stage-date">{{ stage.date }}</div>
               </div>
-              <div class="stage-status">EN PROCESO</div>
+              <div [ngClass]="['stage-status', getStatusClass(stage.status)]">{{ stage.status }}</div>
             </div>
             
             <div class="stage-description">

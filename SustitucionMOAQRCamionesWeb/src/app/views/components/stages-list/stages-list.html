@@ -24,15 +24,9 @@
             ETAPA {{ $index + 1 }} de {{ stages().length }}
           </span>
           
-          @if (stage.estado === 'pendiente') {
-            <span class="stage-badge bg-gray-200 text-gray-700">PENDIENTE</span>
-          }
-          @if (stage.estado === 'completado') {
-            <span class="stage-badge bg-green-100 text-green-700">COMPLETADO</span>
-          }
-          @if (stage.estado === 'en-proceso') {
-            <span class="stage-badge bg-yellow-100 text-yellow-700">EN PROCESO</span>
-          }
+          <div class="stage-status" [ngClass]="getStatusClass(stage.estado)">
+            {{ getStatusUppercase(stage.estado) }}
+          </div>
           
         </div>
         <div class="stage-name text-base text-gray-800 font-medium">{{ stage.nombre }}</div>
