@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkqr_camiones=self.webpackChunkqr_camiones||[]).push([[411],{2792:(s,t,n)=>{n.r(t),n.d(t,{authRoutes:()=>o});const o=[{path:"login",loadComponent:()=>n.e(973).then(n.bind(n,9973)).then(h=>h.LoginComponent),title:"Login"},{path:"",redirectTo:"login",pathMatch:"full"}]}}]);

@@ -1,0 +1,37 @@
+<div class="progress-stepper">
+  <div class="steps-container">
+    @for (step of getSteps(); track step) {
+      <div class="step-wrapper">
+        <button 
+          class="step-circle"
+          [ngClass]="getButtonClass(step)"
+          (click)="onStepClick(step)">
+          @if (step === currentStep()) {
+            <img 
+              [src]="getIconPath(stages()[step].nombre)"
+              [alt]="stages()[step].nombre"
+              class="step-icon"
+              onerror="this.onerror=null; this.src='assets/etapas/ingreso_icon.svg';"
+            />
+          }
+        </button>
+        
+        @if (step < totalSteps() - 1) {
+          <div class="step-line"></div>
+        }
+      </div>
+    }
+  </div>
+  
+  <button class="expand-button" (click)="onToggleExpanded()">
+    <span>{{ isExpanded() ? 'Ver menos' : 'Ver todas las etapas' }}</span>
+    <svg 
+      width="20" 
+      height="20" 
+      viewBox="0 0 24 24" 
+      fill="none"
+      [class.rotated]="isExpanded()">
+      <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</div>

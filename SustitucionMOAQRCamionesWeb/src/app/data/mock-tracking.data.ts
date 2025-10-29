@@ -3,14 +3,14 @@ import { TrackingData } from '../models/tracking-data.model';
 export const MOCK_CARGO_DATA: TrackingData = {
   workflow: 'Granos',
   ctg: '098765123456',
-  fechaHoraIngreso: '2025-10-27T12:45:00.000Z',
+  fechaHoraIngreso: new Date('2025-10-27T12:45:00.000Z'),
   titularCartaPorte: 'EL NORTE CORDOBÉS SRL',
   remitenteComercial: 'SYNGENTA AGRO SOCIEDAD ANONIMA',
   remitenteComercialVtaPrim: 'FYO ACOPIO S.A.',
   entregador: 'MARTINO Y CIA SA',
   transportista: 'BORLETTO LOG Y SERV SRL',
   material: 'Poroto de soja',
-  rechazado: '',
+  rechazado: true,
   camion: {
     patente: 'EJE977',
     patenteAcoplado: 'DWG633'
@@ -33,43 +33,43 @@ export const MOCK_CARGO_DATA: TrackingData = {
   etapas: [
     {
       nombre: 'Ingreso',
-      fecha: '2025-10-27T00:00:00.000Z',
+      fecha: new Date('2025-10-27T00:00:00.000Z'),
       tiempoEstimado: '30 minutos',
-      estado: 'pendiente'
+      estado: 'completado'
     },
     {
       nombre: 'Pre Calado',
-      fecha: '2025-10-27T00:00:00.000Z',
+      fecha: new Date('2025-10-27T00:00:00.000Z'),
       tiempoEstimado: '45 minutos',
-      estado: 'pendiente'
+      estado: 'en-proceso'
     },
     {
       nombre: 'Calado',
-      fecha: '2025-10-27T00:00:00.000Z',
+      fecha: new Date('2025-10-27T00:00:00.000Z'),
       tiempoEstimado: '120 minutos',
       estado: 'pendiente'
     },
     {
       nombre: 'Post Calado',
-      fecha: '2025-10-27T00:00:00.000Z',
+      fecha: new Date('2025-10-27T00:00:00.000Z'),
       tiempoEstimado: '60 minutos',
       estado: 'pendiente'
     },
     {
       nombre: 'Pesaje Bruto',
-      fecha: '2025-10-27T00:00:00.000Z',
+      fecha: new Date('2025-10-27T00:00:00.000Z'),
       tiempoEstimado: '120 minutos',
       estado: 'pendiente'
     },
     {
       nombre: 'Descarga',
-      fecha: '2025-10-27T00:00:00.000Z',
+      fecha: new Date('2025-10-27T00:00:00.000Z'),
       tiempoEstimado: '45 minutos',
       estado: 'pendiente'
     },
     {
       nombre: 'Cierre',
-      fecha: '2025-10-27T00:00:00.000Z',
+      fecha: new Date('2025-10-27T00:00:00.000Z'),
       tiempoEstimado: '30 minutos',
       estado: 'pendiente'
     }
