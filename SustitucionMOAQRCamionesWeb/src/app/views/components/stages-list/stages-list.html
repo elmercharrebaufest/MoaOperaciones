@@ -2,7 +2,8 @@
   @for (stage of stages(); track $index; let isLast = $last) {
     <div 
       class="stage-item"
-      [class.active]="$index === currentStageIndex()"
+      [class.active]="isActive($index, stage)"
+      [class.en-proceso]="stage.estado === 'en-proceso'"
       (click)="onStageClick($index)">
       
       <div class="stage-icon">
@@ -23,7 +24,6 @@
           <div class="stage-status" [ngClass]="getStatusClass(stage.estado)">
             {{ getStatusUppercase(stage.estado) }}
           </div>
-          
         </div>
         <div class="stage-name">{{ stage.nombre }}</div>
       </div>

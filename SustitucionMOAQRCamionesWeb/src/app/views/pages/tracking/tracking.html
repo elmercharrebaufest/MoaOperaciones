@@ -50,7 +50,7 @@
 
           <app-progress-stepper
             [totalSteps]="stage.total"
-            [currentStep]="stage.index"
+            [currentStep]="selectedIndex()"
             [isExpanded]="isExpanded()"
             [stages]="cargoData().etapas"
             [rechazado]="cargoData().rechazado"
@@ -58,11 +58,10 @@
             (toggleExpanded)="toggleExpanded()">
           </app-progress-stepper>
 
-          <!-- Animated stages list -->
           <div class="stages-list-wrapper" [class.expanded]="isExpanded()">
             <app-stages-list
               [stages]="cargoData().etapas"
-              [currentStageIndex]="currentStageIndex()"
+              [currentStageIndex]="selectedIndex()"
               [rechazado]="cargoData().rechazado"
               (stageClicked)="onStageChange($event)">
             </app-stages-list>

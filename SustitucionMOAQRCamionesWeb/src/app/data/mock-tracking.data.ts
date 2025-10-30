@@ -10,7 +10,7 @@ export const MOCK_CARGO_DATA: TrackingData = {
   entregador: 'MARTINO Y CIA SA',
   transportista: 'BORLETTO LOG Y SERV SRL',
   material: 'Poroto de soja',
-  rechazado: true,
+  rechazado: false,
   camion: {
     patente: 'EJE977',
     patenteAcoplado: 'DWG633'
@@ -41,13 +41,13 @@ export const MOCK_CARGO_DATA: TrackingData = {
       nombre: 'Pre Calado',
       fecha: new Date('2025-10-27T00:00:00.000Z'),
       tiempoEstimado: '45 minutos',
-      estado: 'en-proceso'
+      estado: 'completado'
     },
     {
       nombre: 'Calado',
       fecha: new Date('2025-10-27T00:00:00.000Z'),
       tiempoEstimado: '120 minutos',
-      estado: 'pendiente'
+      estado: 'en-proceso'
     },
     {
       nombre: 'Post Calado',

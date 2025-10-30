@@ -15,12 +15,18 @@
   cursor: pointer;
   background-color: white;
   
-  &:hover:not(.active) {
+  &:hover:not(.active):not(.en-proceso) {
     background-color: rgba(243, 244, 246, 0.8);
   }
-  
+
   &.active {
-    background-color: rgba(224, 231, 255, 0.5);
+    background-color: #EAE9E9;
+    font-weight: 600;
+    color: #1e40af;
+  }
+  
+  &.en-proceso {
+    background-color: #e0e7ff80;
     font-weight: 600;
     color: #1e40af;
     
@@ -86,7 +92,7 @@
   margin: 0;
   border: none;
   border-top: 1px solid #e5e7eb;
-  width: calc(100% - 3rem);
+  width: 100%;
   align-self: flex-end;
 }
 

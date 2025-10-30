@@ -17,7 +17,7 @@ export class StagesListComponent {
   rechazado = input.required<boolean>();
   stageClicked = output<number>();
 
-  constructor(private stageStateService: StageStateService) {}
+  constructor(public stageStateService: StageStateService) {}
 
   onStageClick(index: number) {
     this.stageClicked.emit(index);
@@ -34,5 +34,9 @@ export class StagesListComponent {
 
   getStatusClass(status: Etapa['estado']): string {
     return returnStatusClass(status, this.rechazado());
+  }
+
+  isActive(index: number, stage: Etapa): boolean {
+    return index === this.currentStageIndex() || stage.estado === 'en-proceso';
   }
 }
