@@ -2,6 +2,7 @@ import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Etapa } from '../../../models/estado-etapas.model';
 import { returnStepperButtonClass } from '../../../shared/helpers/status.helper';
+import { StageStateService } from '../../../infrastructure/services/internal/stage-state.service';
 
 @Component({
   selector: 'app-progress-stepper',
@@ -20,6 +21,8 @@ export class ProgressStepperComponent {
   stageChanged = output<number>();
   toggleExpanded = output<void>();
 
+  constructor(private stageStateService: StageStateService) {}
+
   getSteps() {
     return Array.from({ length: this.totalSteps() }, (_, i) => i);
   }
@@ -31,10 +34,8 @@ export class ProgressStepperComponent {
 
   getButtonClass(step: number): string {
     if (step === this.currentStep()) {
-      return returnStepperButtonClass(
-        this.stages()[step].estado,
-        this.rechazado()
-      );
+      const stage = this.stages()[step];
+      return returnStepperButtonClass(stage.estado, this.rechazado());
     }
     return 'stepper-button-default';
   }
