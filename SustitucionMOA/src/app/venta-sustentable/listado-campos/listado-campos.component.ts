@@ -91,14 +91,23 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
                     this.getNormativas();
 
                     if (result.length > 0) {
-                        let allProveedores = result.map(cp => { return { value: cp.Proveedor.CodigoProveedor, label: cp.Proveedor.RazonSocial } });
-                        this.opcionesProveedores = [...new Map(allProveedores.map(item => [item.value, item])).values()];
-                    
-                        let allCuitProveedores = result.map(cp => { 
-                        return { value: cp.CUITProveedor, label: cp.CUITProveedor } 
-                        });
-                        this.opcionesCuit = [...new Map(allCuitProveedores.map(item => [item.value, item])).values()];
+                        let allProveedores = result
+                            .map(cp => ({
+                                value: (cp && cp.Proveedor && cp.Proveedor.CodigoProveedor) ? cp.Proveedor.CodigoProveedor : '',
+                                label: (cp && cp.Proveedor && cp.Proveedor.RazonSocial) ? cp.Proveedor.RazonSocial : ''
+                            }))
+                            .filter(p => p.label != null && String(p.label).trim() !== '');
 
+                        this.opcionesProveedores = [...new Map(allProveedores.map(item => [item.value, item])).values()];
+
+                        let allCuitProveedores = result
+                            .map(cp => ({
+                                value: cp && cp.CUITProveedor ? cp.CUITProveedor : '',
+                                label: cp && cp.CUITProveedor ? cp.CUITProveedor : ''
+                            }))
+                            .filter(p => p.label != null && String(p.label).trim() !== '');
+
+                        this.opcionesCuit = [...new Map(allCuitProveedores.map(item => [item.value, item])).values()];
                     }
                     else {
                         this.mensajeComponent.setInfoMsg("No hay campos sustentables cargados.");
