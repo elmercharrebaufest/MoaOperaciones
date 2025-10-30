@@ -33,13 +33,14 @@ import { MOCK_CARGO_DATA } from '../../../data/mock-tracking.data';
 })
 export class TrackingComponent {
   cargoData = signal(MOCK_CARGO_DATA);
-  currentStageIndex = signal(0);
   isExpanded = signal(false);
+
+  selectedIndex = computed(() => this.stageStateService.getSelectedIndex()());
 
   currentStage = computed(() => {
     const data = this.cargoData();
-    const index = this.currentStageIndex();
-    const stage = data.etapas[index];
+    const stage = this.stageStateService.currentStage();
+    const index = this.selectedIndex();
     
     if (stage) {
       return {
@@ -57,7 +58,7 @@ export class TrackingComponent {
 
   constructor(
     private router: Router,
-    private stageStateService: StageStateService
+    public stageStateService: StageStateService
   ) {
     this.initializeData();
   }
@@ -67,8 +68,8 @@ export class TrackingComponent {
     this.stageStateService.updateStages(data.etapas, data.rechazado);
   }
 
-  onStageChange(stageIndex: number) {
-    this.currentStageIndex.set(stageIndex);
+  onStageChange(index: number) {
+    this.stageStateService.setSelectedIndex(index);
   }
 
   toggleExpanded() {
@@ -76,7 +77,6 @@ export class TrackingComponent {
   }
 
   onActualizar() {
-    console.log('Actualizar clicked - refreshing cargo data');
     this.initializeData();
   }
 
