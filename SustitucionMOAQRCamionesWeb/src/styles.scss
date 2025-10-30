@@ -99,24 +99,64 @@ body {
 }
 
 // Animation classes
-.animate-fade-in {
-  animation: fadeIn var(--transition-slow) ease-in-out;
+.page-enter {
+  animation: slideInRight 0.3s ease-out forwards;
 }
 
-.animate-slide-up {
-  animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+.page-exit {
+  animation: slideOutRight 0.3s ease-out forwards;
 }
 
-.animate-bounce-in {
-  animation: bounceIn var(--transition-bounce);
+.page-enter-back {
+  animation: slideInLeft 0.3s ease-out forwards;
 }
 
-.animate-scale-in {
-  animation: scaleIn var(--transition-base) ease-out;
+.page-exit-back {
+  animation: slideOutLeft 0.3s ease-out forwards;
 }
 
-.animate-slide-in-right {
-  animation: slideInRight var(--transition-slow) ease-out;
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
 }
 
 // Utility Classes
@@ -495,3 +535,4 @@ p {
     font-size: var(--font-size-4xl);
   }
 }
+
