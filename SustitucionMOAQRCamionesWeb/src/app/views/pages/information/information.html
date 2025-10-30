@@ -1,10 +1,8 @@
 <div class="information-detail-container">
-  <!-- Logo Section -->
   <div class="logo-section">
     <img src="assets/moa_logo.svg" alt="Molinos agro" class="logo">
   </div>
 
-  <!-- Full-width Blue Header -->
   <button class="back-header" (click)="goBack()">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="back-icon">
       <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -12,7 +10,6 @@
     <span class="back-title">{{ getTitle() }}</span>
   </button>
 
-  <!-- Content Section with Centered Containers -->
   <div class="content-section">
     <!-- Fecha y hora de ingreso -->
     <app-container [padding]="'p-2'">

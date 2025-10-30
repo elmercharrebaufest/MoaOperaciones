@@ -25,10 +25,18 @@ export class InformationComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.detailType.set(params['type'] || 'carga');
     });
+
+    document.body.style.overflow = 'hidden';
   }
 
   goBack() {
-    this.location.back();
+    const container = document.querySelector('.information-detail-container');
+    if (container) {
+      container.classList.add('page-exit');
+      setTimeout(() => {
+        this.location.back();
+      }, 280);
+    }
   }
 
   getTitle(): string {
@@ -37,5 +45,9 @@ export class InformationComponent implements OnInit {
 
   formatFechaHoraIngreso(): string {
     return formatDate(this.cargoData().fechaHoraIngreso);
+  }
+
+  ngOnDestroy() {
+    document.body.style.overflow = '';
   }
 }
