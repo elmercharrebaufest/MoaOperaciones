@@ -2,10 +2,9 @@
   <div class="steps-container">
     @for (step of getSteps(); track step) {
       <div class="step-wrapper">
-        <button 
+        <div 
           class="step-circle"
-          [ngClass]="getButtonClass(step)"
-          (click)="onStepClick(step)">
+          [ngClass]="getButtonClass(step)">
           @if (step === currentStep()) {
             <img 
               [src]="getIconPath(stages()[step].nombre)"
@@ -14,7 +13,7 @@
               onerror="this.onerror=null; this.src='assets/etapas/ingreso_icon.svg';"
             />
           }
-        </button>
+        </div>
         
         @if (step < totalSteps() - 1) {
           <div class="step-line"></div>

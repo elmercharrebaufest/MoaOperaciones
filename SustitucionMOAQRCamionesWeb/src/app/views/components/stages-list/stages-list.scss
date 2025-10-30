@@ -11,7 +11,27 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  background-color: white;
+  
+  &:hover:not(.active) {
+    background-color: rgba(243, 244, 246, 0.8);
+  }
+  
+  &.active {
+    background-color: rgba(224, 231, 255, 0.5);
+    font-weight: 600;
+    color: #1e40af;
+    
+    .stage-number {
+      color: #4338ca;
+    }
+    
+    .stage-name {
+      color: #1e40af;
+    }
+  }
 }
 
 .stage-icon {
@@ -48,13 +68,18 @@
   gap: 0.5rem;
 }
 
-.stage-badge {
+.stage-number {
   font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 9999px;
   font-weight: 500;
-  line-height: 1;
+  color: #6b7280; // Gray-500
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stage-name {
+  font-size: 1rem;
+  color: #1f2937; // Gray-800
+  font-weight: 500;
 }
 
 .stage-divider {
