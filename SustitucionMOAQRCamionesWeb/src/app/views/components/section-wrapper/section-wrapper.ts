@@ -10,5 +10,6 @@ import { CommonModule } from '@angular/common';
 })
 export class SectionWrapperComponent {
   backgroundColor = input<string>('#f5f5f5');
-  padding = input<string>('1rem');
+  padding = input<string>('4px');
+  roundedBottom = input<boolean>(false);
 }

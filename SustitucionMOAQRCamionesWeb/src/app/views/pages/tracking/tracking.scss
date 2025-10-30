@@ -18,6 +18,39 @@
   }
 }
 
+.actualizar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: calc(100% - 30px);
+  max-width: 768px;
+  margin: 0.75rem 15px 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #EAE9E9;
+  color: #003087;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  @media (min-width: 768px) {
+    margin: 0.75rem auto 1rem;
+  }
+  
+  &:hover {
+    background-color: #d6d6d6;
+  }
+  
+  .refresh-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+}
+
 // Make the content section fill remaining height
 .content-section {
   flex: 1;
@@ -181,7 +214,7 @@
   border: 1px solid #061C81;
   border-radius: 0.5rem;
   font-size: 1rem;
-  font-weight: 00;
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
   

@@ -64,6 +64,12 @@ export class TrackingComponent {
     this.isExpanded.update(value => !value);
   }
 
+  onActualizar() {
+    // Add your refresh/update logic here
+    console.log('Actualizar clicked - refreshing cargo data');
+    // Example: this.loadCargoData();
+  }
+
   consultarOtraCTG() {
     this.router.navigate(['/search']);
   }
