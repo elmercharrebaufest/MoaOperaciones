@@ -1,8 +1,8 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Etapa } from '../../../models/estado-etapas.model';
-// Helpers
-import { returnStatusUppercase, returnStatusClass } from '../../../shared/helpers/status.helper'
+import { returnStatusUppercase, returnStatusClass } from '../../../shared/helpers/status.helper';
+import { StageStateService } from '../../../infrastructure/services/internal/stage-state.service';
 
 @Component({
   selector: 'app-stages-list',
@@ -13,9 +13,11 @@ import { returnStatusUppercase, returnStatusClass } from '../../../shared/helper
 })
 export class StagesListComponent {
   stages = input.required<Etapa[]>();
-  rechazado = input.required<boolean>();
   currentStageIndex = input.required<number>();
+  rechazado = input.required<boolean>();
   stageClicked = output<number>();
+
+  constructor(private stageStateService: StageStateService) {}
 
   onStageClick(index: number) {
     this.stageClicked.emit(index);
@@ -26,13 +28,11 @@ export class StagesListComponent {
     return `assets/etapas/${normalizedName}_icon.svg`;
   }
 
-  getStatusUppercase(status: string): string {
-    const rej = typeof this.rechazado === 'function' ? this.rechazado() : this.rechazado;
-    return returnStatusUppercase(status, rej);
+  getStatusUppercase(status: Etapa['estado']): string {
+    return returnStatusUppercase(status, this.rechazado());
   }
 
-  getStatusClass(status: string): string {
-    const rej = typeof this.rechazado === 'function' ? this.rechazado() : this.rechazado;
-    return returnStatusClass(status, rej);
+  getStatusClass(status: Etapa['estado']): string {
+    return returnStatusClass(status, this.rechazado());
   }
 }

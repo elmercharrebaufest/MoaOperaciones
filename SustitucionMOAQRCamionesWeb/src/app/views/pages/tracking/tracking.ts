@@ -1,6 +1,8 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Etapa } from '../../../models/estado-etapas.model';
+import { StageStateService } from '../../../infrastructure/services/internal/stage-state.service';
 // Components
 import { ShipmentCardComponent } from '../../components/shipment-card/shipment-card';
 import { ProgressStepperComponent } from '../../components/progress-stepper/progress-stepper';
@@ -37,24 +39,33 @@ export class TrackingComponent {
   currentStage = computed(() => {
     const data = this.cargoData();
     const index = this.currentStageIndex();
-    if (data && data.etapas && data.etapas[index]) {
-      const estadoSinAlterar = data.etapas[index].estado
+    const stage = data.etapas[index];
+    
+    if (stage) {
       return {
-        index: index,
+        index,
         total: data.etapas.length,
-        name: data.etapas[index].nombre,
-        date: formatDate(data.etapas[index].fecha),
-        estimatedTime: data.etapas[index].tiempoEstimado,
-        status: this.getStatusUppercase(estadoSinAlterar),
-        rawStatus: estadoSinAlterar
+        name: stage.nombre,
+        date: formatDate(stage.fecha),
+        estimatedTime: stage.tiempoEstimado,
+        status: this.getStatusUppercase(stage.estado),
+        rawStatus: stage.estado
       };
     }
     return null;
   });
 
   constructor(
-    private router: Router
-  ) {}
+    private router: Router,
+    private stageStateService: StageStateService
+  ) {
+    this.initializeData();
+  }
+
+  private initializeData() {
+    const data = this.cargoData();
+    this.stageStateService.updateStages(data.etapas, data.rechazado);
+  }
 
   onStageChange(stageIndex: number) {
     this.currentStageIndex.set(stageIndex);
@@ -65,20 +76,19 @@ export class TrackingComponent {
   }
 
   onActualizar() {
-    // Add your refresh/update logic here
     console.log('Actualizar clicked - refreshing cargo data');
-    // Example: this.loadCargoData();
+    this.initializeData();
   }
 
   consultarOtraCTG() {
     this.router.navigate(['/search']);
   }
 
-  getStatusUppercase(status: string): string {
+  getStatusUppercase(status: Etapa['estado']): string {
     return returnStatusUppercase(status, this.cargoData().rechazado);
   }
 
-  getStatusClass(status: string): string {
+  getStatusClass(status: Etapa['estado']): string {
     return returnStatusClass(status, this.cargoData().rechazado);
   }
 }

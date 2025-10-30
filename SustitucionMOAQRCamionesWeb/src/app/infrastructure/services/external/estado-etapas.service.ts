@@ -1,8 +1,8 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
-import { EstadoEtapasResponse } from '../../models/estado-etapas-response.model';
-import { EstadoEtapas } from '../../models/estado-etapas.model';
+import { EstadoEtapasResponse } from '../../../models/estado-etapas-response.model';
+import { EstadoEtapas } from '../../../models/estado-etapas.model';
 
 @Injectable({
   providedIn: 'root'
