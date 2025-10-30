@@ -1,11 +1,8 @@
 <div class="stages-list">
   @for (stage of stages(); track $index; let isLast = $last) {
     <div 
-      class="stage-item cursor-pointer transition-colors duration-200"
-      [ngClass]="{ 
-        'bg-indigo-50/50 text-indigo-800 font-semibold': $index === currentStageIndex(),
-        'hover:bg-gray-50': $index !== currentStageIndex()
-      }"
+      class="stage-item"
+      [class.active]="$index === currentStageIndex()"
       (click)="onStageClick($index)">
       
       <div class="stage-icon">
@@ -17,10 +14,9 @@
         />
       </div>
 
-      <!-- Rest of your HTML remains the same -->
       <div class="stage-content">
         <div class="stage-header">
-          <span class="stage-number text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <span class="stage-number">
             ETAPA {{ $index + 1 }} de {{ stages().length }}
           </span>
           
@@ -29,7 +25,7 @@
           </div>
           
         </div>
-        <div class="stage-name text-base text-gray-800 font-medium">{{ stage.nombre }}</div>
+        <div class="stage-name">{{ stage.nombre }}</div>
       </div>
     </div>
     

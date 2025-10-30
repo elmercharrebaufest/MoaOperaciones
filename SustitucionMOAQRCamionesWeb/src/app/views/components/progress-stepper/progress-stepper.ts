@@ -39,10 +39,6 @@ export class ProgressStepperComponent {
     return 'stepper-button-default';
   }
 
-  onStepClick(step: number) {
-    this.stageChanged.emit(step);
-  }
-
   onToggleExpanded() {
     this.toggleExpanded.emit();
   }
