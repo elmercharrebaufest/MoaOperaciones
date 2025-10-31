@@ -1,115 +1,117 @@
 <div class="information-detail-container">
-  <div class="logo-section">
-    <img src="assets/moa_logo.svg" alt="Molinos agro" class="logo">
-  </div>
+  @if (cargoData(); as data) {
+    <div class="logo-section">
+      <img src="assets/moa_logo.svg" alt="Molinos agro" class="logo">
+    </div>
 
-  <button class="back-header" (click)="goBack()">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="back-icon">
-      <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <span class="back-title">{{ getTitle() }}</span>
-  </button>
+    <button class="back-header" (click)="goBack()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="back-icon">
+        <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="back-title">{{ getTitle() }}</span>
+    </button>
 
-  <div class="content-section">
+    <div class="content-section">
     <!-- Fecha y hora de ingreso -->
-    <app-container [padding]="'p-2'">
-      <div class="info-section">
-        <p class="section-label">Fecha y hora de ingreso</p>
-        <p class="section-value">{{ formatFechaHoraIngreso() }}</p>
-      </div>
-    </app-container>
+      <app-container [padding]="'p-2'">
+        <div class="info-section">
+          <p class="section-label">Fecha y hora de ingreso</p>
+          <p class="section-value">{{ formatFechaHoraIngreso() }}</p>
+        </div>
+      </app-container>
 
     <!-- Datos del traslado de granos -->
-    <app-container [padding]="'p-2'">
-      <div class="info-section">
-        <h2 class="section-title">Datos del traslado de granos</h2>
-        
-        <div class="field-group">
-          <p class="field-label">Titular carta de porte</p>
-          <p class="field-value">{{ cargoData().titularCartaPorte }}</p>
-        </div>
+      <app-container [padding]="'p-2'">
+        <div class="info-section">
+          <h2 class="section-title">Datos del traslado de granos</h2>
+          
+          <div class="field-group">
+            <p class="field-label">Titular carta de porte</p>
+            <p class="field-value">{{ data.titularCartaPorte }}</p>
+          </div>
 
-        <div class="field-group">
-          <p class="field-label">Rtte. Comercial Prod.</p>
-          <p class="field-value">{{ cargoData().remitenteComercial }}</p>
-        </div>
+          <div class="field-group">
+            <p class="field-label">Rtte. Comercial Prod.</p>
+            <p class="field-value">{{ data.remitenteComercial }}</p>
+          </div>
 
-        <div class="field-group">
-          <p class="field-label">Rtte. Comercial Vta Prim</p>
-          <p class="field-value">{{ cargoData().remitenteComercialVtaPrim }}</p>
-        </div>
+          <div class="field-group">
+            <p class="field-label">Rtte. Comercial Vta Prim</p>
+            <p class="field-value">{{ data.remitenteComercialVtaPrim }}</p>
+          </div>
 
-        <div class="field-group">
-          <p class="field-label">Entregador</p>
-          <p class="field-value">{{ cargoData().entregador }}</p>
-        </div>
+          <div class="field-group">
+            <p class="field-label">Entregador</p>
+            <p class="field-value">{{ data.entregador }}</p>
+          </div>
 
-        <div class="field-group">
-          <p class="field-label">Transportista</p>
-          <p class="field-value">{{ cargoData().transportista }}</p>
+          <div class="field-group">
+            <p class="field-label">Transportista</p>
+            <p class="field-value">{{ data.transportista }}</p>
+          </div>
         </div>
-      </div>
-    </app-container>
+      </app-container>
 
     <!-- Datos del chofer -->
-    <app-container [padding]="'p-2'">
-      <div class="info-section">
-        <h2 class="section-title">Datos del chofer</h2>
-        
-        <div class="field-group">
-          <p class="field-label">CUIL</p>
-          <p class="field-value">{{ cargoData().chofer.cuil }}</p>
-        </div>
+      <app-container [padding]="'p-2'">
+        <div class="info-section">
+          <h2 class="section-title">Datos del chofer</h2>
+          
+          <div class="field-group">
+            <p class="field-label">CUIL</p>
+            <p class="field-value">{{ data.chofer.cuil }}</p>
+          </div>
 
-        <div class="field-group">
-          <p class="field-label">Tipo de documento</p>
-          <p class="field-value">{{ cargoData().chofer.tipoDocumento }}</p>
-        </div>
+          <div class="field-group">
+            <p class="field-label">Tipo de documento</p>
+            <p class="field-value">{{ data.chofer.tipoDocumento }}</p>
+          </div>
 
-        <div class="field-group">
-          <p class="field-label">Núm. de documento</p>
-          <p class="field-value">{{ cargoData().chofer.numeroDocumento }}</p>
-        </div>
+          <div class="field-group">
+            <p class="field-label">Núm. de documento</p>
+            <p class="field-value">{{ data.chofer.numeroDocumento }}</p>
+          </div>
 
-        <div class="field-group">
-          <p class="field-label">Extranjero</p>
-          <p class="field-value">{{ cargoData().chofer.extranjero }}</p>
-        </div>
+          <div class="field-group">
+            <p class="field-label">Extranjero</p>
+            <p class="field-value">{{ data.chofer.extranjero }}</p>
+          </div>
 
-        <div class="field-group">
-          <p class="field-label">Nombre y apellido</p>
-          <p class="field-value">{{ cargoData().chofer.nombreApellido }}</p>
+          <div class="field-group">
+            <p class="field-label">Nombre y apellido</p>
+            <p class="field-value">{{ data.chofer.nombreApellido }}</p>
+          </div>
         </div>
-      </div>
-    </app-container>
+      </app-container>
 
     <!-- Datos del camión -->
-    <app-container [padding]="'p-2'">
-      <div class="info-section">
-        <h2 class="section-title">Datos del camión</h2>
-        
-        <div class="field-group">
-          <p class="field-label">Patente</p>
-          <p class="field-value">{{ cargoData().camion.patente }}</p>
-        </div>
+      <app-container [padding]="'p-2'">
+        <div class="info-section">
+          <h2 class="section-title">Datos del camión</h2>
+          
+          <div class="field-group">
+            <p class="field-label">Patente</p>
+            <p class="field-value">{{ data.camion.patente }}</p>
+          </div>
 
-        <div class="field-group">
-          <p class="field-label">Patente del acoplado</p>
-          <p class="field-value">{{ cargoData().camion.patenteAcoplado }}</p>
+          <div class="field-group">
+            <p class="field-label">Patente del acoplado</p>
+            <p class="field-value">{{ data.camion.patenteAcoplado }}</p>
+          </div>
         </div>
-      </div>
-    </app-container>
+      </app-container>
 
     <!-- Datos de Granos -->
-    <app-container [padding]="'p-2'">
-      <div class="info-section">
-        <h2 class="section-title">Datos de Granos</h2>
-        
-        <div class="field-group">
-          <p class="field-label">Material</p>
-          <p class="field-value">{{ cargoData().material }}</p>
+      <app-container [padding]="'p-2'">
+        <div class="info-section">
+          <h2 class="section-title">Datos de Granos</h2>
+          
+          <div class="field-group">
+            <p class="field-label">Material</p>
+            <p class="field-value">{{ data.material }}</p>
+          </div>
         </div>
-      </div>
-    </app-container>
-  </div>
+      </app-container>
+    </div>
+  }
 </div>

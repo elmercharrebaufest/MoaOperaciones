@@ -2,7 +2,7 @@ import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Etapa } from '../../../models/estado-etapas.model';
-import { StageStateService } from '../../../infrastructure/services/internal/stage-state.service';
+import { environment } from '../../../../environments/environment';
 // Components
 import { ShipmentCardComponent } from '../../components/shipment-card/shipment-card';
 import { ProgressStepperComponent } from '../../components/progress-stepper/progress-stepper';
@@ -13,8 +13,9 @@ import { SectionWrapperComponent } from '../../components/section-wrapper/sectio
 // Helpers
 import { formatDate } from '../../../shared/helpers/date.helper';
 import { returnStatusUppercase, returnStatusClass } from '../../../shared/helpers/status.helper'
-// MOCK
-import { MOCK_CARGO_DATA } from '../../../data/mock-tracking.data';
+// Services
+import { StageStateService } from '../../../infrastructure/services/internal/stage-state.service';
+import { TrackingService } from '../../../infrastructure/services/external/tracking.service'
 
 @Component({
   selector: 'app-tracking-page',
@@ -32,7 +33,7 @@ import { MOCK_CARGO_DATA } from '../../../data/mock-tracking.data';
   styleUrls: ['./tracking.scss']
 })
 export class TrackingComponent {
-  cargoData = signal(MOCK_CARGO_DATA);
+  cargoData = computed(() => this.trackingService.trackingData());
   isExpanded = signal(false);
 
   selectedIndex = computed(() => this.stageStateService.getSelectedIndex()());
@@ -42,7 +43,7 @@ export class TrackingComponent {
     const stage = this.stageStateService.currentStage();
     const index = this.selectedIndex();
     
-    if (stage) {
+    if (data && stage) {
       return {
         index,
         total: data.etapas.length,
@@ -58,14 +59,21 @@ export class TrackingComponent {
 
   constructor(
     private router: Router,
-    public stageStateService: StageStateService
+    public stageStateService: StageStateService,
+    private trackingService: TrackingService
   ) {
+    if (!this.cargoData() && environment.production) {
+      this.router.navigate(['/search']);
+      return;
+    }
     this.initializeData();
   }
 
   private initializeData() {
     const data = this.cargoData();
-    this.stageStateService.updateStages(data.etapas, data.rechazado);
+    if (data) {
+      this.stageStateService.updateStages(data.etapas, data.rechazado);
+    }
   }
 
   onStageChange(index: number) {
@@ -85,10 +93,12 @@ export class TrackingComponent {
   }
 
   getStatusUppercase(status: Etapa['estado']): string {
-    return returnStatusUppercase(status, this.cargoData().rechazado);
+    const data = this.cargoData();
+    return data ? returnStatusUppercase(status, data.rechazado) : '';
   }
 
   getStatusClass(status: Etapa['estado']): string {
-    return returnStatusClass(status, this.cargoData().rechazado);
+    const data = this.cargoData();
+    return data ? returnStatusClass(status, data.rechazado) : '';
   }
 }
