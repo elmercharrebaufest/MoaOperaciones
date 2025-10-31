@@ -2,25 +2,15 @@ import { Component, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { ReCaptchaModule, ReCaptchaComponent } from 'angular2-recaptcha';
+import { RecaptchaModule, RecaptchaComponent } from "ng-recaptcha-2";
 import { environment } from '../../../../environments/environment';
-
-interface SearchRequest {
-  ctg: string;
-  patente: string;
-}
-
-interface SearchResponse {
-  resultado: boolean;
-  mensaje: string;
-  data: any;
-}
+import { TrackingService } from '../../../infrastructure/services/external/tracking.service';
+import { AuthService } from '../../../infrastructure/services/auth/auth.service';
 
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReCaptchaModule],
+  imports: [CommonModule, FormsModule, RecaptchaModule],
   templateUrl: './search.html',
   styleUrls: ['./search.scss']
 })
@@ -28,20 +18,25 @@ export class SearchComponent {
   ctg = signal('');
   patente = signal('');
   isLoading = signal(false);
-  captchaOk: any = null;
+  captchaOk: string | null = null;
 
   recaptchaSiteKey = environment.recaptchaSiteKey;
   isProduction = environment.production;
 
   @ViewChild('recaptchaComponent')
-  protected captcha!: ReCaptchaComponent;
+  protected captcha!: RecaptchaComponent;
 
   constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {}
+    private router: Router,
+    private trackingService: TrackingService,
+    private authService: AuthService
+  ) {
+    if (environment.production) {
+      this.authService.logout();
+    }
+  }
 
-  handleCorrectCaptcha(event: any) {
+  handleCorrectCaptcha(event: string | null) {
     this.captchaOk = event;
   }
 
@@ -51,33 +46,30 @@ export class SearchComponent {
       return;
     }
 
-    if (environment.production) {
-      if (this.captchaOk == null) {
-        alert('Debe completar el Captcha');
-        return;
-      }
+    if (environment.production && !this.captchaOk) {
+      alert('Debe completar el Captcha');
+      return;
     }
 
     this.isLoading.set(true);
 
-    const loginData: SearchRequest = {
-      ctg: this.ctg(),
-      patente: this.patente()
-    };
-
-    this.http.post<SearchResponse>(`${environment.apiUrl}/api/qrcamiones/search`, loginData)
+    this.trackingService.getTrackingData(this.ctg(), this.patente(), this.captchaOk || undefined)
       .subscribe({
         next: (response) => {
           this.isLoading.set(false);
           
           if (response.resultado && response.data) {
-            this.router.navigate(['/tracking'], { 
-              state: { trackingData: response.data } 
-            });
+            this.authService.login();
+            this.router.navigate(['/tracking']);
           } else {
             this.router.navigate(['/search-error'], {
               queryParams: { mensaje: response.mensaje }
             });
+          }
+
+          if (environment.production && this.captcha) {
+            this.captcha.reset();
+            this.captchaOk = null;
           }
         },
         error: (error) => {
@@ -85,6 +77,11 @@ export class SearchComponent {
           this.router.navigate(['/search-error'], {
             queryParams: { mensaje: error.error?.mensaje || 'Error de conexión' }
           });
+
+          if (environment.production && this.captcha) {
+            this.captcha.reset();
+            this.captchaOk = null;
+          }
         }
       });
   }
