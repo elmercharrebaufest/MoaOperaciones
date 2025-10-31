@@ -331,7 +331,10 @@ namespace SustitucionMOAWS.WSConsumers
             Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 request");
             Log.Info(request.ToXml());
             var response = agent.BAPI_PO_GETDETAIL1(request);
-            SapLogHelper.LogResponse(response.ToXml(), "BAPI_PO_GETDETAIL1");
+            if (ConfigurationManager.AppSettings["SAPEnableBigLogs"] == "1")
+            {
+                SapLogHelper.LogResponse(response.ToXml(), "BAPI_PO_GETDETAIL1");
+            }
             return response;
         }
 
@@ -1521,7 +1524,10 @@ namespace SustitucionMOAWS.WSConsumers
             Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 request");
             Log.Info(request.ToXml());
             var response = agent.BAPI_PO_GETDETAIL1(request);
-            SapLogHelper.LogResponse(response.ToXml(), "BAPI_PO_GETDETAIL1");
+            if (ConfigurationManager.AppSettings["SAPEnableBigLogs"] == "1")
+            {
+                SapLogHelper.LogResponse(response.ToXml(), "BAPI_PO_GETDETAIL1");
+            }
             return response;
         }
 
