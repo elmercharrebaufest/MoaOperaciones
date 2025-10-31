@@ -53,7 +53,7 @@
       <div class="recaptcha-container">
         <re-captcha
           #recaptchaComponent
-          (onSuccess)="handleCorrectCaptcha($event)"
+          (resolved)="handleCorrectCaptcha($event)"
           [siteKey]="recaptchaSiteKey"
         ></re-captcha>
       </div>
