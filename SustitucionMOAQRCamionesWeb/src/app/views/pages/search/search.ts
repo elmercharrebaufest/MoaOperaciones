@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { RecaptchaModule, RecaptchaComponent } from "ng-recaptcha-2";
+import { ReCaptchaModule, ReCaptchaComponent } from 'angular2-recaptcha';
 import { environment } from '../../../../environments/environment';
 
 interface SearchRequest {
@@ -20,7 +20,7 @@ interface SearchResponse {
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, RecaptchaModule],
+  imports: [CommonModule, FormsModule, ReCaptchaModule],
   templateUrl: './search.html',
   styleUrls: ['./search.scss']
 })
@@ -34,7 +34,7 @@ export class SearchComponent {
   isProduction = environment.production;
 
   @ViewChild('recaptchaComponent')
-  protected captcha!: RecaptchaComponent;
+  protected captcha!: ReCaptchaComponent;
 
   constructor(
     private http: HttpClient,
