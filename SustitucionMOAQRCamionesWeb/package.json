@@ -41,6 +41,7 @@
     "@angular/ssr": "^20.3.7",
     "@tailwindcss/postcss": "^4.1.13",
     "@tailwindcss/vite": "^4.1.13",
+    "angular2-recaptcha": "^1.1.0",
     "express": "^5.1.0",
     "ng-recaptcha-2": "^16.0.1",
     "postcss": "^8.5.6",

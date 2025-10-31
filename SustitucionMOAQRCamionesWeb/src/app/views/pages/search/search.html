@@ -12,9 +12,7 @@
     />
   </div>
 
-  <!-- Form Section -->
   <div class="form-section">
-    <!-- Desktop: Logo at top of form -->
     <div class="logo-desktop">
       <img src="assets/moa_full_logo.svg" alt="Molinos Agro" />
     </div>
@@ -55,7 +53,7 @@
       <div class="recaptcha-container">
         <re-captcha
           #recaptchaComponent
-          (resolved)="handleCorrectCaptcha($event)"
+          (onSuccess)="handleCorrectCaptcha($event)"
           [siteKey]="recaptchaSiteKey"
         ></re-captcha>
       </div>
