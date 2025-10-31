@@ -110,7 +110,7 @@ namespace SustitucionMOAUtils.Services
                 campoProveedor.RazonSocial = proveedor.RazonSocial ?? string.Empty;
             }
 
-                campoProveedor.FechaCreacion = DateTime.Now;
+            campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
             
             if (campoProveedor.Archivo_Id == 0)
@@ -955,7 +955,7 @@ namespace SustitucionMOAUtils.Services
                 };
 
                 this.AgregarNormativas(campoProveedor);
-                var fileEPA = archivosEPA?.FirstOrDefault(x => x.FileName == campoSugeridoDto.NombreArchivoEPA);
+                var fileEPA = archivosEPA?.FirstOrDefault(x => x.FileName == campoSugeridoDto.NombreNuevaEvidenciaEPA);
                 if (campoSugeridoDto.EPA)
                 {
                     if (fileEPA != null)
@@ -971,7 +971,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                    var renspaExisteDto = RenspaExiste(campoProveedor.CampoCosecha.Campo.Renspa, campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id, out CampoCosecha campoCosechaExistente);
+                var renspaExisteDto = RenspaExiste(campoProveedor.CampoCosecha.Campo.Renspa, campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id, out CampoCosecha campoCosechaExistente);
                 if (renspaExisteDto.RenspaExiste)
                 {
                     if (!renspaExisteDto.MismoCuit)

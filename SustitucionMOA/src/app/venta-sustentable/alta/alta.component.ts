@@ -328,9 +328,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
                 }
             }
 
-            if(this.normBSVS2){
+            /*if(this.normBSVS2){
                 this.validarModalDeclaracion();
-            }
+            }*/
 
             this.renspaChanged();
         }
@@ -589,9 +589,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }else if(this.camposNuevosSugeridos.length > 0){
         this.mostrarSugerenciasCamposNuevos = true;
         }
-        /*else {
-            this.consultarCamposAnterioresParaSugerir();
-        }*/
     }
 
     cambiarModoOperacion() {
@@ -658,6 +655,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
                         });
                         if(camposSugeridos.length > 0){
                             this.mostrarConfirmacionSugeridos2BSVS = true;
+                        }else{
+                            if(this.normBSVS2){
+                                this.validarModalDeclaracion();
+                            }
                         }
                     }
                 },
