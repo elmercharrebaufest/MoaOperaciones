@@ -64,12 +64,12 @@ export const appRoutes: Routes = [
   {
     path: '',
     loadComponent: () => import('./views/pages/tracking/tracking').then(m => m.TrackingComponent),
-    title: 'QR Camiones'
+    title: 'Seguimiento en planta'
   },
   {
     path: 'tracking',
     loadComponent: () => import('./views/pages/tracking/tracking').then(m => m.TrackingComponent),
-    title: 'QR Camiones'
+    title: 'Seguimiento en planta'
   },
   {
     path: 'information',
