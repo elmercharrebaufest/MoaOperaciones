@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 
-import { AuthService } from './infrastructure/services/auth.service';
+import { AuthService } from './infrastructure/services/auth/auth.service';
 import { DataService } from './infrastructure/services/data.service';
 import { I18nService } from './infrastructure/services/i18n.service';
 import { LoadingService } from './infrastructure/services/loading.service';

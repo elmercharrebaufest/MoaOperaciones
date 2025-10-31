@@ -50,18 +50,18 @@
         />
       </div>
 
-      <div class="recaptcha-container">
-        <re-captcha
-          #recaptchaComponent
-          (onSuccess)="handleCorrectCaptcha($event)"
-          [siteKey]="recaptchaSiteKey"
-        ></re-captcha>
-      </div>
+        <div class="recaptcha-container">
+          <re-captcha
+            #recaptchaComponent
+            (resolved)="handleCorrectCaptcha($event)"
+            [siteKey]="recaptchaSiteKey"
+          ></re-captcha>
+        </div>
 
       <button
         type="submit"
         class="submit-button"
-        [disabled]="isLoading() || (isProduction && captchaOk == null)"
+        [disabled]="isLoading() || (isProduction && !captchaOk)"
         [class.loading]="isLoading()">
         @if (isLoading()) {
           <span class="spinner"></span>

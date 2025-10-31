@@ -1,9 +1,10 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ContainerComponent } from '../../../shared/container/container';
-import { MOCK_CARGO_DATA } from '../../../data/mock-tracking.data';
+import { TrackingService } from '../../../infrastructure/services/external/tracking.service';
 import { formatDate } from '../../../shared/helpers/date.helper';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-information',
@@ -12,21 +13,32 @@ import { formatDate } from '../../../shared/helpers/date.helper';
   templateUrl: './information.html',
   styleUrls: ['./information.scss']
 })
-export class InformationComponent implements OnInit {
+export class InformationComponent implements OnInit, OnDestroy {
   detailType = signal<'carga' | 'planta'>('carga');
-  cargoData = signal(MOCK_CARGO_DATA);
+  cargoData = computed(() => this.trackingService.trackingData());
 
   constructor(
     private route: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private router: Router,
+    private trackingService: TrackingService
   ) {}
 
   ngOnInit() {
+    if (!this.cargoData() && environment.production) {
+      this.router.navigate(['/search']);
+      return;
+    }
+
     this.route.queryParams.subscribe(params => {
       this.detailType.set(params['type'] || 'carga');
     });
 
     document.body.style.overflow = 'hidden';
+  }
+
+  ngOnDestroy() {
+    document.body.style.overflow = '';
   }
 
   goBack() {
@@ -44,10 +56,7 @@ export class InformationComponent implements OnInit {
   }
 
   formatFechaHoraIngreso(): string {
-    return formatDate(this.cargoData().fechaHoraIngreso);
-  }
-
-  ngOnDestroy() {
-    document.body.style.overflow = '';
+    const data = this.cargoData();
+    return data ? formatDate(data.fechaHoraIngreso) : '';
   }
 }
