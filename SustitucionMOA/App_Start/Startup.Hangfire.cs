@@ -153,6 +153,12 @@ namespace SustitucionMOA
                 "ActualizarLegajoImpositivoJob",
                 j => j.Execute(),
                 "0 6,13,18 * * *", tz);
+
+            RecurringJob.AddOrUpdate<Jobs.IEliminarLogsAntiguosJob>(
+                "EliminarLogsAntiguosJob",
+                j => j.Execute(),
+                "15 3 * * *", tz);
+
         }
     }
 
