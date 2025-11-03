@@ -37,6 +37,11 @@ export const appRoutes: Routes = [
     title: 'Error al buscar'
   },
   {
+    path: 'redirect',
+    loadComponent: () => import('./views/pages/auth-redirect/auth-redirect').then(m => m.AuthRedirectComponent),
+    title: 'Redirigiendo'
+  },
+  {
     path: 'tracking',
     loadComponent: () => import('./views/pages/tracking/tracking').then(m => m.TrackingComponent),
     canActivate: [authGuard],
