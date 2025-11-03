@@ -54,7 +54,12 @@ export const appRoutes: Routes = [
     title: 'Información detallada'
   },
   {
+    path: 'not-found',
+    loadComponent: () => import('./views/pages/not-found/not-found').then(m => m.NotFoundComponent),
+    title: 'Pagina no encontrada'
+  },
+  {
     path: '**',
-    redirectTo: 'search'
+    redirectTo: 'not-found'
   }
 ];
