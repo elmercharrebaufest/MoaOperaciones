@@ -12,6 +12,7 @@ import { ContainerComponent } from '../../../shared/container/container';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper';
 import { PesajeInfoComponent } from '../../components/pesaje-info/pesaje-info';
 import { CircuitoFinalizadoComponent } from '../../components/circuito-finalizado/circuito-finalizado';
+import { EtapasCompletadasComponent } from '../../components/etapas-completadas/etapas-completadas';
 // Helpers
 import { formatDate } from '../../../shared/helpers/date.helper';
 import { returnStatusUppercase, returnStatusClass } from '../../../shared/helpers/status.helper'
@@ -32,7 +33,8 @@ import { EstadoEtapasService } from '../../../infrastructure/services/external/e
     ContainerComponent,
     SectionWrapperComponent,
     PesajeInfoComponent,
-    CircuitoFinalizadoComponent
+    CircuitoFinalizadoComponent,
+    EtapasCompletadasComponent
   ],
   templateUrl: './tracking.html',
   styleUrls: ['./tracking.scss']

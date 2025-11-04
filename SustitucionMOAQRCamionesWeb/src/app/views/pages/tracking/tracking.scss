@@ -92,6 +92,14 @@
   }
 }
 
+.etapas-completadas-wrapper {
+  padding: 0 1rem 1rem;
+  
+  @media (min-width: 768px) {
+    padding: 0 1rem 1rem;
+  }
+}
+
 .stage-section {
   padding: 1rem;
   

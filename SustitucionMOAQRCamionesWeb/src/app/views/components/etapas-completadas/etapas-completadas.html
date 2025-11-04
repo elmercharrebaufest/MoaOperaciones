@@ -1,0 +1,28 @@
+<div class="etapas-completadas-container">
+  <div class="etapas-completadas-header" (click)="toggleExpanded()">
+    <div class="header-content">
+      <img src="assets/circuito_finalizado_icon.svg" alt="Icono Circuito Finalizado" class="circuito-finalizao-icon">
+      <span class="header-title">Etapas completadas</span>
+    </div>
+    <svg 
+      class="chevron-icon" 
+      [class.expanded]="isExpanded()"
+      width="20" 
+      height="20" 
+      viewBox="0 0 20 20" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <div class="etapas-completadas-content" [class.expanded]="isExpanded()">
+    <app-stages-list
+      [stages]="stages()"
+      [currentStageIndex]="currentStageIndex()"
+      [rechazado]="rechazado()"
+      [caladoEstado]="caladoEstado()"
+      (stageClicked)="onStageClick($event)">
+    </app-stages-list>
+  </div>
+</div>

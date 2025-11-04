@@ -29,72 +29,86 @@
       @if (currentStage(); as stage) {
 
         @if (isCircuitoFinalizado()) {
-            <div class="circuito-finalizado-wrapper">
-              <app-circuito-finalizado></app-circuito-finalizado>
-            </div>
-          }
+          <div class="circuito-finalizado-wrapper">
+            <app-circuito-finalizado></app-circuito-finalizado>
+          </div>
+        }
 
-          @if (shouldShowPesajeInfo() && data.datosAdicionales?.pesada_bruto) {
-            <div class="pesaje-info-wrapper">
-              <app-pesaje-info
-                [pesadaBruto]="data.datosAdicionales.pesada_bruto"
-                [pesadaTara]="data.datosAdicionales.pesada_tara"
-                [pesadaDescargado]="data.datosAdicionales.pesada_descargado"
-                [fechaPesajeBruto]="pesajeBrutoDate()">
-              </app-pesaje-info>
-            </div>
-          }
+        @if (shouldShowPesajeInfo() && data.datosAdicionales?.pesada_bruto) {
+          <div class="pesaje-info-wrapper">
+            <app-pesaje-info
+              [pesadaBruto]="data.datosAdicionales.pesada_bruto"
+              [pesadaTara]="data.datosAdicionales.pesada_tara"
+              [pesadaDescargado]="data.datosAdicionales.pesada_descargado"
+              [fechaPesajeBruto]="pesajeBrutoDate()">
+            </app-pesaje-info>
+          </div>
+        }
 
-        <app-container [padding]="'p-0'" class="main-content-container">
-          <div class="stage-section">
-            <div class="current-stage-info">
-              <div class="stage-header-row">
-                <div>
-                  <div class="stage-label">ETAPA ACTUAL {{ stage.index + 1 }} de {{ stage.total }}</div>
-                  <div class="stage-name">{{ stage.name }}</div>
-                  <div class="stage-date">{{ stage.date }}</div>
-                </div>
-                <div class="stage-status-wrapper">
-                  @if (filaTag()) {
-                    <div class="stage-fila">
-                      {{ filaTag() }}
+        @if (isCircuitoFinalizado()) {
+          <div class="etapas-completadas-wrapper">
+            <app-etapas-completadas
+              [stages]="data.etapas"
+              [currentStageIndex]="selectedIndex()"
+              [rechazado]="data.rechazado"
+              [caladoEstado]="caladoEstado()"
+              (stageClicked)="onStageChange($event)">
+            </app-etapas-completadas>
+          </div>
+        }
+
+        @if (!isCircuitoFinalizado()) {
+          <app-container [padding]="'p-0'" class="main-content-container">
+            <div class="stage-section">
+              <div class="current-stage-info">
+                <div class="stage-header-row">
+                  <div>
+                    <div class="stage-label">ETAPA ACTUAL {{ stage.index + 1 }} de {{ stage.total }}</div>
+                    <div class="stage-name">{{ stage.name }}</div>
+                    <div class="stage-date">{{ stage.date }}</div>
+                  </div>
+                  <div class="stage-status-wrapper">
+                    @if (filaTag()) {
+                      <div class="stage-fila">
+                        {{ filaTag() }}
+                      </div>
+                    }
+                    <div [ngClass]="['stage-status', getStatusClass(stage.rawStatus)]">
+                      {{ stage.status }}
                     </div>
-                  }
-                  <div [ngClass]="['stage-status', getStatusClass(stage.rawStatus)]">
-                    {{ stage.status }}
                   </div>
                 </div>
+                
+                <div class="stage-description">
+                  <p>Texto fijo a definir.</p>
+                  <p class="estimated-time">Tiempo estimado: aprox. {{ stage.estimatedTime }}</p>
+                </div>
               </div>
-              
-              <div class="stage-description">
-                <p>Texto fijo a definir.</p>
-                <p class="estimated-time">Tiempo estimado: aprox. {{ stage.estimatedTime }}</p>
-              </div>
-            </div>
 
-            <app-progress-stepper
-              [totalSteps]="stage.total"
-              [currentStep]="selectedIndex()"
-              [isExpanded]="isExpanded()"
-              [stages]="data.etapas"
-              [rechazado]="data.rechazado"
-              (stageChanged)="onStageChange($event)"
-              (toggleExpanded)="toggleExpanded()">
-            </app-progress-stepper>
-
-            <div class="stages-list-wrapper" [class.expanded]="isExpanded()">
-              <app-stages-list
+              <app-progress-stepper
+                [totalSteps]="stage.total"
+                [currentStep]="selectedIndex()"
+                [isExpanded]="isExpanded()"
                 [stages]="data.etapas"
-                [currentStageIndex]="selectedIndex()"
                 [rechazado]="data.rechazado"
-                [caladoEstado]="caladoEstado()"
-                (stageClicked)="onStageChange($event)">
-              </app-stages-list>
+                (stageChanged)="onStageChange($event)"
+                (toggleExpanded)="toggleExpanded()">
+              </app-progress-stepper>
+
+              <div class="stages-list-wrapper" [class.expanded]="isExpanded()">
+                <app-stages-list
+                  [stages]="data.etapas"
+                  [currentStageIndex]="selectedIndex()"
+                  [rechazado]="data.rechazado"
+                  [caladoEstado]="caladoEstado()"
+                  (stageClicked)="onStageChange($event)">
+                </app-stages-list>
+              </div>
             </div>
-          </div>
+          </app-container>
+        }
 
-          <hr class="section-divider">
-
+        <app-container>
           <div class="expandable-sections">
             <app-information-button
               title="Información general de la carga"
@@ -108,7 +122,7 @@
               navigateTo="planta">
             </app-information-button>
           </div>
-        </app-container>
+        </app-container>        
       }
 
       <button class="consult-button" (click)="consultarOtraCTG()">
