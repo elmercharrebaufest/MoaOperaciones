@@ -16,6 +16,7 @@ import { returnStatusUppercase, returnStatusClass } from '../../../shared/helper
 // Services
 import { StageStateService } from '../../../infrastructure/services/internal/stage-state.service';
 import { TrackingService } from '../../../infrastructure/services/external/tracking.service'
+import { EstadoEtapasService } from '../../../infrastructure/services/external/estado-etapas.service';
 
 @Component({
   selector: 'app-tracking-page',
@@ -35,6 +36,7 @@ import { TrackingService } from '../../../infrastructure/services/external/track
 export class TrackingComponent {
   cargoData = computed(() => this.trackingService.trackingData());
   isExpanded = signal(false);
+  private updateCount = signal<number>(0);
 
   selectedIndex = computed(() => this.stageStateService.getSelectedIndex()());
 
@@ -60,7 +62,8 @@ export class TrackingComponent {
   constructor(
     private router: Router,
     public stageStateService: StageStateService,
-    private trackingService: TrackingService
+    private trackingService: TrackingService,
+    private estadoEtapasService: EstadoEtapasService
   ) {
     if (!this.cargoData() && environment.production) {
       this.router.navigate(['/search']);
@@ -85,7 +88,50 @@ export class TrackingComponent {
   }
 
   onActualizar() {
-    this.initializeData();
+    if (!environment.production) {
+      const currentCount = this.updateCount();
+      
+      if (currentCount === 6) {
+        this.trackingService.resetToInitialMock();
+        this.estadoEtapasService.resetMockCycle();
+        this.updateCount.set(0);
+        this.initializeData();
+        return;
+      }
+
+      const data = this.cargoData();
+      if (data) {
+        this.estadoEtapasService.getEstadoEtapas(data.ctg, data.camion.patente)
+          .subscribe({
+            next: (response) => {
+              if (response.resultado && response.data) {
+                this.trackingService.updateFromEstadoEtapas(response.data);
+                this.updateCount.update(count => count + 1);
+                this.initializeData();
+              }
+            },
+            error: (error) => {
+              console.error('Error updating estado etapas:', error);
+            }
+          });
+      }
+    } else {
+      const data = this.cargoData();
+      if (data) {
+        this.estadoEtapasService.getEstadoEtapas(data.ctg, data.camion.patente)
+          .subscribe({
+            next: (response) => {
+              if (response.resultado && response.data) {
+                this.trackingService.updateFromEstadoEtapas(response.data);
+                this.initializeData();
+              }
+            },
+            error: (error) => {
+              console.error('Error updating estado etapas:', error);
+            }
+          });
+      }
+    }
   }
 
   consultarOtraCTG() {
