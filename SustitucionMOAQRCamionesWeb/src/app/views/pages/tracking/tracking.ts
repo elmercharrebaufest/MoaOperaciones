@@ -10,12 +10,15 @@ import { StagesListComponent } from '../../components/stages-list/stages-list';
 import { InformationButtonComponent } from '../../components/information-button/information-button';
 import { ContainerComponent } from '../../../shared/container/container';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper';
+import { PesajeInfoComponent } from '../../components/pesaje-info/pesaje-info';
+import { CircuitoFinalizadoComponent } from '../../components/circuito-finalizado/circuito-finalizado';
 // Helpers
 import { formatDate } from '../../../shared/helpers/date.helper';
 import { returnStatusUppercase, returnStatusClass } from '../../../shared/helpers/status.helper'
 // Services
 import { StageStateService } from '../../../infrastructure/services/internal/stage-state.service';
 import { TrackingService } from '../../../infrastructure/services/external/tracking.service'
+import { EstadoEtapasService } from '../../../infrastructure/services/external/estado-etapas.service';
 
 @Component({
   selector: 'app-tracking-page',
@@ -27,7 +30,9 @@ import { TrackingService } from '../../../infrastructure/services/external/track
     StagesListComponent,
     InformationButtonComponent,
     ContainerComponent,
-    SectionWrapperComponent
+    SectionWrapperComponent,
+    PesajeInfoComponent,
+    CircuitoFinalizadoComponent
   ],
   templateUrl: './tracking.html',
   styleUrls: ['./tracking.scss']
@@ -35,6 +40,7 @@ import { TrackingService } from '../../../infrastructure/services/external/track
 export class TrackingComponent {
   cargoData = computed(() => this.trackingService.trackingData());
   isExpanded = signal(false);
+  private updateCount = signal<number>(0);
 
   selectedIndex = computed(() => this.stageStateService.getSelectedIndex()());
 
@@ -57,10 +63,82 @@ export class TrackingComponent {
     return null;
   });
 
+  filaTag = computed(() => {
+    const data = this.cargoData();
+    const stage = this.stageStateService.currentStage();
+    
+    if (!data || !stage || stage.estado !== 'en-proceso') {
+      return null;
+    }
+
+    const stageName = stage.nombre.toLowerCase();
+    const datosAdicionales = data.datosAdicionales;
+
+    if (stageName === 'pre calado' && datosAdicionales?.pre_calado_fila) {
+      return `FILA ${datosAdicionales.pre_calado_fila}`;
+    }
+
+    if (stageName === 'post calado' && datosAdicionales?.post_calado_fila) {
+      return `FILA ${datosAdicionales.post_calado_fila}`;
+    }
+
+    return null;
+  });
+
+  caladoEstado = computed(() => {
+    const data = this.cargoData();
+    return data?.datosAdicionales?.calado_estado || null;
+  });
+
+  shouldShowPesajeInfo = computed(() => {
+    const data = this.cargoData();
+    if (!data) return false;
+
+    const descargaIndex = data.etapas.findIndex(
+      stage => stage.nombre.toLowerCase() === 'descarga'
+    );
+
+    if (descargaIndex === -1) return false;
+
+    const descargaStage = data.etapas[descargaIndex];
+    return descargaStage.estado === 'en-proceso' || descargaStage.estado === 'completado';
+  });
+
+  pesajeBrutoDate = computed(() => {
+    const data = this.cargoData();
+    if (!data) return '';
+
+    const pesajeBrutoStage = data.etapas.find(
+      stage => stage.nombre.toLowerCase() === 'pesaje bruto'
+    );
+
+    return pesajeBrutoStage ? formatDate(pesajeBrutoStage.fecha) : '';
+  });
+
+  isCircuitoFinalizado = computed(() => {
+    const data = this.cargoData();
+    if (!data) return false;
+
+    if (data.rechazado) return false;
+
+    const cierreStage = data.etapas.find(
+      stage => stage.nombre.toLowerCase() === 'cierre'
+    );
+
+    if (!cierreStage || cierreStage.estado !== 'completado') return false;
+
+    const allStagesCompleted = data.etapas.every(
+      stage => stage.estado === 'completado'
+    );
+
+    return allStagesCompleted;
+  });
+
   constructor(
     private router: Router,
     public stageStateService: StageStateService,
-    private trackingService: TrackingService
+    private trackingService: TrackingService,
+    private estadoEtapasService: EstadoEtapasService
   ) {
     if (!this.cargoData() && environment.production) {
       this.router.navigate(['/search']);
@@ -85,7 +163,50 @@ export class TrackingComponent {
   }
 
   onActualizar() {
-    this.initializeData();
+    if (!environment.production) {
+      const currentCount = this.updateCount();
+      
+      if (currentCount === 7) {
+        this.trackingService.resetToInitialMock();
+        this.estadoEtapasService.resetMockCycle();
+        this.updateCount.set(0);
+        this.initializeData();
+        return;
+      }
+
+      const data = this.cargoData();
+      if (data) {
+        this.estadoEtapasService.getEstadoEtapas(data.ctg, data.camion.patente)
+          .subscribe({
+            next: (response) => {
+              if (response.resultado && response.data) {
+                this.trackingService.updateFromEstadoEtapas(response.data);
+                this.updateCount.update(count => count + 1);
+                this.initializeData();
+              }
+            },
+            error: (error) => {
+              console.error('Error updating estado etapas:', error);
+            }
+          });
+      }
+    } else {
+      const data = this.cargoData();
+      if (data) {
+        this.estadoEtapasService.getEstadoEtapas(data.ctg, data.camion.patente)
+          .subscribe({
+            next: (response) => {
+              if (response.resultado && response.data) {
+                this.trackingService.updateFromEstadoEtapas(response.data);
+                this.initializeData();
+              }
+            },
+            error: (error) => {
+              console.error('Error updating estado etapas:', error);
+            }
+          });
+      }
+    }
   }
 
   consultarOtraCTG() {

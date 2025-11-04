@@ -38,6 +38,9 @@ export class SearchComponent {
 
   handleCorrectCaptcha(event: string | null) {
     this.captchaOk = event;
+    if (event) {
+      this.authService.setCaptchaVerified(true);
+    }
   }
 
   onSubmit() {
@@ -62,6 +65,7 @@ export class SearchComponent {
             this.authService.login();
             this.router.navigate(['/tracking']);
           } else {
+            this.authService.logout();
             this.router.navigate(['/search-error'], {
               queryParams: { mensaje: response.mensaje }
             });
@@ -74,6 +78,7 @@ export class SearchComponent {
         },
         error: (error) => {
           this.isLoading.set(false);
+          this.authService.logout();
           this.router.navigate(['/search-error'], {
             queryParams: { mensaje: error.error?.mensaje || 'Error de conexión' }
           });

@@ -60,7 +60,6 @@
   }
 }
 
-// Make the content section fill remaining height
 .content-section {
   flex: 1;
   display: flex;
@@ -68,7 +67,6 @@
   min-height: 0;
 }
 
-// Add margin to containers for smaller displays
 .main-content-container {
   margin: 15px;
   overflow: hidden;
@@ -78,7 +76,22 @@
   }
 }
 
-// Stage section with padding
+.circuito-finalizado-wrapper {
+  padding: 1rem;
+  
+  @media (min-width: 768px) {
+    padding: 1rem 1rem 0.5rem;
+  }
+}
+
+.pesaje-info-wrapper {
+  margin-bottom: 0.5rem;
+  
+  @media (min-width: 768px) {
+    padding: 1rem 1rem 0.5rem;
+  }
+}
+
 .stage-section {
   padding: 1rem;
   
@@ -122,6 +135,24 @@
 .stage-date {
   font-size: 0.875rem;
   color: #666;
+}
+
+.stage-status-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stage-fila {
+  background-color: #BFD6EC;
+  color: #061C81;
+  padding: 0.2rem 0.3rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .stage-status {
@@ -179,7 +210,6 @@
   }
 }
 
-// Animated stages list wrapper
 .stages-list-wrapper {
   max-height: 0;
   overflow: hidden;
@@ -193,14 +223,12 @@
   }
 }
 
-// Divider between sections with 8px padding
 .section-divider {
   border: none;
   border-top: 1px solid #e5e7eb;
   margin: 8px 0;
 }
 
-// Expandable sections with padding
 .expandable-sections {
   padding: 0 1rem 1rem;
   

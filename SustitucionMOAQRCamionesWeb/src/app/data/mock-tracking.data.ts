@@ -35,19 +35,19 @@ export const MOCK_CARGO_DATA: TrackingData = {
       nombre: 'Ingreso',
       fecha: new Date('2025-10-27T00:00:00.000Z'),
       tiempoEstimado: '30 minutos',
-      estado: 'completado'
+      estado: 'en-proceso'
     },
     {
       nombre: 'Pre Calado',
       fecha: new Date('2025-10-27T00:00:00.000Z'),
       tiempoEstimado: '45 minutos',
-      estado: 'completado'
+      estado: 'pendiente'
     },
     {
       nombre: 'Calado',
       fecha: new Date('2025-10-27T00:00:00.000Z'),
       tiempoEstimado: '120 minutos',
-      estado: 'en-proceso'
+      estado: 'pendiente'
     },
     {
       nombre: 'Post Calado',
