@@ -27,6 +27,17 @@
 
     <app-section-wrapper backgroundColor="#f5f5f5" class="content-section">
       @if (currentStage(); as stage) {
+        @if (shouldShowPesajeInfo() && data.datosAdicionales?.pesada_bruto) {
+          <div class="pesaje-info-wrapper">
+            <app-pesaje-info
+              [pesadaBruto]="data.datosAdicionales.pesada_bruto"
+              [pesadaTara]="data.datosAdicionales.pesada_tara"
+              [pesadaDescargado]="data.datosAdicionales.pesada_descargado"
+              [fechaPesajeBruto]="pesajeBrutoDate()">
+            </app-pesaje-info>
+          </div>
+        }
+
         <app-container [padding]="'p-0'" class="main-content-container">
           <div class="stage-section">
             <div class="current-stage-info">

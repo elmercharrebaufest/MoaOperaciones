@@ -1,0 +1,45 @@
+<div class="pesaje-info-container">
+  <div class="pesaje-info-header" (click)="toggleExpanded()">
+    <div class="header-content">
+      <img src="assets/etapas/pesaje_bruto_icon.svg" alt="Icono Pesada" class="logo">
+      <span class="header-title">Información del pesaje inicial</span>
+    </div>
+    <svg 
+      class="chevron-icon" 
+      [class.expanded]="isExpanded()"
+      width="20" 
+      height="20" 
+      viewBox="0 0 20 20" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <div class="pesaje-info-content" [class.expanded]="isExpanded()">
+    <div class="info-item">
+      <div class="info-label">Peso bruto</div>
+      <div class="info-value">{{ formatWeight(pesadaBruto()) }}</div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-label">Fecha y hora del peso bruto</div>
+      <div class="info-value">{{ fechaPesajeBruto() }}</div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-label">Peso Tara</div>
+      <div class="info-value">{{ formatWeight(pesadaTara()) }}</div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-label">Fecha y hora del peso tara</div>
+      <div class="info-value">{{ fechaPesajeBruto() }}</div>
+    </div>
+
+    <div class="info-item">
+      <div class="info-label">Peso Descargado</div>
+      <div class="info-value">{{ formatWeight(pesadaDescargado()) }}</div>
+    </div>
+  </div>
+</div>

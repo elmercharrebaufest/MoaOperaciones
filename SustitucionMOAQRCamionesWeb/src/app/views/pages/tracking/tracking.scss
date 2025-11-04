@@ -76,6 +76,14 @@
   }
 }
 
+.pesaje-info-wrapper {
+  margin-bottom: 0.5rem;
+  
+  @media (min-width: 768px) {
+    padding: 1rem 1rem 0.5rem;
+  }
+}
+
 .stage-section {
   padding: 1rem;
   

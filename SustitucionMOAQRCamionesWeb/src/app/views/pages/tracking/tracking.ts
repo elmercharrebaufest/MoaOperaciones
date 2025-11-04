@@ -10,6 +10,7 @@ import { StagesListComponent } from '../../components/stages-list/stages-list';
 import { InformationButtonComponent } from '../../components/information-button/information-button';
 import { ContainerComponent } from '../../../shared/container/container';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper';
+import { PesajeInfoComponent } from '../../components/pesaje-info/pesaje-info';
 // Helpers
 import { formatDate } from '../../../shared/helpers/date.helper';
 import { returnStatusUppercase, returnStatusClass } from '../../../shared/helpers/status.helper'
@@ -28,7 +29,8 @@ import { EstadoEtapasService } from '../../../infrastructure/services/external/e
     StagesListComponent,
     InformationButtonComponent,
     ContainerComponent,
-    SectionWrapperComponent
+    SectionWrapperComponent,
+    PesajeInfoComponent
   ],
   templateUrl: './tracking.html',
   styleUrls: ['./tracking.scss']
@@ -84,6 +86,33 @@ export class TrackingComponent {
   caladoEstado = computed(() => {
     const data = this.cargoData();
     return data?.datosAdicionales?.calado_estado || null;
+  });
+
+  // <CHANGE> Added computed property to check if pesaje info should be shown
+  shouldShowPesajeInfo = computed(() => {
+    const data = this.cargoData();
+    if (!data) return false;
+
+    const descargaIndex = data.etapas.findIndex(
+      stage => stage.nombre.toLowerCase() === 'descarga'
+    );
+
+    if (descargaIndex === -1) return false;
+
+    const descargaStage = data.etapas[descargaIndex];
+    return descargaStage.estado === 'en-proceso' || descargaStage.estado === 'completado';
+  });
+
+  // <CHANGE> Added computed property to get pesaje bruto date
+  pesajeBrutoDate = computed(() => {
+    const data = this.cargoData();
+    if (!data) return '';
+
+    const pesajeBrutoStage = data.etapas.find(
+      stage => stage.nombre.toLowerCase() === 'pesaje bruto'
+    );
+
+    return pesajeBrutoStage ? formatDate(pesajeBrutoStage.fecha) : '';
   });
 
   constructor(
