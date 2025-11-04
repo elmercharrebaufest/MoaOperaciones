@@ -30,6 +30,9 @@ export class AuxPannelComponent implements OnInit {
 
     ngOnInit(): void {
         this.setFechasSegunPeriodo(this.periodoSeleccionado);
+        // Emitir las fechas iniciales para que el componente padre las reciba
+        this.onFiltroFechaDesdeChanged.emit(this.filtroFechaDesde);
+        this.onFiltroFechaHastaChanged.emit(this.filtroFechaHasta);
     }
 
     ngAfterViewInit(): void {
@@ -125,6 +128,9 @@ export class AuxPannelComponent implements OnInit {
     setDateByRange(event: string): void {
         this.setFechasSegunPeriodo(event);
         this.getFecha.emit(event);
+        // Emitir las nuevas fechas cuando cambia el período
+        this.onFiltroFechaDesdeChanged.emit(this.filtroFechaDesde);
+        this.onFiltroFechaHastaChanged.emit(this.filtroFechaHasta);
     }
 
     setOrdenCompra() : void {
