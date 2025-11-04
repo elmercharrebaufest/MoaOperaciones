@@ -36,8 +36,15 @@
                   <div class="stage-name">{{ stage.name }}</div>
                   <div class="stage-date">{{ stage.date }}</div>
                 </div>
-                <div [ngClass]="['stage-status', getStatusClass(stage.rawStatus)]">
-                  {{ stage.status }}
+                <div class="stage-status-wrapper">
+                  @if (filaTag()) {
+                    <div class="stage-fila">
+                      {{ filaTag() }}
+                    </div>
+                  }
+                  <div [ngClass]="['stage-status', getStatusClass(stage.rawStatus)]">
+                    {{ stage.status }}
+                  </div>
                 </div>
               </div>
               

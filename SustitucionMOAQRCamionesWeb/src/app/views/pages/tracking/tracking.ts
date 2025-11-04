@@ -59,6 +59,28 @@ export class TrackingComponent {
     return null;
   });
 
+  filaTag = computed(() => {
+    const data = this.cargoData();
+    const stage = this.stageStateService.currentStage();
+    
+    if (!data || !stage || stage.estado !== 'en-proceso') {
+      return null;
+    }
+
+    const stageName = stage.nombre.toLowerCase();
+    const datosAdicionales = data.datosAdicionales;
+
+    if (stageName === 'pre calado' && datosAdicionales?.pre_calado_fila) {
+      return `FILA ${datosAdicionales.pre_calado_fila}`;
+    }
+
+    if (stageName === 'post calado' && datosAdicionales?.post_calado_fila) {
+      return `FILA ${datosAdicionales.post_calado_fila}`;
+    }
+
+    return null;
+  });
+
   constructor(
     private router: Router,
     public stageStateService: StageStateService,
