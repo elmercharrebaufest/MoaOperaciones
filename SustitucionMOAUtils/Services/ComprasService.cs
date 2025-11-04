@@ -3117,6 +3117,7 @@ namespace SustitucionMOAUtils.Services
 
         public void ExecuteObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest)
         {
+            throw new Exception("dsfsd");
             lock (_lockObtenerSolpesDesdeSAPJob)
             {
                 try
