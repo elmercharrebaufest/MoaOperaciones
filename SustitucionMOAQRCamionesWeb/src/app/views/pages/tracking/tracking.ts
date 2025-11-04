@@ -81,6 +81,11 @@ export class TrackingComponent {
     return null;
   });
 
+  caladoEstado = computed(() => {
+    const data = this.cargoData();
+    return data?.datosAdicionales?.calado_estado || null;
+  });
+
   constructor(
     private router: Router,
     public stageStateService: StageStateService,

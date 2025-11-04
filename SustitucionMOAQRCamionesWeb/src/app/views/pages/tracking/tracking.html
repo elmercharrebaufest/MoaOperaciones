@@ -69,6 +69,7 @@
                 [stages]="data.etapas"
                 [currentStageIndex]="selectedIndex()"
                 [rechazado]="data.rechazado"
+                [caladoEstado]="caladoEstado()"
                 (stageClicked)="onStageChange($event)">
               </app-stages-list>
             </div>

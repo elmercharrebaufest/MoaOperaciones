@@ -26,6 +26,16 @@
           </div>
         </div>
         <div class="stage-name">{{ stage.nombre }}</div>
+        
+        @if (shouldShowDate(stage.estado)) {
+          <div class="stage-date">{{ formatStageDate(stage.fecha) }}</div>
+        }
+        
+        @if (shouldShowCaladoNoteForStage(stage.nombre)) {
+          <div class="stage-calado-note">
+            NOTA: {{ caladoEstado() }}
+          </div>
+        }
       </div>
     </div>
     

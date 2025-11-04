@@ -77,14 +77,27 @@
 .stage-number {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #6b7280; // Gray-500
+  color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .stage-name {
   font-size: 1rem;
-  color: #1f2937; // Gray-800
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.stage-date {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 0.125rem;
+}
+
+.stage-calado-note {
+  font-size: 14px;
+  color: #061C81;
+  margin-top: 0.25rem;
   font-weight: 500;
 }
 
