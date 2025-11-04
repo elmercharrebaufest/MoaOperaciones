@@ -10,7 +10,8 @@ import {
   MOCK_ESTADO_ETAPAS_3,
   MOCK_ESTADO_ETAPAS_4,
   MOCK_ESTADO_ETAPAS_5,
-  MOCK_ESTADO_ETAPAS_6
+  MOCK_ESTADO_ETAPAS_6,
+  MOCK_ESTADO_ETAPAS_7
 } from '../../../data/estado-etapas.data';
 
 @Injectable({
@@ -29,7 +30,8 @@ export class EstadoEtapasService {
     MOCK_ESTADO_ETAPAS_3,
     MOCK_ESTADO_ETAPAS_4,
     MOCK_ESTADO_ETAPAS_5,
-    MOCK_ESTADO_ETAPAS_6
+    MOCK_ESTADO_ETAPAS_6,
+    MOCK_ESTADO_ETAPAS_7
   ];
 
   getEstadoEtapas(ctg: string, patente: string): Observable<EstadoEtapasResponse> {

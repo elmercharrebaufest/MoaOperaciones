@@ -11,6 +11,7 @@ import { InformationButtonComponent } from '../../components/information-button/
 import { ContainerComponent } from '../../../shared/container/container';
 import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper';
 import { PesajeInfoComponent } from '../../components/pesaje-info/pesaje-info';
+import { CircuitoFinalizadoComponent } from '../../components/circuito-finalizado/circuito-finalizado';
 // Helpers
 import { formatDate } from '../../../shared/helpers/date.helper';
 import { returnStatusUppercase, returnStatusClass } from '../../../shared/helpers/status.helper'
@@ -30,7 +31,8 @@ import { EstadoEtapasService } from '../../../infrastructure/services/external/e
     InformationButtonComponent,
     ContainerComponent,
     SectionWrapperComponent,
-    PesajeInfoComponent
+    PesajeInfoComponent,
+    CircuitoFinalizadoComponent
   ],
   templateUrl: './tracking.html',
   styleUrls: ['./tracking.scss']
@@ -88,7 +90,6 @@ export class TrackingComponent {
     return data?.datosAdicionales?.calado_estado || null;
   });
 
-  // <CHANGE> Added computed property to check if pesaje info should be shown
   shouldShowPesajeInfo = computed(() => {
     const data = this.cargoData();
     if (!data) return false;
@@ -103,7 +104,6 @@ export class TrackingComponent {
     return descargaStage.estado === 'en-proceso' || descargaStage.estado === 'completado';
   });
 
-  // <CHANGE> Added computed property to get pesaje bruto date
   pesajeBrutoDate = computed(() => {
     const data = this.cargoData();
     if (!data) return '';
@@ -113,6 +113,25 @@ export class TrackingComponent {
     );
 
     return pesajeBrutoStage ? formatDate(pesajeBrutoStage.fecha) : '';
+  });
+
+  isCircuitoFinalizado = computed(() => {
+    const data = this.cargoData();
+    if (!data) return false;
+
+    if (data.rechazado) return false;
+
+    const cierreStage = data.etapas.find(
+      stage => stage.nombre.toLowerCase() === 'cierre'
+    );
+
+    if (!cierreStage || cierreStage.estado !== 'completado') return false;
+
+    const allStagesCompleted = data.etapas.every(
+      stage => stage.estado === 'completado'
+    );
+
+    return allStagesCompleted;
   });
 
   constructor(
@@ -147,7 +166,7 @@ export class TrackingComponent {
     if (!environment.production) {
       const currentCount = this.updateCount();
       
-      if (currentCount === 6) {
+      if (currentCount === 7) {
         this.trackingService.resetToInitialMock();
         this.estadoEtapasService.resetMockCycle();
         this.updateCount.set(0);
