@@ -1507,7 +1507,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Abre el modal del boton finalizar
     showFinalizarDialog() {
-        if (this.solpActual.certificacionAutomatica == true) {
+        if (this.solpActual.certificacionAutomatica == true && this.solpActual.selectTipoPosicion.Codigo == "SERVICIO") {
             this.displayModalConfirmacionFinalizar = true;
             this.modalMessage = "LA CERTIFICACION DEL SERVICIO SE HARA DE FORMA AUTOMATICA. EL PROVEEDOR QUEDA AUTORIZADO A COBRAR EL SERVICIO.";
         } else {
