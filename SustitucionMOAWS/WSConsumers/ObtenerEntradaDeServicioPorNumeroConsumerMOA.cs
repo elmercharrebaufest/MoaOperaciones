@@ -72,8 +72,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI BAPI_ENTRYSHEET_GETDETAIL");
                     Log.Info(request.ToXml());
                     var response = agent.BAPI_ENTRYSHEET_GETDETAIL(request);
-                    Log.Info(response.ToXml());
-                    Log.Info($"SAP sin PI BAPI_ENTRYSHEET_GETDETAIL");
+                    SapLogHelper.LogResponse(response.ToXml(), "BAPI_ENTRYSHEET_GETDETAIL");
                     return MapSinPI(response);
                 }
                 else

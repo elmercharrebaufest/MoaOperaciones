@@ -1,22 +1,28 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 
 namespace SustitucionMOAUtils.Services
 {
     public class LogService : ILogService
     {
-        public LogService()
+        private readonly IRepositorio repositorio;
+        public LogService(IRepositorio repositorio)
         {
-
+            this.repositorio = repositorio;
         }
         public void EliminarLogsAntiguos()
         {
             string unidad = @"L:\";
-            List<ArchivoLog> archivosEliminados = BorrarArchivosViejos(unidad, TimeSpan.FromDays(30)); // 6 meses
+            int.TryParse(ConfigurationManager.AppSettings["DiasGuardadoLogs"], out int diasGuardadoLogs);
+            if (diasGuardadoLogs == 0) diasGuardadoLogs = 30;
+
+            List<ArchivoLog> archivosEliminados = BorrarArchivosViejos(unidad, TimeSpan.FromDays(diasGuardadoLogs));
 
             if (archivosEliminados == null || archivosEliminados.Count == 0)
             {
@@ -30,6 +36,8 @@ namespace SustitucionMOAUtils.Services
                     Log.Info($"Nombre: {info.Nombre}, Peso: {info.PesoKB} KB, Fecha creacion: {info.FechaCreacion}, Fecha ultima modificacion {info.FechaUltimaModificacion}");
                 }
             }
+            var date = DateTime.Today.AddDays(diasGuardadoLogs * -1).ToString("yyyyMMdd");
+            repositorio.ExecuteCommand($"delete logs.logtable where date <= '{date}'");
         }
 
         // 🔁 Método ahora virtual para poder simularlo en tests

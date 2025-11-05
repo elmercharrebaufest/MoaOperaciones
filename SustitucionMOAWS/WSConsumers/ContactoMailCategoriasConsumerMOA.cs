@@ -7,9 +7,6 @@ using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -29,13 +26,12 @@ namespace SustitucionMOAWS.WSConsumers
 
                     var request = new Z_MPMF_MOAOP_CATEG_CONTACTO()
                     {
-                        
+
                     };
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_CATEG_CONTACTO request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_CATEG_CONTACTO(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_CATEG_CONTACTO response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_CATEG_CONTACTO");
                     return MapSinPI(response.CATEGORIAS);
                 }
                 else
@@ -71,11 +67,13 @@ namespace SustitucionMOAWS.WSConsumers
 
             return result;
         }
-        private List<CategoriaContacto> MapSinPI(WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES5330[] categorias) {
+        private List<CategoriaContacto> MapSinPI(WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES5330[] categorias)
+        {
 
             List<CategoriaContacto> result = new List<CategoriaContacto>() { };
 
-            foreach (WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES5330 categoria in categorias) {
+            foreach (WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES5330 categoria in categorias)
+            {
                 result.Add(new CategoriaContacto()
                 {
                     value = categoria.ID,

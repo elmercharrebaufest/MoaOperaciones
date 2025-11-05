@@ -5,11 +5,7 @@ using SustitucionMOAWS.NoticiasDetalleWebServiceMOA;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -43,9 +39,8 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_DETALLES_NOTICIAS request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_DETALLES_NOTICIAS(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_DETALLES_NOTICIAS response");
-                    Log.Info(response.ToXml());
-                    return MapSinPI(response.MENSAJE_ERROR,response.T_CABECERA, response.T_CONTENIDO, response.T_SALIDA);
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_DETALLES_NOTICIAS");
+                    return MapSinPI(response.MENSAJE_ERROR, response.T_CABECERA, response.T_CONTENIDO, response.T_SALIDA);
                 }
                 else
                 {
@@ -79,22 +74,24 @@ namespace SustitucionMOAWS.WSConsumers
 
             foreach (NoticiasDetalleWebServiceMOA.ZMPES4530 cabecera in cabeceras)
             {
-                
-                result.noticias.Add(new Noticia() {
+
+                result.noticias.Add(new Noticia()
+                {
                     cabecera = new Cabecera()
-                        {
-                            fecha = cabecera.FECHA,
-                            id = cabecera.ID,
-                            nueva = cabecera.NUEVA,
-                            titulo = cabecera.TITULO
-                        }
+                    {
+                        fecha = cabecera.FECHA,
+                        id = cabecera.ID,
+                        nueva = cabecera.NUEVA,
+                        titulo = cabecera.TITULO
+                    }
                 });
             }
 
             foreach (NoticiasDetalleWebServiceMOA.ZMPES4540 contenido in contenidos)
             {
                 Noticia noticia = result.noticias.Find(n => n.cabecera.id == contenido.ID);
-                if (noticia != null) {
+                if (noticia != null)
+                {
                     if (noticia.contenido == null)
                     {
                         noticia.contenido = new Contenido()
@@ -104,7 +101,8 @@ namespace SustitucionMOAWS.WSConsumers
                             nroLinea = contenido.NRO_LINEA
                         };
                     }
-                    else {
+                    else
+                    {
                         noticia.contenido.contenido += " " + contenido.CONTENIDO;
                     }
                 }
@@ -117,7 +115,7 @@ namespace SustitucionMOAWS.WSConsumers
                     id = salida.ID,
                     texto = salida.TEXTO
                 });
-                
+
             }
 
             return result;

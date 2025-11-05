@@ -1,6 +1,4 @@
 ﻿using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOAModel.Models.WSMapMOA.Pago.Comprobante;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
@@ -8,11 +6,7 @@ using SustitucionMOAWS.PagoComprobantesWebServiceMOA;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -39,8 +33,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_DET_PAGOS_NG request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_DET_PAGOS_NG(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_DET_PAGOS_NG response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_DET_PAGOS_NG");
                     return MapSinPI(response, fiscalYear);
                 }
                 else

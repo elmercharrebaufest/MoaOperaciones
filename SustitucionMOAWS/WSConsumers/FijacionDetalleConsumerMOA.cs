@@ -40,8 +40,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_DET_FIJACIONES request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_DET_FIJACIONES(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_DET_FIJACIONES response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_DET_FIJACIONES");
                     FijacionDetalleWSMOAResponse result = MapSinPI(response);
                     result.contrato = contrato;
                     result.fijacion = fijacion;

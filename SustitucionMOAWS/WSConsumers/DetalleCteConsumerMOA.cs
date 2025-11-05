@@ -6,11 +6,7 @@ using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -36,14 +32,13 @@ namespace SustitucionMOAWS.WSConsumers
                     var request = new Z_MPMF_MOAOP_DETALLE_CTE()
                     {
                         PE_CONTRATO = contrato,
-                         PE_PROVEEDOR = proveedor,
-                         T_SALIDA = salidas
+                        PE_PROVEEDOR = proveedor,
+                        T_SALIDA = salidas
                     };
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_DETALLE_CTE request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_DETALLE_CTE(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_DETALLE_CTE response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_DETALLE_CTE");
                     return MapSinPI(contrato, response.PO_CABE, response.T_SALIDA, response.PO_VENDEDOR, response.PS_RETURN, response.ID_VENDEDOR);
                 }
                 else
@@ -287,7 +282,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     fecha = SAPFormatter.FormatearFecha(cabecera.FECHA_LIQ),
                     comprados = cabecera.KILOS_COMPRADOS,
-                    recibidos = cabecera.KILOS_RECIBIDOS, 
+                    recibidos = cabecera.KILOS_RECIBIDOS,
                     precio = cabecera.PRECIO,
                     precioPactado = cabecera.PRECIO_PACTADO,
                     moneda = cabecera.MONEDA,

@@ -11,9 +11,6 @@ using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -67,9 +64,8 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_FIJACIONES request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_FIJACIONES(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_FIJACIONES response");
-                    Log.Info(response.ToXml());
-                    return MapSinPI(response.MENSAJE_ERROR , response.T_CONTRATOS_IN, response.T_FECHA_OPERACION_IN , response.T_FIJACIONES_OUT , response.T_MATERIAL_IN , response.T_VENDEDOR_IN);
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_FIJACIONES");
+                    return MapSinPI(response.MENSAJE_ERROR, response.T_CONTRATOS_IN, response.T_FECHA_OPERACION_IN, response.T_FIJACIONES_OUT, response.T_MATERIAL_IN, response.T_VENDEDOR_IN);
 
 
                 }
@@ -116,7 +112,8 @@ namespace SustitucionMOAWS.WSConsumers
         {
             ContratosNoCumplidosWSMOAResponse result = new ContratosNoCumplidosWSMOAResponse();
 
-            if (error != null) {
+            if (error != null)
+            {
                 result.error.descripcion = error.DESCRIPCION;
                 result.error.codigo = error.CODIGO;
                 result.error.tipo = error.TIPO;
@@ -268,7 +265,7 @@ namespace SustitucionMOAWS.WSConsumers
                 result.contratosInfo.Add(new ContratoNoCumplido()
                 {
                     unidadAmpliado = contrato.UNIME_AMPLIADO,
-                    ampliado = contrato.AMPLIADO, 
+                    ampliado = contrato.AMPLIADO,
                     unidadAnulado = contrato.UNIME_ANULADO,
                     anulado = contrato.ANULADO,
                     contrvend = contrato.CONTRVEND,
@@ -281,7 +278,7 @@ namespace SustitucionMOAWS.WSConsumers
                     liquidado = contrato.LIQUIDADO,
                     material = contrato.MATERIAL,
                     nroContrato = contrato.NRO_CONTRATO,
-                    moneda =  contrato.MONEDA,
+                    moneda = contrato.MONEDA,
                     importe = contrato.IMPORTE,
                     unidadTotal = contrato.UNIME_PACTADO,
                     total = contrato.KILOS_PACTADOS - contrato.ANULADO + contrato.AMPLIADO,

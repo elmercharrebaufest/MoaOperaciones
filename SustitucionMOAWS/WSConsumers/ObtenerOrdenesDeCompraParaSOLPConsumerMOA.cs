@@ -44,8 +44,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                 var response = agent.Z_MMRFC_OC_PARA_SOLP(request);
 
-                Log.Info($"SAP sin PI Z_MMRFC_OC_PARA_SOLP response");
-                Log.Info(response.ToXml());
+                SapLogHelper.LogResponse(response.ToXml(), "Z_MMRFC_OC_PARA_SOLP");
                 return MapSinPI(response);
             }
             else

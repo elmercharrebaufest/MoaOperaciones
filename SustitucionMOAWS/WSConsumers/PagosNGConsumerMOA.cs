@@ -1,6 +1,5 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Models;
-using SustitucionMOAModel.Models.WSMapMOA.Pago;
 using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
@@ -11,8 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -45,8 +42,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_PAGOS_NG request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_PAGOS_NG(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_PAGOS_NG response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_PAGOS_NG");
                     return MapSinPI(response);
                 }
                 else

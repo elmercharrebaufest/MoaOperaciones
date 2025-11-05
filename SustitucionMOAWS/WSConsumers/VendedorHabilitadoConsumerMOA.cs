@@ -3,19 +3,13 @@ using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
-using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.VendedorHabilitadoWebServiceMOA;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -47,8 +41,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_VENDED_HABILIT request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_VENDED_HABILIT(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_VENDED_HABILIT response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_VENDED_HABILIT");
                     VendedorHabilitadoWSMOAResponse result = MapSinPI(cuit, response.STATUS, response.T_CABE, response.T_CONVENIO, response.T_EXECIONES, response.PT_ACTIVIDAD_PROV);
                     return result;
                 }
@@ -60,8 +53,8 @@ namespace SustitucionMOAWS.WSConsumers
                     service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                     service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-                    VendedorHabilitadoWebServiceMOA.ZMPES4470[] cabeceras  = new VendedorHabilitadoWebServiceMOA.ZMPES4470[] { };
-                    VendedorHabilitadoWebServiceMOA.ZMPES4430[] convenios  = new VendedorHabilitadoWebServiceMOA.ZMPES4430[] { };
+                    VendedorHabilitadoWebServiceMOA.ZMPES4470[] cabeceras = new VendedorHabilitadoWebServiceMOA.ZMPES4470[] { };
+                    VendedorHabilitadoWebServiceMOA.ZMPES4430[] convenios = new VendedorHabilitadoWebServiceMOA.ZMPES4430[] { };
                     VendedorHabilitadoWebServiceMOA.ZMPES4450[] exenciones = new VendedorHabilitadoWebServiceMOA.ZMPES4450[] { };
                     string status = "";
 

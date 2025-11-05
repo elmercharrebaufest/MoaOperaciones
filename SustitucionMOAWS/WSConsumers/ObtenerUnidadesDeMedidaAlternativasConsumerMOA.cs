@@ -51,8 +51,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                     var response = agent.Z_MMRFC_UM_ALTERNATIVAS(request);
                     var unidadMedidaSap = repositorio.Listar<UnidadMedidaSap>();
-                    Log.Info($"SAP sin PI Z_MMRFC_UM_ALTERNATIVAS response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MMRFC_UM_ALTERNATIVAS");
                     foreach (var umAlt in response.EX_UM_ALT)
                     {
                         var codigoUnidad = unidadMedidaSap.Where(a => a.UM == umAlt.UM).Single().Comercial;

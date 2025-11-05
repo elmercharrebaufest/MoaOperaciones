@@ -1,5 +1,4 @@
 ﻿using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Proforma;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
@@ -7,11 +6,7 @@ using SustitucionMOAWS.ProformaFleteProcedenciaServiceMOA;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -43,7 +38,7 @@ namespace SustitucionMOAWS.WSConsumers
                     var response = agent.Z_MPMF_MOAOP_DET_FLETE_PROC(request);
 
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_DET_FLETE_PROC response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "");
                     return MapSinPI(response);
                 }
                 else

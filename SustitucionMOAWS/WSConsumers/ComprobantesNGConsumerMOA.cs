@@ -1,22 +1,16 @@
 ﻿using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos;
 using SustitucionMOAWS.ComprobantesNGWebServiceMOA;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
-using SustitucionMOAWS.ScatoComandosWebService;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -64,9 +58,8 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPRFC_MOAOP_COMPROB_NOGRANOS request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPRFC_MOAOP_COMPROB_NOGRANOS(request);
-                    Log.Info($"SAP sin PI Z_MPRFC_MOAOP_COMPROB_NOGRANOS response");
-                    Log.Info(response.ToXml());
-                    return MapSinPI(response.EX_COMPRB,response.EX_RETURN);
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPRFC_MOAOP_COMPROB_NOGRANOS");
+                    return MapSinPI(response.EX_COMPRB, response.EX_RETURN);
                 }
                 else
                 {
