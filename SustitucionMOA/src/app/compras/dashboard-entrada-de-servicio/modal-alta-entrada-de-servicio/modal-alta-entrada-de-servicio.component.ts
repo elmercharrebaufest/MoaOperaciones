@@ -299,33 +299,33 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
                     let msjTypes: string[] = [];
+                    
                     if (response.logout == true) {
                         this.sessionDataService.logout();
                     }
                     else {
-                        if (response.error) {
-                            resultMsj.push(`<li>${response.error}</li>`);
-                            msjTypes.push('E');
-                        }
-                        else {
-                            response.data.forEach(element => {
-                            if (!element) {
-                                this.mensajeError = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
-                                resultMsj.push("<li>Ha ocurrido un error por favor inténtelo nuevamente más tarde.</li>");
-                            }
-                            else {
-                                let msj = element.Message.startsWith("Sólo es posible contabilizar en ") ||
-                                    element.Message.startsWith("Contabilice en ") ?
-                                    "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message;
-
-                                resultMsj.push("<li>" + msj + "</li>");
-
-                                if (!msjTypes.includes(element.Type)) {
-                                    msjTypes.push(element.Type);
+                        // Ahora response contiene directamente los datos (no response.data)
+                        if (response && Array.isArray(response)) {
+                            response.forEach(element => {
+                                if (!element) {
+                                    this.mensajeError = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
+                                    resultMsj.push("<li>Ha ocurrido un error por favor inténtelo nuevamente más tarde.</li>");
                                 }
-                            }});
+                                else {
+                                    let msj = element.Message.startsWith("Sólo es posible contabilizar en ") ||
+                                        element.Message.startsWith("Contabilice en ") ?
+                                        "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message;
+
+                                    resultMsj.push("<li>" + msj + "</li>");
+
+                                    if (!msjTypes.includes(element.Type)) {
+                                        msjTypes.push(element.Type);
+                                    }
+                                }
+                            });
                         }
                     }
+                    
                     this.blockUI.stop();
                     this.mensajeError = resultMsj.join("");
                     this.confirmationService.confirm({
@@ -338,19 +338,20 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 },
                 (error) => {
                     this.blockUI.stop();
+                    // Ahora los errores vienen como excepciones, no en response.error
+                    let errorMessage = error.message || (error.status === 500 ? this.errorCallService : "Ha ocurrido un error");
+                    
                     this.confirmationService.confirm({
-                        message: error.status === 500 ? this.errorCallService : error.error.Message,
+                        message: errorMessage,
                         accept: () => {
                             this.closeDialog.emit();
                         },
                         rejectVisible: false
-                    }
-                    );
+                    });
                     this.certificarState = false;
                 }
             );
         }
-      
     }
 
     tituloArchivoPDF = "Reporte";

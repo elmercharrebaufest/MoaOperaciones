@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using SustitucionMOA.Utils;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
@@ -75,15 +76,28 @@ namespace SustitucionMOA.Controllers
         [ValidateInput(false)]
         public ActionResult CrearEntradaServicio(string request)
         {
-            SustitucionMOAWS.Logger.Log.Info("EntradaServicioController.CrearEntradaServicio");
+            try
+            {
+                var payload = JsonConvert.DeserializeObject<CreateEntradaServicioDto>(request);
+                var mailUsuario = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-            var payload = JsonConvert.DeserializeObject<CreateEntradaServicioDto>(request);
+                var response = EntradaServicioService.CrearEntradaServicio(payload, mailUsuario);
 
-            var mailUsuario = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-            var response = EntradaServicioService.CrearEntradaServicio(payload, mailUsuario);
-
-            return JsonCustom(new { data = response });
+                // Respuesta exitosa
+                return JsonCustom(new { success = true, data = response });
+            }
+            catch (SustitucionMOAModel.CustomExceptions.ValidationCustomException vex)
+            {
+                // Error de validación conocido -> 400 Bad Request
+                Response.StatusCode = 400;
+                return JsonCustom(new { success = false, error = vex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Error inesperado -> 500 Internal Server Error
+                Response.StatusCode = 500;
+                return JsonCustom(new { success = false, error = "Ocurrió un error al crear la entrada de servicio." });
+            }
         }
 
         [AllowAnonymous]
