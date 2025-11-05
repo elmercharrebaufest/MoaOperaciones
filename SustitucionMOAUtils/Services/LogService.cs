@@ -16,7 +16,7 @@ namespace SustitucionMOAUtils.Services
         public void EliminarLogsAntiguos()
         {
             string unidad = @"L:\";
-            List<ArchivoLog> archivosEliminados = BorrarArchivosViejos(unidad, TimeSpan.FromDays(180)); // 6 meses
+            List<ArchivoLog> archivosEliminados = BorrarArchivosViejos(unidad, TimeSpan.FromDays(30)); // 6 meses
 
             if (archivosEliminados == null || archivosEliminados.Count == 0)
             {
