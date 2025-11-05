@@ -2765,7 +2765,6 @@ namespace SustitucionMOAUtils.Services
             {
                 var asunto = $"ObtenerSolpesDesdeSAPJob ERROR - NumeroSolp: {obtenerSolpRequest.NumeroSolp}";
                 Log.Error(asunto, e);
-                ErroToMail(e, asunto);
                 throw;
             }
             Debug.WriteLine($"ObtenerSolpesDesdeSAPJob FIN - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
@@ -3119,14 +3118,7 @@ namespace SustitucionMOAUtils.Services
         {
             lock (_lockObtenerSolpesDesdeSAPJob)
             {
-                try
-                {
-                    ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                }
+                ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
             }
         }
 
