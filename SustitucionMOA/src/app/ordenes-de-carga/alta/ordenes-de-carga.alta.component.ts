@@ -138,6 +138,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     validacionExistenciaPatente$ = new Subject<void>();
     validacionExistenciaPatenteSub?: Subscription;
 
+    tipoOperacion: string = "Normal";
     localSubscriptions = new Subscription();
 
     constructor(protected service: OrdenesDeCargaService,
@@ -192,13 +193,18 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.desde = this.getFecha(12);
         this.hasta = this.getFecha(0);
         this.ordenDeCarga.Cantidad = 0;
-
+        
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) {
                 this.ordenDeCargaId = params["id"];
                 this.esEdicionDeOrden = true;
             }
+            if (params["tipoOperacion"] != null) {
+                this.tipoOperacion = params["tipoOperacion"];
+                console.log("entro:", this.tipoOperacion);
+            }
         });
+
         this.navService.setSeccionList([]);
 
         this.obtenerMateriales();
@@ -1128,7 +1134,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
 
                 this.blockUI.start('');
                 this.service
-                    .obtenerContratosDisponibles(pClienteCodigo, pCorredorCodigo, this.desde, this.hasta)
+                    .obtenerContratosDisponibles(pClienteCodigo, pCorredorCodigo, this.desde, this.hasta, this.tipoOperacion)
                     .subscribe(resp => {
                         if (resp.Logout) {
                             this.sessionDataService.logout();

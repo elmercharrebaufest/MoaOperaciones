@@ -396,9 +396,9 @@ namespace SustitucionMOAUtils.Services
             return response;
         }
 
-        public List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin, int? idProveedorSeleccionado = null)
+        public List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin, string tipoOperacion, int? idProveedorSeleccionado = null)
         {
-            Log.Info($"Listar(mailUsuario: {mailUsuario}, fechaInicio: {fechaInicio}, fechaFin: {fechaFin})");
+            Log.Info($"Listar(mailUsuario: {mailUsuario}, fechaInicio: {fechaInicio}, fechaFin: {fechaFin}, tipoOperacion: {tipoOperacion})");
 
             var fechaInicioDateTime = DataFormatter.StringToDateTime(fechaInicio, "inicio");
             var fechaFinDateTime = DataFormatter.StringToDateTime(fechaFin, "fin");
@@ -423,9 +423,21 @@ namespace SustitucionMOAUtils.Services
 
             if (esInterno)
             {
-                Expression<Func<OrdenDeCarga, bool>> filtro = o => o.FechaCarga <= fechaFinDateTime
-                    && o.FechaCarga >= fechaInicioDateTime
-                    && filtroEstados.Contains(o.Estado);
+                Expression<Func<OrdenDeCarga, bool>> filtro;
+                if (tipoOperacion == "CyO")
+                {
+                    filtro = o => o.FechaCarga <= fechaFinDateTime
+                        && o.FechaCarga >= fechaInicioDateTime
+                        && filtroEstados.Contains(o.Estado)
+                        && o.TipoContrato == TipoContratoFAS.CuentaYOrden;
+                }
+                else
+                {
+                    filtro = o => o.FechaCarga <= fechaFinDateTime
+                        && o.FechaCarga >= fechaInicioDateTime
+                        && filtroEstados.Contains(o.Estado) &&
+                        o.TipoContrato != TipoContratoFAS.CuentaYOrden;
+                }
 
                 var listadoConFiltro = repositorio.ListarConsultable<OrdenDeCarga>(filtro);
                 var hashPatentesCargadas = ObtenerHashPatentesCargadas(listadoConFiltro.AsEnumerable());
@@ -466,11 +478,28 @@ namespace SustitucionMOAUtils.Services
             {
                 var usuariosConMismoCuit = repositorio.Listar<Usuario, int>(x => x.Id, x => x.CUITRegistro == usuario.CUITRegistro);
                 var proveedor = ObtenerProveedorSeleccionado(usuario, idProveedorSeleccionado);
-                var listadoConFiltro = repositorio.ListarConsultable<OrdenDeCarga>(n => (usuariosConMismoCuit.Contains(n.UsuarioCreacion_Id) || n.Cliente.CodigoProveedor == proveedor.CodigoProveedor)
-                    && n.FechaCarga <= fechaFinDateTime
-                    && n.FechaCarga >= fechaInicioDateTime
-                    && (filtroEstados.Contains(n.Estado))
-                    );
+
+                Expression<Func<OrdenDeCarga, bool>> filtro;
+                if (tipoOperacion == "CyO")
+                {
+                    filtro = o =>
+                        (usuariosConMismoCuit.Contains(o.UsuarioCreacion_Id) || o.Cliente.CodigoProveedor == proveedor.CodigoProveedor)
+                        && o.FechaCarga <= fechaFinDateTime
+                        && o.FechaCarga >= fechaInicioDateTime
+                        && filtroEstados.Contains(o.Estado)
+                        && o.TipoContrato == TipoContratoFAS.CuentaYOrden;
+                }
+                else
+                {
+                    filtro = o =>
+                        (usuariosConMismoCuit.Contains(o.UsuarioCreacion_Id) || o.Cliente.CodigoProveedor == proveedor.CodigoProveedor)
+                        && o.FechaCarga <= fechaFinDateTime
+                        && o.FechaCarga >= fechaInicioDateTime
+                        && filtroEstados.Contains(o.Estado)
+                        && o.TipoContrato != TipoContratoFAS.CuentaYOrden;
+                }
+
+                var listadoConFiltro = repositorio.ListarConsultable<OrdenDeCarga>(filtro);
                 var consultas = repositorio.Listar<ConsultaDetalle>(cd => listadoConFiltro.Any(orden => orden.Id == cd.Orden_Id)
                     && codigosEstadoConsultaHabilitados.Contains(cd.Consulta.EstadoConsulta.Code));
 
@@ -1121,7 +1150,7 @@ namespace SustitucionMOAUtils.Services
             return Obtener(mailUsuario, orden.Id);
         }
 
-        public ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req, string mailUsuario)
+        public ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req, string mailUsuario, string tipoOperacion)
         {
             try
             {
@@ -1138,7 +1167,7 @@ namespace SustitucionMOAUtils.Services
                     Fechas = rangoFechas,
                     Material = string.Empty,
                     Pendiente = true, // Contratos ABIERTOS
-                    TipoContrato = TipoContratoFAS.Todos
+                    TipoContrato = tipoOperacion == "CyO"? TipoContratoFAS.CuentaYOrden : TipoContratoFAS.Todos
                 };
 
                 var ordenCargaConsumer = new OrdenCargaConsumerMOA();
@@ -1150,6 +1179,11 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 RemoverContratosConBloqueo(consumerRes);
+
+                if(tipoOperacion != "CyO")
+                {
+                    consumerRes.Resultados = consumerRes.Resultados.Where(r => r.TipoContrato != TipoContratoFAS.CuentaYOrden).ToList();
+                }
 
                 if (consumerRes.Resultados == null || consumerRes.Resultados.Count == 0)
                 {
@@ -1206,7 +1240,7 @@ namespace SustitucionMOAUtils.Services
             var errores = new List<int>();
             foreach (var ordenDeCarga in ordenes)
             {
-                if (ordenDeCarga.TipoContrato == TipoContratoFAS.Normal)
+                if (ordenDeCarga.TipoContrato == TipoContratoFAS.Normal || ordenDeCarga.TipoContrato == TipoContratoFAS.CuentaYOrden)
                 {
                     var crearOrdenEnSAPRequest = new CrearOrdenEnSAPRequest()
                     {
@@ -1711,7 +1745,7 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 // ¿Esta condición está de más? (Porque, si no es Factura Anticipada, es Normal)
-                if (ordenDeCarga.TipoContrato == TipoContratoFAS.Normal)
+                if (ordenDeCarga.TipoContrato == TipoContratoFAS.Normal || ordenDeCarga.TipoContrato == TipoContratoFAS.CuentaYOrden)
                 {
                     ordenDeCarga.NumeroPedido = string.IsNullOrEmpty(ordenDeCarga.NumeroPedidoIngresado) ? "" : ordenDeCarga.NumeroPedidoIngresado;
                 }

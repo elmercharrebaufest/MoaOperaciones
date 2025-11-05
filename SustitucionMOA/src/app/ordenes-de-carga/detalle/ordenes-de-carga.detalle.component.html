@@ -1,18 +1,18 @@
-<div class="content-wraper">
+3<div class="content-wraper">
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
             <div class="col-xs-10 col-sm-9 ">
                 <strong *ngIf="esInterno || esMesaFas || esPuerto">
-                    Orden de carga #{{ordenDeCarga.Id}} - {{ordenDeCarga.DescripcionEstado}}
+                    {{this.tipoOperacion == 'CyO'? 'Orden de carga Cuenta y Orden #': 'Orden de carga #'}}{{ordenDeCarga.Id}} - {{ordenDeCarga.DescripcionEstado}}
                     <strong *ngIf="ordenDeCarga.DescripcionEstado=='Error de datos'">- Valide los datos ingresados al
                         cargar la orden</strong>
                     <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
                     </div>
                 </strong>
                 <strong *ngIf="!esInterno && !esMesaFas && !esPuerto">
-                    Orden de carga #{{ordenDeCarga.Id}} - {{ordenDeCarga.DescripcionEstadoUsuarioFinal}}
+                    {{this.tipoOperacion == 'CyO'? 'Orden de carga Cuenta y Orden #': 'Orden de carga #'}}{{ordenDeCarga.Id}} - {{ordenDeCarga.DescripcionEstadoUsuarioFinal}}
                 </strong>
             </div>
 

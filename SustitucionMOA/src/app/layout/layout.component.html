@@ -464,6 +464,12 @@
                                         fason
                                     </a>
                                 </div>
+                                <div *ngIf="isAuthorized('VER ORDENES DE CARGA CYO')">
+                                    <a (click)="goToSeccion('/ordenes-de-carga-cyo/')" href="#">
+                                        Ordenes de carga
+                                        CyO
+                                    </a>
+                                </div>
                                 <div *ngIf="isAuthorized('VER ORDENES DE CARGA RESIDUOS')">
                                     <a (click)="goToSeccion('/ordenes-residuos/')" href="#">Residuos e Insumos</a>
                                 </div>
