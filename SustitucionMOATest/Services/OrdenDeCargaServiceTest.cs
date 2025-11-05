@@ -364,7 +364,7 @@ namespace SustitucionMOATest.Services
                 .Returns(ordenesDeCarga.AsQueryable());
 
             //var result = target.Listar(mailUsuario, "", "");
-            var result = target.Listar(mailUsuario, fechaInicio.ToString(), fechaFin.ToString());
+            var result = target.Listar(mailUsuario, fechaInicio.ToString(), fechaFin.ToString(), "Normal");
 
             Assert.IsTrue(result.Count == 2);
         }
@@ -428,7 +428,7 @@ namespace SustitucionMOATest.Services
                               It.IsAny<IEnumerable<Expression<Func<ConsultaDetalle, object>>>>()))
              .Returns(new List<ConsultaDetalle>());
 
-            var result = target.Listar(mailUsuario, fechaInicio.ToString(), fechaFin.ToString());
+            var result = target.Listar(mailUsuario, fechaInicio.ToString(), fechaFin.ToString(), "Normal");
 
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
             Assert.IsTrue(result.Count == 1);
