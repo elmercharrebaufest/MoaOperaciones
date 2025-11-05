@@ -48,6 +48,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mensajeSeleccionarContrato?: string;
     mensajeSeleccionarFactura?: string;
     mensajeValidacionScato: string = "";
+    tipoOperacion: string = "";
     ordenDeCargaHistorial: any = {};
     estadosVerHistorial: EstadoOrdenDeCarga[] = [
         EstadoOrdenDeCarga.Anulada,
@@ -123,7 +124,11 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.navService.setSeccionList([]);
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
-            this.cargarDetalle()
+            if (params["tipoOperacion"] != null) {
+                this.tipoOperacion = params["tipoOperacion"];
+                console.log("det:",this.tipoOperacion);
+            }
+            this.cargarDetalle();
         });
     }
 
@@ -755,7 +760,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.validarSolicitudEdicion(this.ordenDeCarga.Id);
         }
         else {
-            this.goToSeccion('/ordenes-de-carga/alta/' + this.ordenDeCarga.Id);
+            this.goToSeccion('/ordenes-de-carga/alta/' + this.ordenDeCarga.Id + '/' + this.tipoOperacion);
         }
     }
 

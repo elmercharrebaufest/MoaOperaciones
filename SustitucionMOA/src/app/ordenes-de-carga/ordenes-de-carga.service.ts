@@ -74,11 +74,11 @@ export class OrdenesDeCargaService extends OrdenesBaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
-    public getListado(fechaInicio: string, fechaFin: string): Observable<any> {
+    public getListado(fechaInicio: string, fechaFin: string, tipoOperacion:string): Observable<any> {
         let params: HttpParams = new HttpParams()
             .append('fechaInicio', fechaInicio)
-            .append('fechaFin', fechaFin);
-
+            .append('fechaFin', fechaFin)
+            .append('tipoOperacion', tipoOperacion);
         return this.http
             .get('/api/ordenDeCarga/getListado', { params: params })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
@@ -330,13 +330,14 @@ export class OrdenesDeCargaService extends OrdenesBaseService {
     }
 
     public obtenerContratosDisponibles(clienteCodigo: string, corredorCodigo: string, fechaDesde: string,
-        fechaHasta: string): Observable<ObtenerContratosDisponiblesResponse> {
+        fechaHasta: string, tipoOperacion: string): Observable<ObtenerContratosDisponiblesResponse> {
 
         let params: HttpParams = new HttpParams();
         params = params.append("clienteCodigo", clienteCodigo);
         params = params.append("corredorCodigo", corredorCodigo);
         params = params.append("fechaDesde", fechaDesde);
         params = params.append("fechaHasta", fechaHasta);
+        params = params.append("tipoOperacion", tipoOperacion);
 
         return this.http
             .get<ObtenerContratosDisponiblesResponse>('/api/OrdenDeCarga/ObtenerContratosDisponibles', { params: params, headers: this.headers })
