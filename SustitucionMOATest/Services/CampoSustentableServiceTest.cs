@@ -151,6 +151,16 @@ namespace SustitucionMOATest.Services
                     UrlSubida = "https://drive.google.com/drive/folders/abc123"
                 });
 
+            repositorioMock
+                .Setup(r => r.Listar<CampoProveedor>(
+                    It.IsAny<Expression<Func<CampoProveedor, bool>>>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<DirOrden>(),
+                    It.IsAny<IEnumerable<Expression<Func<CampoProveedor, object>>>>()
+                ))
+                .Returns(new List<CampoProveedor>());
+
             var campoCreado = new CampoProveedor
             {
                 Proveedor_Id = proveedorId,
@@ -1480,13 +1490,75 @@ namespace SustitucionMOATest.Services
         {
             this.repositorioMock
                 .Setup(r => r.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>()))
-                .Returns(new CampoProveedor { CUIT = "222222222" });
+                .Returns(
+                new CampoProveedor
+                {
+                    CUIT = "222222222",
+                    Proveedor_Id = 1,
+                    BSVS2 = true,
+                    EPA = false,
+                    EUDR = false,
+                    CampoCosecha_Id = 10,
+                    CampoCosecha = new CampoCosecha
+                    {
+                        Campo = new CampoSustentable { Id = 2 },
+                        Cosecha = new Cosecha { Nombre = "adsf" },
+                        CampoCosechaNormativas = new List<CampoCosechaNormativa>
+                            {
+                                new CampoCosechaNormativa
+                                {
+                                    TipoNormativa = new TipoNormativa { Id=1, Descripcion = "2BSVS" },
+                                    TipoNormativa_Id = 1
+                                }
+                            }
+
+                    }
+                });
+
+            repositorioMock
+               .Setup(r => r.Listar<CampoProveedor>(
+                   It.IsAny<Expression<Func<CampoProveedor, bool>>>(),
+                   It.IsAny<int>(),
+                   It.IsAny<string>(),
+                   It.IsAny<DirOrden>(),
+                   It.IsAny<IEnumerable<Expression<Func<CampoProveedor, object>>>>()
+               ))
+               .Returns(new List<CampoProveedor>
+               {
+                   new CampoProveedor
+                    {
+                        Proveedor_Id = 1,
+                        CampoCosechaSuperposicion_Id = 10,
+                        CampoCosecha = new CampoCosecha
+                        {
+                            Campo = new CampoSustentable { Id = 2 },
+                            Cosecha = new Cosecha { Nombre = "adsf" },
+                            CampoCosechaNormativas = new List<CampoCosechaNormativa>
+                            {
+                                new CampoCosechaNormativa
+                                {
+                                    TipoNormativa = new TipoNormativa { Id=1, Descripcion = "2BSVS" },
+                                    TipoNormativa_Id = 1
+                                }
+                            }
+                            
+                        }
+                    }
+               });
 
             var archivoSinDescargar = new ArchivoCampoSustentable
             {
                 ProcesadoUcropit = false,
                 Proveedor = new Proveedor { CUIT = "cuit" },
-                CampoCosecha = new CampoCosecha { Campo = new CampoSustentable { Id = 3 }, Cosecha = new Cosecha { Nombre = "ads" }, CampoSustentable_Id = 3 }
+                CampoCosecha = new CampoCosecha { Id= 10, Campo = new CampoSustentable { Id = 3 }, Cosecha = new Cosecha { Nombre = "ads" }, CampoSustentable_Id = 3,
+                    CampoCosechaNormativas = new List<CampoCosechaNormativa>
+                            {
+                                new CampoCosechaNormativa
+                                {
+                                    TipoNormativa = new TipoNormativa { Descripcion = "2BSVS" }
+                                }
+                            }
+                }
             };
             googleDriveMock.Setup(drive => drive.DownloadFileAs<ReporteProcesoUcropit>(It.IsAny<GoogleDriveFileDownloadRequest>()))
                 .ReturnsAsync(new ReporteProcesoUcropit());

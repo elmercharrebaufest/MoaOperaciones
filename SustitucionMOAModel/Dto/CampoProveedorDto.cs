@@ -32,7 +32,7 @@ namespace SustitucionMOAModel.Dto
         public byte[] ArchivoEPA { get; set; }
         public string NombreArchivoEPA { get; set; }
         public bool EvidenciaPresentada { get; set; }
-
+        public int? CampoCosechaSuperposicion_Id { get; set; }
         public override bool Equals(object obj)
         {
             return obj is CampoProveedorDto dto &&
