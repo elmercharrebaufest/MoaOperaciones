@@ -195,6 +195,35 @@ namespace SustitucionMOAWS.WSConsumers
                 throw ex;
             }
         }
-    }
+
+		// public TrackingDataQRCamiones ObtenerTrackingDataQRCamiones(string numeroCTG, string patente)
+        // {
+        //     try
+        //     {
+        //         Log.Info($"ScatoConsumer.ObtenerTrackingDataQRCamiones. CTG: {numeroCTG}, Patente: {patente}");
+
+        //         var patenteNormalizada = patente?.ToUpperInvariant();
+
+        //         var trackingData = service.ObtenerTrackingData(numeroCTG, patenteNormalizada);
+
+        //         if (trackingData != null)
+        //         {
+        //             Log.Info($"ScatoConsumer.ObtenerTrackingDataQRCamiones. CTG: {numeroCTG}, Patente: {patente}. Datos encontrados.");
+        //         }
+        //         else
+        //         {
+        //             Log.Info($"ScatoConsumer.ObtenerTrackingDataQRCamiones. CTG: {numeroCTG}, Patente: {patente}. No se encontraron datos.");
+        //         }
+
+        //         return trackingData;
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Log.Error("", "", "ScatoConsumer", "ObtenerTrackingDataQRCamiones", 
+        //             $"CTG: {numeroCTG}, Patente: {patente}. Error: {ex.Message}");
+        //         throw ex;
+        //     }
+        // }
+	}
 
 }

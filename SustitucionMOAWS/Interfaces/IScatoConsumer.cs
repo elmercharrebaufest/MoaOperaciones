@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto.OrdenDeCarga;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
 using SustitucionMOAWS.ScatoWebService;
 using System.Collections.Generic;
@@ -18,5 +19,6 @@ namespace SustitucionMOAWS.Interfaces
         RecorridoDto[] ObtenerRecorridoNoRechazadoPorNumeroDocumento(string nroEntrega);
         RecorridoDto ObtenerRecorridoNoRechazadoPorNumeroIdFason(long ordenId);
         RecorridoDto ObtenerRecorridoOrdenResiduos(int ordenId);
-    }
+		// TrackingDataQRCamiones ObtenerTrackingDataQRCamiones(string numeroCTG, string patente);
+	}
 }
