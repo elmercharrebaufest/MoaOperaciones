@@ -76,28 +76,15 @@ namespace SustitucionMOA.Controllers
         [ValidateInput(false)]
         public ActionResult CrearEntradaServicio(string request)
         {
-            try
-            {
-                var payload = JsonConvert.DeserializeObject<CreateEntradaServicioDto>(request);
-                var mailUsuario = ClaimsPrincipalExtension.GetClaimValue("emails");
+            SustitucionMOAWS.Logger.Log.Info("EntradaServicioController.CrearEntradaServicio");
 
-                var response = EntradaServicioService.CrearEntradaServicio(payload, mailUsuario);
+            var payload = JsonConvert.DeserializeObject<CreateEntradaServicioDto>(request);
 
-                // Respuesta exitosa
-                return JsonCustom(new { success = true, data = response });
-            }
-            catch (SustitucionMOAModel.CustomExceptions.ValidationCustomException vex)
-            {
-                // Error de validación conocido -> 400 Bad Request
-                Response.StatusCode = 400;
-                return JsonCustom(new { success = false, error = vex.Message });
-            }
-            catch (Exception ex)
-            {
-                // Error inesperado -> 500 Internal Server Error
-                Response.StatusCode = 500;
-                return JsonCustom(new { success = false, error = "Ocurrió un error al crear la entrada de servicio." });
-            }
+            var mailUsuario = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+            var response = EntradaServicioService.CrearEntradaServicio(payload, mailUsuario);
+
+            return JsonCustom(new { data = response });
         }
 
         [AllowAnonymous]
