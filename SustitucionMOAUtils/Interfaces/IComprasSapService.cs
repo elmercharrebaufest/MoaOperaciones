@@ -14,7 +14,7 @@ namespace SustitucionMOAUtils.Interfaces
         SolpSAPDto ConvertirSOLPSAP(Solp solpActual);
         SolpSAPSinPIDto ConvertirSOLPSAPSinPI(Solp solpActual);
 
-        RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(Adjudicacion AdjudicacionEntity, bool creadoAutomatico = false);
+        RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(Adjudicacion AdjudicacionEntity, bool creadoAutomatico);
         ResultadoGenerico EditarOrdenDeCompra(AdjudicacionDto adjudicacion);
 
         CrearSolpConsumerMOAResponse CrearSolpSap(SolpSAPDto solpSap);

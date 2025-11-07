@@ -1198,7 +1198,6 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
 
-
         [HttpGet]
         public ActionResult DescargarAdjuntosProveedores(int idPeticion, int? idPeticionDeOfertaUsuario)
         {
@@ -1269,5 +1268,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult ObtenerOrganizacionesDeCompra()
+        {
+            var organizacionesDeCompra = new SustitucionMOAApiResponse<List<OrganizacionDeCompraDto>>
+            {
+                Data = service.ObtenerOrganizacionesDeCompra()
+            };
+            return ContentCustom(organizacionesDeCompra);
+        }
     }
 }

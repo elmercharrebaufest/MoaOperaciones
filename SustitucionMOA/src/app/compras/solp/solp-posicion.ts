@@ -6,6 +6,7 @@ import { SubPosicionViewModel } from "./steps/posicion/tab-subposicion/sub-posic
 import { CotizacionPosicionDto } from '../../modelos/cotizacionDto';
 import { Solp } from './solp';
 import { Input } from '@angular/core';
+import { OrganizacionDeCompra } from '../../modelos/compras/organizacionDeCompra';
 
 export class SolpPosicion {
     public id: any;
@@ -282,8 +283,8 @@ export class SolpPosicion {
         this.valorTotal = parseFloat(this.valorTotal.toFixed(2));
     }
 
-    public doValidatePosicion(tipoSolpSap: EnumTipoSolpSap) {
-        this.validatePosicion(tipoSolpSap);
+    public doValidatePosicion(tipoSolpSap: EnumTipoSolpSap, esUsuarioRRHH: boolean, organizacionDeCompra?: OrganizacionDeCompra) {
+        this.validatePosicion(tipoSolpSap, esUsuarioRRHH, organizacionDeCompra);
         if (this.esTipoPosicionServicio) {
             this.validateSubposiciones();
         }
@@ -459,7 +460,7 @@ export class SolpPosicion {
         this.tabsPosicionValidos.tabFechas = true
     }
 
-    public validatePosicion(tipoSolpSap: EnumTipoSolpSap) {
+    public validatePosicion(tipoSolpSap: EnumTipoSolpSap, esUsuarioRRHH: boolean, organizacionDeCompra?: OrganizacionDeCompra) {
         this.tabsPosicionValidos.tabPosiciones = true;
 
         if (!this.selectCentroEntrega || typeof this.selectCentroEntrega === "undefined" || this.selectCentroEntrega == undefined) {
@@ -490,6 +491,24 @@ export class SolpPosicion {
                 this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo tipo de imputación es obligatorio";
 
                 return this.mensaje;
+            }
+
+            if (esUsuarioRRHH && this.esOrganizacionCompras2029Estrategicas(organizacionDeCompra)) {
+                const grupoCompras = this.selectGrupoCompras;
+                if (grupoCompras.Codigo != "018") {
+                    this.tabsPosicionValidos.tabPosiciones = false;
+                    this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo Grupo de compras debe ser 018 para RRHH";
+                    return this.mensaje;
+                }
+            }
+
+            if (this.esOrganizacionCompras4010RRHH(organizacionDeCompra)) {
+                const grupoCompras = this.selectGrupoCompras;
+                if (grupoCompras.Codigo != "005") {
+                    this.tabsPosicionValidos.tabPosiciones = false;
+                    this.mensaje = "Paso #5 - Pos. " + this.numeroPosicion + " - El campo Grupo de compras debe ser 005 para RRHH";
+                    return this.mensaje;
+                }
             }
         }
 
@@ -537,6 +556,13 @@ export class SolpPosicion {
         return typeof this.tipoPosicion != "undefined" && this.tipoPosicion && this.tipoPosicion.Codigo == "SERVICIO";
     }
 
+    private esOrganizacionCompras2029Estrategicas(organizacionDeCompra?: OrganizacionDeCompra): boolean {
+        return !!organizacionDeCompra && organizacionDeCompra.Id == "2029";
+    }
+
+    private esOrganizacionCompras4010RRHH(organizacionDeCompra?: OrganizacionDeCompra): boolean {
+        return !!organizacionDeCompra && organizacionDeCompra.Id == "4010";
+    }
 }
 
 export class TabsImputacionValidas {

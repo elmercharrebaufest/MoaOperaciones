@@ -39,6 +39,7 @@ import { CondicionesEspecialesOriginales } from './steps/cotizacion/condiciones-
 import { EnumEnvioCircularA } from '../enum-envio-circular';
 import { PliegoMultipleService } from '../pliegoMultiple.service';
 import { SolpDto } from './steps/vincular-solp-pliego-multiple/solpDto.interface';
+import { Permiso } from '../../common/enums/Permisos';
 
 @Component({
     selector: 'app-solp',
@@ -125,6 +126,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displayModalConfirmacionFinalizar: boolean = false;
     modalMessage: string = '';
 
+    esUsuarioRRHH: boolean = this.isAuthorized(Permiso.ComprasRRHH);
+    mostrarModalRacionales: boolean = false;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -681,73 +684,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return false;
                 }
 
-
-                if (!this.esOperacionPliegoMultiple) {
-                    if (this.solpActual.posicionActual.esTipoPosicionServicio && this.solpActual.selectUsuarioCompras.Id == null) {
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
-
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
-                        this.disabledSave = false;
-                        return false;
+                let errorValidacion = this.obtenerErrorValidacionParaFinalizarSolp();
+                if (errorValidacion) {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: errorValidacion });
+                    
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
                     }
-                    if (!this.validarCondicionesDeAcuerdoMarco()) {
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen acuerdo marco" });
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
-                        this.disabledSave = false;
-                        return false;
-                    }
-                    if (!this.validarQueTodasLasPosicionesTenganProveedor()) {
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No todas las posiciones tienen el mismo proveedor" });
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
-                        this.disabledSave = false;
-                        return false;
-                    }
+                    this.disabledSave = false;
+                    return false;
                 }
-
-                if (this.solpActual.trabajoHecho != true && this.solpActual.urgencia != true) {
-                    if (this.validarFechaVisitaDeObra()) {
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas ni a la fecha de límite de consulta" });
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
-                        this.disabledSave = false;
-                        return false;
-                    }
-
-                    if (this.validarFechaLimiteConsulta()) {
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de límite de consulta no puede ser mayor a la fecha tentativa de ofertas" });
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
-                        this.disabledSave = false;
-                        return false;
-                    }
-
-                    if (this.validarFechaLimiteYObra()) {
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de límite de consulta no puede ser mayor a la fecha de visita de obra" });
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
-                        this.disabledSave = false;
-                        return false;
-                    }
-
-                    if (!this.validarSolicitante()) {
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "No se encontró el usuario solicitante" });
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
-                        this.disabledSave = false;
-                        return false;
-                    }
-                }
-
             }
             this.solpActual.Finalizar = enviarSap;
             this.solpActual.usuarioComprasId = this.solpActual.selectUsuarioCompras != null ? this.solpActual.selectUsuarioCompras.Id : null;
@@ -1007,7 +953,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.solpActual.posiciones = [];
                         }
                         this.solpActual.posiciones.forEach(pos => {
-                            pos.doValidatePosicion(this.solpActual.tipoSolpSap);
+                            pos.doValidatePosicion(this.solpActual.tipoSolpSap, this.esUsuarioRRHH, this.solpActual.organizacionDeCompra);
                             if (!pos.tabsPosicionValidos.tabDireccionEntrega ||
                                 (pos.esTipoPosicionMaterial && !pos.tabsPosicionValidos.tabImputacion) ||
                                 !pos.tabsPosicionValidos.tabProveedor ||
@@ -1511,13 +1457,28 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.displayModalConfirmacionFinalizar = true;
             this.modalMessage = "LA CERTIFICACION DEL SERVICIO SE HARA DE FORMA AUTOMATICA. EL PROVEEDOR QUEDA AUTORIZADO A COBRAR EL SERVICIO.";
         } else {
+            this.continuarARacionalesDeCompra();
+        }
+    }
+
+    continuarARacionalesDeCompra() {
+        this.displayModalConfirmacionFinalizar = false;
+        if (this.solpActual.trabajoHecho && this.solpActual.organizacionDeCompra.Id == "4010") {
+            this.mostrarModalRacionales = true;
+        }
+        else {
             this.continuarAFinalizar();
         }
     }
 
+    onGuardarRacionalesDeCompra() {
+        this.mostrarModalRacionales = false;
+        this.continuarAFinalizar();
+    }
+
     // Nuevo método para continuar al modal de finalizar
     continuarAFinalizar() {
-        this.displayModalConfirmacionFinalizar = false;
+        // this.displayModalConfirmacionFinalizar = false;
         this.obtenerUsuarioCompras();
         this.displayFinalizar = true;
     }
@@ -1816,6 +1777,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return puedoGuardar;
     }
 
+    validarMonedaOrganizacionCompraRRHH() {
+        if (this.solpActual.organizacionDeCompra && this.solpActual.organizacionDeCompra.Id == "4010" && this.solpActual.posiciones.length > 0) {
+            const monedaCodigo = this.solpActual.posiciones[0].monedaSeleccionada.Codigo;
+            return this.solpActual.posiciones.every(x => x.monedaSeleccionada && x.monedaSeleccionada.Codigo == monedaCodigo);
+        }
+        return true;
+    }
+
     condicionCircular(): boolean {
         let tieneVisita: boolean = this.solpActual.visitaDeObraMasiva;
         return this.solpActual.tieneModificaciones && tieneVisita && this.solpActual.tienePeticionDeOferta;
@@ -1899,4 +1868,43 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
+    obtenerErrorValidacionParaFinalizarSolp(): string | null {
+        if (!this.esOperacionPliegoMultiple) {
+            if (this.solpActual.posicionActual.esTipoPosicionServicio && this.solpActual.selectUsuarioCompras.Id == null) {
+                return `Falta completar campo Usuario compras`;
+            }
+
+            if (!this.validarCondicionesDeAcuerdoMarco()) {
+                return "No todas las posiciones tienen acuerdo marco";
+            }
+
+            if (!this.validarQueTodasLasPosicionesTenganProveedor()) {
+                return "No todas las posiciones tienen el mismo proveedor";
+            }
+        }
+
+        if (this.solpActual.trabajoHecho != true && this.solpActual.urgencia != true) {
+            if (this.validarFechaVisitaDeObra()) {
+                return "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas ni a la fecha de límite de consulta";
+            }
+
+            if (this.validarFechaLimiteConsulta()) {
+                return "La fecha de límite de consulta no puede ser mayor a la fecha tentativa de ofertas";
+            }
+
+            if (this.validarFechaLimiteYObra()) {
+                return "La fecha de límite de consulta no puede ser mayor a la fecha de visita de obra";
+            }
+
+            if (!this.validarSolicitante()) {
+                return "No se encontró el usuario solicitante";
+            }
+        }
+
+        if (!this.validarMonedaOrganizacionCompraRRHH()) {
+            return "Las posiciones deben tener la misma moneda";
+        }
+
+        return null;
+    }
 }

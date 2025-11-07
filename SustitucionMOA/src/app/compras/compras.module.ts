@@ -116,6 +116,7 @@ import { VincularSolpPliegoMultipleComponent } from './solp/steps/vincular-solp-
 import { ReporteFacturasCertificacionesComponent } from './reporte-facturas-certificaciones/reporte-facturas-certificaciones.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FacturaService } from '../factura/factura.service';
+import { RacionalComprasSolpComponent } from './solp/steps/posicion/racional-compras-solp/racional-compras-solp.component';
 
 @NgModule({
     imports: [
@@ -227,7 +228,8 @@ import { FacturaService } from '../factura/factura.service';
         PrecargaSolpArchivoComponent,
         DashboardPliegoMultipleComponent,
         VincularSolpPliegoMultipleComponent,
-        ReporteFacturasCertificacionesComponent
+        ReporteFacturasCertificacionesComponent,
+        RacionalComprasSolpComponent
     ],
     providers: [
         { provide: LOCALE_ID, useValue: "es-419" },

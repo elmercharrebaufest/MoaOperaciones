@@ -78,6 +78,7 @@
     <Compile Include="Dto\Compras\CertificacionDto.cs" />
     <Compile Include="Dto\Compras\Factura\EstadoCertificacion.cs" />
     <Compile Include="Dto\Compras\Factura\GrupoCertificaciones.cs" />
+    <Compile Include="Dto\Compras\OrganizacionDeCompraDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaRevisionTecnicaDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaSolpPosicionDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaUsuarioAdicionalDto.cs" />
@@ -379,7 +380,7 @@
     <Compile Include="Enums\EstadoListarTratamientoSolp.cs" />
     <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
     <Compile Include="Enums\FlujoActualizacionOrdenResiduos.cs" />
-    <Compile Include="Enums\OrganizacionDeCompraEnum.cs" />
+    <Compile Include="Enums\OrganizacionDeCompraIds.cs" />
     <Compile Include="Enums\TipoConfiguracionUsuario.cs" />
     <Compile Include="Enums\TipoLegajo.cs" />
     <Compile Include="Enums\RolEnum.cs" />

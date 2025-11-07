@@ -36,7 +36,7 @@ namespace SustitucionMOAWS.WSConsumers
             obtenerRegistroInfoConsumerMOA = _obtenerRegistroInfoConsumerMOA;
         }
 
-        public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion, bool creadoAutomatico = false)
+        public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion, bool creadoAutomatico)
         {
             var respuesta = new CrearPedidoConsumerMOAResponse();
 
@@ -673,7 +673,7 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
 
-        private SolpPedidoSAPSinPIDto ConvertirOCSinPI(Adjudicacion adjudicacion, bool creadoAutomatico = false)
+        private SolpPedidoSAPSinPIDto ConvertirOCSinPI(Adjudicacion adjudicacion, bool creadoAutomatico)
         {
             // TODO: Crear OC ConvertirSOLP - fields hardcodeados o para revisar
             ///DOC_TYPE  ok por ahora. Clase de documento de compras / Estrategia de liberacion hardcore ZPE1 
@@ -1323,7 +1323,7 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface ICrearPedidoConsumerMOA
     {
-        CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion, bool creadoAutomatico = false);
+        CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion, bool creadoAutomatico);
 
     }
 

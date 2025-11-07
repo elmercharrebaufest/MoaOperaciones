@@ -31,6 +31,7 @@ import { ProcesarPrecargaSolpResponse } from '../modelos/compras/PrecargaSolp/pr
 import { MaterialSolp } from '../modelos/compras/materialSolp';
 import { ServicioSolp } from '../modelos/compras/servicioSolp';
 import { PeticionDeOfertaDesvincularDto } from '../modelos/compras/POMultiple/peticionDeOfertaDesvincularDto';
+import { OrganizacionDeCompra } from '../modelos/compras/organizacionDeCompra';
 
 @Injectable({
     providedIn: 'root'
@@ -379,6 +380,7 @@ export class ComprasService extends BaseService {
             CondEspProveedorAsignado: solp.condEspProveedorAsignado,
             NroOrdenDeCompraAdicional: solp.ordenDeCompra,
             RevisadoPor: solp.revisadoPor,
+            OrganizacionDeCompra: solp.organizacionDeCompra,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Finalizar: solp.Finalizar,
             LiberadoresSapSolp: solp.liberadoresSap,
@@ -390,6 +392,10 @@ export class ComprasService extends BaseService {
             Posiciones: null,
             MultipleFinalizado: solp.MultipleFinalizado,
             AdmiteCertificacionesParciales: solp.admiteCertificacionesParciales,
+            Racional_CondicionesDeEntrega: solp.racional_CondicionesDeEntrega,
+            Racional_CondicionesDePago: solp.racional_CondicionesDePago,
+            Racional_Garantias: solp.racional_Garantias,
+            Racional_TextoDeCabecera: solp.racional_TextoDeCabecera
         };
 
         if (incluirPosiciones) {
@@ -1724,6 +1730,15 @@ export class ComprasService extends BaseService {
                 '/api/compras/ObtenerPeticionesDeOfertaParaDesvincularServicio',
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(120000,
+                throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    obtenerOrganizacionesDeCompra(): Observable<ApiResponse<OrganizacionDeCompra[]>> {
+        return this.http
+            .get<ApiResponse<OrganizacionDeCompra[]>>(
+                '/api/compras/ObtenerOrganizacionesDeCompra',
+                { headers: this.headers })
+            .pipe(timeoutWith(20000,
                 throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 }

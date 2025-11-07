@@ -1,0 +1,38 @@
+<p-dialog [(visible)]="mostrarModalRacionales" modal="modal"
+    [width]="650" [draggable]="false" [closable]="false"
+    appendTo="body" positionTop="30" [height]="450"
+    [max] [contentStyle]="{'max-height':'450px', 'min-height':'400px'}">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Racional de compras</b>
+    </p-header>
+    <div class="container-fluid" style="height: 273.75px;">
+        <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <span style="color: red;">{{mensajeError}}</span>
+            <p-accordion>
+                <p-accordionTab header="Texto de cabecera" style="box-sizing: inherit !important;" [(selected)]="tabsActivos[0]">
+                    <textarea name="cabecera" style="height: 340px; max-height: 500px;" ngDefaultControl
+                        [(ngModel)]="textoDeCabecera" cols="300" rows="1"></textarea>
+                </p-accordionTab>
+
+                <p-accordionTab header="Condiciones de entrega" style="box-sizing: inherit !important;" [(selected)]="tabsActivos[1]">
+                    <textarea name="cabecera" style="height: 340px; max-height: 500px;" ngDefaultControl
+                        [(ngModel)]="condicionesDeEntrega" cols="300" rows="1"></textarea>
+                </p-accordionTab>
+                
+                <p-accordionTab header="Condiciones de pago" style="box-sizing: inherit !important;" [(selected)]="tabsActivos[2]">
+                    <textarea name="cabecera" style="height: 340px; max-height: 500px;" ngDefaultControl
+                        [(ngModel)]="condicionesDePago" cols="300" rows="1"></textarea>
+                </p-accordionTab>
+                
+                <p-accordionTab header="Garantía" style="box-sizing: inherit !important;" [(selected)]="tabsActivos[3]">
+                    <textarea name="cabecera" style="height: 340px; max-height: 500px;" ngDefaultControl
+                        [(ngModel)]="garantias" cols="300" rows="1"></textarea>
+                </p-accordionTab>
+            </p-accordion>
+        </section>
+    </div>
+    <p-footer>
+        <button type="button" class="btn btn-danger" (click)="onCancelar()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="onGuardar()">Guardar</button>
+    </p-footer>
+</p-dialog>

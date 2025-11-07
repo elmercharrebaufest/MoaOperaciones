@@ -952,10 +952,9 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        public RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(Adjudicacion AdjudicacionEntity, bool creadoAutomatico = false)
+        public RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(Adjudicacion AdjudicacionEntity, bool creadoAutomatico)
         {
             var respuesta = new RespuestaCrearOrdenDeCompra();
-            respuesta.Errores = new List<string>();
             CrearPedidoConsumerMOAResponse resultadoCrearPedido;
 
             if (AdjudicacionEntity.Posiciones.FirstOrDefault().Posicion.Solp.Adicional == true)
@@ -968,7 +967,6 @@ namespace SustitucionMOAUtils.Services
             }
 
             respuesta.NumeroPedido = resultadoCrearPedido.NumeroPedido;
-            // respuesta.NumeroSolp = AdjudicacionEntity.Solp.NroSolp;
             foreach (var error in resultadoCrearPedido.Errores.Where(x => x.Tipo == "E"))
             {
                 var mensaje = error.Mensaje.Trim();

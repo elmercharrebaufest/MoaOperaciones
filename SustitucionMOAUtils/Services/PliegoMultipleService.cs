@@ -44,14 +44,14 @@ namespace SustitucionMOAUtils.Services
             {
                 return pliegos
                     .ToList()
-                    .ConvertAll(pliego => PliegoPMDto.FromPliego(pliego, OrganizacionDeCompraEnum.Estrategica));
+                    .ConvertAll(pliego => PliegoPMDto.FromPliego(pliego, OrganizacionDeCompraIds.Estrategica));
             }
             else
             {
                 return pliegos
                     .Where(p => p.NombreObra.ToLower().Contains(nombrePliego.ToLower()))
                     .ToList()
-                    .ConvertAll(pliego => PliegoPMDto.FromPliego(pliego, OrganizacionDeCompraEnum.Estrategica));
+                    .ConvertAll(pliego => PliegoPMDto.FromPliego(pliego, OrganizacionDeCompraIds.Estrategica));
             }
         }
 
@@ -83,7 +83,7 @@ namespace SustitucionMOAUtils.Services
                         && !(solpQuery.TrabajoYaHecho == true || solpQuery.Adicional == true || solpQuery.Urgencia == true || solpQuery.CondEspProveedorAsignado == true || solpQuery.ConPresupuesto == true)
                         && !solpQuery.Pliego.Multiple
                         && !solpQuery.Posiciones.Any(posicion => posicion.AdjudicacionPosiciones.Any())
-                        && solpQuery.OrganizacionDeCompra_Id == OrganizacionDeCompraEnum.Estrategica
+                        && solpQuery.OrganizacionDeCompra_Id == OrganizacionDeCompraIds.Estrategica
                     )
                 ;
 

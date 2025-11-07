@@ -4,6 +4,7 @@ export enum Permiso {
     AdminAppCCPP = "ADMIN APLICACIONES CCPP",
     AdministrarCursos = "ADMINISTRAR CURSOS",
     ComercialCamposSustentables = "COMERCIAL CAMPOS SUSTENTABLES",
+    ComprasRRHH = "COMPRAS RRHH",
     EnviarSAP = "ENVIAR A SAP",
     FasModificarCampoReventa = "FAS - MODIFICAR CAMPO REVENTA",
     FasonModificarCampoReventa = "FASON - MODIFICAR CAMPO REVENTA",
