@@ -177,13 +177,16 @@ export class VentaSustentableService extends BaseService {
         // .pipe(map(this.extractData));
     }
 
-    renspaExiste(renspa: string, cuit: string, CosechaId): Observable<RenspaExiste> {
+    renspaExiste(renspa: string, cuit: string, CosechaId, epa, bsvs2, eudr): Observable<boolean> {
         let params: HttpParams = new HttpParams();
         params = params.set("renspa", renspa);
         params = params.set("cuit", cuit);
         params = params.set("cosechaId", CosechaId);
+        params = params.set("epa", epa);
+        params = params.set("bsvs2", bsvs2);
+        params = params.set("eudr", eudr);
         return this.http
-            .get<RenspaExiste>('/api/CampoSustentable/RenspaExiste', { params: params, headers: this.headers });
+            .get<boolean>('/api/CampoSustentable/RenspaExiste', { params: params, headers: this.headers });
     }
 
     obtenerSugerenciaCamposNuevaCosecha(proveedorId: number, cosechaId: number, cuitTitularCP: string): Observable<ApiResponse<Array<SugerenciaCampo>>> {
