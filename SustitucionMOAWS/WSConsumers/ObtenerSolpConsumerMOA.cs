@@ -362,6 +362,7 @@ namespace SustitucionMOAWS.WSConsumers
                     EstadoPosicion = posicion.DELETE_IND,
                     FechaEstimadaLiberacionDate = SAPFormatter.GetDateTime(posicion.REL_DATE),
                     Ordered = posicion.ORDERED,
+                    OrganizacionDeCompraId = posicion.PURCH_ORG
                 });
             }
 
@@ -856,6 +857,7 @@ namespace SustitucionMOAWS.WSConsumers
         public decimal Ordered { get;  set; }
         public string ProveedorFijoRazonSocial { get; internal set; }
         public string CodigoDeProveedor { get; internal set; }
+        public string OrganizacionDeCompraId { get; internal set; }
     }
 
     public class DireccionSolpSAP

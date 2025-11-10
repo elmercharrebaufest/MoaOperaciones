@@ -2486,7 +2486,8 @@ namespace SustitucionMOAUtils.Services
                                         },
                                         Posiciones = new List<SolpPosicion>(),
                                         UsuarioCreacion_Id = 0,
-                                        EmailLinkToken = Guid.NewGuid()
+                                        EmailLinkToken = Guid.NewGuid(),
+                                        OrganizacionDeCompra_Id = posicion.OrganizacionDeCompraId,
                                     };
 
                             solp.ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id;
