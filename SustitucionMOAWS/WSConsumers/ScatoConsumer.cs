@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SustitucionMOAWS.ScatoWebService;
+﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
 using SustitucionMOAWS.Interfaces;
-using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAWS.Logger;
-using SustitucionMOAFotmatter;
-using System;
+using SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAWS.Util;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -185,9 +184,11 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
-                var recorridoDto = service.ObtenerRecorridoNoRechazadoPorIdInsumos(ordenId.ToString());
-                Log.Info($"ScatoConsumer.ObtenerRecorridoOrdenResiduos. Id orden: {ordenId}. Respuesta Scato: {recorridoDto.ToJson()}");
-                return recorridoDto;
+                return new RecorridoDto();
+
+				//var recorridoDto = service.ObtenerRecorridoNoRechazadoPorIdInsumos(ordenId.ToString());
+    //            Log.Info($"ScatoConsumer.ObtenerRecorridoOrdenResiduos. Id orden: {ordenId}. Respuesta Scato: {recorridoDto.ToJson()}");
+    //            return recorridoDto;
             }
             catch (Exception ex)
             {
@@ -196,34 +197,27 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-		// public TrackingDataQRCamiones ObtenerTrackingDataQRCamiones(string numeroCTG, string patente)
-        // {
-        //     try
-        //     {
-        //         Log.Info($"ScatoConsumer.ObtenerTrackingDataQRCamiones. CTG: {numeroCTG}, Patente: {patente}");
+		public TrackingDataQRCamiones ObtenerTrackingDataQRCamiones(string numeroCTG, string patente)
+        {
+            try
+            {
+                var patenteNormalizada = patente?.ToUpperInvariant();
 
-        //         var patenteNormalizada = patente?.ToUpperInvariant();
+                var trackingData = service.ObtenerTrackingData(numeroCTG, patenteNormalizada);
 
-        //         var trackingData = service.ObtenerTrackingData(numeroCTG, patenteNormalizada);
+                if (trackingData != null)
+                    Log.Info($"ObtenerTrackingDataQRCamiones: CTG: {numeroCTG}, Patente: {patente}. Datos encontrados.");
+                else
+                    Log.Info($"ObtenerTrackingDataQRCamiones: CTG: {numeroCTG}, Patente: {patente}. No se encontraron datos.");
 
-        //         if (trackingData != null)
-        //         {
-        //             Log.Info($"ScatoConsumer.ObtenerTrackingDataQRCamiones. CTG: {numeroCTG}, Patente: {patente}. Datos encontrados.");
-        //         }
-        //         else
-        //         {
-        //             Log.Info($"ScatoConsumer.ObtenerTrackingDataQRCamiones. CTG: {numeroCTG}, Patente: {patente}. No se encontraron datos.");
-        //         }
-
-        //         return trackingData;
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         Log.Error("", "", "ScatoConsumer", "ObtenerTrackingDataQRCamiones", 
-        //             $"CTG: {numeroCTG}, Patente: {patente}. Error: {ex.Message}");
-        //         throw ex;
-        //     }
-        // }
-	}
+                return trackingData;
+            }
+            catch (Exception ex)
+            {
+				Log.Error(ex, $"Error en ScatoConsumer para ObtenerTrackingDataQRCamiones: {numeroCTG}, Patente: {patente}.");
+                throw ex;
+            }
+        }
+    }
 
 }

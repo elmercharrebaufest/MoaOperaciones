@@ -1,9 +1,11 @@
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOAUtils.Interfaces.QRCamiones;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ScatoWebService;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
@@ -51,7 +53,7 @@ namespace SustitucionMOAExternalAPI.Controllers
                     });
                 }
 
-                var configuraciones = _qrCamionesService.ObtenerConfiguraciones();
+                var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
 
                 var trackingDto = ConvertirScatoTrackingDataADto(trackingDataScato, configuraciones);
 
@@ -64,7 +66,7 @@ namespace SustitucionMOAExternalAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.ExternalAPIError(ex, $"Error en QRCamionesAPI.Search - CTG: {request?.Ctg}, Patente: {request?.Patente}");
+                Log.ExternalAPIError(ex);
                 
                 return Ok(new TrackingResponseDto
                 {
@@ -104,9 +106,9 @@ namespace SustitucionMOAExternalAPI.Controllers
                     });
                 }
 
-                var configuraciones = _qrCamionesService.ObtenerConfiguraciones();
+                var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
 
-                var estadoEtapasDto = new EstadoEtapasDto
+				var estadoEtapasDto = new EstadoEtapasQRCamionesDto
                 {
                     DatosAdicionales = ConvertirDatosAdicionalesScatoADto(trackingDataScato.DatosAdicionales),
                     Etapas = ConvertirEtapasScatoADto(trackingDataScato.Etapas, configuraciones)
@@ -121,7 +123,7 @@ namespace SustitucionMOAExternalAPI.Controllers
             }
             catch (Exception ex)
             {
-                Log.ExternalAPIError(ex, $"Error en QRCamionesAPI.EstadoEtapas - CTG: {request?.Ctg}, Patente: {request?.Patente}");
+                Log.ExternalAPIError(ex);
                 
                 return Ok(new EstadoEtapasResponseDto
                 {
@@ -135,7 +137,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 
         private TrackingDataDto ConvertirScatoTrackingDataADto(
             TrackingDataQRCamiones trackingDataScato,
-            List<SustitucionMOAModel.Entities.QRCamionesConfiguracion> configuraciones)
+            List<QRCamionesConfiguracion> configuraciones)
         {
             return new TrackingDataDto
             {
@@ -149,12 +151,12 @@ namespace SustitucionMOAExternalAPI.Controllers
                 Transportista = trackingDataScato.Transportista,
                 Material = trackingDataScato.Material,
                 Rechazado = trackingDataScato.Rechazado,
-                Camion = new CamionDto
+                Camion = new CamionQRCamionesDto
                 {
                     Patente = trackingDataScato.Camion?.Patente,
                     PatenteAcoplado = trackingDataScato.Camion?.PatenteAcoplado
                 },
-                Chofer = new ChoferDto
+                Chofer = new ChoferQRCamionesDto
                 {
                     Cuil = trackingDataScato.Chofer?.CUIL,
                     TipoDocumento = trackingDataScato.Chofer?.TipoDocumento,
@@ -167,14 +169,14 @@ namespace SustitucionMOAExternalAPI.Controllers
             };
         }
 
-        private DatosAdicionalesDto ConvertirDatosAdicionalesScatoADto(DatosAdicionalesQRCamiones datosAdicionales)
+        private DatosAdicionalesQRCamionesDto ConvertirDatosAdicionalesScatoADto(DatosAdicionalesQRCamiones datosAdicionales)
         {
             if (datosAdicionales == null)
             {
-                return new DatosAdicionalesDto();
+                return new DatosAdicionalesQRCamionesDto();
             }
 
-            return new DatosAdicionalesDto
+            return new DatosAdicionalesQRCamionesDto
             {
                 PreCaladoFila = datosAdicionales.PreCaladoFila,
                 PostCaladoFila = datosAdicionales.PostCaladoFila,
@@ -185,13 +187,13 @@ namespace SustitucionMOAExternalAPI.Controllers
             };
         }
 
-        private List<EtapaDto> ConvertirEtapasScatoADto(
-            List<EtapaQRCamiones> etapas,
-            List<SustitucionMOAModel.Entities.QRCamionesConfiguracion> configuraciones)
+        private List<EtapaQRCamionesDto> ConvertirEtapasScatoADto(
+            EtapaQRCamiones[] etapas,
+            List<QRCamionesConfiguracion> configuraciones)
         {
-            var etapasDto = new List<EtapaDto>();
+            var etapasDto = new List<EtapaQRCamionesDto>();
 
-            if (etapas == null || etapas.Count == 0)
+            if (etapas == null || etapas.Length == 0)
             {
                 return etapasDto;
             }
@@ -201,11 +203,11 @@ namespace SustitucionMOAExternalAPI.Controllers
                 var config = configuraciones?.FirstOrDefault(c =>
                     c.NombreEtapa.Equals(etapa.Nombre, StringComparison.OrdinalIgnoreCase));
 
-                etapasDto.Add(new EtapaDto
+                etapasDto.Add(new EtapaQRCamionesDto
                 {
                     Nombre = etapa.Nombre,
                     Fecha = etapa.Fecha,
-                    TiempoEstimado = config?.TiempoEstimado ?? etapa.TiempoEstimado,
+                    TiempoEstimado = config?.TiempoEstimado.ToString() ?? etapa.TiempoEstimado,
                     Estado = ConvertirEstadoEtapa(etapa.Estado)
                 });
             }

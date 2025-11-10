@@ -20,7 +20,7 @@ namespace SustitucionMOAModel.Dto
     {
         public bool Resultado { get; set; }
         public string Mensaje { get; set; }
-        public EstadoEtapasDto Data { get; set; }
+        public EstadoEtapasQRCamionesDto Data { get; set; }
     }
 
     public class TrackingDataDto
@@ -35,25 +35,25 @@ namespace SustitucionMOAModel.Dto
         public string Transportista { get; set; }
         public string Material { get; set; }
         public bool Rechazado { get; set; }
-        public CamionDto Camion { get; set; }
-        public ChoferDto Chofer { get; set; }
-        public DatosAdicionalesDto DatosAdicionales { get; set; }
-        public List<EtapaDto> Etapas { get; set; }
+        public CamionQRCamionesDto Camion { get; set; }
+        public ChoferQRCamionesDto Chofer { get; set; }
+        public DatosAdicionalesQRCamionesDto DatosAdicionales { get; set; }
+        public List<EtapaQRCamionesDto> Etapas { get; set; }
     }
 
-    public class EstadoEtapasDto
+    public class EstadoEtapasQRCamionesDto
     {
-        public DatosAdicionalesDto DatosAdicionales { get; set; }
-        public List<EtapaDto> Etapas { get; set; }
+        public DatosAdicionalesQRCamionesDto DatosAdicionales { get; set; }
+        public List<EtapaQRCamionesDto> Etapas { get; set; }
     }
 
-    public class CamionDto
+    public class CamionQRCamionesDto
     {
         public string Patente { get; set; }
         public string PatenteAcoplado { get; set; }
     }
 
-    public class ChoferDto
+    public class ChoferQRCamionesDto
     {
         public string Cuil { get; set; }
         public string TipoDocumento { get; set; }
@@ -62,7 +62,7 @@ namespace SustitucionMOAModel.Dto
         public string NombreApellido { get; set; }
     }
 
-    public class DatosAdicionalesDto
+    public class DatosAdicionalesQRCamionesDto
     {
         public string PreCaladoFila { get; set; }
         public string PostCaladoFila { get; set; }
@@ -72,7 +72,7 @@ namespace SustitucionMOAModel.Dto
         public int? PesadaDescargado { get; set; }
     }
 
-    public class EtapaDto
+    public class EtapaQRCamionesDto
     {
         public string Nombre { get; set; }
         public DateTime Fecha { get; set; }

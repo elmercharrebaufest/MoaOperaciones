@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
-using SustitucionMOAUtils.Helpers;
-using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Interfaces.QRCamiones;
 using SustitucionMOAUtils.Logger;
 
-namespace SustitucionMOAUtils.Services
+namespace SustitucionMOAUtils.Services.QRCamiones
 {
     public class QRCamionesAPIService : IQRCamionesAPIService
     {
@@ -40,13 +38,12 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var etapa = _repositorio.Obtener<QRCamionesConfiguracion>(x => x.NombreEtapa == nombreEtapa)
-                                        .SingleOrDefault();
+                var etapa = _repositorio.Obtener<QRCamionesConfiguracion>(x => x.NombreEtapa == nombreEtapa);
 				return etapa;
             }
             catch (Exception ex)
             {
-                Log.Error($"Error obteniendo configuracion QRCamiones id={id}: {ex.Message}", ex);
+                Log.Error($"Error obteniendo configuracion QRCamiones nombreEtapa:{nombreEtapa} {ex.Message}", ex);
                 return null;
             }
         }
@@ -110,7 +107,7 @@ namespace SustitucionMOAUtils.Services
                     return resultado;
                 }
 
-                _repositorio.Eliminar(existente);
+                _repositorio.Remover(existente);
                 _repositorio.GuardarCambios();
 
                 Log.ExternalAPIInfo($"Eliminada configuración QRCamiones Id={id} NombreEtapa={existente.NombreEtapa}");
