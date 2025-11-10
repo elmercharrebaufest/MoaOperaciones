@@ -27,7 +27,7 @@ namespace SustitucionMOAUtils.Interfaces
         EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion);
         string ObtenerRutaArchivoKMZ(int campoCvosechaId, int proveedorId);
         Task DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar);
-        SustentableRenspaExisteDto RenspaExiste(string renspa, string cuit, int cosechaId, out CampoCosecha campoCosecha);
+        bool RenspaExiste(string renspa, string cuit, int cosechaId, bool epa, bool bsvs2, bool eudr);
         List<SugerenciaCampoDto> ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int cosechaId, string cuitTitularCP);
         void AgregarCamposSugeridos(List<SugerenciaCampoDto> camposProveedorDto, List<HttpPostedFileBase> archivosKmz, List<HttpPostedFileBase> archivosEPA, string mailUsuario);
         string ExportarCamposSugeridos(int proveedorId, int cosechaId, string cuitTitularCP);

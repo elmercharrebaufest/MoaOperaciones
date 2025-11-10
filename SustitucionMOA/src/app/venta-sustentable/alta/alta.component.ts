@@ -15,7 +15,6 @@ import { isUndefined } from 'util';
 import { VendedorProveedor } from '../../common/models/vendedorProveedor';
 import { finalize } from 'rxjs/operators';
 import { Message, MessageService } from 'primeng/api';
-import { RenspaExiste } from '../renspa-existe.interface';
 import { ApiResponse } from '../../common/models/response';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 
@@ -92,7 +91,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     renspaEditable: boolean;
     nombreEstablecimiento: string;
     renspa: string;
-    renspaExiste: RenspaExiste;
+    renspaExiste: boolean = false;
     pais: string;
     dataLocalidades = [];
     myLocalidades = <any>[];
@@ -153,7 +152,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
     evidenciaEpaPresentada: boolean = false;
 
     ngOnInit() {
-        this.renspaExiste = { RenspaExiste: false, MismoCuit: false };
 
         this.navService.setSeccionList([]);
         this.CUIT = "";
@@ -337,9 +335,15 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     public onCheck2BSVS(value: any) {
-        if (value) {
-            this.validarModalDeclaracion();
-        }
+        this.normativaChanged(true, value);
+    }
+
+    public onCheckEPA(value: any) {
+        this.normativaChanged(false, value);
+    }
+
+    public onCheckEUDR(value: any) {
+        this.normativaChanged(false, value);
     }
 
     private validarModalDeclaracion() {
@@ -660,6 +664,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
                                 this.validarModalDeclaracion();
                             }
                         }
+                    }else{
+                        if(this.normBSVS2){
+                            this.validarModalDeclaracion();
+                        }
                     }
                 },
                 error => {
@@ -686,12 +694,23 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     renspaChanged(): void {
         if (this.renspa && this.cosechaId) {
-            this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId).subscribe((result: RenspaExiste) => {
+            this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId, this.normEPA, this.normBSVS2, this.normEUDR).subscribe((result: any) => {
                 this.renspaExiste = result;
                 this.consultarCamposAnterioresParaSugerir();
             });
         }else if(this.cosechaId){
             this.consultarCamposAnterioresParaSugerir();
+        }
+    }
+
+    normativaChanged(bsvs2: boolean, value: boolean = null): void {
+        if (this.renspa && this.cosechaId) {
+            this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId, this.normEPA, this.normBSVS2, this.normEUDR).subscribe((result: any) => {
+                this.renspaExiste = result;
+                if(bsvs2 && value){
+                    this.validarModalDeclaracion();
+                }
+            });
         }
     }
 

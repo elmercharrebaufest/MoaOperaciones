@@ -81,11 +81,11 @@
                                 2BSVS
                             </label>
                             <label style="margin-right: 40px; color: #818A91;">
-                                <input type="checkbox" [(ngModel)]="normEPA" name="normEPA">
+                                <input type="checkbox" [(ngModel)]="normEPA" name="normEPA" (change)="onCheckEPA($event.target.checked)">
                                 EPA
                             </label>
                             <label style="color:#818A91;">
-                                <input type="checkbox" [(ngModel)]="normEUDR" name="normEUDR">
+                                <input type="checkbox" [(ngModel)]="normEUDR" name="normEUDR" (change)="onCheckEUDR($event.target.checked)">
                                 EUDR
                             </label>
                         </div>
@@ -119,10 +119,10 @@
                                 <input type="text" pInputText [(ngModel)]="renspa" (change)="renspaChanged()" class="fourRounded"
                                        aria-controls="tableModal" mask="00.000.0.00000/00">
                             </div>
-                            <div class="alert alert-warning" *ngIf="renspaExiste.RenspaExiste && !renspaExiste.MismoCuit">
+                            <!--<div class="alert alert-warning" *ngIf="renspaExiste.RenspaExiste && !renspaExiste.MismoCuit">
                                 Este campo ya fue presentado, la carga se vinculará a su CUIT.
-                            </div>
-                            <div class="alert alert-danger" *ngIf="renspaExiste.RenspaExiste && renspaExiste.MismoCuit">
+                            </div>-->
+                            <div class="alert alert-danger" *ngIf="renspaExiste">
                                 Este campo ya fue presentado.
                             </div>
                         </div>

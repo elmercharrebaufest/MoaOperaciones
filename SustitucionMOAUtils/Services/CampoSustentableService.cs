@@ -75,21 +75,17 @@ namespace SustitucionMOAUtils.Services
 
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
 
-            SustentableRenspaExisteDto renspaExisteDto =
+            bool renspaExiste =
                 RenspaExiste(campoProveedor.CampoCosecha.Campo.Renspa,
                              campoProveedor.CUIT,
                              campoProveedor.CampoCosecha.Cosecha_Id,
-                             out CampoCosecha campoCosechaExistente);
-            if (renspaExisteDto.RenspaExiste)
-            {
-                if (renspaExisteDto.MismoCuit)
-                {
-                    throw new ValidationCustomException("Este campo ya fue presentado.");
-                }
-                Proveedor proveedor = repositorio.Obtener<Proveedor>(p => p.CUIT.Equals(campoProveedor.CUIT, StringComparison.OrdinalIgnoreCase));
-                campoCosechaExistente.Proveedores.Add(proveedor);
-                repositorio.GuardarCambios();
-                return new Resultado { IdEntidad = campoCosechaExistente.Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
+                             campoProveedor.EPA,
+                             campoProveedor.BSVS2,
+                             campoProveedor.EUDR);
+
+            if (renspaExiste)
+            {  
+               throw new ValidationCustomException("Este campo ya fue presentado.");                
             }
 
             ValidarCampo(campoProveedor, archivoKmz);
@@ -138,7 +134,7 @@ namespace SustitucionMOAUtils.Services
                     campoProveedor.EvidenciaEPA = archivoEPAEntidad;
                     campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
                 }
-                else if (campoProveedor.EvidenciaPresentada)
+                else if (campoProveedor.EvidenciaPresentada && archivoKmz != null)
                 {
                     archivoKmz.InputStream.Position = 0;
                     var archivoEPAExistente = this.ObtenerEPAExistenteCampo(campoProveedor.Proveedor_Id, campoProveedor.CUIT, archivoKmz);
@@ -227,22 +223,26 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.CampoCosecha.Campo.Nombre = campoProveedorObj.CampoCosecha.Campo.Nombre;
             campoProveedor.CampoCosecha.Campo.Renspa = campoProveedorObj.CampoCosecha.Campo.Renspa;
             campoProveedor.CampoCosecha.Campo.Localidad_Id = campoProveedorObj.CampoCosecha.Campo.Localidad_Id;
-            campoProveedor.BSVS2 = campoProveedorObj.BSVS2;
-            campoProveedor.EPA = campoProveedorObj.EPA;
-            campoProveedor.EUDR = campoProveedorObj.EUDR;
 
-            this.ActualizarNormativas(campoProveedor, archivoEPA);
+            ActualizarEPA(campoProveedor, archivoEPA);
 
             repositorio.GuardarCambios();
-
-            
-            //GuardarArchivoKMZ(campoProveedor, archivoKmz);
-
-            //repositorio.GuardarCambios();
 
             InformarCampoSustentable(campoProveedor, "");
 
             return new Resultado { IdEntidad = campoProveedorObj.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
+        }
+
+        private void ActualizarEPA(CampoProveedor campoProveedor, HttpPostedFileBase archivoEPA)
+        {
+            // Si EPA está seleccionada y hay archivo parametro, actualizar la evidencia
+            if (campoProveedor.EPA && archivoEPA != null && !campoProveedor.EvidenciaPresentada)
+            {
+                if (campoProveedor.EvidenciaEPA == null)
+                    campoProveedor.EvidenciaEPA = new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" };
+
+                campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
+            }
         }
 
         private void ActualizarNormativas(CampoProveedor campoProveedor, HttpPostedFileBase archivoEPA)
@@ -296,15 +296,6 @@ namespace SustitucionMOAUtils.Services
                     campoProveedor.EvidenciaEPA_Id = null;
                 }
                 repositorio.Remover(normativa);
-            }
-
-            // Si EPA está seleccionada y hay archivo, actualizar la evidencia
-            if (campoProveedor.EPA && archivoEPA != null && !campoProveedor.EvidenciaPresentada)
-            {
-                if (campoProveedor.EvidenciaEPA == null)
-                    campoProveedor.EvidenciaEPA = new Archivo { FileKey = FileKeys.ArchivoEPA, Ruta = "" };
-
-                campoProveedor.EvidenciaEPA.Ruta = GuardarArchivoEPA(campoProveedor, archivoEPA);
             }
         }
 
@@ -878,23 +869,16 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public SustentableRenspaExisteDto RenspaExiste(string renspa, string cuit, int cosechaId, out CampoCosecha campoCosecha)
+        public bool RenspaExiste(string renspa, string cuit, int cosechaId, bool epa, bool bsvs2, bool eudr)
         {
-            SustentableRenspaExisteDto result = new SustentableRenspaExisteDto();
-
-            campoCosecha = repositorio.Obtener<CampoCosecha>(
-                new List<Expression<Func<CampoCosecha, object>>> { c => c.CamposProveedor },
-                c => c.Campo.Renspa == renspa && c.Cosecha_Id == cosechaId);
-
-            if (campoCosecha == null || campoCosecha.CamposProveedor == null) { return result; }
-
-            result.RenspaExiste = campoCosecha.CamposProveedor.Any(cp => !cp.Borrado);
-
-            if (campoCosecha.CamposProveedor.Any(campoProv => campoProv.CUIT.Equals(cuit, StringComparison.OrdinalIgnoreCase)))
-            {
-                result.MismoCuit = true;
-            }
-
+            var result = repositorio.Existe<CampoProveedor>(cp =>
+            cp.CUIT == cuit &&
+            !cp.Borrado &&
+            cp.CampoCosecha.Campo.Renspa == renspa &&
+            cp.CampoCosecha.Cosecha_Id == cosechaId &&
+            ((epa && cp.EPA) || (eudr && cp.EUDR) || (bsvs2 && cp.BSVS2))
+            );
+ 
             return result;
         }
 
@@ -955,6 +939,7 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var campoSugeridoDto in camposSugeridosDto)
             {
+                var cosecha = this.repositorio.Obtener<Cosecha>(c => c.Id == campoSugeridoDto.CosechaId);
                 var campoProveedor = new CampoProveedor
                 {
                     HectareasTotales = campoSugeridoDto.HectareasTotales,
@@ -971,8 +956,9 @@ namespace SustitucionMOAUtils.Services
                             Nombre = campoSugeridoDto.NombreCampo,
                             Localidad_Id = campoSugeridoDto.Localidad_Id,
                             Renspa = campoSugeridoDto.Renspa
-                        }
-                    },
+                        },
+                        Cosecha = cosecha
+                    },           
                     Archivo_Id = campoSugeridoDto.Archivo_Id,
                     FechaCreacion = DateTime.Now,
                     Borrado = false,
@@ -999,20 +985,10 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                var renspaExisteDto = RenspaExiste(campoProveedor.CampoCosecha.Campo.Renspa, campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id, out CampoCosecha campoCosechaExistente);
-                if (renspaExisteDto.RenspaExiste)
+                var renspaExisteDto = RenspaExiste(campoProveedor.CampoCosecha.Campo.Renspa, campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id, campoProveedor.EPA, campoProveedor.BSVS2, campoProveedor.EUDR);
+                if (renspaExisteDto)
                 {
-                    if (!renspaExisteDto.MismoCuit)
-                    {
-                        Log.Info($"Se agrega para la cosecha id {campoProveedor.CampoCosecha.Cosecha_Id} el campo sugerido con renspa {campoProveedor.CampoCosecha.Campo.Renspa} al proveedor CUIT {campoProveedor.CUIT}");
-                        var proveedor = repositorio.Obtener<Proveedor>(p => p.CUIT == campoProveedor.CUIT);
-                        campoCosechaExistente.Proveedores.Add(proveedor);
-                        repositorio.GuardarCambios();
-                    }
-                    else
-                    {
-                        Log.Info($"No se guarda el campo sugerido con renspa {campoProveedor.CampoCosecha.Campo.Renspa} porque ya existe para el mismo CUIT");
-                    }
+                   Log.Info($"No se guarda el campo sugerido con renspa {campoProveedor.CampoCosecha.Campo.Renspa} porque ya existe para el mismo CUIT");
                 }
                 else
                 {
@@ -1024,7 +1000,15 @@ namespace SustitucionMOAUtils.Services
                     var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
 
                     if(declaracion != null)
+                    {
                         campoProveedor.RazonSocial = declaracion.RazonSocial;
+                    }
+                    else
+                    {
+                        var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == campoProveedor.Proveedor_Id);
+                        campoProveedor.RazonSocial = proveedor.RazonSocial ?? string.Empty;
+                    }
+                        
                     campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
 
                     var rutaArchivo = "";
@@ -1278,7 +1262,8 @@ namespace SustitucionMOAUtils.Services
         }
         private string ObtenerNombreArchivoDrive(string cuit, CampoCosecha campoCosecha)
         {
-            return $"{cuit}_{campoCosecha.Campo.Id}_{campoCosecha.Cosecha.Nombre}";
+            var cosecha = this.repositorio.Obtener<Cosecha>(c => c.Id == campoCosecha.Cosecha_Id);
+            return $"{cuit}_{campoCosecha.Campo.Id}_{cosecha.Nombre}";
         }
         private void SubirArchivosAGoogleDrive(string rutaArchivo, CampoProveedor campoProveedor)
         {
@@ -1774,7 +1759,7 @@ namespace SustitucionMOAUtils.Services
         {
             var campos = this.repositorio.Listar<CampoProveedor>(c => c.CUIT == cp.CUIT
             && c.Proveedor_Id == cp.Proveedor_Id && c.EPA == cp.EPA && c.BSVS2 == cp.BSVS2 &&
-            c.EUDR == cp.EUDR);
+            c.EUDR == cp.EUDR && c.CampoCosecha_Id != cp.CampoCosecha_Id);
 
             if (campos == null || !campos.Any())
                 return null;

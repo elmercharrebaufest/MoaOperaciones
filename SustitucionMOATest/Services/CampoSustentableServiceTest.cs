@@ -161,6 +161,13 @@ namespace SustitucionMOATest.Services
                 ))
                 .Returns(new List<CampoProveedor>());
 
+            repositorioMock
+            .Setup(r => r.Obtener(It.IsAny<Expression<Func<Cosecha, bool>>>()))
+            .Returns<Expression<Func<Cosecha, bool>>>(expr =>
+            {
+                return expr.Compile().Invoke(cosecha) ? cosecha : null;
+            });
+
             var campoCreado = new CampoProveedor
             {
                 Proveedor_Id = proveedorId,
@@ -1502,7 +1509,8 @@ namespace SustitucionMOATest.Services
                     CampoCosecha = new CampoCosecha
                     {
                         Campo = new CampoSustentable { Id = 2 },
-                        Cosecha = new Cosecha { Nombre = "adsf" },
+                        Cosecha = new Cosecha { Nombre = "adsf", Id =1 },
+                        Cosecha_Id = 1,
                         CampoCosechaNormativas = new List<CampoCosechaNormativa>
                             {
                                 new CampoCosechaNormativa
@@ -1532,7 +1540,8 @@ namespace SustitucionMOATest.Services
                         CampoCosecha = new CampoCosecha
                         {
                             Campo = new CampoSustentable { Id = 2 },
-                            Cosecha = new Cosecha { Nombre = "adsf" },
+                            Cosecha = new Cosecha { Nombre = "adsf", Id =1 },
+                            Cosecha_Id = 1,
                             CampoCosechaNormativas = new List<CampoCosechaNormativa>
                             {
                                 new CampoCosechaNormativa
@@ -1550,7 +1559,8 @@ namespace SustitucionMOATest.Services
             {
                 ProcesadoUcropit = false,
                 Proveedor = new Proveedor { CUIT = "cuit" },
-                CampoCosecha = new CampoCosecha { Id= 10, Campo = new CampoSustentable { Id = 3 }, Cosecha = new Cosecha { Nombre = "ads" }, CampoSustentable_Id = 3,
+                CampoCosecha = new CampoCosecha { Id= 10, Campo = new CampoSustentable { Id = 3 }, Cosecha = new Cosecha { Nombre = "ads", Id= 1 }, CampoSustentable_Id = 3,
+                    Cosecha_Id = 1,
                     CampoCosechaNormativas = new List<CampoCosechaNormativa>
                             {
                                 new CampoCosechaNormativa
@@ -1562,6 +1572,15 @@ namespace SustitucionMOATest.Services
             };
             googleDriveMock.Setup(drive => drive.DownloadFileAs<ReporteProcesoUcropit>(It.IsAny<GoogleDriveFileDownloadRequest>()))
                 .ReturnsAsync(new ReporteProcesoUcropit());
+
+            repositorioMock
+            .Setup(r => r.Obtener(It.IsAny<Expression<Func<Cosecha, bool>>>()))
+            .Returns<Expression<Func<Cosecha, bool>>>(expr =>
+            {
+                var cosecha = new Cosecha { Id = 1, Nombre = "CosechaTest" };
+                // Evalúa la expresión para ver si coincide con el Id
+                return expr.Compile().Invoke(cosecha) ? cosecha : null;
+            });
 
             target.DescargarArchivosDeGoogleDrive(archivoSinDescargar);
 
