@@ -25,6 +25,9 @@ namespace SustitucionMOARepositorio
             var ensureDLLIsCopied = System.Data.Entity.SqlServer.SqlProviderServices.Instance;
 
             this.context = context;
+            // ⏱️ Aumentar timeout global para todas las operaciones de este contexto
+            var objectContext = ((IObjectContextAdapter)context).ObjectContext;
+            objectContext.CommandTimeout = 180; // segundos (3 minutos, ajustá según necesidad)
         }
 
         public TEntidad Agregar<TEntidad>(TEntidad entidad) where TEntidad : class
@@ -409,6 +412,46 @@ namespace SustitucionMOARepositorio
                 var dataTable = enumerable.ToDataTable(true, properties);
                 context.SqlBulkInsert(dataTable, dataTable.TableName);
             }
+        }
+
+        public List<TEntidad> SelStore<TEntidad>(string store, int maxResultados, params object[] parameters) where TEntidad : class
+        {
+            return SelStorePaginado<TEntidad>(store, maxResultados, 0, parameters);
+        }
+
+        public List<TEntidad> SelStorePaginado<TEntidad>(string store, int maxResultados, int pagina, params object[] parameters) where TEntidad : class
+        {
+            var parametros = context.Database.SqlQuery<string>($"select PARAMETER_NAME from information_schema.parameters where specific_name = '{store}'").ToList();
+
+            var i = 0;
+            var parametrosSql = new List<SqlParameter>();
+            var parametrosStr = string.Empty;
+            foreach (var parametro in parametros)
+            {
+                if (parametro != "@RETURN_VALUE")
+                {
+                    parametrosSql.Add(new SqlParameter(parametro, parameters[i] == null ? DBNull.Value : parameters[i]));
+                    i++;
+                    if (parametrosStr.Length > 0)
+                    {
+                        parametrosStr += ", ";
+                    }
+                    parametrosStr = parametrosStr + parametro;
+                }
+            }
+
+            var resultado = context.Database
+                .SqlQuery<TEntidad>(("exec " + store + " " + parametrosStr).Trim(), parametrosSql.ToArray());
+            var resultadoPaginado = resultado.Select(x => x);
+            if (pagina > 0)
+            {
+                resultadoPaginado = resultadoPaginado.Skip((pagina - 1) * maxResultados);
+            }
+            if (maxResultados > 0)
+            {
+                resultadoPaginado = resultadoPaginado.Take(maxResultados);
+            }
+            return resultadoPaginado.ToList();
         }
     }
 }
