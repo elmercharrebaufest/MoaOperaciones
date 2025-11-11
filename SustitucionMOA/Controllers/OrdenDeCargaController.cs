@@ -52,11 +52,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetListado(string fechaInicio, string fechaFin)
+        public ActionResult GetListado(string fechaInicio, string fechaFin, string tipoOperacion)
         {
             var mailUsuario = SessionPersister.Mail;
             var idProveedorSeleccionado = SessionPersister.ProveedorId;
-            var ordenes = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin, idProveedorSeleccionado);
+            var ordenes = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin, tipoOperacion, idProveedorSeleccionado);
             if (ordenes == null || ordenes.Count == 0)
             {
                 throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de cargas"));
@@ -242,7 +242,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ObtenerContratosDisponibles(string clienteCodigo, string fechaDesde, string fechaHasta, string corredorCodigo)
+        public ActionResult ObtenerContratosDisponibles(string clienteCodigo, string fechaDesde, string fechaHasta, string corredorCodigo, string tipoOperacion)
         {
             var response = new ObtenerContratosDisponiblesResponse();
             try
@@ -255,7 +255,7 @@ namespace SustitucionMOA.Controllers
                     FechaDesde = fechaDesde,
                     FechaHasta = fechaHasta
                 };
-                response = ordenDeCargaService.ObtenerContratosDisponibles(req, mailUsuario);
+                response = ordenDeCargaService.ObtenerContratosDisponibles(req, mailUsuario, tipoOperacion);
             }
             catch (InfoCustomException ice)
             {

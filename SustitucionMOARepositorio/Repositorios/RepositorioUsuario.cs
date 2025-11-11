@@ -33,7 +33,6 @@ namespace SustitucionMOARepositorio.Repositorios
                         Nombre = u.TipoUsuario.Nombre,
                         NombreCorto = u.TipoUsuario.NombreCorto
                     },
-                    u.OrganizacionDeCompra,
                     u.Externo,
                     Proveedores = u.Proveedores.Select(x => new { x.CUIT, x.TipoProveedor.NombreCorto, TipoId = x.TipoProveedor.Id, x.RazonSocial, x.CodigoProveedor }
                     ),
@@ -57,7 +56,6 @@ namespace SustitucionMOARepositorio.Repositorios
                         u.TipoUsuario.NombreCorto == "CLI" ? "Cliente" : ""
                     ),
                     CodigoProveedor = u.Proveedores.FirstOrDefault(a => a.CUIT == u.CUITRegistro && a.NombreCorto == u.TipoUsuario.NombreCorto)?.CodigoProveedor ?? "",
-                    OrganizacionDeCompra = u.OrganizacionDeCompra,
                     RazonSocial = u.Proveedores.FirstOrDefault(a => a.CUIT == u.CUITRegistro && a.NombreCorto == u.TipoUsuario.NombreCorto)?.RazonSocial ?? "",
                 }).ToList();
 

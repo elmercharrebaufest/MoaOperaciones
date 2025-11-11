@@ -80,6 +80,7 @@
     <EmbeddedResource Include="SuccessMsg.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SuccessMsg.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

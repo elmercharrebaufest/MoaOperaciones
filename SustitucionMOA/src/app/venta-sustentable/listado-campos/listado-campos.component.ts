@@ -43,20 +43,29 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     borrarCampos: boolean = this.isAuthorized('BORRAR CAMPOS CREADOS')
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     esComercial: boolean = this.isAuthorized(Permiso.ComercialCamposSustentables);
-    opcionesProveedores: any;
+    selectedProveedor: any = null; // Cambia el nombre para el dropdown
+    selectedCuit: any = null; // Cambia el nombre para el dropdown
+    opcionesProveedores: any[] = []; // Ya lo tienes
+    opcionesCuit: any[] = []; // Nueva variable para los CUIT
     cosechas: any;
+    normativas: any;
 
     filtroId: string = "";
     filtroNombreCampo: string = "";
     filtroProveedor: string = "";
+    filtroCuit: string = "";
     filtroCosechaId: string = "";
     orderedByColumn: string = "Nombre";
     orderDirection: number = 1;
     itemsPerPage = 20;
-
-    selectedCountryAdvanced: any[];
-    filteredProveedor: any[];
-    countries: any[];
+    checkRevision: boolean = false;
+    mostrarDialogoRechazo: boolean = false;
+    mostrarDialogoAprobacion: boolean = false;
+    motivoRechazo: string = '';
+    campoARechazar: any = null;
+    campoSeleccionado: any = null;
+    mostrarDialogoAdjuntarEvidencia: boolean = false;
+    archivoEvidenciaSeleccionado: File | null = null;
 
     tituloArchivo: string = "Reporte de Campos Sustentables.xls";
 
@@ -78,11 +87,27 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.data = result;
+                    console.log(this.data);
+                    this.getNormativas();
 
                     if (result.length > 0) {
-                        let allProveedores = result.map(cp => { return { value: cp.Proveedor.CodigoProveedor, label: cp.Proveedor.RazonSocial } });
-                        this.opcionesProveedores = [...new Map(allProveedores.map(item => [item.value, item])).values()]
-                        // this.opcionesProveedores.unshift({ value: "", label: "Todos" })
+                        let allProveedores = result
+                            .map(cp => ({
+                                value: (cp && cp.Proveedor && cp.Proveedor.CodigoProveedor) ? cp.Proveedor.CodigoProveedor : '',
+                                label: (cp && cp.Proveedor && cp.Proveedor.RazonSocial) ? cp.Proveedor.RazonSocial : ''
+                            }))
+                            .filter(p => p.label != null && String(p.label).trim() !== '');
+
+                        this.opcionesProveedores = [...new Map(allProveedores.map(item => [item.value, item])).values()];
+
+                        let allCuitProveedores = result
+                            .map(cp => ({
+                                value: cp && cp.CUITProveedor ? cp.CUITProveedor : '',
+                                label: cp && cp.CUITProveedor ? cp.CUITProveedor : ''
+                            }))
+                            .filter(p => p.label != null && String(p.label).trim() !== '');
+
+                        this.opcionesCuit = [...new Map(allCuitProveedores.map(item => [item.value, item])).values()];
                     }
                     else {
                         this.mensajeComponent.setInfoMsg("No hay campos sustentables cargados.");
@@ -97,63 +122,15 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         return false;
     }
 
-    proveedorSeleccionado(event) {
-        this.filtroProveedor = event.value;
+    proveedorSeleccionado(event: any) {
+        // event.value contiene el value seleccionado
+        this.filtroProveedor = event.value || "";
     }
 
-
-    filterProveedor(event) {
-
-        let filtered: any[] = [];
-        let query = event.query;
-
-        for (let i = 0; i < this.opcionesProveedores.length; i++) {
-            let proveedor = this.opcionesProveedores[i];
-            if (proveedor.label.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-                filtered.push(proveedor);
-            }
-        }
-
-        //ordenar alfabeticamente
-        filtered = filtered.sort(function (a, b) {
-            if (a.label > b.label) {
-                return 1;
-            }
-            if (a.label < b.label) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        });
-
-        this.filteredProveedor = filtered;
-
-        /*    this.opcionesProveedores.getResults(event.query).then(data => {
-               this.results = data;
-           });
-          var lista2 = new Array;
-   
-           for (var i = 0; i < this.opcionesProveedores.length; i++) {
-               lista2.push({ label: this.opcionesProveedores[i].label, value: this.opcionesProveedores[i].value });
-           }
-   
-           lista2 = lista2.sort(function (a, b) {
-               if (a.label > b.label) {
-                   return 1;
-               }
-               if (a.label < b.label) {
-                   return -1;
-               }
-               // a must be equal to b
-               return 0;
-           });
-   
-           this.opcionesProveedores = lista2;*/
-
-
+    cuitSeleccionado(event: any) {
+        // event.value contiene el value seleccionado
+        this.filtroCuit = event.value || "";
     }
-
-
 
     eliminarCampo(campoCosechaId: number, proveedorId: number) {
         this.mensajeComponent.setMsgsEmpty();
@@ -293,4 +270,174 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
 
         return false; //<-- Prevent Refresh
     }
+
+     getNormativas() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        try {
+            this.subscription = this.service.getNormativas().subscribe(
+                (result: any) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.normativas = result;
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    getCamposFiltrados(): any[] {
+    if (this.checkRevision) {
+        return this.data.filter(campo =>
+            (campo.Validado === false && !campo.MotivoRechazo) &&
+            (campo.TipoNormativa === "EPA" || campo.TipoNormativa === "2BSVS")
+        );
+    }
+        return this.data;
+    }
+
+    descargarEPA(campoCosechaId: number, proveedorId: number) {
+        this.service.descargarArchivoEPA(campoCosechaId, proveedorId).subscribe(
+            (result) => {
+                if (result.logout) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], { type: "application/octet-stream" });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, result.FileDownloadName);
+                    }
+                    else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
+                        return false;
+                    }
+                }
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
+    }
+
+    abrirDialogoRechazo(campo: any) {
+        this.campoARechazar = campo;
+        this.motivoRechazo = '';
+        this.mostrarDialogoRechazo = true;
+    }
+
+    confirmarRechazo() {
+         this.mensajeComponent.setMsgsEmpty();
+        this.unsubscribe();
+        this.subscription = this.service.campoProveedorRechazar(this.campoARechazar.CampoCosechaId, this.campoARechazar.Proveedor.Id, this.campoARechazar.TipoNormativaId, this.motivoRechazo).subscribe(
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.getCamposSustentables();
+                    this.mostrarDialogoRechazo = false;
+                    this.mensajeComponent.setSuccessMsg("Se rechazo el campo " + this.campoARechazar.NombreCampo + " correctamente.");
+                }
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
+    abrirDialogoAprobacion(campo: any) {
+        this.campoSeleccionado = campo;
+        this.mostrarDialogoAprobacion = true;
+    }
+
+    confirmarAprobacion() {
+         this.mensajeComponent.setMsgsEmpty();
+        this.unsubscribe();
+        this.subscription = this.service.campoProveedorAprobar(this.campoSeleccionado.CampoCosechaId, this.campoSeleccionado.Proveedor.Id, this.campoSeleccionado.TipoNormativaId).subscribe(
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.getCamposSustentables();
+                    this.mostrarDialogoAprobacion = false;
+                    this.mensajeComponent.setSuccessMsg("Se aprobó el campo " + this.campoSeleccionado.NombreCampo + " correctamente.");
+                }
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
+    onArchivoEvidenciaChange(event: any) {
+    const files = event.target.files;
+    this.archivoEvidenciaSeleccionado = files && files.length > 0 ? files[0] : null;
+    }
+
+    abrirDialogoEvidenciaPresentada(campo: any) {
+        this.mostrarDialogoAdjuntarEvidencia = true;
+        this.campoSeleccionado = campo;
+    }
+
+    confirmarSubidaEPA() {
+         this.mensajeComponent.setMsgsEmpty();
+        this.unsubscribe();
+        this.subscription = this.service.campoProveedorAjuntarEPAValidado(this.campoSeleccionado.CampoCosechaId, this.campoSeleccionado.Proveedor.Id, this.archivoEvidenciaSeleccionado).subscribe(
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.getCamposSustentables();
+                    this.mostrarDialogoAdjuntarEvidencia = false;
+                    this.archivoEvidenciaSeleccionado = null;
+                    this.mensajeComponent.setSuccessMsg("Se adjunto la evidencia correctamente.");
+                }
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
+    cancelarSubidaEPA() {
+        this.mostrarDialogoAdjuntarEvidencia = false;
+        this.archivoEvidenciaSeleccionado = null;
+    }
+
 }

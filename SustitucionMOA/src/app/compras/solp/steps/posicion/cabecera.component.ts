@@ -26,6 +26,9 @@ import _ from 'lodash';
 import { SolpPosicionPrecargada } from '../../../../modelos/compras/PrecargaSolp/solpPosicionPrecargada';
 import { MaterialSolp } from '../../../../modelos/compras/materialSolp';
 import { MaterialServicioSolp } from '../../../../modelos/compras/materialServicioSolp';
+import { OrganizacionDeCompra } from '../../../../modelos/compras/organizacionDeCompra';
+import { ApiResponse } from '../../../../common/models/response';
+import { Permiso } from '../../../../common/enums/Permisos';
 
 declare var $: any;
 
@@ -68,6 +71,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+    
+    readonly CodigoGrupoComprasRHComercial: string = "018";
+    readonly CodigoOrganizCompra2029Estrategicas: string = "2029";
+    esUsuarioRRHH: boolean = this.isAuthorized(Permiso.ComprasRRHH);
 
     //Posiciones
     posiciones: SelectItem[];
@@ -100,6 +107,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     autocompleteServiciosSolpPaste: string[] = [];
     autocompletePosicionRFC: any;
 
+    organizacionesDeCompra: OrganizacionDeCompra[] = [];
+
     //Variables tabs
     proveedoresAutocomplete: any;
     fechaEntregaServicio: any;
@@ -129,6 +138,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     imputacionSeleccionada: any;
 
     camposObligatorios: any[] = [
+        { campo: 'organizacionDeCompra', esObligatorio: true, esFijo: true },
         { campo: 'selectTipoPosicion', esObligatorio: true, esFijo: true },
         { campo: 'selectClaseDocumento', esObligatorio: true, esFijo: true },
         { campo: 'centroDeCosto', esObligatorio: false, esFijo: true },
@@ -141,11 +151,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         { campo: 'calleEntrega', esObligatorio: true, esFijo: true },
         { campo: 'paisEntrega', esObligatorio: false, esFijo: true },
         { campo: 'numeroEntrega', esObligatorio: false, esFijo: true },
-        // { campo: 'rubroElectrico', esObligatorio: false, esFijo: false },
-        // { campo: 'rubroCivil', esObligatorio: false, esFijo: false },
-        // { campo: 'rubroIngenieria', esObligatorio: false, esFijo: false },
-        // { campo: 'rubroMecanico', esObligatorio: false, esFijo: false },
-        // { campo: 'rubroConsultoria', esObligatorio: false, esFijo: false },
         { campo: 'proveedoresValidos', esObligatorio: false, esFijo: true },
         { campo: 'proveedoresInvalidos', esObligatorio: false, esFijo: true },
         { campo: 'proveedoresNoSugeridos', esObligatorio: false, esFijo: true },
@@ -185,6 +190,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     ngOnInit(): void {
+        this.cargarOrganizacionesDeCompra();
         this.setCombos();
 
         if (this.model.posiciones.length == 0) {
@@ -196,7 +202,36 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.model.posicionActual.setTabPosicion();
         }
 
+        if (this.esUsuarioRRHH) {
+            this.model.selectClaseDocumento = this.combos.ClaseDocumento.find((elem: any) => elem.Codigo == "ZSPC");
+        }
+
         this.listarContratosAsociados();
+    }
+
+    cargarOrganizacionesDeCompra() {
+        this.service.obtenerOrganizacionesDeCompra().subscribe(
+            (resp) => {
+                let organizaciones = this.manejarErroresApiResponse(resp);
+                if (organizaciones) {
+                    this.organizacionesDeCompra = organizaciones;
+                    if (this.model.organizacionDeCompra.Id) {
+                        this.model.organizacionDeCompra = this.organizacionesDeCompra.find(x => x.Id == this.model.organizacionDeCompra.Id) as OrganizacionDeCompra;
+                    }
+                    else {
+                        if (!this.esUsuarioRRHH) {
+                            this.model.organizacionDeCompra = this.organizacionesDeCompra.find(x => x.Id == this.CodigoOrganizCompra2029Estrategicas) || this.organizacionesDeCompra[0];
+                        }
+                        else {
+                            this.model.organizacionDeCompra = this.organizacionesDeCompra[0];
+                        }
+                    }
+                }
+            },
+            (err) => {
+                this.floatMsgService.setErrorMsg(err.message);
+            }
+        );
     }
 
     public setCombos(): void {
@@ -341,7 +376,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     validarTabCompleto() {
         if (this.model.posiciones.length < 0 && this.model.posiciones != undefined || this.model.posiciones != null) {
             this.model.posiciones.forEach(posicion => {
-                posicion.doValidatePosicion(this.model.tipoSolpSap);
+                posicion.doValidatePosicion(this.model.tipoSolpSap, this.esUsuarioRRHH, this.model.organizacionDeCompra);
             });
         } else {
             this.agregarPosicion();
@@ -496,6 +531,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             return false;
         }
     }
+
+    esSolpFinalizada() {
+        if (!!this.model.nroSolp && this.model.nroSolp > 0) {
+            return true;
+        }
+        return false;
+    }
+
     //Valida nueva posicion
     validarNuevaPosicion() {
         if (this.model.posicionActual && this.model.posicionActual.concluido == undefined) {
@@ -503,6 +546,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         } else {
             this.disabled = true;
         }
+    }
+
+    organizacionDeCompraChanged() {
     }
 
     cambiarClaseDocumento() {
@@ -874,7 +920,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         try {
             this.subscription = this.service.autocompleteCodigoServicioSolp(event.query.toLowerCase()).subscribe(
                 (result) => {
-                    let servicios = this.manejarErroresApiResponse(result);
+                    let servicios = this.manejarErroresResponse(result);
                     if (servicios) {
                         this.autocompleteServiciosSolp = servicios;
                     }
@@ -929,7 +975,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         try {
             this.subscription = this.service.autocompleteCodigoMaterialSolp(event.query.toLowerCase(), idCentro).subscribe(
                 (result) => {
-                    let materiales = this.manejarErroresApiResponse(result);
+                    let materiales = this.manejarErroresResponse(result);
                     if (materiales) {
                         this.autocompleteServiciosSolp = materiales;
                     }
@@ -1017,7 +1063,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
 
         let grupoComprasAux = this.combos.GrupoCompras.find(x => x.Descripcion == posicion.codigoServicio.GrupoCompras.Descripcion);
-        if (grupoComprasAux) {
+        if (grupoComprasAux && !(this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompra2029Estrategica())) {
+            // Si es de RRHH, solp servicio y organización 2029 (Estratégicas), el grupo de compras debe ser 018 RH Comercial
             posicion.selectGrupoCompras = grupoComprasAux;
         }
     }
@@ -1096,8 +1143,14 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         let unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == $event.contrato.UnidadMedida);
         this.model.posiciones[posicionIndex].unidadSeleccionada = unidadSeleccionadaAux;
 
-        let grupoComprasSeleccionadoAux = this.combos.GrupoCompras.find(x => x.Codigo == $event.contrato.GrupoCompras);
-        this.model.posiciones[posicionIndex].selectGrupoCompras = grupoComprasSeleccionadoAux;
+        if (this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompra2029Estrategica()) {
+            // Si es de RRHH, solp servicio y organización 2029 (Estratégicas), el grupo de compras debe ser 018 RH Comercial
+            this.model.posiciones[posicionIndex].selectGrupoCompras = this.combos.GrupoCompras.find((x: any) => x.Codigo == this.CodigoGrupoComprasRHComercial);
+        }
+        else {
+            let grupoComprasSeleccionadoAux = this.combos.GrupoCompras.find((x: any) => x.Codigo == $event.contrato.GrupoCompras);
+            this.model.posiciones[posicionIndex].selectGrupoCompras = grupoComprasSeleccionadoAux;
+        }
 
         this.listarContratosAsociados();
     }
@@ -1171,7 +1224,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     newPos.selectArticuloCompras = grupoArticuloSeleccionadoObj;
                 }
 
-                if (grupoComprasSeleccionadoObj) {
+                if (grupoComprasSeleccionadoObj && !(this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompra2029Estrategica())) {
+                    // Si es de RRHH, solp servicio y organización 2029 (Estratégicas), el grupo de compras debe ser 018 RH Comercial
                     newPos.selectGrupoCompras = grupoComprasSeleccionadoObj;
                 }
 
@@ -1320,12 +1374,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 this.textoAsociarBtn = 'EDITAR CONTRATO'
             }
         }
-
     }
 
     private completarDatosUltimaSolp() {
         if (this.datosUltimaSolp != undefined) {
-            if (this.datosUltimaSolp.ClaseDocumento != null) {
+            if (this.datosUltimaSolp.ClaseDocumento != null && !this.esUsuarioRRHH) {
                 this.model.selectClaseDocumento = this.datosUltimaSolp.ClaseDocumento;
             }
 
@@ -1348,7 +1401,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     this.model.posiciones[0].selectAlmacenEntrega = this.datosUltimaSolp.Almacen;
                 }
 
-                if (this.datosUltimaSolp.GrupoCompras != null) {
+                if (this.datosUltimaSolp.GrupoCompras != null && !(this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompra2029Estrategica())) {
+                    // Si es de RRHH, solp servicio y organización 2029 (Estratégicas), el grupo de compras debe ser 018 RH Comercial
                     this.model.posiciones[0].selectGrupoCompras = this.datosUltimaSolp.GrupoCompras;
                 }
 
@@ -1409,9 +1463,13 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
             this.model.posicionActual.monedaSeleccionada = moneda;
             this.model.posicionActual.GrupoCompras = grupoCompras;
-            this.model.posicionActual.selectGrupoCompras = grupoCompras;
+            if (this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompra2029Estrategica()) {
+                this.model.posicionActual.selectGrupoCompras = this.combos.GrupoCompras.find((x: any) => x.Codigo == this.CodigoGrupoComprasRHComercial)
+            }
+            else {
+                this.model.posicionActual.selectGrupoCompras = grupoCompras;
+            }
             this.model.posicionActual.selectArticuloCompras = grupoArticulo;
-
 
             let servicioMaterialObj = {
                 Codigo: posArchivo.Codigo,
@@ -1449,8 +1507,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.model.posicionActual.cuentaTd = posArchivo.Cantidad;
             this.model.posicionActual.cuentaMayor = posArchivo.CuentaMayor;
             this.model.posicionActual.valorImputacion = posArchivo.Imputacion;
-
-
 
             posArchivo.Subposiciones.forEach(subposArch => {
                 let newSubpos = new SubPosicionViewModel(subposArch.Numero);
@@ -1530,7 +1586,21 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.displayPrecargarDesdeArchivo = false;
     }
 
-    manejarErroresApiResponse<T>(response: T): T | undefined {
+    esSolpServicio(): boolean {
+        if (this.model.selectTipoPosicion && this.model.selectTipoPosicion.Codigo == "SERVICIO") {
+            return true;
+        }
+        return false;
+    }
+
+    esOrganizacionCompra2029Estrategica(): boolean {
+        if (this.model.organizacionDeCompra && this.model.organizacionDeCompra.Id == this.CodigoOrganizCompra2029Estrategicas) {
+            return true;
+        }
+        return false;
+    }
+
+    manejarErroresResponse<T>(response: T): T | undefined {
         let resObj = response as any;
         if (resObj.logout == true) {
             this.sessionDataService.logout();
@@ -1544,5 +1614,21 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.floatMsgService.setInfoMsg(resObj.info);
         }
         return response;
+    }
+
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | undefined {
+        this.floatMsgService.setMsgsEmpty();
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return undefined;
+        }
+        if (response.error) {
+            this.floatMsgService.setErrorMsg(response.error);
+            return undefined;
+        }
+        if (response.info) {
+            this.floatMsgService.setInfoMsg(response.info);
+        }
+        return response.data;
     }
 }

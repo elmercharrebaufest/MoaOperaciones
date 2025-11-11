@@ -97,8 +97,8 @@ namespace SustitucionMOATest.Controllers
 
             };
 
-            ordenDeCargaServiceMock.Setup(x => x.Listar(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(orden.data);
-            var result = (JsonResult)target.GetListado(DateTime.Now.ToString(), DateTime.Now.ToString());
+            ordenDeCargaServiceMock.Setup(x => x.Listar(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(orden.data);
+            var result = (JsonResult)target.GetListado(DateTime.Now.ToString(), DateTime.Now.ToString(), "Normal");
             expectedJson = JsonConvert.SerializeObject(orden.data);
             resultJson = JsonConvert.SerializeObject(result.Data);
             Assert.NotNull(result);

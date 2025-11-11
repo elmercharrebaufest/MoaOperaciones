@@ -49,8 +49,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_LIQUIDACIONES_NG request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_LIQUIDACIONES_NG(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_LIQUIDACIONES_NG response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_LIQUIDACIONES_NG");
                     return MapSinPI(response.MENSAJE_ERROR, response.T_OCOMPRA, response.T_SALIDA, fechas);
                         
                 }

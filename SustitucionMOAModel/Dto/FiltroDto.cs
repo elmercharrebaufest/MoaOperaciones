@@ -68,5 +68,6 @@ namespace SustitucionMOAModel.Dto
         public bool? Tratada { get; set; }
         public bool EsServicio { get; set; } = true;
         public bool? Agrupada { get; set; }
+        public string OrganizacionDeCompra_Id { get; set; }
     }
 }

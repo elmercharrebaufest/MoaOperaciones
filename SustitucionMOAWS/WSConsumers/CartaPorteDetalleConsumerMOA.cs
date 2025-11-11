@@ -40,8 +40,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_DETALLE_CCPP request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_DETALLE_CCPP(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_DETALLE_CCPP response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_DETALLE_CCPP");
                     return MapSinPI(response.MENSAJE_ERROR, response.T_APLICACIONES, response.T_CALIDAD, response.T_ZMPTE1000, cartaPorte);
                 }
                 else

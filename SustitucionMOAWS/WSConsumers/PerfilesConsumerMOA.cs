@@ -1,16 +1,11 @@
-﻿using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
+﻿using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.PerfilesWebServiceMOA;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -31,8 +26,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_PERFILES request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_PERFILES(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_PERFILES response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_PERFILES");
                     return MapSinPI(response);
                 }
                 else
@@ -80,7 +74,8 @@ namespace SustitucionMOAWS.WSConsumers
         {
             PerfilesWSMOAResponse result = new PerfilesWSMOAResponse();
 
-            foreach (PerfilesWebServiceMOA.ZMPES6080 perfil in response.PERFILES) {
+            foreach (PerfilesWebServiceMOA.ZMPES6080 perfil in response.PERFILES)
+            {
                 result.perfiles.Add(new Perfil()
                 {
                     nombre = perfil.NOMBRE,
@@ -97,7 +92,7 @@ namespace SustitucionMOAWS.WSConsumers
                 });
             }
 
-            return result; 
+            return result;
         }
     }
 }

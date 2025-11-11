@@ -19,8 +19,6 @@ namespace SustitucionMOAWS.GoogleDrive
 
         private readonly IGoogleDriveHelper Helper;
 
-        private string InputFolderId => ConfigurationManager.AppSettings["DriveCampoSustentablesInputFolderId"];
-
         private string OutputFolderId => ConfigurationManager.AppSettings["DriveCampoSustentablesOutputFolderId"];
 
 
@@ -67,11 +65,11 @@ namespace SustitucionMOAWS.GoogleDrive
             return Helper.GetFolderIdByName(folderName);
         }
 
-        public string UploadFile(GoogleDriveFileUploadRequest uploadFileRequest)
+        public string UploadFile(GoogleDriveFileUploadRequest uploadFileRequest, string inputFolderId)
         {
-            if(uploadFileRequest.FolderId is null)
+            if (uploadFileRequest.FolderId is null)
             {
-                uploadFileRequest.WithFolderId(InputFolderId);
+                uploadFileRequest.WithFolderId(inputFolderId);
             }
             return Helper.UploadFile(uploadFileRequest);
         }
@@ -93,6 +91,11 @@ namespace SustitucionMOAWS.GoogleDrive
         void IGoogleDriveHelperUtils.SaveFile(MemoryStream stream, GoogleDriveFileDownloadRequest downloadFileRequest)
         {
             Helper.SaveFile(stream,downloadFileRequest);
+        }
+
+        public string UploadFile(GoogleDriveFileUploadRequest uploadFileRequest)
+        {
+            throw new NotImplementedException();
         }
     }
 }

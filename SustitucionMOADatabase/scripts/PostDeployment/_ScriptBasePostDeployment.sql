@@ -44,3 +44,5 @@ Post-Deployment Script Template
 :r ..\Comunicacion\ComunicacionTipo.sql
 :r ..\Comunicacion\TipoRetencion.sql
 :r .\RelacionSolicitanteExternoJefeMoa.sql
+:r .\CampoSustentable.sql
+:r .\OrganizacionDeCompra.sql

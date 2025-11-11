@@ -63,8 +63,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI BAPI_INFORECORD_GETLIST request");
                     Log.Info(request.ToXml());
                     var response = agent.BAPI_INFORECORD_GETLIST(request);
-                    Log.Info($"SAP sin PI BAPI_INFORECORD_GETLIST response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "BAPI_INFORECORD_GETLIST");
 
                     return MapSinPI(response, centro);
                 }

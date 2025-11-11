@@ -9,9 +9,6 @@ using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -50,8 +47,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_HOME request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_HOME(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_HOME response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_HOME");
                     HomeWSMOAResponse result = MapSinPI(response.T_SALIDA);
                     return result;
                 }
@@ -87,7 +83,7 @@ namespace SustitucionMOAWS.WSConsumers
         private HomeWSMOAResponse Map(HomeWebServiceMOA.ZMPES4550[] salidas)
         {
             HomeWSMOAResponse result = new HomeWSMOAResponse();
-            
+
             foreach (HomeWebServiceMOA.ZMPES4550 item in salidas)
             {
                 result.resumen.Add(
@@ -98,7 +94,7 @@ namespace SustitucionMOAWS.WSConsumers
                     }
                 );
             }
-            
+
             return result;
         }
         private HomeWSMOAResponse MapSinPI(WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4550[] salidas)

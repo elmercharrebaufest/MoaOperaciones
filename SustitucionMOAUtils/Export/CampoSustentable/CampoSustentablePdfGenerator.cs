@@ -59,7 +59,8 @@ namespace SustitucionMOAUtils.Export.CampoSustentable
                 declaracionCS.Cosecha,
                 declaracionCS.Fecha,
                 declaracionCS.RazonSocial,
-                declaracionCS.CUIT);
+                declaracionCS.CUIT,
+                declaracionCS.DirectivaDDJJCampoSustentable);
 
             return htmlText;
         }
@@ -73,7 +74,8 @@ namespace SustitucionMOAUtils.Export.CampoSustentable
             htmlText = string.Format(htmlText,
                 declaracionCS.Fecha,
                 declaracionCS.RazonSocial,
-                declaracionCS.CUIT);
+                declaracionCS.CUIT, 
+                declaracionCS.DirectivaDDJJCampoSustentable);
 
             return htmlText;
         }
@@ -82,6 +84,7 @@ namespace SustitucionMOAUtils.Export.CampoSustentable
         {
             var nro = 1;
             var filasCampos = "";
+
             foreach (var campo in declaracionCS.Campos)
             {
                 filasCampos += "<tr>" +
@@ -97,7 +100,7 @@ namespace SustitucionMOAUtils.Export.CampoSustentable
                     $"<td style=\"border: 0.5px solid black;\">{campo.Coordenadas}</td></tr>";
             }
 
-            htmlText = string.Format(htmlText, filasCampos);
+            htmlText = string.Format(htmlText, filasCampos, declaracionCS.DirectivaDDJJCampoSustentable);
 
             return htmlText;
         }

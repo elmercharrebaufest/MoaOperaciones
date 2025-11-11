@@ -1,0 +1,23 @@
+.section-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  &.rounded-bottom {
+    border-bottom-left-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+    
+    @media (max-width: 768px) {
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+    }
+  }
+}
+
+.section-content {
+  width: 100%;
+  max-width: 768px;
+  display: flex;
+  flex-direction: column;
+}

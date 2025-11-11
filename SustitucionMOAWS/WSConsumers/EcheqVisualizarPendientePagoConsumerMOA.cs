@@ -1,8 +1,6 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
-using SustitucionMOAModel.Models.WSMapMOA.Echeq;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.EcheqVisualizarPendientePagoWebServiceMOA;
 using SustitucionMOAWS.Logger;
@@ -12,8 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -72,8 +68,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPRFC_VISU_PENDIENTE_PAGO request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPRFC_VISU_PENDIENTE_PAGO(request);
-                    Log.Info($"SAP sin PI Z_MPRFC_VISU_PENDIENTE_PAGO response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPRFC_VISU_PENDIENTE_PAGO");
                     return MapSinPI(response.EX_SALIDA);
                 }
                 else

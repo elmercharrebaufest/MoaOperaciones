@@ -261,7 +261,7 @@ namespace SustitucionMOA.Controllers
             {
                 categorias = consultaService.ObtenerCategoriasInterno(false, usuarioActual),
                 subcategorias = consultaService.ObtenerSubCategorias(usuarioActual),
-                ordenes = ordenDeCargaService.Listar(usuarioActual.Mail, fechaInicio.ToString("dd/MM/yyyy"), fechaFin.ToString("dd/MM/yyyy")),
+                ordenes = ordenDeCargaService.Listar(usuarioActual.Mail, fechaInicio.ToString("dd/MM/yyyy"), fechaFin.ToString("dd/MM/yyyy"), "Normal"),
                 proveedorId = SessionPersister.ProveedorId,
                 materiales = consultaService.ObtenerMaterial(TablaSeccionMaterial.Contacto),
             });

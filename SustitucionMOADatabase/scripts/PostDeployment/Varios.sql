@@ -1,6 +1,8 @@
 ﻿IF NOT EXISTS (SELECT TOP 1 1 FROM Usuario WHERE Mail = 'moaoperaciones@molinosagro.com.ar') 
 BEGIN
-	insert into Usuario values ('moaoperaciones@molinosagro.com.ar','30715118773',1,2,null,'',0,null,null,'',null,null,0)
+	insert into Usuario
+		(Mail, CUITRegistro, Habilitado, TipoUsuario_Id, UltimoLogin, SeccionesVisitadas, AceptoTyC, AceptoTyCFecha, ApiKey, UsuarioSap, Suplente, Externo) values
+		('moaoperaciones@molinosagro.com.ar', '30715118773', 1, 2, null, '', 0, null, null, '', null, 0)
 END
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'Soja200Desde') 

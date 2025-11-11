@@ -40,6 +40,8 @@ namespace SustitucionMOAUtils.Services
             var fechaHasta = hasta != null ? hasta.Value.AddDays(1) : (DateTime?)null;
             Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == usuarioActual.Id);
             var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "COMPRADOR" : "SOLP";
+            // Check if the user has the rol of "COMPRASRRHH"
+            var esComprasRRHH = usuario.Roles.Any(r => r.Codigo == "COMPRASRRHH");
             nroSolp = nroSolp.Trim();
             //var peticionCierre = repositorio.Listar<PeticionDeOfertaCierre, PeticionDeOfertaCierreDto>(pc => new PeticionDeOfertaCierreDto());
 
@@ -98,7 +100,7 @@ namespace SustitucionMOAUtils.Services
             && (!pedidos.Any() || pedidos.All(p => x.Pliego.NombreObra.ToLower().Contains(p.ToLower()))) &&
             (!contratoMarco || x.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))) &&
             (!centros.Any() || x.Posiciones.Any(c => centros.Contains(c.Centro_Id))) && (!grupoDeCompras.Any() || x.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
-            (!claseDocumento.Any() || claseDocumento.Contains((int)x.ClaseDocumento_Id)) && (!tipoImputacion.Any() || x.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
+            (esComprasRRHH?(x.ClaseDocumento != null && x.ClaseDocumento.Codigo == "ZSPC") : (!claseDocumento.Any() || claseDocumento.Contains((int)x.ClaseDocumento_Id))) && (!tipoImputacion.Any() || x.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
             (!valorTipoImputacion.Any() || x.Posiciones.Any(p => valorTipoImputacion.Contains((int)p.ValorTipoImputacion_Id)) || x.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id)))));
 
             if (todasLasSolp.Items != null && todasLasSolp.Items.Any())

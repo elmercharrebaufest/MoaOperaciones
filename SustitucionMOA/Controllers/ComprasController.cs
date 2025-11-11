@@ -102,7 +102,7 @@ namespace SustitucionMOA.Controllers
                 TipoPosicion = tiposPosicionSolp,
                 TipoImputacion = service.ObtenerTiposImputaciones(),
 
-                Usuarios = usuarioService.ListarUsuarioCreadorSolp(),
+                Usuarios = usuarioService.ListarUsuarioCreadorSolp(ObtenerUsuarioActual()),
                 Regiones = service.ListarRegionesSap(),
                 CondicionesDeImportacion = comprasSapService.ObtenerTablaSap(TablasSap.CondicionesDeImportacion),
                 CondicionesDePago = comprasSapService.ObtenerTablaSap(TablasSap.CondicionesDePago),
@@ -784,7 +784,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ListarUsuarioCreadorSolp()
         {
-            return JsonCustom(new { data = usuarioService.ListarUsuarioCreadorSolp() });
+            return JsonCustom(new { data = usuarioService.ListarUsuarioCreadorSolp(ObtenerUsuarioActual()) });
         }
 
         [HttpGet]
@@ -1198,7 +1198,6 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
 
-
         [HttpGet]
         public ActionResult DescargarAdjuntosProveedores(int idPeticion, int? idPeticionDeOfertaUsuario)
         {
@@ -1269,5 +1268,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult ObtenerOrganizacionesDeCompra()
+        {
+            var organizacionesDeCompra = new SustitucionMOAApiResponse<List<OrganizacionDeCompraDto>>
+            {
+                Data = service.ObtenerOrganizacionesDeCompra()
+            };
+            return ContentCustom(organizacionesDeCompra);
+        }
     }
 }

@@ -1,45 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SustitucionMOAModel.Dto
 {
     public class CampoProveedorDto
     {
         public string NombreCampo { get; set; }
-
         public string Renspa { get; set; }
-
         public string NombreCosecha { get; set; }
-
         public double HectareasTotales { get; set; }
-
         public double HectareasSoja { get; set; }
-
         public double ToneladasAprobadas { get; set; }
-
         public string Latitud { get; set; }
-        
         public string Longitud { get; set; }
-
         public int CampoCosechaId { get; set; }
-
         public string ProveedorNombre { get; set; }
-
         public string LocalidadNombre { get; set; }
-
         public int Localidad_Id { get; set; }
-
         public int CampoSustentableId { get; set; }
-
         public int CosechaId { get; set; }
         public string CUIT { get; set; }
         public int Archivo_Id { get; set; }
         public int Proveedor_Id { get; set; }
         public string CodigoProveedor { get; set; }
+        public int? EvidenciaEPA_Id { get; set; }
 
+        [ForeignKey("EvidenciaEPA_Id")]
+        public bool BSVS2 { get; set; }
+        public bool EPA { get; set; }
+        public bool EUDR { get; set; }
+        public byte[] ArchivoEPA { get; set; }
+        public string NombreArchivoEPA { get; set; }
+        public bool EvidenciaPresentada { get; set; }
+        public int? CampoCosechaSuperposicion_Id { get; set; }
         public override bool Equals(object obj)
         {
             return obj is CampoProveedorDto dto &&

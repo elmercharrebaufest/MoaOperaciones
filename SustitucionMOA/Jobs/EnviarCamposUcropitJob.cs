@@ -64,7 +64,7 @@ namespace SustitucionMOA.Jobs
                         RutaKmz = cp.Archivo.Ruta,
                     },
                     cp =>
-                        cp.CampoCosecha.ToneladasAprobadas == -1 &&
+                        cp.CampoCosecha.CampoCosechaNormativas.Any(n=> n.ToneladasAprobadas == -1) &&
                         cp.CampoCosecha.Cosecha.Nombre == cosechaAReportar &&
                         cp.FechaCreacion >= fechaLimite
                     ).ToList();

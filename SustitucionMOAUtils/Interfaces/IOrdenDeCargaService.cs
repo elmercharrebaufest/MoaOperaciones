@@ -11,7 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado Agregar(CrearOrdenDeCargaRequest crearOrdenDeCargaRequest, string mailUsuario);
         Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario, GestionAltasFAS gestionAltas);
         CrearOrdenEnSAPResponse CrearOrdenEnSAP(CrearOrdenEnSAPRequest request, bool puedeEnviarASAP = false);
-        List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin, int? idProveedorSeleccionado = null);
+        List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin, string tipoOperacion, int? idProveedorSeleccionado = null);
         OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
         OrdenDeCargaEditarDto ObtenerEditar(int ordenId);
         List<OrdenDeCargaHistorialDto> ObtenerEditarHistorial(string mailUsuario, int ordenId);
@@ -35,7 +35,7 @@ namespace SustitucionMOAUtils.Interfaces
         string ActivarOC(int ordenId, string mailUsuario);
         OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega);
         void VerificarSituacionCrediticiaJob();
-        ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req, string mailUsuario);
+        ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req, string mailUsuario, string tipoOperacion);
         string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
         ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
         bool ValidarSisaCuit(string cuit, string campo);

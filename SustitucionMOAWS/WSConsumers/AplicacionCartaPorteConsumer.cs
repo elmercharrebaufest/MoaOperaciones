@@ -1,5 +1,4 @@
-﻿using SustitucionMOAModel.Entities;
-using SustitucionMOAWS.AplicacionCartaPortePendienteAplicarWebServiceMOA;
+﻿using SustitucionMOAWS.AplicacionCartaPortePendienteAplicarWebServiceMOA;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
@@ -28,16 +27,15 @@ namespace SustitucionMOAWS.WSConsumers
 
             var requestPendiente = new Z_MPMF_MOAOP_PENDIENTE_APLICAR()
             {
-                IM_CORREDOR  = string.IsNullOrEmpty(request.Corredor) ? " " : request.Corredor,
-                IM_MATERIAL  = string.IsNullOrEmpty(request.Material) ? " " : request.Material,
+                IM_CORREDOR = string.IsNullOrEmpty(request.Corredor) ? " " : request.Corredor,
+                IM_MATERIAL = string.IsNullOrEmpty(request.Material) ? " " : request.Material,
                 IM_PROVEEDOR = string.IsNullOrEmpty(request.Proveedor) ? " " : request.Proveedor
             };
 
             Log.Info($"SAP sin PI Z_MPMF_MOAOP_PENDIENTE_APLICAR request");
             Log.Info(requestPendiente.ToXml());
             var response = agent.Z_MPMF_MOAOP_PENDIENTE_APLICAR(requestPendiente);
-            Log.Info($"SAP sin PI Z_MPMF_MOAOP_PENDIENTE_APLICAR response");
-            Log.Info(response.ToXml());
+            SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_PENDIENTE_APLICAR");
 
             return response.EX_SALIDA;
         }

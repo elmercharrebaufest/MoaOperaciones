@@ -67,8 +67,10 @@
     <Compile Include="Dto\ArchivoBoleto\CrearReqArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ListarReqArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoLog.cs" />
+    <Compile Include="Dto\CampoCosechaNormativaDto.cs" />
     <Compile Include="Dto\CampoSustentable\SugerenciaCampoDto.cs" />
     <Compile Include="Dto\CampoSustentable\SugerenciaCampoExportDto.cs" />
+    <Compile Include="Dto\CarpetasUCROPITDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionDtoCopia.cs" />
     <Compile Include="Dto\Compras\AdjudicacionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionPosicionDtoCopia.cs" />
@@ -77,6 +79,7 @@
     <Compile Include="Dto\Compras\CertificacionDto.cs" />
     <Compile Include="Dto\Compras\Factura\EstadoCertificacion.cs" />
     <Compile Include="Dto\Compras\Factura\GrupoCertificaciones.cs" />
+    <Compile Include="Dto\Compras\OrganizacionDeCompraDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaRevisionTecnicaDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaSolpPosicionDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaUsuarioAdicionalDto.cs" />
@@ -159,6 +162,7 @@
     <Compile Include="Dto\Scato\DestinoScato.cs" />
     <Compile Include="Dto\SolicitantesSolpedDto.cs" />
     <Compile Include="Dto\SustentableRenspaExisteDto.cs" />
+    <Compile Include="Dto\TipoNormativaDto.cs" />
     <Compile Include="Dto\UnidadMedidaSapDto.cs" />
     <Compile Include="Dto\UsuarioReasignacionDto.cs" />
     <Compile Include="Dto\UsuarioDtos\ProveedorARelacionar.cs" />
@@ -166,6 +170,8 @@
     <Compile Include="Entities\AplicacionCartaPorteCargaMasiva.cs" />
     <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
     <Compile Include="Entities\Aprobaciones.cs" />
+    <Compile Include="Entities\CampoCosechaNormativa.cs" />
+    <Compile Include="Entities\CarpetasUCROPIT.cs" />
     <Compile Include="Entities\CertificacionRegistrada.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\DistanciaDomicilio.cs" />
@@ -177,6 +183,7 @@
     <Compile Include="Entities\LiberadorSap.cs" />
     <Compile Include="Entities\MonedaConversion.cs" />
     <Compile Include="Entities\OrdenResiduos.cs" />
+    <Compile Include="Entities\OrganizacionDeCompra.cs" />
     <Compile Include="Entities\PaisesSap.cs" />
     <Compile Include="Entities\ConfiguracionUsuario.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />
@@ -185,6 +192,7 @@
     <Compile Include="Entities\ResultadoAnalisisOcr.cs" />
     <Compile Include="Entities\ResultadoOCR.cs" />
     <Compile Include="Entities\SolpDatosPreviosPliegoMultiple.cs" />
+    <Compile Include="Entities\TipoNormativa.cs" />
     <Compile Include="Entities\UsuarioReasignacion.cs" />
     <Compile Include="Entities\VerificarActividadUsuario.cs" />
     <Compile Include="Enums\ComunicacionTipoEnum.cs" />
@@ -373,6 +381,7 @@
     <Compile Include="Enums\EstadoListarTratamientoSolp.cs" />
     <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
     <Compile Include="Enums\FlujoActualizacionOrdenResiduos.cs" />
+    <Compile Include="Enums\OrganizacionDeCompraIds.cs" />
     <Compile Include="Enums\TipoConfiguracionUsuario.cs" />
     <Compile Include="Enums\TipoLegajo.cs" />
     <Compile Include="Enums\RolEnum.cs" />

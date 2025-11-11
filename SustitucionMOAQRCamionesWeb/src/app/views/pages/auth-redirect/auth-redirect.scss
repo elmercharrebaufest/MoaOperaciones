@@ -1,0 +1,105 @@
+.redirect-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  padding: 1rem;
+}
+
+.redirect-content {
+  background: white;
+  border-radius: 1rem;
+  padding: 3rem 2rem;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  
+  svg {
+    animation: pulse 2s ease-in-out infinite;
+  }
+}
+
+.redirect-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.5rem 0;
+}
+
+.redirect-message {
+  font-size: 1rem;
+  color: #666;
+  margin: 0 0 2rem 0;
+}
+
+.countdown-wrapper {
+  margin: 2rem 0;
+}
+
+.countdown-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #003087;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  animation: scaleIn 0.5s ease-out;
+}
+
+.countdown-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+}
+
+.redirect-text {
+  font-size: 1.125rem;
+  color: #003087;
+  font-weight: 500;
+  margin: 0;
+}
+
+.redirect-button {
+  background-color: #003087;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 1rem;
+  
+  &:hover {
+    background-color: #002570;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}

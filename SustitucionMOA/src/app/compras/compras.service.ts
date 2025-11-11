@@ -14,7 +14,7 @@ import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
 import { ChatExternoComprasDto, ChatInternoComprasDto, ChatProveedorDto, ChatsDto } from './chat-interno/chat-interno.interface';
 import { VisitaObraDto } from '../modelos/infoVisitasDeObraDto';
-import { catchError, timeoutWith } from 'rxjs/operators';
+import { catchError, timeoutWith, map } from 'rxjs/operators';
 import { EntradaServicio } from '../common/models/entradaServicio';
 import { FiltroDto } from './agrupar-po-th/agrupar-po-th-filtro-model'
 import { SolpDto } from './agrupar-po-th/agrupar-po-th-model';
@@ -31,6 +31,7 @@ import { ProcesarPrecargaSolpResponse } from '../modelos/compras/PrecargaSolp/pr
 import { MaterialSolp } from '../modelos/compras/materialSolp';
 import { ServicioSolp } from '../modelos/compras/servicioSolp';
 import { PeticionDeOfertaDesvincularDto } from '../modelos/compras/POMultiple/peticionDeOfertaDesvincularDto';
+import { OrganizacionDeCompra } from '../modelos/compras/organizacionDeCompra';
 
 @Injectable({
     providedIn: 'root'
@@ -290,13 +291,24 @@ export class ComprasService extends BaseService {
         };
 
         payload.append('request', JSON.stringify(request));
-        //payload.append('report', JSON.stringify(report));
-        //payload.append('IdAdjuntos', JSON.stringify(IdAdjuntos));
 
         return this.http
             .post('/api/EntradaServicio/CrearEntradaServicio', payload, { headers: this.headers })
             .pipe(
+                map((response: any) => {
+                    // Si la respuesta es exitosa, devolver solo los datos
+                    if (response.success) {
+                        return response.data;
+                    } else {
+                        // Si hay error, lanzar excepción con el mensaje de error
+                        throw new Error(response.error);
+                    }
+                }),
                 catchError(error => {
+                    // Manejar errores HTTP y errores personalizados
+                    if (error.error && error.error.success === false) {
+                        return throwError(new Error(error.error.error));
+                    }
                     return throwError(error);
                 })
             );
@@ -379,6 +391,7 @@ export class ComprasService extends BaseService {
             CondEspProveedorAsignado: solp.condEspProveedorAsignado,
             NroOrdenDeCompraAdicional: solp.ordenDeCompra,
             RevisadoPor: solp.revisadoPor,
+            OrganizacionDeCompra: solp.organizacionDeCompra,
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento && solp.selectClaseDocumento.Codigo),
             Finalizar: solp.Finalizar,
             LiberadoresSapSolp: solp.liberadoresSap,
@@ -390,6 +403,10 @@ export class ComprasService extends BaseService {
             Posiciones: null,
             MultipleFinalizado: solp.MultipleFinalizado,
             AdmiteCertificacionesParciales: solp.admiteCertificacionesParciales,
+            Racional_CondicionesDeEntrega: solp.racional_CondicionesDeEntrega,
+            Racional_CondicionesDePago: solp.racional_CondicionesDePago,
+            Racional_Garantias: solp.racional_Garantias,
+            Racional_TextoDeCabecera: solp.racional_TextoDeCabecera
         };
 
         if (incluirPosiciones) {
@@ -1724,6 +1741,15 @@ export class ComprasService extends BaseService {
                 '/api/compras/ObtenerPeticionesDeOfertaParaDesvincularServicio',
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(120000,
+                throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    obtenerOrganizacionesDeCompra(): Observable<ApiResponse<OrganizacionDeCompra[]>> {
+        return this.http
+            .get<ApiResponse<OrganizacionDeCompra[]>>(
+                '/api/compras/ObtenerOrganizacionesDeCompra',
+                { headers: this.headers })
+            .pipe(timeoutWith(20000,
                 throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 }

@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,9 @@ namespace SustitucionMOAModel.Dto
         public List<DayOfWeek> JornadaLaboral { get; set; }
         public DateTimeOffset? JornadaLaboralDesde { get; set; }
         public DateTimeOffset? JornadaLaboralHasta { get; set; }
+
+        public OrganizacionDeCompraDto OrganizacionDeCompra { get; set; }
+
         public TablaSapDto ClaseDocumento { get; set; }
         public int? ClaseDocumento_Id { get; set; }
         public List<ArchivoDto> Adjuntos { get; set; }
@@ -133,6 +137,15 @@ namespace SustitucionMOAModel.Dto
         public bool MultipleFinalizado { get; set; }
         public bool AdmiteCertificacionesParciales { get; set; }
 
+        public string Racional_TextoDeCabecera { get; set; }
+
+        public string Racional_CondicionesDePago { get; set; }
+
+        public string Racional_CondicionesDeEntrega { get; set; }
+
+        public string Racional_Garantias { get; set; }
+
+
         public SolpDto() { }
         public SolpDto(Solp entity)
         {
@@ -184,6 +197,10 @@ namespace SustitucionMOAModel.Dto
             LiberadoresSapSolp = new List<LiberadorSapSolpDto>();
             MultipleFinalizado = entity.Pliego.MultipleFinalizado;
             AdmiteCertificacionesParciales = entity.AdmiteCertificacionesParciales;
+            Racional_CondicionesDeEntrega = entity.Racional_CondicionesDeEntrega;
+            Racional_CondicionesDePago = entity.Racional_CondicionesDePago;
+            Racional_Garantias = entity.Racional_Garantias;
+            Racional_TextoDeCabecera = entity.Racional_TextoDeCabecera;
         }
     }
 

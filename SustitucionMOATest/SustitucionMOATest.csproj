@@ -198,7 +198,10 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="TestFiles\Example.kmz">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestFiles\ValidExample.kmz">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>

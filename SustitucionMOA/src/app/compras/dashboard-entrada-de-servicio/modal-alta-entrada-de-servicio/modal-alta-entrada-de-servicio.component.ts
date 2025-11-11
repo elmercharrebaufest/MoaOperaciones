@@ -296,24 +296,26 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             this.blockUI.start('Confirmando la certificación...');
             this.service.CrearEntradaServicio(this.entrySheetObjects, items, respIdAdjuntos.data).subscribe(
                 (response) => {
-                    this.mensajeError = '';
-                    let resultMsj: string[] = [];
-                    let msjTypes: string[] = [];
+                    this.blockUI.stop();
+                    this.certificarState = false;
+
                     if (response.logout == true) {
                         this.sessionDataService.logout();
-                    }
-                    else {
-                        if (response.error) {
-                            resultMsj.push(`<li>${response.error}</li>`);
-                            msjTypes.push('E');
-                        }
-                        else {
-                            response.data.forEach(element => {
+                    } else if (response.error != undefined && response.error != "") {
+                        this.floatMsgService.setErrorMsg(response.error);
+                    } else if (response.info != undefined) {
+                        this.floatMsgService.setInfoMsg(response.info);
+                    } else {
+                        // Procesamiento exitoso
+                        this.mensajeError = '';
+                        let resultMsj: string[] = [];
+                        let msjTypes: string[] = [];
+
+                        response.data.forEach(element => {
                             if (!element) {
                                 this.mensajeError = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
                                 resultMsj.push("<li>Ha ocurrido un error por favor inténtelo nuevamente más tarde.</li>");
-                            }
-                            else {
+                            } else {
                                 let msj = element.Message.startsWith("Sólo es posible contabilizar en ") ||
                                     element.Message.startsWith("Contabilice en ") ?
                                     "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message;
@@ -323,34 +325,32 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                                 if (!msjTypes.includes(element.Type)) {
                                     msjTypes.push(element.Type);
                                 }
-                            }});
-                        }
+                            }
+                        });
+
+                        this.mensajeError = resultMsj.join("");
+                        this.confirmationService.confirm({
+                            message: "<ul>" + this.mensajeError + "</ul>",
+                            accept: () => this.cerrarMensajes(msjTypes),
+                            reject: () => this.cerrarMensajes(msjTypes),
+                            rejectVisible: false
+                        });
                     }
-                    this.blockUI.stop();
-                    this.mensajeError = resultMsj.join("");
-                    this.confirmationService.confirm({
-                        message: "<ul>" + this.mensajeError + "</ul>",
-                        accept: () => this.cerrarMensajes(msjTypes),
-                        reject: () => this.cerrarMensajes(msjTypes),
-                        rejectVisible: false
-                    });
-                    this.certificarState = false;
                 },
                 (error) => {
                     this.blockUI.stop();
+                    this.certificarState = false;
+                    
                     this.confirmationService.confirm({
                         message: error.status === 500 ? this.errorCallService : error.error.Message,
                         accept: () => {
                             this.closeDialog.emit();
                         },
                         rejectVisible: false
-                    }
-                    );
-                    this.certificarState = false;
+                    });
                 }
             );
         }
-      
     }
 
     tituloArchivoPDF = "Reporte";

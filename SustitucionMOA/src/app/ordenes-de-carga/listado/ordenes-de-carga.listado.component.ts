@@ -15,6 +15,7 @@ import { FiltroFechaFasComponent } from '../../common/view-child/filtro-fecha-fa
 import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { SendDataService } from '../../consulta/send-data.service';
 import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-ordenes-de-carga.listado',
@@ -35,6 +36,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     corredorCodigo: string = "";
     mailUsuarioSAP: string = "";
+    tipoOperacion: string = 'Normal';
 
     filtroEstado: any = null;
     filtroProducto: any = null
@@ -82,12 +84,13 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
         protected floatMsgService: FloatMsgService,
         protected modalService: ModalService,
         private confirmationService: ConfirmationService,
-        private sendDataService: SendDataService
+        private sendDataService: SendDataService,
+        private route: ActivatedRoute
     ) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
-    ngOnInit() {
+    ngOnInit() {        
         this.corredorCodigo = sessionStorage.getItem("proveedor");
         this.mailUsuarioSAP = sessionStorage.getItem("username");
         if (this.esInterno || this.esComercial || this.esMesaFas || this.esPuerto) {
@@ -116,6 +119,15 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             this.entregada = "Completada";
         }
 
+        const parentRoute = this.route.parent;
+        if (parentRoute && parentRoute.data) {
+            parentRoute.data.subscribe((data: any) => {
+                if (data && data.tipoOperacion) {
+                    this.tipoOperacion = data.tipoOperacion;
+                    console.log('Tipo de Operación:', this.tipoOperacion);
+                }
+            });
+        }
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([]);
@@ -169,7 +181,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             this.unsubscribe();
             this.subscription = this.service.getListado(
                 this.filtroFechaFasComponent.fecha_inicio,
-                this.filtroFechaFasComponent.fecha_fin).subscribe(
+                this.filtroFechaFasComponent.fecha_fin,
+                this.tipoOperacion).subscribe(
                     result => {
                         this.spinnerComponent.hideIt();
                         if (result.logout == true) {

@@ -6,9 +6,9 @@ import { OrdenesDeCargaListado } from './listado/ordenes-de-carga.listado.compon
 
 const routes: Routes = [
   { path: '', component: OrdenesDeCargaListado },
-  { path: "alta", component: OrdenesDeCargaAlta},
-  { path: "alta/:id", component: OrdenesDeCargaAlta },
-  { path: "detalle/:id", component: OrdenesDeCargaDetalleComponent },
+  { path: "alta/:tipoOperacion", component: OrdenesDeCargaAlta},
+  { path: "alta/:id/:tipoOperacion", component: OrdenesDeCargaAlta },
+  { path: "detalle/:id/:tipoOperacion", component: OrdenesDeCargaDetalleComponent },
 ];
 
 @NgModule({

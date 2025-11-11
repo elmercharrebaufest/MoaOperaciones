@@ -5,5 +5,6 @@
     [Inicio] DATE NOT NULL,
     [Fin] DATE NOT NULL, 
     [EnviarATSA] BIT NOT NULL DEFAULT 1, 
-    [PermitirAltas] BIT NOT NULL DEFAULT 1,
+    [PermitirAltas] BIT NOT NULL DEFAULT 1, 
+    [DirectivaDDJJCampoSustentable] VARCHAR(100) NULL,
 )

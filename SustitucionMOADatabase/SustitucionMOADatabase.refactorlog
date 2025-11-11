@@ -679,4 +679,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Tipo" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="115a9254-3531-488d-9e44-230329698b2f" ChangeDateTime="10/08/2025 19:12:17">
+    <Property Name="ElementName" Value="[dbo].[Cosecha].[DirectivaDDJJCampoSustentable ]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Cosecha]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DirectivaDDJJCampoSustentable" />
+  </Operation>
 </Operations>

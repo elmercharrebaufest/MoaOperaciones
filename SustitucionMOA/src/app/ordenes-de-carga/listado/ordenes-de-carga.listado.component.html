@@ -6,11 +6,11 @@
             Recuerde que el camión deberá llegar a la planta con la Tasa Municipal paga. Puede realizar el pago en <a href="https://puertomoa.tramitesenlinea.com.ar/login" target="_blank">este link</a>.
         </div>
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Órdenes de carga</strong> </div>
+            <div class="col-xs-12 col-sm-10 "><strong>{{ tipoOperacion === 'CyO' ? 'Órdenes de carga Cuenta y orden' : 'Órdenes de carga' }}</strong> </div>
             <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
-                    (click)="goToSeccion('/ordenes-de-carga/alta')" id="modalToggleButton">
+                    (click)="goToSeccionParam('/ordenes-de-carga/alta', tipoOperacion)" id="modalToggleButton">
                     Nueva OC
                 </button>
 
@@ -183,7 +183,7 @@
                             </td>
                             <td>
                                 <a class="cursor" style="cursor: pointer;"
-                                    (click)="goToSeccionParam('/ordenes-de-carga/detalle/', ordenDeCarga.Id)">
+                                    (click)="goToSeccionParamDos('/ordenes-de-carga/detalle/', ordenDeCarga.Id, tipoOperacion)">
                                     Ver
                                 </a>
                             </td>

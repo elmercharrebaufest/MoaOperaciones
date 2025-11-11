@@ -1,0 +1,40 @@
+.shipment-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+}
+
+.shipment-icon {
+  flex-shrink: 0;
+  color: #003087;
+}
+
+.shipment-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-row {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+
+  .label {
+    color: #666;
+    font-weight: 500;
+  }
+
+  .value {
+    color: #1a1a1a;
+  }
+}
+
+.chevron-icon {
+  flex-shrink: 0;
+  color: #666;
+}

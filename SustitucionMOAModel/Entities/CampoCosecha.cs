@@ -22,11 +22,10 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("CampoCosecha")]
         public ICollection<CampoProveedor> CamposProveedor { get; set; }
 
-        public double ToneladasAprobadas { get; set; }
-
-        public string MotivoRechazo { get; set; }
-
         [InverseProperty(nameof(Proveedor.CamposCosecha))]
         public virtual ISet<Proveedor> Proveedores { get; set; } = new HashSet<Proveedor>();
+
+        [InverseProperty("CampoCosecha")]
+        public virtual ICollection<CampoCosechaNormativa> CampoCosechaNormativas { get; set; }
     }
 }

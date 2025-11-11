@@ -118,7 +118,7 @@
     <p-footer>
         <button type="button" pButton icon="pi pi-times" (click)="cancelarConfirmacionFinalizar()" 
             label="Cancelar" class="ui-button-secondary"></button>
-        <button type="button" pButton icon="pi pi-check" (click)="continuarAFinalizar()" 
+        <button type="button" pButton icon="pi pi-check" (click)="continuarARacionalesDeCompra()" 
             label="Continuar" class="ui-button-success"></button>
     </p-footer>
 </p-dialog>
@@ -240,3 +240,9 @@
         <button class="btn btn-success botonesComprasColor botonModal" (click)="enviarCircularVisitaRealizada()">A los que realizaron la visita</button>
     </p-footer>
 </p-dialog>
+
+<app-racional-compras-solp
+    [(mostrarModalRacionales)]="mostrarModalRacionales"
+    [(solp)]="solpActual"
+    (guardarRacionalComprasEmitter)="onGuardarRacionalesDeCompra()">
+</app-racional-compras-solp>

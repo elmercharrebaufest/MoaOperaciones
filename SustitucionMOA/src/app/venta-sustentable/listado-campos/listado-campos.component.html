@@ -62,7 +62,7 @@
 
                 </div>
 
-                <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esInterno || esComercial">
+                <div class="col-xs-12 col-sm-12 col-md-3" *ngIf="esInterno || esComercial">
 
                     Id
 
@@ -74,7 +74,7 @@
 
                 </div>
 
-                <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="col-xs-12 col-sm-12 col-md-3">
 
                     Nombre
 
@@ -86,7 +86,7 @@
 
                 </div>
 
-                <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="col-xs-12 col-sm-12 col-md-3">
 
                     Por Cosecha
 
@@ -104,18 +104,55 @@
 
                 </div>
 
-                <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esCorredor || esInterno || esComercial">
-                    <p>Por Vendedor</p>
-                    <p-autoComplete [(ngModel)]="selectedCountryAdvanced" [dropdown]="true" field="label"
-                        [suggestions]="filteredProveedor" (completeMethod)="filterProveedor($event)" appendTo="body"
-                        placeholder="Seleccionar" appendTo="body" (onSelect)="proveedorSeleccionado($event)">
-                        <ng-template let-country pTemplate="item">
-                            <div class="country-item">
-                                <div>{{country.label}}</div>
-                            </div>
-                        </ng-template>
-                    </p-autoComplete>
+                <div class="col-xs-12 col-sm-12 col-md-3">
+                    Por Estado
+                    <div class="styled-select">
+                        <select [(ngModel)]="estadoSeleccionado" name="estadoSeleccionado">
+                            <option value="">Todos</option>
+                            <option value="Aprobado">Aprobado</option>
+                            <option value="Desaprobado">Desaprobado</option>
+                            <option value="En gestión">En gestión</option>
+                        </select>
+                    </div>
                 </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-3">
+                    Por Normativa
+                    <div class="styled-select">
+                        <select [(ngModel)]="filtroNormativa">
+                            <option value="">Todas</option>
+                            <option *ngFor="let n of normativas" value="{{n.Descripcion}}">{{n.Descripcion}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-3" *ngIf="esCorredor || esInterno || esComercial">
+                    Por Vendedor
+                    <div class="styled-select">
+                        <p-dropdown [(ngModel)]="selectedProveedor" [options]="opcionesProveedores" optionLabel="label"
+                            placeholder="Seleccionar" [filter]="true" (onChange)="proveedorSeleccionado($event)"
+                            [showClear]="true" appendTo="body">
+                        </p-dropdown>
+                    </div>
+                </div>
+
+
+
+                <div class="col-xs-12 col-sm-12 col-md-3" *ngIf="esCorredor || esInterno || esComercial">
+                    Por CUIT Proveedor
+                    <div class="styled-select">
+                        <p-dropdown [(ngModel)]="selectedCuit" [options]="opcionesCuit" optionLabel="label"
+                            placeholder="Seleccionar" [filter]="true" (onChange)="cuitSeleccionado($event)"
+                            [showClear]="true" appendTo="body">
+                        </p-dropdown>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-3" *ngIf="esInterno">
+                    <input type="checkbox" [(ngModel)]="checkRevision" name="miCheckbox">
+                    Pendiente Revisión
+                </div>
+
             </div>
         </div>
 
@@ -190,6 +227,12 @@
 
                             </th>
 
+                            <th tabindex="0" rowspan="1" colspan="1">
+
+                                Normativa
+
+                            </th>
+
                             <!--<th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
 
                                 Hectares pendientes
@@ -210,13 +253,19 @@
 
                     <tbody>
 
-                        <tr *ngFor="let campo of data
+                        <tr *ngFor="let campo of getCamposFiltrados()
 
                                 | customNumericFilter : 'IdScato' : filtroId : ''
 
                                 | customFilter : 'NombreCampo' : filtroNombreCampo
 
-                                | customFilter : 'CodigoProveedor' : filtroProveedor
+                                | customFilter : 'CodigoProveedor' : filtroProveedor.value
+
+                                | customFilter : 'Estado' : estadoSeleccionado
+
+                                | customFilter : 'TipoNormativa' : filtroNormativa
+
+                                | customFilter : 'CUITProveedor' : filtroCuit.value
 
                                 | customFilter : 'NombreCosecha' : filtroCosechaId
 
@@ -266,14 +315,26 @@
 
                             <td>{{campo.ToneladasAprobadas == -1 ? 0: campo.ToneladasAprobadas }}</td>
 
+                            <td>{{campo.TipoNormativa}}</td>
                             <!--<td>NO VIENE</td>-->
 
                             <td width="100px">
 
                                 <div class="col-sm-2">
 
-                                    <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
-                                        [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId"
+                                    <button *ngIf="campo.TipoNormativa == 'EPA' && campo.EvidenciaEPA_Id" type="button"
+                                        class="btn-custom btn-mediano btn-guardar"
+                                        (click)="descargarEPA(campo.CampoCosechaId, campo.Proveedor.Id)">
+                                        Descargar evidencia
+                                    </button>
+                                    <button *ngIf="campo.TipoNormativa == 'EPA' && esInterno && campo.EvidenciaEPA_Id == null"
+                                            type="button" class="btn-sin-fondo btn-borrar fa fa-paperclip" title="Adjuntar evidencia aprobada"
+                                            (click)="abrirDialogoEvidenciaPresentada(campo)">
+                                    </button>
+
+                                    <app-impresion-declaracion *ngIf="campo.TipoNormativa == '2BSVS'"
+                                        [proveedorId]="campo.Proveedor.Id" [CUIT]="campo.CUITProveedor"
+                                        [cosechaId]="campo.CosechaId"
                                         [habilitado]="campo.ToneladasAprobadas != -1 || esInterno">
                                     </app-impresion-declaracion>
 
@@ -282,11 +343,9 @@
                             </td>
 
                             <td>
-
                                 <div class="form-group row justify-content-center">
 
                                     <div class="col-sm-2" style="padding-left: 0px; padding-right: 14px;">
-
                                         <span>
                                             <button type="button" class="btn-sin-fondo btn-descargar"
                                                 title="Descargar KMZ"
@@ -308,6 +367,11 @@
 
                                         </span>
 
+                                        <button *ngIf="(campo.TipoNormativa == 'EPA' || campo.TipoNormativa == '2BSVS') && (!campo.Validado && !campo.MotivoRechazo) && esInterno"
+                                            type="button" class="btn-sin-fondo btn-borrar fa fa-check" title="Aprobar"
+                                            (click)="abrirDialogoAprobacion(campo)">
+                                        </button>
+
                                     </div>
 
                                     <div class="col-sm-2">
@@ -326,17 +390,15 @@
                                             type="button" class="btn-sin-fondo btn-borrar fa fa-trash" title="Borrar"
                                             (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
                                         </button>
-
+                                        <button *ngIf="(campo.TipoNormativa == 'EPA' || campo.TipoNormativa == '2BSVS') && (!campo.Validado && !campo.MotivoRechazo) && esInterno"
+                                            type="button" class="btn-sin-fondo btn-borrar fa fa-times" title="Rechazar"
+                                            (click)="abrirDialogoRechazo(campo)">
+                                        </button>
                                     </div>
-
                                 </div>
-
                             </td>
-
                         </tr>
-
                     </tbody>
-
                 </table>
 
                 <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="data && data.length != 0">
@@ -383,5 +445,49 @@
     </section>
 
     <!--End CONTENT-->
+    <p-dialog header="Rechazar campo" [(visible)]="mostrarDialogoRechazo" [modal]="true" [closable]="false"
+        [responsive]="true" [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+        appendTo="body">
+        <div>
+            <label for="motivoRechazo">Motivo de rechazo <span class="requerido">*</span></label>
+            <textarea id="motivoRechazo" [(ngModel)]="motivoRechazo" class="form-control" rows="6" required
+                style="width: 100%; font-size: 1.2em;" maxlength="1000">
+    </textarea>
+        </div>
+        <p-footer>
+            <button type="button" pButton icon="pi pi-times" label="Cancelar" class="ui-button-secondary"
+                (click)="mostrarDialogoRechazo = false"></button>
+            <button type="button" pButton icon="pi pi-check" label="Rechazar"
+                [disabled]="!motivoRechazo || motivoRechazo.trim() === ''" (click)="confirmarRechazo()"></button>
+        </p-footer>
+    </p-dialog>
 
+    <p-dialog header="Aprobar campo" [(visible)]="mostrarDialogoAprobacion" [modal]="true" [closable]="false"
+        [responsive]="true" [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+        appendTo="body">
+        <div>
+            <label for="aprobacion">¿Está seguro que desea aprobar el campo {{campoAAprobar?.NombreCampo}}?</label>
+        </div>
+        <p-footer>
+            <button type="button" pButton icon="pi pi-times" label="Cancelar" class="ui-button-secondary"
+                (click)="mostrarDialogoAprobacion = false"></button>
+            <button type="button" pButton icon="pi pi-check" label="Aprobar" (click)="confirmarAprobacion()"></button>
+        </p-footer>
+    </p-dialog>
+
+    <p-dialog header="Adjuntar evidencia presentada" [(visible)]="mostrarDialogoAdjuntarEvidencia" [modal]="true"
+        [closable]="false" [responsive]="true" [style]="{ width: '30rem' }"
+        [breakpoints]="{ '1199px': '50vw', '575px': '90vw' }" appendTo="body">
+        <div>
+            <label for="archivoEvidencia">Seleccione el archivo de evidencia:</label>
+            <input id="archivoEvidencia" type="file" (change)="onArchivoEvidenciaChange($event)" class="form-control"
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg" />
+        </div>
+        <p-footer>
+            <button type="button" pButton icon="pi pi-times" label="Cancelar" class="ui-button-secondary"
+                (click)="cancelarSubidaEPA()"></button>
+            <button type="button" pButton icon="pi pi-check" label="Adjuntar" [disabled]="!archivoEvidenciaSeleccionado"
+                (click)="confirmarSubidaEPA()"></button>
+        </p-footer>
+    </p-dialog>
 </div>

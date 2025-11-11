@@ -39,40 +39,55 @@
                         <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="!ingresarProveedorPorCUIT">
                             <p class="crearConsultaTitulos">Titular de la CP<span class="requerido">*</span></p>
                             <app-seleccionar-proveedor (onProveedorSeleccionado)="onselectProveedor($event)"
-                                                       [(valorInicial)]="CodigoProveedorEdit"
-                                                       (onProveedorPreSeleccionado)="onSePreseleccionaProveedor()"
-                                                       (onBlur)="revisarProveedorSeleccionado()" (onFocus)="sePreseleccionoProveedor=false"
-                                                       (onQuery)="onQuery($event)">
+                                [(valorInicial)]="CodigoProveedorEdit" (onProveedorPreSeleccionado)="onSePreseleccionaProveedor()"
+                                (onBlur)="revisarProveedorSeleccionado()" (onFocus)="sePreseleccionoProveedor=false"
+                                (onQuery)="onQuery($event)">
                             </app-seleccionar-proveedor>
                         </div>
-
-                        <div class="col-xs-12 col-sm-12 col-md-6"
-                             *ngIf="ingresarProveedorPorCUIT || corredorDebeCargarCuit">
+                    
+                        <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="ingresarProveedorPorCUIT || corredorDebeCargarCuit">
                             <p class="crearConsultaTitulos">
                                 CUIT
                                 <ng-container *ngIf="!corredorDebeCargarCuit">
                                     titular de la CP
                                 </ng-container>
-
+                    
                                 <span class="requerido">*</span>
                             </p>
                             <div class="styled-select" style="overflow: initial;">
-                                <input type="search" [(ngModel)]="CUIT" class="fourRounded" mask="00-00000000-0"
-                                       maxlength="13" (change)="verificarCUITIngresado(); renspaChanged();" aria-controls="tableModal">
+                                <input type="search" [(ngModel)]="CUIT" class="fourRounded" mask="00-00000000-0" maxlength="13"
+                                    (change)="verificarCUITIngresado(); renspaChanged();" aria-controls="tableModal">
                             </div>
                         </div>
-
+                    
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Cosecha <span class="requerido">*</span></p>
                             <div class="styled-select">
                                 <!-- <p-dropdown placeholder="Elegir cosecha" [options]="cosechas" [(ngModel)]="cosecha"
-                                    optionLabel="Nombre">
-                                </p-dropdown> -->
-
+                                                        optionLabel="Nombre">
+                                                    </p-dropdown> -->
+                    
                                 <select [(ngModel)]="cosechaId" (change)="onChangeCosecha()">
                                     <option *ngFor="let x of cosechas" value="{{x.Id}}">{{x.Nombre}}</option>
                                 </select>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p class="crearConsultaTitulos">Normativa<span class="requerido">*</span></p>
+                            <label style="margin-right: 40px; color: #818A91;">
+                                <input type="checkbox" [(ngModel)]="normBSVS2" name="norm2BSVS" (change)="onCheck2BSVS($event.target.checked)">
+                                2BSVS
+                            </label>
+                            <label style="margin-right: 40px; color: #818A91;">
+                                <input type="checkbox" [(ngModel)]="normEPA" name="normEPA" (change)="onCheckEPA($event.target.checked)">
+                                EPA
+                            </label>
+                            <label style="color:#818A91;">
+                                <input type="checkbox" [(ngModel)]="normEUDR" name="normEUDR" (change)="onCheckEUDR($event.target.checked)">
+                                EUDR
+                            </label>
                         </div>
                     </div>
 
@@ -104,10 +119,10 @@
                                 <input type="text" pInputText [(ngModel)]="renspa" (change)="renspaChanged()" class="fourRounded"
                                        aria-controls="tableModal" mask="00.000.0.00000/00">
                             </div>
-                            <div class="alert alert-warning" *ngIf="renspaExiste.RenspaExiste && !renspaExiste.MismoCuit">
+                            <!--<div class="alert alert-warning" *ngIf="renspaExiste.RenspaExiste && !renspaExiste.MismoCuit">
                                 Este campo ya fue presentado, la carga se vinculará a su CUIT.
-                            </div>
-                            <div class="alert alert-danger" *ngIf="renspaExiste.RenspaExiste && renspaExiste.MismoCuit">
+                            </div>-->
+                            <div class="alert alert-danger" *ngIf="renspaExiste">
                                 Este campo ya fue presentado.
                             </div>
                         </div>
@@ -176,6 +191,21 @@
                         <br />
                     </div>
 
+                     <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="normEPA">
+                        <p class="crearConsultaTitulos">Evidencia EPA</p>
+                        <div class="styled-select">
+                            <input #fileInputEPA type="file" (change)="cargarArchivoEpa($event)" placeholder="Cargar Archivo" [disabled]="evidenciaEpaPresentada"
+                            accept=".pdf,.doc,.docx,.jpg,.jpeg,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg">
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <label>
+                                <input type="checkbox" [(ngModel)]="evidenciaEpaPresentada" name="evidenciaEpaYaPresentada" (change)="onEvidenciaEpaPresentadaChange()">
+                                Evidencia ya presentada
+                            </label>
+                        </div>
+                        <br />
+                    </div>
+
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="col-xs-0 col-md-3">
                             <button type="button" (click)="redirigirAListado()" class="btn-custom btn-add btn-mediano">
@@ -229,6 +259,23 @@
                         </app-autocomplete-localidad>
                     </div>
                 </div>
+                <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p class="crearConsultaTitulos">Normativa<span class="requerido">*</span></p>
+                            <label style="margin-right: 40px; color: #818A91;">
+                                <input type="checkbox" [(ngModel)]="campoSugeridoEnEdicion.BSVS2" name="norm2BSVS">
+                                2BSVS
+                            </label>
+                            <label style="margin-right: 40px; color: #818A91;">
+                                <input type="checkbox" [(ngModel)]="campoSugeridoEnEdicion.EPA" name="normEPA">
+                                EPA
+                            </label>
+                            <label style="color:#818A91;">
+                                <input type="checkbox" [(ngModel)]="campoSugeridoEnEdicion.EUDR" name="normEUDR">
+                                EUDR
+                            </label>
+                        </div>
+                    </div>
                 <div class="row myRow cargaDeDatosFields">
                     <div class="col-xs-12 col-sm-12 col-md-6">
                         <p class="crearConsultaTitulos">
@@ -287,6 +334,22 @@
                         </div>
                     </div>
                 </div>
+                <div class="row myRow cargaDeDatosFields" *ngIf="campoSugeridoEnEdicion.EPA">
+                     <div class="col-xs-12 col-sm-12 col-md-12">
+                        <p class="crearConsultaTitulos">Usar nuevo EPA<span class="requerido">*</span></p>
+                        <div class="styled-select">
+                            <input #fileInput type="file" (change)="cargarArchivoEnSugerenciaEPA($event)" placeholder="Cargar Archivo"
+                            accept=".pdf,.doc,.docx,.jpg,.jpeg,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg">
+                        </div>
+                        <br />
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label>
+                            <input type="checkbox" [(ngModel)]="campoSugeridoEnEdicion.EvidenciaPresentada" name="evidenciaEpaYaPresentada" (change)="onEvidenciaEpaPresentadaChange()">
+                            Evidencia ya presentada
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -338,8 +401,10 @@
                         Hectáreas totales / soja
                     </th>
                     <th>
-                        Toneladas aprobadas
+                        Normativa
                     </th>
+                    <th>
+                        Toneladas aprobadas
                     <th>
                         Acciones
                     </th>
@@ -358,7 +423,16 @@
                     <td>{{campo.LocalidadNombre}}</td>
                     <td>{{campo.Renspa | mask: '00.000.0.00000/00'}}</td>
                     <td>{{campo.HectareasTotales}} / {{campo.HectareasSoja}}</td>
-                    <td>{{campo.ToneladasAprobadas}}</td>
+                    <td> 
+                        <ng-container *ngFor="let normativa of campo.Normativas">
+                            {{ normativa.DescripcionNormativa }}<br>
+                        </ng-container>
+                    </td>
+                    <td> 
+                        <ng-container *ngFor="let normativa of campo.Normativas">
+                            {{ normativa.ToneladasAprobadas }}<br>
+                        </ng-container>
+                    </td>
                     <td>
                         <div class="form-group row justify-content-center">
                             <div class="col-sm-2" style="padding-left: 0px; padding-right: 14px;">
@@ -373,6 +447,12 @@
                                             (click)="abrirEdicionCampoSugerido(campo)">
                                     </button>
                                 </span>
+                                 <span *ngIf="campo.EPA">
+                                    <button type="button" class="btn-sin-fondo fa fa-download" title="Descargar EPA"
+                                    style="font-size: 22px; color: #009688; margin-right: 5px;"
+                                    (click)="descargarEPA(campo.CampoCosechaId, campo.Proveedor_Id)">
+                                    </button>
+                                </span>
                             </div>
                         </div>
                     </td>
@@ -384,6 +464,26 @@
         <button type="button" pButton icon="pi pi-check" (click)="grabarSugerenciaCamposNuevos()" label="Guardar"
                 [disabled]="!haySugerenciaSeleccionada()"></button>
         <button type="button" pButton icon="pi pi-close" (click)="cancelarSugerenciaCamposNuevos()" label="Cancelar" class="ui-button-secondary"></button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog
+    header="Campo sugerido con normativa 2BSVS"
+    [(visible)]="mostrarConfirmacionSugeridos2BSVS"
+    [modal]="true"
+    [closable]="false"
+    [responsive]="true"
+    [style]="{width: '400px'}"
+    appendTo="body"
+>
+    <div style="text-align:center;">
+        <p>Se encontraron campos sugeridos, ¿Confirma registrar un campo con la normativa 2BSVS? En caso de confirmar se le solicitara la declaracion jurada.</p>
+    </div>
+    <p-footer>
+        <button type="button" pButton icon="pi pi-check" label="Sí"
+            (click)="onConfirmarSugeridos(true)"></button>
+        <button type="button" pButton icon="pi pi-times" label="No"
+            class="ui-button-secondary" (click)="onConfirmarSugeridos(false)"></button>
     </p-footer>
 </p-dialog>
 

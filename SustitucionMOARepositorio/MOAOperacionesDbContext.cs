@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;

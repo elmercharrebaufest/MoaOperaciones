@@ -45,8 +45,7 @@ namespace SustitucionMOAWS.WSConsumers
 
                     var response = agent.Z_MMRFC_OBTENER_CUENTAS(request);
 
-                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CUENTAS response");
-                    //Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MMRFC_OBTENER_CUENTAS");
 
                     return MapSinPI(response);
                 }

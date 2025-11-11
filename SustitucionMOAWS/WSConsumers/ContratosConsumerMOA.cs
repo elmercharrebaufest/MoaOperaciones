@@ -11,9 +11,6 @@ using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -52,7 +49,7 @@ namespace SustitucionMOAWS.WSConsumers
                     {
                         PE_PEND_ENTREGA = "",
                         PE_PROVEEDOR = proveedor,
-                        T_CONTRATOS_IN =  contratos_in,
+                        T_CONTRATOS_IN = contratos_in,
                         T_CONTRATOS_OUT = contratos_out,
                         T_COSECHA_IN = cosechas,
                         T_FECHA_OPERACION_IN = fechasSAPArray,
@@ -62,9 +59,8 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_CONTRATOS request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_CONTRATOS(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_CONTRATOS response");
-                    Log.Info(response.ToXml());
-                    return MapSinPI(response.PS_ERROR, response.T_CONTRATOS_IN , response.T_CONTRATOS_OUT, response.T_COSECHA_IN, response.T_FECHA_OPERACION_IN, response.T_MATERIAL_IN, response.T_VENDEDOR_IN);
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_CONTRATOS");
+                    return MapSinPI(response.PS_ERROR, response.T_CONTRATOS_IN, response.T_CONTRATOS_OUT, response.T_COSECHA_IN, response.T_FECHA_OPERACION_IN, response.T_MATERIAL_IN, response.T_VENDEDOR_IN);
 
                 }
                 else
@@ -169,7 +165,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 result.vendedores.Add(vendedor.VENDEDOR);
             }
-            
+
             return result;
         }
         protected virtual object MapSinPI(string error, WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4060[] contratos_in, WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES3900[] contratos_out, WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4070[] cosechas, WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4100[] fechasSAPArray, WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4090[] materiales, WS_GAQ_sin_PI_DIRECT_MOAOP.ZMPES4080[] vendedores)
@@ -270,8 +266,8 @@ namespace SustitucionMOAWS.WSConsumers
                     idVendedor = contratoInfo.ID_VENDEDOR,
                     vendedor = contratoInfo.VENDEDOR,
                     unidadCantKilos = contratoInfo.UNIME_PACTADO,
-                    cantKilos = contratoInfo.CANT_KILOS, 
-                    moneda =  contratoInfo.MONEDA,
+                    cantKilos = contratoInfo.CANT_KILOS,
+                    moneda = contratoInfo.MONEDA,
                     precio = contratoInfo.PRECIO,
                     lugarDescarga = contratoInfo.LUGAR_DESCARGA,
                     cosecha = contratoInfo.COSECHA,

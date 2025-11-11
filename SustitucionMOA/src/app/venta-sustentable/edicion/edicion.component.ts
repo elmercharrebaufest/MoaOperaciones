@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { VentaSustentableService } from './../venta-sustentable.service'
 import { BaseComponent } from './../../common/base-components/base-component';
 import { NavService } from './../../common/services/NavService';
@@ -30,6 +30,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
   @ViewChild("spinnerDatosGenerales")
   protected spinnerDatosGenerales: SpinnerComponent;
 
+  @ViewChild('fileInputEPA') fileInputEPA: ElementRef;
 
   @BlockUI() blockUI: NgBlockUI;
 
@@ -63,11 +64,14 @@ export class EdicionComponent extends BaseComponent implements OnInit {
   latitud: string;
   longitud: string;
   file: any;
-
+  archivoEPANombre: string = "";
+  archivoEpaUrl: string = "";
+  fileEPA: any;
   proveedorNombre: any;
   campoCosechaId: any;
-  NombreCosecha: any;
+  NombreCosecha: string = "";
   localidadNombre: string;
+  evidenciaEpaPresentada: boolean = false;
 
 
   proveedorSelected: any;
@@ -109,6 +113,9 @@ export class EdicionComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg(result.info);
           } else {
             this.campoProveedor = result;
+            console.log(result);
+            this.procesarArchivo(result);
+
             this.hectareasSoja = result.HectareasSoja;
             this.hectareasTotales = result.HectareasTotales;
             this.NombreCosecha = result.NombreCosecha;
@@ -128,6 +135,27 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     }
 
     return false; //<-- Prevent Refresh
+  }
+
+  procesarArchivo(result: any) {
+    if(result.EvidenciaEPA_Id == null || result.ArchivoEPA  == null)
+      return;  
+    // Detecta el tipo MIME por la extensión del nombre de archivo
+      let mimeType = 'application/octet-stream'; // Valor por defecto
+      if (result.NombreArchivoEPA.endsWith('.pdf')) {
+        mimeType = 'application/pdf';
+      } else if (result.NombreArchivoEPA.endsWith('.doc')) {
+        mimeType = 'application/msword';
+      } else if (result.NombreArchivoEPA.endsWith('.docx')) {
+        mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      } else if (result.NombreArchivoEPA.endsWith('.jpg') || result.NombreArchivoEPA.endsWith('.jpeg')) {
+        mimeType = 'image/jpeg';
+      }
+
+      const byteArray = new Uint8Array(result.ArchivoEPA);
+      const blob = new Blob([byteArray], { type: mimeType });
+      this.archivoEpaUrl = URL.createObjectURL(blob);
+    
   }
 
   campoProveedorEditar() {
@@ -157,14 +185,19 @@ export class EdicionComponent extends BaseComponent implements OnInit {
       CampoCosecha_Id: this.campoCosechaId,
       CUIT: this.campoProveedor.CUIT,
       RazonSocial: this.campoProveedor.ProveedorNombre,
-      Archivo_Id: 0
+      Archivo_Id: 0,
+      BSVS2: this.campoProveedor.BSVS2,
+      EPA: this.campoProveedor.EPA,
+      EUDR: this.campoProveedor.EUDR,
+      EvidenciaEPA_Id: 0,
+      EvidenciaPresentada: this.campoProveedor.EvidenciaPresentada
     }
 
     this.mensajeComponent.setMsgsEmpty();
     this.spinnerComponent.showIt();
     try {
       this.unsubscribe();
-      this.subscription = this.service.campoProveedorEditar(campoProveedor, this.file).subscribe(
+      this.subscription = this.service.campoProveedorEditar(campoProveedor, this.file, this.fileEPA).subscribe(
         (result: any) => {
           this.spinnerComponent.hideIt();
           if (result.logout == true) {
@@ -340,5 +373,22 @@ export class EdicionComponent extends BaseComponent implements OnInit {
   onQuery(value: string) {
     this.campoProveedor.ProveedorNombre = value;
     this.proveedorSeleccionado = null
+  }
+
+  cargarArchivoEpa(event: any) {
+    let fileList: FileList = event.target.files;
+    if (fileList.length > 0) {
+      this.fileEPA = fileList[0];
+      this.campoProveedor.NombreArchivoEPA = this.fileEPA.name;
+    }
+  }
+
+  onEvidenciaEpaPresentadaChange() {
+    if (this.evidenciaEpaPresentada) {
+        this.fileEPA = null;
+        if (this.fileInputEPA) {
+            this.fileInputEPA.nativeElement.value = '';
+        }
+    }
   }
 }

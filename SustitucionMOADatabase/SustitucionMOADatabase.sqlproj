@@ -152,7 +152,6 @@
     <Build Include="DBO\Stored Procedures\ActualizarIngresosBrutosCoeficienteUnificadoRechazado.sql" />
     <Build Include="DBO\Stored Procedures\ActualizarIngresosBrutosCoeficienteUnificado.sql" />
     <Build Include="DBO\Views\viewIngresosBrutosCoeficienteUnificado.sql" />
-    <Build Include="DBO\Stored Procedures\ActualizarToneladasAprobadasCampo.sql" />
     <Build Include="DBO\Tables\MovimientoIngresosBrutosCoeficienteUnificado.sql" />
     <Build Include="DBO\Tables\OrigenMovimientoIngresosBrutosCoeficienteUnificado.sql" />
     <None Include="scripts\PostDeployment\PermisosNotificaciones.sql" />
@@ -264,6 +263,10 @@
     <Build Include="DBO\Tables\SolpDatosPreviosPliegoMultiple.sql" />
     <Build Include="DBO\Tables\CertificacionRegistrada.sql" />
     <Build Include="DBO\Tables\RelacionSolicitanteExternoJefeMoa.sql" />
+    <Build Include="DBO\Tables\TipoNormativa.sql" />
+    <Build Include="DBO\Tables\CampoCosechaNormativa.sql" />
+    <Build Include="DBO\Tables\CarpetasUCROPIT.sql" />
+    <Build Include="DBO\Tables\OrganizacionDeCompra.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -292,6 +295,8 @@
     <None Include="scripts\Insert Rol EstadoES.sql" />
     <None Include="scripts\PostDeployment\ReemplazosEnDomicilios.sql" />
     <None Include="scripts\PostDeployment\RelacionSolicitanteExternoJefeMoa.sql" />
+    <None Include="scripts\PostDeployment\CampoSustentable.sql" />
+    <None Include="scripts\PostDeployment\OrganizacionDeCompra.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

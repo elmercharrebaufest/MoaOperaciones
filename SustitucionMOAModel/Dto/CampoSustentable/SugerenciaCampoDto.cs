@@ -10,7 +10,8 @@ namespace SustitucionMOAModel.Dto.CampoSustentable
     public class SugerenciaCampoDto : CampoProveedorDto
     {
         public bool CampoYaPresentado { get; set; }
-
         public string NombreNuevoKmz { get; set; }
+        public List<CampoCosechaNormativaDto> Normativas { get; set; }
+        public string NombreNuevaEvidenciaEPA { get; set; }
     }
 }

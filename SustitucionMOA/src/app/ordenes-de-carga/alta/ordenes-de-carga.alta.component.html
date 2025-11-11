@@ -5,8 +5,8 @@
         <!--Title-->
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 ">
-                <strong *ngIf="ordenDeCargaId == 0"> Nueva orden de carga</strong>
-                <strong *ngIf="ordenDeCargaId > 0"> Editar orden de carga #{{ordenDeCargaId}}</strong>
+                <strong *ngIf="ordenDeCargaId == 0"> {{ tipoOperacion == 'CyO'? 'Nueva orden de carga Cuenta y Orden' : 'Nueva orden de carga'}}</strong>
+                <strong *ngIf="ordenDeCargaId > 0"> {{ tipoOperacion == 'CyO'? 'Editar orden de carga Cuenta y Orden #' + ordenDeCargaId : 'Editar orden de carga #' + ordenDeCargaId }}</strong>
                 <!-- <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
                 <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
             </div>

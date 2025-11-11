@@ -35,6 +35,25 @@
                         </div>
 
                         <div class="row myRow cargaDeDatosFields">
+                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                <p class="crearConsultaTitulos">Normativa<span class="requerido">*</span></p>
+                                <label style="margin-right: 40px; color: #818A91;">
+                                    <input type="checkbox" [(ngModel)]="campoProveedor.BSVS2" name="normBSVS2"
+                                        disabled>
+                                    2BSVS
+                                </label>
+                                <label style="margin-right: 40px; color: #818A91;">
+                                    <input type="checkbox" [(ngModel)]="campoProveedor.EPA" name="normEPA" disabled>
+                                    EPA
+                                </label>
+                                <label style="color:#818A91;">
+                                    <input type="checkbox" [(ngModel)]="campoProveedor.EUDR" name="normEUDR" disabled>
+                                    EUDR
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="row myRow cargaDeDatosFields">
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <p class="crearConsultaTitulos">RENSPA <span class="requerido">*</span></p>
                                 <div class="styled-select">
@@ -116,7 +135,7 @@
                             </div>
                         </div>
 
-                        <div class="row myRow cargaDeDatosFields">
+                       <!-- <div class="row myRow cargaDeDatosFields">
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <p class="crearConsultaTitulos">Toneladas Aprobadas<span class="requerido">*</span></p>
                                 <div class="styled-select ">
@@ -124,6 +143,27 @@
                                         class="fourRounded" aria-controls="tableModal" disabled>
                                 </div>
                             </div>
+                        </div>-->
+
+                        <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="campoProveedor.EPA">
+                            <p class="crearConsultaTitulos">Evidencia EPA<span class="requerido">*</span></p>
+                            <div class="styled-select">
+                                <input #fileInputEPA type="file" [disabled]="evidenciaEpaPresentada" (change)="cargarArchivoEpa($event)"
+                                    placeholder="Cargar Archivo"
+                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg">
+                            </div>
+                        <div *ngIf="!fileEPA && campoProveedor.NombreArchivoEPA && !evidenciaEpaPresentada" style="margin-top:10px;">
+                            <span class="fa fa-paperclip" style="margin-right:5px;"></span>
+                            <a [href]="archivoEpaUrl">{{ campoProveedor.NombreArchivoEPA }}</a>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <label>
+                                <input type="checkbox" [(ngModel)]="evidenciaEpaPresentada" name="evidenciaEpaYaPresentada"
+                                    (change)="onEvidenciaEpaPresentadaChange()">
+                                Evidencia ya presentada
+                            </label>
+                        </div>
+                            <br />
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12">

@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 
-import { AuthService } from './infrastructure/services/auth.service';
+import { AuthService } from './infrastructure/services/auth/auth.service';
 import { DataService } from './infrastructure/services/data.service';
 import { I18nService } from './infrastructure/services/i18n.service';
 import { LoadingService } from './infrastructure/services/loading.service';
@@ -12,8 +12,7 @@ import { MATERIAL } from './shared/material';
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet, 
-    RouterLink, 
+    RouterOutlet,
     CommonModule,
     ...MATERIAL
   ],
@@ -22,7 +21,7 @@ import { MATERIAL } from './shared/material';
   styleUrls: ['./app.scss']
 })
 export class App {
-  protected readonly title = signal('Angular 20 Demo');
+  protected readonly title = signal('QR Camiones');
   public readonly authService = inject(AuthService);
   public readonly dataService = inject(DataService);
   public readonly i18n = inject(I18nService);

@@ -11,6 +11,7 @@ import { SubPosicionViewModel } from './steps/posicion/tab-subposicion/sub-posic
 import { setupJornadaLaboralDias } from "./solp.utils";
 import { EnumEnvioCircularA } from "../enum-envio-circular";
 import { VisitaObraDto } from "../../modelos/infoVisitasDeObraDto";
+import { OrganizacionDeCompra } from "../../modelos/compras/organizacionDeCompra";
 
 export class Solp extends CommonResponse {
     public id: number;
@@ -95,6 +96,7 @@ export class Solp extends CommonResponse {
     public admiteCertificacionesParciales: boolean = false;
 
     //inicio Cabecera == paso 5
+    public organizacionDeCompra: OrganizacionDeCompra;
     public selectClaseDocumento: any;
     public selectTipoPosicion: any;
     public posiciones: SolpPosicion[];
@@ -114,6 +116,11 @@ export class Solp extends CommonResponse {
     tieneRevisionTecnicaFinalizada: boolean;
     envioCircularA: EnumEnvioCircularA;
     fechaLimiteReenvioDocumentacionPorCambioCondiciones?: Date;
+    racional_CondicionesDeEntrega: string = "";
+    racional_CondicionesDePago: string = "";
+    racional_Garantias: string = "";
+    racional_TextoDeCabecera: string = "";
+
 
 
     public get ultimaPosicion(): SolpPosicion {
@@ -307,6 +314,7 @@ export class Solp extends CommonResponse {
             this.revisadoPor = solp.RevisadoPor || '';
 
             // Paso 5
+            this.organizacionDeCompra = solp.OrganizacionDeCompra;
             this.selectClaseDocumento = solp.ClaseDocumento;
             this.pasoCompletado = solp.PasoCompletado;
             this.estadoPasos = solp.EstadoPasos;
@@ -316,6 +324,11 @@ export class Solp extends CommonResponse {
             this.tienePeticionDeOferta = solp.TienePeticionDeOferta;
             this.tieneModificaciones = solp.TieneModificaciones;
             this.tieneRevisionTecnicaFinalizada = solp.TieneRevisionTecnicaFinalizada;
+
+            this.racional_CondicionesDeEntrega = solp.racional_CondicionesDeEntrega;
+            this.racional_CondicionesDePago = solp.racional_CondicionesDePago;
+            this.racional_Garantias = solp.racional_Garantias;
+            this.racional_TextoDeCabecera = solp.racional_TextoDeCabecera;
 
             if (solp.Posiciones && solp.Posiciones.length > 0) {
                 let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];

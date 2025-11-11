@@ -3,17 +3,11 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
-using SustitucionMOAWS.ObtenerCecoSolpWebServiceMOA;
 using SustitucionMOAWS.ObtenerTipoCambioWebServiceMOA;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_COMPRAS;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -38,7 +32,8 @@ namespace SustitucionMOAWS.WSConsumers
                     agent.ClientCredentials.UserName.UserName = UserSap;
                     agent.ClientCredentials.UserName.Password = PassSap;
 
-                    var request = new Z_MMRFC_OBTENER_TIPO_CAMBIO(){ 
+                    var request = new Z_MMRFC_OBTENER_TIPO_CAMBIO()
+                    {
                         IM_FECHA = fecha,
                         IM_MONEDA_DESTINO = monedaDestino,
                         IM_MONEDA_ORIGEN = monedaOrigen,
@@ -46,8 +41,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MMRFC_OBTENER_TIPO_CAMBIO request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MMRFC_OBTENER_TIPO_CAMBIO(request);
-                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_TIPO_CAMBIO response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MMRFC_OBTENER_TIPO_CAMBIO");
                     return MapSinPI(response);
                 }
                 else
@@ -100,7 +94,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             return resultado;
         }
-                
+
 
     }
 }

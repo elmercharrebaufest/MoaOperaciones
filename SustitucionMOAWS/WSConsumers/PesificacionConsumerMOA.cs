@@ -31,8 +31,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_OBTENER_PEND_USD request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_OBTENER_PEND_USD(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_OBTENER_PEND_USD response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_OBTENER_PEND_USD");
                     return MapSinPI(response);
                 }
                 else

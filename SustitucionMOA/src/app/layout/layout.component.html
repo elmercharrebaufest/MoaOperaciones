@@ -464,6 +464,12 @@
                                         fason
                                     </a>
                                 </div>
+                                <div *ngIf="isAuthorized('VER ORDENES DE CARGA CYO')">
+                                    <a (click)="goToSeccion('/ordenes-de-carga-cyo/')" href="#">
+                                        Ordenes de carga
+                                        CyO
+                                    </a>
+                                </div>
                                 <div *ngIf="isAuthorized('VER ORDENES DE CARGA RESIDUOS')">
                                     <a (click)="goToSeccion('/ordenes-residuos/')" href="#">Residuos e Insumos</a>
                                 </div>
@@ -647,24 +653,24 @@
                     </div>
                     <div id="collapseCompras" class="collapse" aria-labelledby="compras" role="tabpanel">
                         <div class="panel-body">
-                            <div *ngIf="isAuthorized('ABM SOLP')">
+                            <div *ngIf="isAuthorized('ABM SOLP') || isAuthorized('COMPRAS RRHH')">
                                 <a (click)="goToSeccion('/compras/dashboard')" href="#">
                                     DASHBOARD SOLICITANTE
                                 </a>
                             </div>
 
-                            <div *ngIf="isAuthorized('VER SOLPS COMPRADOR')">
+                            <div *ngIf="isAuthorized('VER SOLPS COMPRADOR') || isAuthorized('COMPRAS RRHH')">
                                 <a (click)="goToSeccion('/compras/dashboardComprador')" href="#">
                                     DASHBOARD COMPRADOR
                                 </a>
                             </div>
 
-                            <div *ngIf="isAuthorized('VER SOLPS PROVEEDOR')">
+                            <div *ngIf="isAuthorized('VER SOLPS PROVEEDOR') || isAuthorized('COMPRAS RRHH')">
                                 <a (click)="goToSeccion('/compras/dashboardProveedor')" href="#">
                                     DASHBOARD PROVEEDOR
                                 </a>
                             </div>
-                            <div *ngIf="isAuthorized('VER REPORTE OC')">
+                            <div *ngIf="isAuthorized('VER REPORTE OC') || isAuthorized('COMPRAS RRHH')">
                                 <a (click)="goToSeccion('/compras/reporte-oc')" href="#">
                                     REPORTE ORDEN DE COMPRA
                                 </a>

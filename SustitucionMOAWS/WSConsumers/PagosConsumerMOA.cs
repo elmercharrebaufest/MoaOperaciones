@@ -1,5 +1,4 @@
 ﻿using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.Pago;
 using SustitucionMOAWS.CredentialService;
@@ -10,9 +9,6 @@ using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -50,8 +46,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_PAGOS_CTA_CTE request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_PAGOS_CTA_CTE(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_PAGOS_CTA_CTE response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_PAGOS_CTA_CTE");
                     return MapSinPI(response);
                 }
                 else
@@ -163,7 +158,7 @@ namespace SustitucionMOAWS.WSConsumers
                     witht = pagoInfo.WITHT
                 });
             }
-            
+
             return result;
         }
     }
@@ -198,7 +193,7 @@ namespace SustitucionMOAWS.WSConsumers
                     concepto = pagoInfo.CONCEPTO,
                     iva = pagoInfo.IVA,
                     retencion = pagoInfo.RETENCION,
-                    totalMercaderia = pagoInfo.TOTAL_MERCADERIA,                    
+                    totalMercaderia = pagoInfo.TOTAL_MERCADERIA,
                 });
             }
 

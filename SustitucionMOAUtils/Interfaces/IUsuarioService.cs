@@ -37,7 +37,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<string> ValidarMailUsuario(UsuarioModificacionDto usuarioModificacionDto);
         string ModificarUsuario(UsuarioModificacionDto usuarioModificacionDto);
         List<ProveedorAuditoriaDto> GetProveedorAuditoriaPorUsuario(int usuarioId);
-        IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp();
+        IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp(UsuarioDto usuario);
         IEnumerable<string> ListarFiscalesSolp();
         ProveedorDto TraerProveedorEnSAP(string codigoProveedor, string codigoCorredor);
         string EliminarCuitNoHabilitado(int proveedorId, string mailUsuarioSesion);

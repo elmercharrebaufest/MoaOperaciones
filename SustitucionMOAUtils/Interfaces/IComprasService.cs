@@ -200,5 +200,6 @@ namespace SustitucionMOAUtils.Interfaces
         void DesvincularSolpDePOMultipleMaterial(int solpPosicionId, List<int> idsPOsADesvincular);
         void DesvincularSolpDePOMultipleServicio(int solpId, List<int> idsPOsADesvincular);
         void EnviarReporteTrabajoYaHecho();
+        List<OrganizacionDeCompraDto> ObtenerOrganizacionesDeCompra();
     }
 }

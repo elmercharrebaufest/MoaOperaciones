@@ -13,7 +13,7 @@ namespace SustitucionMOAModel.Dto
         public string CosechaActual { get; set; }
         public string RazonSocial { get; set; }
         public string CUIT { get; set; }
-
+        public string DirectivaDDJJCampoSustentable { get; set; }
         public OpcionesDeclaracionCampoSustentable? OpcionDeclaracionCampoSustentable { get; set; }
 
         public double? HectareasDeclaracionCampoSustentable { get; set; }

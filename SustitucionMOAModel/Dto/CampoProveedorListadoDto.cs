@@ -39,9 +39,22 @@ namespace SustitucionMOAModel.Dto
         {
             get
             {
-                return ToneladasAprobadas > 0 ? "Aprobado" : ToneladasAprobadas == 0 ? "Desaprobado" : "En gestión";
+                if(TipoNormativa == "EUDR")
+                {
+                    return ToneladasAprobadas > 0 ? "Aprobado" : ToneladasAprobadas == 0 ? "Desaprobado" : "En gestión";
+                }
+                else
+                {
+                    return Validado && ToneladasAprobadas > 0? "Aprobado" : ToneladasAprobadas == 0 && !Validado ? "Rechazado" : "En gestión";
+                }
             }
         }
+
+        public string TipoNormativa { get; set; }
+        public int TipoNormativaId { get; set; }
+        public bool Validado { get; set; }
+        public int? ValidadoPor { get; set; }
+        public int? EvidenciaEPA_Id { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -50,6 +63,7 @@ namespace SustitucionMOAModel.Dto
                    NombreCosecha == dto.NombreCosecha &&
                    HectareasTotales == dto.HectareasTotales &&
                    HectareasSoja == dto.HectareasSoja &&
+                   TipoNormativa ==dto.TipoNormativa &&
                    ToneladasAprobadas == dto.ToneladasAprobadas;
         }
 
