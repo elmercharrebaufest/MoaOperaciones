@@ -44,7 +44,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Mail;
-using System.ServiceModel.PeerResolvers;
 using System.Text;
 using System.Web;
 
@@ -2487,7 +2486,7 @@ namespace SustitucionMOAUtils.Services
                                         Posiciones = new List<SolpPosicion>(),
                                         UsuarioCreacion_Id = 0,
                                         EmailLinkToken = Guid.NewGuid(),
-                                        OrganizacionDeCompra_Id = posicion.OrganizacionDeCompraId,
+                                        OrganizacionDeCompra_Id = "2029",//posicion.OrganizacionDeCompraId, fix hasta que se implemente correctamente RRHH
                                     };
 
                             solp.ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id;
