@@ -1420,6 +1420,7 @@
     <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJob.cs" />
     <Compile Include="Jobs\EliminarFacturasAntiguasJob.cs" />
+    <Compile Include="Jobs\EliminarLogsAntiguosJob.cs" />
     <Compile Include="Jobs\EnviarMailReporteTrabajoYaHechoJob.cs" />
     <Compile Include="Jobs\CertificarOrdenesCompraContratoMarcoJob.cs" />
     <Compile Include="Jobs\NotificacionErroresJob.cs" />

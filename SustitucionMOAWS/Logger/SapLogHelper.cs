@@ -13,7 +13,7 @@ namespace SustitucionMOAWS.Logger
                 bool enableBigLogs = ConfigurationManager.AppSettings["SAPEnableBigLogs"] == "1";
 
                 Log.Info($"SAP sin PI {nombreMetodo} response");
-                if (enableBigLogs || size < 524288)
+                if (enableBigLogs)
                     Log.Info(response);
             }
             catch (Exception ex)

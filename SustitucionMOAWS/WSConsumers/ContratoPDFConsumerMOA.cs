@@ -32,7 +32,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_PDF_CONTRATO request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_PDF_CONTRATO(request);
-                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_PDF_CONTRATO"); Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_PDF_CONTRATO");
                     return MapSinPI(response);
                 }
                 else

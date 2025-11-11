@@ -211,8 +211,20 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         if (permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES")) {
             this.havePermission = true;
         }
-        await this.getListarPO(); // No mover.
-        this.obtenerESSap(this.proveedor, this.documentoNumero);
+        
+        // Esperar un momento para que el aux-panel emita las fechas iniciales
+        setTimeout(async () => {
+            await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
+            this.obtenerESSap(this.proveedor, this.documentoNumero);
+        }, 100);
+    }
+
+    // Nuevo método para establecer las fechas iniciales basándose en la lógica del aux-panel
+    setFechasIniciales(): void {
+        const fechaActual = new Date();
+        fechaActual.setDate(fechaActual.getDate() - 2);
+        this.filtroFechaDesde = fechaActual.toISOString().slice(0, 10);
+        this.filtroFechaHasta = new Date().toISOString().slice(0, 10);
     }
 
     formsCreate(): void {
@@ -402,23 +414,26 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 });
                 break;
             case 'Pendiente Aprobación':
-                if (this.tablaPOAprobaciones.length < 1) {
-                    this.getListarPO();
-                }
+                // Remover esta llamada duplicada
+                // if (this.tablaPOAprobaciones.length < 1) {
+                //     this.getListarPO();
+                // }
                 this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
                 break;
             case 'Rechazado':
-                if (this.tablaPOAprobaciones.length < 1) {
-                    this.getListarPO();
-                }
+                // Remover esta llamada duplicada
+                // if (this.tablaPOAprobaciones.length < 1) {
+                //     this.getListarPO();
+                // }
                 this.defaultTablesConfig[0].columns.forEach(col => {
                     col.visible = col.field === 'Aprobador' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' || col.field === 'AnuladoPor' ? false : true;
                 });
                 break;
             case 'Anulada':
-                if (this.tablaPOAprobaciones.length < 1) {
-                    this.getListarPO();
-                }
+                // Remover esta llamada duplicada
+                // if (this.tablaPOAprobaciones.length < 1) {
+                //     this.getListarPO();
+                // }
                 this.defaultTablesConfig[0].columns.forEach(col => {
                     col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobación' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' ? false : true;
                 });
@@ -678,9 +693,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             await this.obtenerESSap(this.proveedor, this.documentoNumero);
             await this.filtrarPorEstado(mockEvent);
             this.blockUI.stop();
-            await this.getListarPO();
+            await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta); // Pasar fechas
         } else {
-            await this.getListarPO();
+            await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta); // Pasar fechas
             await this.filtrarPorEstado(mockEvent);
             this.blockUI.stop();
             await this.obtenerESSap(this.proveedor, this.documentoNumero);
@@ -1075,7 +1090,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.obtenerESSap(this.proveedor, this.documentoNumero);
         }
         if ((this.estadoCertificacion.code === 'Aprobada' || this.estadoCertificacion.code === 'Pendiente Aprobación' || this.estadoCertificacion.code === 'Rechazado' || this.estadoCertificacion.code === 'Anulada') && !this.recalculandoAprobadas) {
-            this.getListarPO(); // No mover.
+            // Pasar las fechas actuales al refrescar
+            this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
         }
     }
 

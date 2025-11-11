@@ -1,19 +1,12 @@
-﻿using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA;
+﻿using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.PDFComprobantesNGWebServiceMOA;
-using SustitucionMOAWS.PDFWebServiceMOA;
-using SustitucionMOAWS.ScatoComandosWebService;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -53,8 +46,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info(request.ToXml());
 
                     var response = agent.Z_MPRFC_MOAOP_COMP_NOGRANOSPDF(request);
-                    Log.Info($"SAP sin PI Z_MPRFC_MOAOP_COMP_NOGRANOSPDF response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPRFC_MOAOP_COMP_NOGRANOSPDF");
 
                     byte[] bytes = System.Convert.FromBase64String(response.EX_BASE64);
 

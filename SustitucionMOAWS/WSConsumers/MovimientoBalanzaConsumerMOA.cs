@@ -23,26 +23,25 @@ namespace SustitucionMOAWS.WSConsumers
                     var agent = new Z_WS_MOAOP_DIRECTClient();
                     agent.ClientCredentials.UserName.UserName = UserSap;
                     agent.ClientCredentials.UserName.Password = PassSap;
-                    
+
                     var request = new ZMM_RFC_MOV_311()
                     {
-                      EX_BLDAT = fechaMov,
-                      EX_BUDAT = fechaCont,
-                      EX_CHARG = "",
-                      EX_LGORT_DEST = almacenSap,
-                      EX_LGORT_ORIG = almacenOrigen,
-                      EX_MATNR = materialSap,
-                      EX_MEINS = "KG",
-                      EX_MENGE = cantidad,
-                      EX_TCODE = "MB1B",
-                      EX_TESTRUN = "",
-                      EX_WERKS = centro
+                        EX_BLDAT = fechaMov,
+                        EX_BUDAT = fechaCont,
+                        EX_CHARG = "",
+                        EX_LGORT_DEST = almacenSap,
+                        EX_LGORT_ORIG = almacenOrigen,
+                        EX_MATNR = materialSap,
+                        EX_MEINS = "KG",
+                        EX_MENGE = cantidad,
+                        EX_TCODE = "MB1B",
+                        EX_TESTRUN = "",
+                        EX_WERKS = centro
                     };
                     Log.Info($"SAP sin PI ZMM_RFC_MOV_311 request");
                     Log.Info(request.ToXml());
                     var response = agent.ZMM_RFC_MOV_311(request);
-                    Log.Info($"SAP sin PI ZMM_RFC_MOV_311 response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "ZMM_RFC_MOV_311");
                     MovimientoBalanzaMOAResponse result = Map(response.IM_MATDOCUMENTYEAR, response.IM_MATERIALDOCUMENT, response.IM_MESSAGE);
                     return result;
                 }
@@ -72,7 +71,7 @@ namespace SustitucionMOAWS.WSConsumers
             result.imMatdocumentyear = imMatdocumentyear;
             result.imMaterialdocument = imMaterialdocument;
             result.imMessage = imMessage;
-            
+
             return result;
         }
     }
