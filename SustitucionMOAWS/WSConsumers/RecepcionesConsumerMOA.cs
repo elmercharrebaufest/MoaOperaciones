@@ -1,7 +1,5 @@
-﻿using SustitucionMOAAssets;
-using SustitucionMOAFotmatter;
+﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
 using SustitucionMOAWS.CredentialService;
@@ -13,8 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -65,15 +61,14 @@ namespace SustitucionMOAWS.WSConsumers
                         T_MATERIAL_IN = materiales_in,
                         T_RECEPCIONES_OUT = recepciones_out,
                         T_VENDEDOR_IN = vendedores_in,
-                        PE_PROVEEDOR = proveedor, 
+                        PE_PROVEEDOR = proveedor,
                         T_FECHA_DESCARGA_IN = fechasSAPArray
                     };
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_RECEPCIONES request");
                     Log.Info(request.ToXml());
 
                     var response = agent.Z_MPMF_MOAOP_RECEPCIONES(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_RECEPCIONES response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_RECEPCIONES");
 
                     return MapSinPI(response);
 
@@ -84,12 +79,12 @@ namespace SustitucionMOAWS.WSConsumers
 
                     cartaPortes = cartaPortes ?? new List<string>();
 
-                    RecepcionesWebServiceMOA.ZMPES4110[] carta_porte_in  = new RecepcionesWebServiceMOA.ZMPES4110[] { };
-                    RecepcionesWebServiceMOA.ZMPES4130[] centros_in      = new RecepcionesWebServiceMOA.ZMPES4130[] { };
-                    RecepcionesWebServiceMOA.ZMPES4090[] materiales_in   = new RecepcionesWebServiceMOA.ZMPES4090[] { };
+                    RecepcionesWebServiceMOA.ZMPES4110[] carta_porte_in = new RecepcionesWebServiceMOA.ZMPES4110[] { };
+                    RecepcionesWebServiceMOA.ZMPES4130[] centros_in = new RecepcionesWebServiceMOA.ZMPES4130[] { };
+                    RecepcionesWebServiceMOA.ZMPES4090[] materiales_in = new RecepcionesWebServiceMOA.ZMPES4090[] { };
                     RecepcionesWebServiceMOA.ZMPES4990[] recepciones_out = new RecepcionesWebServiceMOA.ZMPES4990[] { };
-                    RecepcionesWebServiceMOA.ZMPES4080[] vendedores_in   = new RecepcionesWebServiceMOA.ZMPES4080[] { };
-                    RecepcionesWebServiceMOA.ZMPES7000[] calidades_out   = new RecepcionesWebServiceMOA.ZMPES7000[] { };
+                    RecepcionesWebServiceMOA.ZMPES4080[] vendedores_in = new RecepcionesWebServiceMOA.ZMPES4080[] { };
+                    RecepcionesWebServiceMOA.ZMPES7000[] calidades_out = new RecepcionesWebServiceMOA.ZMPES7000[] { };
                     List<RecepcionesWebServiceMOA.ZMPES4100> fechasSAP = new List<RecepcionesWebServiceMOA.ZMPES4100>() { };
                     foreach (FechaWS fecha in fechas)
                     {

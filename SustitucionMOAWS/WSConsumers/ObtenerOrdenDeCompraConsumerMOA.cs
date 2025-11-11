@@ -130,7 +130,8 @@ namespace SustitucionMOAWS.WSConsumers
             }
             catch (Exception e)
             {
-                throw e;
+                Log.Error(e, $"Error al obtener de SAP orden de compra {nroOC}.");
+                throw;
             }
         }
 
@@ -330,8 +331,10 @@ namespace SustitucionMOAWS.WSConsumers
             Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 request");
             Log.Info(request.ToXml());
             var response = agent.BAPI_PO_GETDETAIL1(request);
-            Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 response");
-            Log.Info(response.ToXml());
+            if (ConfigurationManager.AppSettings["SAPEnableBigLogs"] == "1")
+            {
+                SapLogHelper.LogResponse(response.ToXml(), "BAPI_PO_GETDETAIL1");
+            }
             return response;
         }
 
@@ -1521,8 +1524,10 @@ namespace SustitucionMOAWS.WSConsumers
             Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 request");
             Log.Info(request.ToXml());
             var response = agent.BAPI_PO_GETDETAIL1(request);
-            Log.Info($"SAP sin PI BAPI_PO_GETDETAIL1 response");
-            Log.Info(response.ToXml());
+            if (ConfigurationManager.AppSettings["SAPEnableBigLogs"] == "1")
+            {
+                SapLogHelper.LogResponse(response.ToXml(), "BAPI_PO_GETDETAIL1");
+            }
             return response;
         }
 

@@ -95,7 +95,7 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("Azure target not found.");
             }
 
-            return "C:\\MOAOperacionesLogs";
+            return "L:\\MOAOperacionesLogs";
         }
 
         static FileTarget GetTarget(LoggingConfiguration config)

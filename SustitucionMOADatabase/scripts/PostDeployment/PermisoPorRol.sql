@@ -113,7 +113,7 @@ IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'ADMIN CONTABILIZACION
 
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'ADMINISTRAR CURSOS') BEGIN insert into PermisoPorRol values ('ADMINISTRAR CURSOS') END
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'REALIZAR CURSOS') BEGIN insert into PermisoPorRol values ('REALIZAR CURSOS') END
-IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER SOLAPA CERTIFICACION DE SERVICIOS') BEGIN insert into PermisoPorRol values ('VER SC:\Users\lnestares\Documents\Molinos Agro\MoaOperaciones\SustitucionMOADatabase\scripts\CreacionRolCompras.sqlOLAPA CERTIFICACION DE SERVICIOS') END
+IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER SOLAPA CERTIFICACION DE SERVICIOS') BEGIN insert into PermisoPorRol values ('VER SOLAPA CERTIFICACION DE SERVICIOS') END
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER REPORTE OC') BEGIN insert into PermisoPorRol values ('VER REPORTE OC') END
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER PO MULTIPLE') BEGIN insert into PermisoPorRol values ('VER PO MULTIPLE') END
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER AGRUPAR PO') BEGIN insert into PermisoPorRol values ('VER AGRUPAR PO') END

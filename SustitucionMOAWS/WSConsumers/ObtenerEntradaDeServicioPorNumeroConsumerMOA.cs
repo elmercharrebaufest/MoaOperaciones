@@ -52,11 +52,11 @@ namespace SustitucionMOAWS.WSConsumers
                     string ENTRYSHEET = nroES;
                     string LONG_TEXTS = "";
                     WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKN[] ENTRYSHEET_ACCOUNT_ASSIGMENT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKN[] { };
-                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] ENTRYSHEET_HEADER_TEXT     = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] { };
-                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLL[] ENTRYSHEET_SERVICES          = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLL[] { };
-                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] ENTRYSHEET_SERVICES_TEXTS  = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] { };
+                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] ENTRYSHEET_HEADER_TEXT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] { };
+                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLL[] ENTRYSHEET_SERVICES = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLL[] { };
+                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] ENTRYSHEET_SERVICES_TEXTS = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] { };
                     WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKL[] ENTRYSHEET_SRV_ACCASS_VALUES = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKL[] { };
-                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRETURN1[] RETURN                    = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRETURN1[] { };
+                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRETURN1[] RETURN = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRETURN1[] { };
 
                     var request = new BAPI_ENTRYSHEET_GETDETAIL()
                     {
@@ -72,8 +72,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI BAPI_ENTRYSHEET_GETDETAIL");
                     Log.Info(request.ToXml());
                     var response = agent.BAPI_ENTRYSHEET_GETDETAIL(request);
-                    Log.Info(response.ToXml());
-                    Log.Info($"SAP sin PI BAPI_ENTRYSHEET_GETDETAIL");
+                    SapLogHelper.LogResponse(response.ToXml(), "BAPI_ENTRYSHEET_GETDETAIL");
                     return MapSinPI(response);
                 }
                 else
@@ -255,11 +254,11 @@ namespace SustitucionMOAWS.WSConsumers
                     string ENTRYSHEET = nroES; //Valor de prueba, existe en SAP
                     string LONG_TEXTS = "";
                     WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKN[] ENTRYSHEET_ACCOUNT_ASSIGMENT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKN[] { };
-                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] ENTRYSHEET_HEADER_TEXT     = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] { };
-                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLL[] ENTRYSHEET_SERVICES          = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLL[] { };
-                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] ENTRYSHEET_SERVICES_TEXTS  = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] { };
+                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] ENTRYSHEET_HEADER_TEXT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] { };
+                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLL[] ENTRYSHEET_SERVICES = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLL[] { };
+                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] ENTRYSHEET_SERVICES_TEXTS = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] { };
                     WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKL[] ENTRYSHEET_SRV_ACCASS_VALUES = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKL[] { };
-                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRETURN1[] RETURN                    = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRETURN1[] { };
+                    WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRETURN1[] RETURN = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRETURN1[] { };
 
                     var request = new BAPI_ENTRYSHEET_GETDETAIL()
                     {
@@ -275,8 +274,11 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI BAPI_ENTRYSHEET_GETDETAIL request");
                     Log.Info(request.ToXml());
                     var response = agent.BAPI_ENTRYSHEET_GETDETAIL(request);
-                    Log.Info($"SAP sin PI BAPI_ENTRYSHEET_GETDETAIL response");
-                    Log.Info(response.ToXml());
+                    if (ConfigurationManager.AppSettings["SAPEnableBigLogs"] == "1")
+                    {
+                        SapLogHelper.LogResponse(response.ToXml(), "BAPI_ENTRYSHEET_GETDETAIL");
+                    }
+
                     return MapDetalleSinPI(response);
                 }
                 else

@@ -1,5 +1,4 @@
 ﻿using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.ViewModel.Flete;
 using SustitucionMOAModel.Models.WSMapMOA.Flete;
@@ -9,11 +8,8 @@ using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -43,13 +39,12 @@ namespace SustitucionMOAWS.WSConsumers
                         PE_FECHA_DESDE = fechaInicioString,
                         PE_FECHA_HASTA = fechaFinString,
                         PE_PROFORMA = proformas,
-                        PE_PROVEEDOR = proveedor,  
+                        PE_PROVEEDOR = proveedor,
                     };
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_VIAJES request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_VIAJES(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_VIAJES response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_VIAJES");
                     return MapSinPI(response.MENSAJE, response.PROFORMAS, response.VIAJES);
                 }
                 else
@@ -79,7 +74,8 @@ namespace SustitucionMOAWS.WSConsumers
         {
             FletesWSMOAResponse result = new FletesWSMOAResponse();
 
-            if (error != null) {
+            if (error != null)
+            {
                 result.error.codigo = error.CODIGO;
                 result.error.descripcion = error.DESCRIPCION;
                 result.error.tipo = error.TIPO;
@@ -478,9 +474,11 @@ namespace SustitucionMOAWS.WSConsumers
                 })
                 .ToList();
 
-            foreach (ViajeAgrupado proforma in data.viajes) {
+            foreach (ViajeAgrupado proforma in data.viajes)
+            {
                 Proforma proformaInfo = data.proformas.Where(x => x.nroProforma == proforma.proforma).FirstOrDefault();
-                if (proformaInfo != null) {
+                if (proformaInfo != null)
+                {
                     proforma.fecha = proformaInfo.fechaFC;
                     proforma.region = proformaInfo.descRegion;
                     proforma.regionId = proformaInfo.region;
@@ -577,7 +575,8 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        protected override string getStatus() {
+        protected override string getStatus()
+        {
             return "1";
         }
     }

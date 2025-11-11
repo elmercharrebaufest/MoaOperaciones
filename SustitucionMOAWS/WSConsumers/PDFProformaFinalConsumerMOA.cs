@@ -6,11 +6,7 @@ using SustitucionMOAWS.PDFProformaFinalWebServiceMOA;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -29,32 +25,30 @@ namespace SustitucionMOAWS.WSConsumers
                     agent.ClientCredentials.UserName.Password = PassSap;
                     var request = new Z_MPMF_MOAOP_PDF_PROFORMA()
                     {
-                        IM_CONTRATO = contrato,
-                        IM_PEDIDO = pedido
+                        IM_CONTRATO = contrato ?? string.Empty,
+                        IM_PEDIDO = pedido ?? string.Empty
                     };
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_PDF_PROFORMA request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_PDF_PROFORMA(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_PDF_PROFORMA response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_PDF_PROFORMA");
 
                     return Map(response.EX_BASE64);
                 }
                 else
                 {
-                    SI_MPMF_MOAOP_PDF_PROFORMAClient service = new SI_MPMF_MOAOP_PDF_PROFORMAClient();
-                    byte[] pdf = new byte[] { };
+                    var service = new SI_MPMF_MOAOP_PDF_PROFORMAClient();
                     service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                     service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                    pdf = service.SI_MPMF_MOAOP_PDF_PROFORMA(contrato, pedido);
+                    var pdf = service.SI_MPMF_MOAOP_PDF_PROFORMA(contrato, pedido);
                     return Map(pdf);
                 }
             }
             catch (Exception e)
             {
-                throw e;
+                Log.Error(e, $"Error al obtener PDF Proforma de SAP con contrato: {contrato} y pedido: {pedido}.");
+                throw;
             }
-
         }
 
         private PDFResponse Map(byte[] pdf)
@@ -70,7 +64,6 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
             return result;
-            
         }
     }
 }

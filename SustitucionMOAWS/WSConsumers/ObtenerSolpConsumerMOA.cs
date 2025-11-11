@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Windows.Markup;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -75,8 +74,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MMRFC_OBTENER_SOLPED request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MMRFC_OBTENER_SOLPED(request);
-                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_SOLPED response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MMRFC_OBTENER_SOLPED");
                     return MapSinPI(response);
                 }
                 else
@@ -129,7 +127,7 @@ namespace SustitucionMOAWS.WSConsumers
                     return Map(EX_PRACCOUNT, EX_PRADDRDELIVERY, EX_PRCOMPONENTS, EX_PRITEM, EX_RETURN, EX_SERVICEACCOUNT, EX_SERVICELINES, archivos, EX_PRHEADERTEXT);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -160,7 +158,7 @@ namespace SustitucionMOAWS.WSConsumers
             var suposicionesServicios = response.EX_SERVICELINES;
             var archivos = response.EX_ANEXOS;
             var textosCabecera = response.EX_PRHEADERTEXT;
-            
+
             if (mensajes != null)
             {
                 if (mensajes.Length > 0)
@@ -458,7 +456,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             return result;
         }
-    
+
 
         private ObtenerSolpSAPResponse Map(ObtenerSolpWebServiceMOA.ZMPES5740[] tipoImputaciones, //EX_PRACCOUNT
                                            ObtenerSolpWebServiceMOA.ZMPES7110[] direccionesPosicion, //EX_PRADDRDELIVERY
@@ -854,7 +852,7 @@ namespace SustitucionMOAWS.WSConsumers
         public string EstadoSolpSap { get; set; }
         public string EstadoPosicion { get; set; }
         public DateTime FechaEstimadaLiberacionDate { get; set; }
-        public decimal Ordered { get;  set; }
+        public decimal Ordered { get; set; }
         public string ProveedorFijoRazonSocial { get; internal set; }
         public string CodigoDeProveedor { get; internal set; }
         public string OrganizacionDeCompraId { get; internal set; }

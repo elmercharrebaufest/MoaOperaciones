@@ -73,7 +73,7 @@ namespace SustitucionMOAWS.WSConsumers
                         DOC_TYPE = DOC_TYPE,
                         MATERIAL = MATERIAL,
                         MATERIAL_EVG = MATERIAL_EVG,
-                        MATERIAL_LONG =MATERIAL_LONG,
+                        MATERIAL_LONG = MATERIAL_LONG,
                         MAT_GRP = MAT_GRP,
                         ONLY_NON_MATERIAL_ITEMS = ONLY_NON_MATERIAL_ITEMS,
                         OPEN_ITEMS = OPEN_ITEMS,
@@ -86,15 +86,14 @@ namespace SustitucionMOAWS.WSConsumers
                         REL_DATE = REL_DATE,
                         SHORT_TEXT = SHORT_TEXT,
                         TRACKINGNO = TRACKINGNO,
-                        REQUISITION_ITEMS = new WS_GAQ_sin_PI_DIRECT_MEWQ.BAPIEBANC[] {},
-                        RETURN = new WS_GAQ_sin_PI_DIRECT_MEWQ.BAPIRETURN[] {},
+                        REQUISITION_ITEMS = new WS_GAQ_sin_PI_DIRECT_MEWQ.BAPIEBANC[] { },
+                        RETURN = new WS_GAQ_sin_PI_DIRECT_MEWQ.BAPIRETURN[] { },
                     };
                     Log.Info($"SAP sin PI BAPI_REQUISITION_GETITEMS request");
                     Log.Info(request.ToXml());
 
                     var response = agent.BAPI_REQUISITION_GETITEMS(request);
-                    Log.Info($"SAP sin PI BAPI_REQUISITION_GETITEMS response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "BAPI_REQUISITION_GETITEMS");
 
                     List<WS_GAQ_sin_PI_DIRECT_MEWQ.BAPIEBANC> solpsSAP = response.REQUISITION_ITEMS.ToList();
 

@@ -157,6 +157,7 @@
     <Compile Include="Repositorio\RepositorioOrdenResiduosTest.cs" />
     <Compile Include="Services\ComprasSolicitanteServiceTest.cs" />
     <Compile Include="Services\EntradaServicioServiceTest.cs" />
+    <Compile Include="Services\LogServiceTests.cs" />
     <Compile Include="Services\PliegoMultipleServiceTest.cs" />
     <Compile Include="Services\TablaSapServiceTest.cs" />
     <Compile Include="Services\AdjudicacionesServiceTest.cs" />

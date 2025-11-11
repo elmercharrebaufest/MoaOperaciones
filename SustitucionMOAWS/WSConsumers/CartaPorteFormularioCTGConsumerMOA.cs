@@ -1,18 +1,12 @@
 ﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
-using SustitucionMOAWS.CambioPassWebServiceMOA;
 using SustitucionMOAWS.CartaPorteFormularioCTGWebServiceMOA;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
-using SustitucionMOAWS.ScatoComandosWebService;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -38,8 +32,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_BUSCA_CTG request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_BUSCA_CTG(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_BUSCA_CTG response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_BUSCA_CTG");
                     CartaPorteCTGWSMOAResponse result = MapSinPI(response.EX_CABECERA, response.EX_DESTINO, response.EX_GRANOS, response.EX_INTERVINIENTES, response.EX_MENSAJES, response.EX_TRANSPORTE);
                     return result;
                 }
@@ -147,11 +140,12 @@ namespace SustitucionMOAWS.WSConsumers
                 result.transporte.tarifaRef = SAPFormatter.FormatearMonto(transporte.TARIFA_REF);
             }
 
-            foreach (CartaPorteFormularioCTGWebServiceMOA.ZMPES5410 mensaje in mensajes) {
+            foreach (CartaPorteFormularioCTGWebServiceMOA.ZMPES5410 mensaje in mensajes)
+            {
                 result.mensaje.Add(new Mensaje()
                 {
                     codError = mensaje.COD_ERROR,
-                    msgError = mensaje.MSG_ERROR 
+                    msgError = mensaje.MSG_ERROR
                 });
             }
 

@@ -5,11 +5,7 @@ using SustitucionMOAWS.UsuariosWebServiceMOA;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -29,13 +25,12 @@ namespace SustitucionMOAWS.WSConsumers
 
                     var request = new Z_MPMF_MOAOP_USUARIOS()
                     {
-                        
+
                     };
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_USUARIOS request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_USUARIOS(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_USUARIOS response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_USUARIOS");
                     UsuariosWSMOAResponse result = MapSinPI(response);
                     return result;
                 }
@@ -64,7 +59,8 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 foreach (UsuariosWebServiceMOA.ZMPES6060 usuario in response.USUARIOS)
                 {
-                    result.usuarios.Add(new Usuario() {
+                    result.usuarios.Add(new Usuario()
+                    {
                         id = usuario.ID,
                         tipo = usuario.TIPO,
                         usuario = usuario.USUARIO,
@@ -72,7 +68,7 @@ namespace SustitucionMOAWS.WSConsumers
                         bloqueo = usuario.BLOQUEO,
                         estado = usuario.ESTADO,
                         descripcion = usuario.DESCRIPCION
-                        
+
                     });
                 }
             }

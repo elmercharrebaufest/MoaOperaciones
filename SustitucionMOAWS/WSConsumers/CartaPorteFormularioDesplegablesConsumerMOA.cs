@@ -5,11 +5,7 @@ using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -34,8 +30,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_CP_DESPLEGABLES request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_CP_DESPLEGABLES(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_CP_DESPLEGABLES response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_CP_DESPLEGABLES");
                     CartaPorteFormularioDropdownsWSMOAResponse result = MapSinPI(response);
                     return result;
                 }
@@ -100,7 +95,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 result.destinos.Add(new FormularioDestinoElement()
                 {
-                    label = destino.DIRECCION +", "+ destino.LOCALIDAD + ", " + destino.PROVINCIA,
+                    label = destino.DIRECCION + ", " + destino.LOCALIDAD + ", " + destino.PROVINCIA,
                     value = destino.DIRECCION + ", " + destino.LOCALIDAD + ", " + destino.PROVINCIA,
                     direccion = destino.DIRECCION,
                     localidad = destino.LOCALIDAD,

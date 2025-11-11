@@ -43,8 +43,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CECO request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MMRFC_OBTENER_CECO(request);
-                    Log.Info($"SAP sin PI Z_MMRFC_OBTENER_CECO response");
-                    //Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MMRFC_OBTENER_CECO");
                     return MapSinPI(response);
                 }
                 else

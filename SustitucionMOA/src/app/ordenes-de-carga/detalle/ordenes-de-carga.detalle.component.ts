@@ -756,12 +756,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     editarOrden() {
-        if (this.esTercero || this.esCliente() || this.esCorredor) {
-            this.validarSolicitudEdicion(this.ordenDeCarga.Id);
-        }
-        else {
-            this.goToSeccion('/ordenes-de-carga/alta/' + this.ordenDeCarga.Id + '/' + this.tipoOperacion);
-        }
+        this.validarSolicitudEdicion(this.ordenDeCarga.Id);
     }
 
 
@@ -955,7 +950,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         });
     }
 
-    manejarErroresApiResponse<T>({logout, error, info, data}: ApiResponse<T>): T | null | undefined {
+    manejarErroresApiResponse<T>({ logout, error, info, data }: ApiResponse<T>): T | null | undefined {
         this.mensajeComponent.setMsgsEmpty();
         if (logout) {
             this.sessionDataService.logout();

@@ -91,8 +91,10 @@ namespace SustitucionMOAWS.WSConsumers
                 Log.Info(request.ToXml());
 
                 var response = agent.BAPI_PO_GETITEMS(request);
-                Log.Info($"SAP sin PI BAPI_PO_GETITEMS response");
-                Log.Info(response.ToXml());
+                if (ConfigurationManager.AppSettings["SAPEnableBigLogs"] == "1")
+                {
+                    SapLogHelper.LogResponse(response.ToXml(), "BAPI_PO_GETITEMS");
+                }
                 return MapSinPI(response);
             }
             else

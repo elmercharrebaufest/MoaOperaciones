@@ -136,7 +136,7 @@
     <value>El usuario debe loguearse</value>
   </data>
   <data name="ErrorWS" xml:space="preserve">
-    <value>Temporalmente fuera servicio, vuelva a intentarlo en unos minutos</value>
+    <value>Temporalmente fuera de servicio, vuelva a intentarlo en unos minutos</value>
   </data>
   <data name="ErrorValorNuloVacio" xml:space="preserve">
     <value>Debe completar el campo {0}</value>
@@ -157,7 +157,7 @@
     <value>No se ha podido habilitar el usuario ({0})</value>
   </data>
   <data name="ErrorDBComunicacion" xml:space="preserve">
-    <value>Error de comunicacion con la base de datos</value>
+    <value>Error de comunicación con la base de datos</value>
   </data>
   <data name="ErrorDBLogin" xml:space="preserve">
     <value>Error en el logueo con la DB</value>
@@ -178,7 +178,7 @@
     <value>No existen Tipos de Proveedor</value>
   </data>
   <data name="ErrorDescargaPDF" xml:space="preserve">
-    <value>No se ha podido generar el PFD</value>
+    <value>No se ha podido generar el PDF</value>
   </data>
   <data name="ErrorArchivoFormato" xml:space="preserve">
     <value>El formato del archivo es incorrecto</value>
@@ -193,7 +193,7 @@
     <value>No se pudo identificar el tipo de archivo que desea subir</value>
   </data>
   <data name="EstadoIncorrectoSolicitud" xml:space="preserve">
-    <value>No puede editar la solicitud debido a que su estado no es "Documentacion pendiente".</value>
+    <value>No puede editar la solicitud debido a que su estado no es "Documentación pendiente".</value>
   </data>
   <data name="ErrorArchivoRepetido" xml:space="preserve">
     <value>Ya existe un archivo con el mismo nombre.</value>

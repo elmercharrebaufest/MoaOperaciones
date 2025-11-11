@@ -53,9 +53,9 @@ namespace SustitucionMOAWS.WSConsumers
                         VEND_MAT = string.Empty,
                         VEND_MATG = string.Empty,
                         VEND_PART = string.Empty,
-                        INFORECORD_GENERAL = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPIEINA[] {},
-                        INFORECORD_PURCHORG = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPIEINE[] {},
-                        INFORECORD_SEGMENT = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPISEGM[] {},
+                        INFORECORD_GENERAL = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPIEINA[] { },
+                        INFORECORD_PURCHORG = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPIEINE[] { },
+                        INFORECORD_SEGMENT = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPISEGM[] { },
                         PURCH_ORG = string.Empty,
                         RETURN = new WS_GAQ_sin_PI_DIRECT_MEWI.BAPIRETURN[] { },
                     };
@@ -63,8 +63,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI BAPI_INFORECORD_GETLIST request");
                     Log.Info(request.ToXml());
                     var response = agent.BAPI_INFORECORD_GETLIST(request);
-                    Log.Info($"SAP sin PI BAPI_INFORECORD_GETLIST response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "BAPI_INFORECORD_GETLIST");
 
                     return MapSinPI(response, centro);
                 }
@@ -76,11 +75,11 @@ namespace SustitucionMOAWS.WSConsumers
                     service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                     service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-                    SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIMGVMATNR bAPIMGVMATNR      = new SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIMGVMATNR();
-                    SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIEINA[] INFORECORD_GENERAL  = new SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIEINA[] { };
-                    SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPISEGM[] bAPIEINEs           = new SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPISEGM[] { };
+                    SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIMGVMATNR bAPIMGVMATNR = new SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIMGVMATNR();
+                    SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIEINA[] INFORECORD_GENERAL = new SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIEINA[] { };
+                    SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPISEGM[] bAPIEINEs = new SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPISEGM[] { };
                     SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIEINE[] INFORECORD_PURCHORG = new SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIEINE[] { };
-                    SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIRETURN[] bAPIRETURNs       = new SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIRETURN[] { };
+                    SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIRETURN[] bAPIRETURNs = new SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA.BAPIRETURN[] { };
                     service.BAPI_INFORECORD_GETLIST("", "", "", material, bAPIMGVMATNR, "", "", centro, "", "", "",
                                                     ""/*organizacionDeCompras*/, "", proveedor, "", "", "", ref INFORECORD_GENERAL, ref INFORECORD_PURCHORG, ref bAPIEINEs, ref bAPIRETURNs);
 
@@ -113,10 +112,10 @@ namespace SustitucionMOAWS.WSConsumers
                         Unidad = codigoUnidad,
                         Moneda = purch.CURRENCY,
                         Vendedor = info.VENDOR,
-                        FechaVigencia = purch.PRICE_DATE,
+                        FechaVigencia = purch.QUOT_DATE,
                         FechaUltimaCompra = purch.LAST_PO,
                         Id = info.INFO_REC,
-                        FechaFormateada = !string.IsNullOrEmpty(purch.PRICE_DATE) ? SAPFormatter.GetDateTime(purch.PRICE_DATE) : (DateTime?)null,
+                        FechaFormateada = !string.IsNullOrEmpty(purch.QUOT_DATE) ? SAPFormatter.GetDateTime(purch.QUOT_DATE) : (DateTime?)null,
                         MaterialCodigo = info.MATERIAL,
                         NumeroOrdenDeCompra = purch.PO_NUMBER,
                         GrupoDeCompras = purch.PUR_GROUP

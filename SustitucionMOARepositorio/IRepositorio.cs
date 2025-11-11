@@ -198,6 +198,7 @@ namespace SustitucionMOARepositorio
 
         void AgregarTodos<TEntidad>(IEnumerable<TEntidad> entidades, List<KeyValuePair<string, string>> properties = null) where TEntidad : class;
 
+        void ExecuteCommand(string query);
 
     }
 

@@ -322,6 +322,11 @@ namespace SustitucionMOARepositorio
             return context.Database.SqlQuery<TEntidad>(query, parameters);
         }
 
+        public void ExecuteCommand(string query)
+        {
+            context.Database.ExecuteSqlCommand(query);
+        }
+
         private static IQueryable<TProyeccion> ListarProyeccionQueryable<TProyeccion>(IQueryable<TProyeccion> resultadoFinal, string orden, DirOrden direccionOrden, int maxResultados)
         {
 

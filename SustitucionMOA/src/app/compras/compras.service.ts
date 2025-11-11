@@ -14,7 +14,7 @@ import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
 import { ChatExternoComprasDto, ChatInternoComprasDto, ChatProveedorDto, ChatsDto } from './chat-interno/chat-interno.interface';
 import { VisitaObraDto } from '../modelos/infoVisitasDeObraDto';
-import { catchError, timeoutWith } from 'rxjs/operators';
+import { catchError, timeoutWith, map } from 'rxjs/operators';
 import { EntradaServicio } from '../common/models/entradaServicio';
 import { FiltroDto } from './agrupar-po-th/agrupar-po-th-filtro-model'
 import { SolpDto } from './agrupar-po-th/agrupar-po-th-model';
@@ -291,13 +291,24 @@ export class ComprasService extends BaseService {
         };
 
         payload.append('request', JSON.stringify(request));
-        //payload.append('report', JSON.stringify(report));
-        //payload.append('IdAdjuntos', JSON.stringify(IdAdjuntos));
 
         return this.http
             .post('/api/EntradaServicio/CrearEntradaServicio', payload, { headers: this.headers })
             .pipe(
+                map((response: any) => {
+                    // Si la respuesta es exitosa, devolver solo los datos
+                    if (response.success) {
+                        return response.data;
+                    } else {
+                        // Si hay error, lanzar excepción con el mensaje de error
+                        throw new Error(response.error);
+                    }
+                }),
                 catchError(error => {
+                    // Manejar errores HTTP y errores personalizados
+                    if (error.error && error.error.success === false) {
+                        return throwError(new Error(error.error.error));
+                    }
                     return throwError(error);
                 })
             );

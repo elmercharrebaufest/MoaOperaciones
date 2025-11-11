@@ -1,12 +1,10 @@
-﻿using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.Login;
+﻿using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.LoginWebServiceMOA;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 
 namespace SustitucionMOAWS.WSConsumers
@@ -34,8 +32,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_LOGIN request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_LOGIN(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_LOGIN response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_LOGIN");
                     LoginWSMOAResponse result = MapSinPI(response);
                     return result;
                 }
@@ -68,7 +65,8 @@ namespace SustitucionMOAWS.WSConsumers
                 result.proveedor = response.PS_PROVEEDOR;
                 result.granosFlag = response.T_PROVEEDOR.ToUpper();
                 result.tipoUsuario = response.TIPO.ToUpper();
-                foreach (LoginWebServiceMOA.ZMPES6050 permiso in response.PERMISOS) {
+                foreach (LoginWebServiceMOA.ZMPES6050 permiso in response.PERMISOS)
+                {
                     result.permisos.Add(permiso.PERMISO);
                 }
             }

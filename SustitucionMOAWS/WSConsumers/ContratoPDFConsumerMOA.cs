@@ -1,5 +1,4 @@
-﻿using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA;
+﻿using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAWS.ContratoPDFWebServiceMOA;
 using SustitucionMOAWS.CredentialService;
@@ -7,11 +6,7 @@ using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WS_GAQ_sin_PI_DIRECT_MOAOP;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -37,8 +32,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI Z_MPMF_MOAOP_PDF_CONTRATO request");
                     Log.Info(request.ToXml());
                     var response = agent.Z_MPMF_MOAOP_PDF_CONTRATO(request);
-                    Log.Info($"SAP sin PI Z_MPMF_MOAOP_PDF_CONTRATO response");
-                    Log.Info(response.ToXml());
+                    SapLogHelper.LogResponse(response.ToXml(), "Z_MPMF_MOAOP_PDF_CONTRATO");
                     return MapSinPI(response);
                 }
                 else

@@ -1,14 +1,7 @@
 ﻿using Hangfire;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace SustitucionMOAExternalAPI.Controllers
@@ -34,10 +27,10 @@ namespace SustitucionMOAExternalAPI.Controllers
                     FechaDesde = new DateTime(2010, 01, 01),
                     FechaHasta = DateTime.Now.Date.AddDays(1)
                 };
-
                 BackgroundJob.Enqueue(() =>
-                    comprasService.ExecuteObtenerSolpesDesdeSAPJob(solp)
-                );  
+                                    comprasService.ExecuteObtenerSolpesDesdeSAPJob(solp)
+
+                );
             }
             catch (Exception ex)
             {
