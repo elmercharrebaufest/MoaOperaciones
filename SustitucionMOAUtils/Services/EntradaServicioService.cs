@@ -359,9 +359,7 @@ namespace SustitucionMOAUtils.Services
         {
             Logger.Log.Debug($"CrearEntradaServicio user: {mailUsuario},data: {crearESRequestDto.ToJson()}");
             ValidarCreacionEntradaServicio(crearESRequestDto);
-            Logger.Log.Debug($"CrearEntradaServicio ValidarCreacionEntradaServicio ok");
 
-            //var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio);
             var centrosSap = repositorioEntradaServicio.GetTablaSap("Centro");
             var almacenesSap = repositorioEntradaServicio.GetTablaSap("Almacen");
             var solicitudesMailAprobacionES = new List<MailAprobacionESRequest>();
@@ -369,12 +367,10 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var posicionES in crearESRequestDto.Posiciones)
             {
-
                 var solpNro = posicionES.EntrySheetHeader.SolPedNumber;
                 var proveedor = posicionES.EntrySheetHeader.Proveedor;
                 Logger.Log.Debug($"CrearEntradaServicio solpNro: {solpNro}, proveedor: {proveedor}");
 
-                Logger.Log.Debug($"CrearEntradaServicio ValidarIngresante");
                 var validacionIngresanteResp = ValidarIngresante(mailUsuario, solpNro);
                 Logger.Log.Debug($"CrearEntradaServicio ValidarIngresante {validacionIngresanteResp}");
 
