@@ -1432,6 +1432,21 @@
     <None Include="Service References\ScatoWebService\ServicioRepositorio16.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio17.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio171.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio172.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio173.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio174.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\ScatoWebService\ServicioRepositorio2.xsd">
       <SubType>Designer</SubType>
     </None>

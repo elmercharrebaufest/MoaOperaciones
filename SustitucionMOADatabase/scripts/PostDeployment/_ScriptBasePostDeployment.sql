@@ -46,3 +46,4 @@ Post-Deployment Script Template
 :r .\RelacionSolicitanteExternoJefeMoa.sql
 :r .\CampoSustentable.sql
 :r .\OrganizacionDeCompra.sql
+:r .\InsertQrCamionesConfiguracion.sql

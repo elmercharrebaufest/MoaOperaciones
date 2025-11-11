@@ -192,6 +192,7 @@
     <Build Include="DBO\Tables\CircularArchivo.sql" />
     <Build Include="DBO\Tables\CotizacionEstado.sql" />
     <Build Include="DBO\Tables\Cotizacion.sql" />
+    <Build Include="DBO\Tables\QRCamionesConfiguracion.sql" />
     <Build Include="DBO\Tables\CotizacionArchivo.sql" />
     <Build Include="DBO\Tables\CotizacionHora.sql" />
     <Build Include="DBO\Tables\CotizacionPosicion.sql" />
@@ -202,6 +203,7 @@
     <Build Include="DBO\Tables\ProveedorAuditoria.sql" />
     <Build Include="DBO\Tables\UnidadMedidaSap.sql" />
     <None Include="scripts\PostDeployment\UnidadMedidaSap.sql" />
+    <None Include="scripts\PostDeployment\InsertQrCamionesConfiguracion.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaCierre.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaVisualizacionPrecio.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaRevisionTecnica.sql" />

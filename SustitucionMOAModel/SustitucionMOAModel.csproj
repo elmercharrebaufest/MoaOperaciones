@@ -533,6 +533,7 @@
     <Compile Include="Dto\ProveedorDto.cs" />
     <Compile Include="Dto\RolDropdownDto.cs" />
     <Compile Include="Dto\UsuarioDto.cs" />
+    <Compile Include="Dto\QRCamiones\QRCamionesAPIDto.cs" />
     <Compile Include="Entities\Archivo.cs" />
     <Compile Include="Entities\Contacto.cs" />
     <Compile Include="Entities\Localidad.cs" />
@@ -550,6 +551,7 @@
     <Compile Include="Entities\Usuario.cs" />
     <Compile Include="Entities\UsuarioGranos.cs" />
     <Compile Include="Entities\UsuarioNoGranos.cs" />
+    <Compile Include="Entities\QRCamiones\QRCamionesConfiguracion.cs" />
     <Compile Include="Enums\FileKeys.cs" />
     <Compile Include="Models\CamaraImageResponse.cs" />
     <Compile Include="Models\DataAgro\ContactoComercial.cs" />

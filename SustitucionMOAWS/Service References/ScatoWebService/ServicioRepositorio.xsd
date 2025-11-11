@@ -1,11 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Helpers" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Helpers" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:complexType name="CantidadPrecaladoCircularHelper">
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto.QRCamiones" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto.QRCamiones" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="TrackingDataQRCamiones">
     <xs:sequence>
-      <xs:element minOccurs="0" name="CantidadCircular" type="xs:int" />
-      <xs:element minOccurs="0" name="CantidadPrecalado" type="xs:int" />
-      <xs:element minOccurs="0" name="CantidadTotal" type="xs:int" />
+      <xs:element minOccurs="0" name="CTG" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Camion" nillable="true" type="tns:CamionQRCamiones" />
+      <xs:element minOccurs="0" name="Chofer" nillable="true" type="tns:ChoferQRCamiones" />
+      <xs:element minOccurs="0" name="DatosAdicionales" nillable="true" type="tns:DatosAdicionalesQRCamiones" />
+      <xs:element minOccurs="0" name="Entregador" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Etapas" nillable="true" type="tns:ArrayOfEtapaQRCamiones" />
+      <xs:element minOccurs="0" name="FechaHoraIngreso" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Material" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Rechazado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="RemitenteComercial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RemitenteComercialVtaPrim" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TitularCartaPorte" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Workflow" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="CantidadPrecaladoCircularHelper" nillable="true" type="tns:CantidadPrecaladoCircularHelper" />
+  <xs:element name="TrackingDataQRCamiones" nillable="true" type="tns:TrackingDataQRCamiones" />
+  <xs:complexType name="CamionQRCamiones">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PatenteAcoplado" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CamionQRCamiones" nillable="true" type="tns:CamionQRCamiones" />
+  <xs:complexType name="ChoferQRCamiones">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CUIL" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Extranjero" type="xs:boolean" />
+      <xs:element minOccurs="0" name="NombreApellido" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NumeroDocumento" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TipoDocumento" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ChoferQRCamiones" nillable="true" type="tns:ChoferQRCamiones" />
+  <xs:complexType name="DatosAdicionalesQRCamiones">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CaladoEstado" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PesadaBruto" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="PesadaDescargado" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="PesadaTara" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="PostCaladoFila" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PreCaladoFila" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DatosAdicionalesQRCamiones" nillable="true" type="tns:DatosAdicionalesQRCamiones" />
+  <xs:complexType name="ArrayOfEtapaQRCamiones">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="EtapaQRCamiones" nillable="true" type="tns:EtapaQRCamiones" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfEtapaQRCamiones" nillable="true" type="tns:ArrayOfEtapaQRCamiones" />
+  <xs:complexType name="EtapaQRCamiones">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Estado" type="tns:EstadoEtapaQRCamiones" />
+      <xs:element minOccurs="0" name="Fecha" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NombreTabla" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TiempoEstimado" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="EtapaQRCamiones" nillable="true" type="tns:EtapaQRCamiones" />
+  <xs:simpleType name="EstadoEtapaQRCamiones">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Completado" />
+      <xs:enumeration value="EnProceso" />
+      <xs:enumeration value="Pendiente" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="EstadoEtapaQRCamiones" nillable="true" type="tns:EstadoEtapaQRCamiones" />
 </xs:schema>

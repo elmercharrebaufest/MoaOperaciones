@@ -18,5 +18,6 @@ namespace SustitucionMOAWS.Interfaces
         RecorridoDto[] ObtenerRecorridoNoRechazadoPorNumeroDocumento(string nroEntrega);
         RecorridoDto ObtenerRecorridoNoRechazadoPorNumeroIdFason(long ordenId);
         RecorridoDto ObtenerRecorridoOrdenResiduos(int ordenId);
+        TrackingDataQRCamiones ObtenerTrackingDataQRCamiones(string numeroCTG, string patente);
     }
 }
