@@ -687,7 +687,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 let errorValidacion = this.obtenerErrorValidacionParaFinalizarSolp();
                 if (errorValidacion) {
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: errorValidacion });
-                    
+
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
@@ -1463,12 +1463,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     continuarARacionalesDeCompra() {
         this.displayModalConfirmacionFinalizar = false;
-        if (this.solpActual.trabajoHecho && this.solpActual.organizacionDeCompra.Id == "4010") {
-            this.mostrarModalRacionales = true;
-        }
-        else {
-            this.continuarAFinalizar();
-        }
+        this.continuarAFinalizar();//fix hasta que se implmente bien RRHH
+        //if (this.solpActual.trabajoHecho && this.solpActual.organizacionDeCompra.Id == "4010") {
+        //    this.mostrarModalRacionales = true;
+        //}
+        //else {
+        //    this.continuarAFinalizar();
+        //}
     }
 
     onGuardarRacionalesDeCompra() {
