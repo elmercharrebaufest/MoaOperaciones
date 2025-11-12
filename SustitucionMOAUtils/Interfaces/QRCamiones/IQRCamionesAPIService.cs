@@ -1,6 +1,6 @@
 
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Entities.QRCamiones;
 using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces.QRCamiones

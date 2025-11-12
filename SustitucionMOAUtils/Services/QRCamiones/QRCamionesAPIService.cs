@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Entities.QRCamiones;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces.QRCamiones;
 using SustitucionMOAUtils.Logger;
