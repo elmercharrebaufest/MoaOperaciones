@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 //using BAPIESKLC = SustitucionMOAWS.CrearEntradaServicioWebServiceMOA.BAPIESKLC;
@@ -32,61 +33,66 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
+        static readonly object _lockObtenerSolpesDesdeSAPJob = new object();
+
         public virtual EntradaServicioCreateRespuestaDto CrearEntradaServicio(EntradaServicioCreateParamsDto parametros)
         {
-            try
+
+            lock (_lockObtenerSolpesDesdeSAPJob)
             {
-                if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
+                Thread.Sleep(500); // Espera de 500 ms para evitar problemas de concurrencia
+                try
                 {
-                    var headers = GenerateEntrySheetHeaderXmlSinPI(parametros.EntrySheetHeader);
-                    var services = GenerateEntrySheetServicesXmlSinPI(parametros.EntrySheetServices.Items);
-                    var agent = new Z_WS_BAPI_DIRECT_MLBOClient();
-                    agent.ClientCredentials.UserName.UserName = UserSap;
-                    agent.ClientCredentials.UserName.Password = PassSap;
-                    var request = new BAPI_ENTRYSHEET_CREATE()
+                    if (ConfigurationManager.AppSettings["SAPsinPI"] == "1")
                     {
-                        ENTRYSHEETHEADER = headers,
-                        ENTRYSHEETSERVICESTEXTS = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] { },
-                        ENTRYSHEETSRVACCASSVALUES = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKLC[] { },
-                        ENTRYSHEETSERVICES = services.ToArray(),
-                        RETURN = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRET2[] { },
-                        ENTRYSHEETACCOUNTASSIGNMENT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKNC[] { },
-                        ENTRYSHEETHEADERTEXT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] { },
-                    };
-                    Log.Info($"SAP sin PI BAPI_ENTRYSHEET_CREATE request");
-                    Log.Info(request.ToXml());
-                    var response = agent.BAPI_ENTRYSHEET_CREATE(request);
-                    var respuestaCreacionESDto = ParseReturnInfoSinPI(response);
-                    Log.Info($"SAP sin PI BAPI_ENTRYSHEET_CREATE response");
-                    Log.Info(response.ToXml());
-                    return respuestaCreacionESDto;
-
-                }
-                else
-                {
-                    using (var client = new HttpClient())
-                    {
-                        var requestMessage = CrearRequestMessage();
-                        requestMessage.Content = CrearHttpContent(parametros);
-
-                        var responseMessage = client.SendAsync(requestMessage).ConfigureAwait(false).GetAwaiter().GetResult();
-
-                        var createResponseContent = responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-
-                        Logger.Log.Debug("Respuesta CrearEntradaServicio: " + createResponseContent);
-
-                        var respuestaCreacionESDto = ParseReturnInfo(createResponseContent);
-
+                        var headers = GenerateEntrySheetHeaderXmlSinPI(parametros.EntrySheetHeader);
+                        var services = GenerateEntrySheetServicesXmlSinPI(parametros.EntrySheetServices.Items);
+                        var agent = new Z_WS_BAPI_DIRECT_MLBOClient();
+                        agent.ClientCredentials.UserName.UserName = UserSap;
+                        agent.ClientCredentials.UserName.Password = PassSap;
+                        var request = new BAPI_ENTRYSHEET_CREATE()
+                        {
+                            ENTRYSHEETHEADER = headers,
+                            ENTRYSHEETSERVICESTEXTS = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESLLTX[] { },
+                            ENTRYSHEETSRVACCASSVALUES = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKLC[] { },
+                            ENTRYSHEETSERVICES = services.ToArray(),
+                            RETURN = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIRET2[] { },
+                            ENTRYSHEETACCOUNTASSIGNMENT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESKNC[] { },
+                            ENTRYSHEETHEADERTEXT = new WS_GAQ_sin_PI_DIRECT_MLBO.BAPIESSRTX[] { },
+                        };
+                        Log.Info($"SAP sin PI BAPI_ENTRYSHEET_CREATE request");
+                        Log.Info(request.ToXml());
+                        var response = agent.BAPI_ENTRYSHEET_CREATE(request);
+                        var respuestaCreacionESDto = ParseReturnInfoSinPI(response);
+                        Log.Info($"SAP sin PI BAPI_ENTRYSHEET_CREATE response");
+                        Log.Info(response.ToXml());
                         return respuestaCreacionESDto;
+
+                    }
+                    else
+                    {
+                        using (var client = new HttpClient())
+                        {
+                            var requestMessage = CrearRequestMessage();
+                            requestMessage.Content = CrearHttpContent(parametros);
+
+                            var responseMessage = client.SendAsync(requestMessage).ConfigureAwait(false).GetAwaiter().GetResult();
+
+                            var createResponseContent = responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+
+                            Logger.Log.Debug("Respuesta CrearEntradaServicio: " + createResponseContent);
+
+                            var respuestaCreacionESDto = ParseReturnInfo(createResponseContent);
+
+                            return respuestaCreacionESDto;
+                        }
                     }
                 }
-
-
-            }
-            catch (Exception e)
-            {
-                Logger.Log.Error(e, "Error con " + parametros.ToJson());
-                throw;
+                catch (Exception e)
+                {
+                    Logger.Log.Error(e, "Error con " + parametros.ToJson());
+                    throw;
+                }
             }
         }
 
