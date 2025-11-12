@@ -68,6 +68,7 @@
     <Compile Include="Dto\ArchivoBoleto\ListarReqArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoLog.cs" />
     <Compile Include="Dto\CampoCosechaNormativaDto.cs" />
+    <Compile Include="Dto\CampoSustentable\SP_CampoProveedorListadoDto.cs" />
     <Compile Include="Dto\CampoSustentable\SugerenciaCampoDto.cs" />
     <Compile Include="Dto\CampoSustentable\SugerenciaCampoExportDto.cs" />
     <Compile Include="Dto\CarpetasUCROPITDto.cs" />

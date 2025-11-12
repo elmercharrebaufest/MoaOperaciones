@@ -200,6 +200,9 @@ namespace SustitucionMOARepositorio
 
         void ExecuteCommand(string query);
 
+        List<TEntidad> SelStore<TEntidad>(string store, int maxResultados, params object[] parameters) where TEntidad : class;
+
+        List<TEntidad> SelStorePaginado<TEntidad>(string store, int maxResultados, int pagina, params object[] parameters) where TEntidad : class;
     }
 
 }

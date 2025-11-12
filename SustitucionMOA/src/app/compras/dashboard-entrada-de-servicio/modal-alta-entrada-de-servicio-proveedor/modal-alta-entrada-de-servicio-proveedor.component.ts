@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComprasService } from '../../compras.service';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { SessionDataService } from '../../../common/services/SessionDataService';
 declare var $: any;
 
 type Column = {
@@ -105,8 +106,8 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     }
     constructor(protected service: ComprasService,
         private confirmationService: ConfirmationService,
-        private messageService: MessageService,
-        private formBuilder: FormBuilder
+        protected sessionDataService: SessionDataService,
+        private messageService: MessageService
     ) { }
 
     ngOnInit() {
@@ -262,11 +263,10 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     async certificarPosicion() {
         if (this.validateValues() === true) {
             let respIdAdjuntos = { data: [] };
-            this.buildEntrySheet();
             this.certificando = true;
+            this.buildEntrySheet();
 
             let items = this.itemSelected;
-
             items = items.map(element => {
                 element.EntradasServicio = [];
                 return element;
@@ -281,43 +281,53 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
             this.blockUI.start('Confirmando la certificación...');
             this.service.CrearEntradaServicio(this.entrySheetObjects, items, respIdAdjuntos.data).subscribe(
                 (response) => {
+                    this.blockUI.stop();
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
                     let msjTypes: string[] = [];
 
-                    response.data.forEach(element => {
-                        if (!element) {
-                            this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.'
+                    if (response.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        if (response.error) {
+                            resultMsj.push(`<li>${response.error}</li>`);
+                            msjTypes.push('E');
                         }
+                        else {
+                            response.data.forEach((element: any) => {
+                                if (!element) {
+                                    this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.';
+                                    resultMsj.push("<li>Ha ocurrido un error, por favor inténtelo nuevamente más tarde.</li>");
+                                }
+                                else {
+                                    if (!element.Message) {
+                                        element.Message = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
+                                    }
 
-                        if (!element.Message) {
-                            element.Message = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
+                                    let msj = element.Message.startsWith("Sólo es posible contabilizar en ") || element.Message.startsWith("Contabilice en ") ?
+                                        "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message;
+
+                                    resultMsj.push("<li>" + msj + "</li>");
+
+                                    if (element.Type && !msjTypes.includes(element.Type)) {
+                                        msjTypes.push(element.Type);
+                                    }
+                                }
+                            });
                         }
-
-                        let msj = element.Message.startsWith("Sólo es posible contabilizar en ") ||
-                            element.Message.startsWith("Contabilice en ") ?
-                            "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message;
-
-                        resultMsj.push("<li>" + msj + "</li>");
-
-                        if (!msjTypes.includes(element.Type)) {
-                            msjTypes.push(element.Type);
-                        }
-                    });
-
+                    }
                     this.mensajeError = resultMsj.join("");
-
                     this.confirmationService.confirm({
                         message: "<ul>" + this.mensajeError + "</ul>",
                         accept: () => this.cerrarMensajes(msjTypes),
                         reject: () => this.cerrarMensajes(msjTypes),
                         rejectVisible: false
                     });
-
-                    this.blockUI.stop();
-                this.certificando = false;
+                    this.certificando = false;
                 },
                 (error) => {
+                    this.blockUI.stop();
                     this.confirmationService.confirm({
                         message: error.error.Message,
                         accept: () => {
@@ -325,11 +335,10 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                         },
                         rejectVisible: false
                     });
-                    this.blockUI.stop();
                     this.certificando = false;
                 }
-          );
-      }
+            );
+        }
     }
 
     onDescripcionChange(position: any, value: string) {

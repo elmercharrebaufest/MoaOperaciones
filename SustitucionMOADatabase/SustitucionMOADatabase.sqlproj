@@ -269,6 +269,7 @@
     <Build Include="DBO\Tables\CampoCosechaNormativa.sql" />
     <Build Include="DBO\Tables\CarpetasUCROPIT.sql" />
     <Build Include="DBO\Tables\OrganizacionDeCompra.sql" />
+    <Build Include="DBO\Stored Procedures\sp_ListarCampoProveedor.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
