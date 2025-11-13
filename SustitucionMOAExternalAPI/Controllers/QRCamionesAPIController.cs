@@ -1,5 +1,5 @@
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities.QRCamiones;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Interfaces.QRCamiones;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;

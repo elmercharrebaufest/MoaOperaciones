@@ -1,12 +1,11 @@
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities.QRCamiones;
+using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces.QRCamiones;
 using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace SustitucionMOAUtils.Services.QRCamiones
 {
