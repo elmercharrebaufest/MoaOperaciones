@@ -549,7 +549,7 @@
     <Compile Include="Entities\Usuario.cs" />
     <Compile Include="Entities\UsuarioGranos.cs" />
     <Compile Include="Entities\UsuarioNoGranos.cs" />
-    <Compile Include="Entities\QRCamiones\QRCamionesConfiguracion.cs" />
+    <Compile Include="Entities\QRCamionesConfiguracion.cs" />
     <Compile Include="Enums\FileKeys.cs" />
     <Compile Include="Models\CamaraImageResponse.cs" />
     <Compile Include="Models\DataAgro\ContactoComercial.cs" />
