@@ -1,19 +1,19 @@
 IF NOT EXISTS (SELECT 1 FROM QRCamionesConfiguracion WHERE NombreEtapa = 'Ingreso')
 BEGIN
     INSERT INTO QRCamionesConfiguracion (NombreEtapa, TiempoEstimado, TipoWorkflow, FinEtapa, FinEtapaEsControlRecorrido)
-    VALUES ('Ingreso', 30, 'Granos', 'Crear Carta Porte', 1);
+    VALUES ('Ingreso', 30, 'Granos', 'Crear Carta Porte', 0);
 END;
 
 IF NOT EXISTS (SELECT 1 FROM QRCamionesConfiguracion WHERE NombreEtapa = 'Pre Calado')
 BEGIN
     INSERT INTO QRCamionesConfiguracion (NombreEtapa, TiempoEstimado, TipoWorkflow, FinEtapa, FinEtapaEsControlRecorrido)
-    VALUES ('Pre Calado', 45, 'Granos', 'Calado', 0);
+    VALUES ('Pre Calado', 45, 'Granos', 'Calado', 1);
 END;
 
 IF NOT EXISTS (SELECT 1 FROM QRCamionesConfiguracion WHERE NombreEtapa = 'Calado')
 BEGIN
     INSERT INTO QRCamionesConfiguracion (NombreEtapa, TiempoEstimado, TipoWorkflow, FinEtapa, FinEtapaEsControlRecorrido)
-    VALUES ('Calado', 120, 'Granos', 'Calado', 1);
+    VALUES ('Calado', 120, 'Granos', 'Calado', 0);
 END;
 
 IF NOT EXISTS (SELECT 1 FROM QRCamionesConfiguracion WHERE NombreEtapa = 'Post Calado')

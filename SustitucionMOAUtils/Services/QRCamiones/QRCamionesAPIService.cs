@@ -22,15 +22,15 @@ namespace SustitucionMOAUtils.Services.QRCamiones
         {
             try
             {
-                var lista = _repositorio.Listar<QRCamionesConfiguracion>(x => x.TipoWorkflow == tipoWorkflow)
+                var qrCamionesConfiguraciones = _repositorio.Listar<QRCamionesConfiguracion>(x => x.TipoWorkflow == tipoWorkflow)
                                         .OrderBy(y => y.Id)
                                         .ToList();
-                return lista;
+                return qrCamionesConfiguraciones;
             }
             catch (Exception ex)
             {
                 Log.Error($"Error obteniendo configuraciones QRCamiones: {ex.Message}", ex);
-                return new List<QRCamionesConfiguracion>();
+                return null;
             }
         }
 

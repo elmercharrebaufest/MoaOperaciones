@@ -25,8 +25,8 @@ namespace SustitucionMOAExternalAPI.Controllers
 
         [HttpGet]
         [Route("search")]
-        // [Authorize(Roles = "ABM SOLP")]
-        public IHttpActionResult Search([FromUri] TrackingRequestDto request)
+		// [Authorize(Roles = "API QR CAMIONES")]
+		public IHttpActionResult Search([FromUri] TrackingRequestDto request)
         {
             try
             {
@@ -43,7 +43,9 @@ namespace SustitucionMOAExternalAPI.Controllers
 
                 var trackingDataScato = _scatoConsumer.ObtenerTrackingDataQRCamiones(request.Ctg, request.Patente);
 
-                if (trackingDataScato == null)
+				var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
+
+				if (trackingDataScato == null || configuraciones == null)
                 {
                     return Ok(new TrackingResponseDto
                     {
@@ -51,9 +53,7 @@ namespace SustitucionMOAExternalAPI.Controllers
                         Mensaje = "Datos encontrados",
                         Data = null
                     });
-                }
-
-                var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
+                }                
 
                 var trackingDto = ConvertirScatoTrackingDataADto(trackingDataScato, configuraciones);
 
@@ -78,8 +78,8 @@ namespace SustitucionMOAExternalAPI.Controllers
 
         [HttpGet]
         [Route("estadoEtapas")]
-        // [Authorize(Roles = "ABM SOLP")]
-        public IHttpActionResult EstadoEtapas([FromUri] TrackingRequestDto request)
+		// [Authorize(Roles = "API QR CAMIONES")]
+		public IHttpActionResult EstadoEtapas([FromUri] TrackingRequestDto request)
         {
             try
             {
@@ -96,7 +96,9 @@ namespace SustitucionMOAExternalAPI.Controllers
 
                 var trackingDataScato = _scatoConsumer.ObtenerTrackingDataQRCamiones(request.Ctg, request.Patente);
 
-                if (trackingDataScato == null)
+				var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
+
+				if (trackingDataScato == null || configuraciones == null)
                 {
                     return Ok(new EstadoEtapasResponseDto
                     {
@@ -104,9 +106,7 @@ namespace SustitucionMOAExternalAPI.Controllers
                         Mensaje = "Datos encontrados",
                         Data = null
                     });
-                }
-
-                var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
+                }                
 
 				var estadoEtapasDto = new EstadoEtapasQRCamionesDto
                 {
@@ -188,47 +188,57 @@ namespace SustitucionMOAExternalAPI.Controllers
         }
 
         private List<EtapaQRCamionesDto> ConvertirEtapasScatoADto(
-            EtapaQRCamiones[] etapas,
+            EtapaQRCamiones[] etapasArray,
             List<QRCamionesConfiguracion> configuraciones)
-        {
-            var etapasDto = new List<EtapaQRCamionesDto>();
+		{
+			var result = new List<EtapaQRCamionesDto>();
 
-            if (etapas == null || etapas.Length == 0)
-            {
-                return etapasDto;
-            }
+			bool encontradoPrimerPendiente = false;
+			EtapaQRCamionesDto ultimaEtapaCompleta = null;
 
-            foreach (var etapa in etapas)
-            {
-                var config = configuraciones?.FirstOrDefault(c =>
-                    c.NombreEtapa.Equals(etapa.Nombre, StringComparison.OrdinalIgnoreCase));
+			foreach (var config in configuraciones.OrderBy(c => c.Id))
+			{
+				// Check if etapa exists in the API list
+				var etapaApi = etapasArray
+					.Where(x => 
+                        string.Equals(x.Nombre, config.FinEtapa)
+                    )
+					.OrderByDescending(e => e.Fecha)
+					.FirstOrDefault();
 
-                etapasDto.Add(new EtapaQRCamionesDto
-                {
-                    Nombre = etapa.Nombre,
-                    Fecha = etapa.Fecha,
-                    TiempoEstimado = config?.TiempoEstimado.ToString() ?? etapa.TiempoEstimado,
-                    Estado = ConvertirEstadoEtapa(etapa.Estado)
-                });
-            }
+				bool esFinDeEtapa = etapaApi != null;
 
-            return etapasDto;
-        }
+				var dto = new EtapaQRCamionesDto
+				{
+					Nombre = config.NombreEtapa,
+					TiempoEstimado = config.TiempoEstimado.ToString(),
+					Fecha = etapaApi?.Fecha ?? default,
+					Estado = esFinDeEtapa ? "completado" : "pendiente"
+				};
 
-        private string ConvertirEstadoEtapa(EstadoEtapaQRCamiones estado)
-        {
-            switch (estado)
-            {
-                case EstadoEtapaQRCamiones.Completado:
-                    return "completado";
-                case EstadoEtapaQRCamiones.EnProceso:
-                    return "en-proceso";
-                case EstadoEtapaQRCamiones.Pendiente:
-                    return "pendiente";
-                default:
-                    return "pendiente";
-            }
-        }
+				result.Add(dto);
+
+				if (!encontradoPrimerPendiente && !esFinDeEtapa)
+				{
+					encontradoPrimerPendiente = true;
+
+					if (ultimaEtapaCompleta != null) ultimaEtapaCompleta.Estado = "en-proceso";
+				}
+
+				if (esFinDeEtapa)
+					ultimaEtapaCompleta = dto;
+			}
+
+			// Todas las etapas completas, ultima etapa se encuentra "en-proceso"
+			if (!encontradoPrimerPendiente && ultimaEtapaCompleta != null)
+				ultimaEtapaCompleta.Estado = "en-proceso";
+
+			// Ninguna etapa esta completa, primer etapa se pone en "en-proceso"
+			if (ultimaEtapaCompleta == null && result.Any())
+				result.First().Estado = "en-proceso";
+
+			return result;
+		}
 
         #endregion
     }
