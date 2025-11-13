@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SustitucionMOAModel.Entities.QRCamiones
+namespace SustitucionMOAModel.Entities
 {
     [Table("QRCamionesConfiguracion")]
     public class QRCamionesConfiguracion
