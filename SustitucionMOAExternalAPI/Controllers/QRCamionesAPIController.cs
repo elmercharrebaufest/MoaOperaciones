@@ -45,6 +45,8 @@ namespace SustitucionMOAExternalAPI.Controllers
 
 				var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
 
+				Log.ExternalAPIInfo($"QRCamionesAPI - Search: existe TrackingDataScato: {trackingDataScato != null}, existe configuraciones: {configuraciones != null}");
+
 				if (trackingDataScato == null || configuraciones == null)
                 {
                     return Ok(new TrackingResponseDto
@@ -97,6 +99,8 @@ namespace SustitucionMOAExternalAPI.Controllers
                 var trackingDataScato = _scatoConsumer.ObtenerTrackingDataQRCamiones(request.Ctg, request.Patente);
 
 				var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
+
+				Log.ExternalAPIInfo($"QRCamionesAPI - Search: existe TrackingDataScato: {trackingDataScato != null}, existe configuraciones: {configuraciones != null}");
 
 				if (trackingDataScato == null || configuraciones == null)
                 {
