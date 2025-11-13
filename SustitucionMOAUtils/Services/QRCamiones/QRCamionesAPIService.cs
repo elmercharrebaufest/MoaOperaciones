@@ -27,11 +27,7 @@ namespace SustitucionMOAUtils.Services.QRCamiones
                                         .OrderBy(y => y.Id)
                                         .ToList();
 
-				var prueba = _repositorio.Listar<QRCamionesConfiguracion>();
-
 				Log.ExternalAPIInfo($"ObtenerConfiguracionesPorTipoWorkflow existe qrCamionesConfiguraciones: {qrCamionesConfiguraciones != null}");
-
-				Log.ExternalAPIInfo($"ObtenerConfiguracionesPorTipoWorkflow existe prueba: {prueba != null}");
 
 				return qrCamionesConfiguraciones;
             }
