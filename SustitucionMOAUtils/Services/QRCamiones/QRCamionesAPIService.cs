@@ -1,11 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities.QRCamiones;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces.QRCamiones;
 using SustitucionMOAUtils.Logger;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace SustitucionMOAUtils.Services.QRCamiones
 {
@@ -25,11 +26,19 @@ namespace SustitucionMOAUtils.Services.QRCamiones
                 var qrCamionesConfiguraciones = _repositorio.Listar<QRCamionesConfiguracion>(x => x.TipoWorkflow == tipoWorkflow)
                                         .OrderBy(y => y.Id)
                                         .ToList();
-                return qrCamionesConfiguraciones;
+
+				var prueba = _repositorio.Listar<QRCamionesConfiguracion>();
+
+				Log.ExternalAPIInfo($"ObtenerConfiguracionesPorTipoWorkflow existe qrCamionesConfiguraciones: {qrCamionesConfiguraciones != null}");
+
+				Log.ExternalAPIInfo($"ObtenerConfiguracionesPorTipoWorkflow existe prueba: {prueba != null}");
+
+				return qrCamionesConfiguraciones;
             }
             catch (Exception ex)
             {
-                Log.Error($"Error obteniendo configuraciones QRCamiones: {ex.Message}", ex);
+				Log.ExternalAPIError(ex);
+				Log.Error($"Error obteniendo configuraciones QRCamiones: {ex.Message}", ex);
                 return null;
             }
         }
@@ -39,11 +48,15 @@ namespace SustitucionMOAUtils.Services.QRCamiones
             try
             {
                 var etapa = _repositorio.Obtener<QRCamionesConfiguracion>(x => x.NombreEtapa == nombreEtapa);
+
+				Log.ExternalAPIInfo($"ObtenerConfiguracionPorNombre existe etapa: {etapa != null}");
+
 				return etapa;
             }
             catch (Exception ex)
             {
-                Log.Error($"Error obteniendo configuracion QRCamiones nombreEtapa:{nombreEtapa} {ex.Message}", ex);
+				Log.ExternalAPIError(ex);
+				Log.Error($"Error obteniendo configuracion QRCamiones nombreEtapa:{nombreEtapa} {ex.Message}", ex);
                 return null;
             }
         }
@@ -88,7 +101,8 @@ namespace SustitucionMOAUtils.Services.QRCamiones
             }
             catch (Exception ex)
             {
-                Log.Error($"Error guardando configuración QRCamiones: {ex.Message}", ex);
+				Log.ExternalAPIError(ex);
+				Log.Error($"Error guardando configuración QRCamiones: {ex.Message}", ex);
                 resultado.Errores = new List<ErrorMessage> { new ErrorMessage { Message = $"Error interno: {ex.Message}" } };
                 return resultado;
             }
@@ -115,7 +129,8 @@ namespace SustitucionMOAUtils.Services.QRCamiones
             }
             catch (Exception ex)
             {
-                Log.Error($"Error eliminando configuración QRCamiones id={id}: {ex.Message}", ex);
+				Log.ExternalAPIError(ex);
+				Log.Error($"Error eliminando configuración QRCamiones id={id}: {ex.Message}", ex);
                 resultado.Errores = new List<ErrorMessage> { new ErrorMessage { Message = $"Error interno: {ex.Message}" } };
                 return resultado;
             }
