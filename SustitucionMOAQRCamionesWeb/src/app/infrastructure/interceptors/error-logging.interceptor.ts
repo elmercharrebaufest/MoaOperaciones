@@ -8,7 +8,7 @@ export const errorLoggingInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error) => {
-      loggingService.logError(error, `HTTP error en ${req.url}`);
+    //   loggingService.logError(error, `HTTP error en ${req.url}`);
       return throwError(() => error);
     })
   );

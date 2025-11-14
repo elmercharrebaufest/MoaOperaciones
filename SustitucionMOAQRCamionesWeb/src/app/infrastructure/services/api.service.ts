@@ -27,11 +27,11 @@ export class ApiService {
     );
   }
 
-  logError(context: string, error: any): Observable<any> {
-    return this.http.post(
-      `${this.apiUrl}LogQr`,
-      { context: context, error: error },
-      { headers: this.getHeaders() }
-    );
-  }
+  // logError(context: string, error: any): Observable<any> {
+  //   return this.http.post(
+  //     `${this.apiUrl}LogQr`,
+  //     { context: context, error: error },
+  //     { headers: this.getHeaders() }
+  //   );
+  // }
 }
