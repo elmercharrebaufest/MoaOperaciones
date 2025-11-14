@@ -293,25 +293,7 @@ export class ComprasService extends BaseService {
         payload.append('request', JSON.stringify(request));
 
         return this.http
-            .post('/api/EntradaServicio/CrearEntradaServicio', payload, { headers: this.headers })
-            .pipe(
-                map((response: any) => {
-                    // Si la respuesta es exitosa, devolver solo los datos
-                    if (response.success) {
-                        return response.data;
-                    } else {
-                        // Si hay error, lanzar excepción con el mensaje de error
-                        throw new Error(response.error);
-                    }
-                }),
-                catchError(error => {
-                    // Manejar errores HTTP y errores personalizados
-                    if (error.error && error.error.success === false) {
-                        return throwError(new Error(error.error.error));
-                    }
-                    return throwError(error);
-                })
-            );
+            .post('/api/EntradaServicio/CrearEntradaServicio', payload, { headers: this.headers });
     }
     
     public AdjuntarArchivosCertificacion(archivos: File[]): Observable<any> {

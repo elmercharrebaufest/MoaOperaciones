@@ -194,7 +194,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     this.blockUI.stop();
                     let puedeSolicitarEdicion = this.manejarErroresApiResponse(result);
                     if (puedeSolicitarEdicion) {
-                        this.goToSeccion('/ordenes-de-carga/alta/' + this.ordenDeCarga.Id);
+                        this.goToSeccion('/ordenes-de-carga/alta/' + this.ordenDeCarga.Id + '/' + this.tipoOperacion);
                     }
                     else {
                         if (puedeSolicitarEdicion === false) {
