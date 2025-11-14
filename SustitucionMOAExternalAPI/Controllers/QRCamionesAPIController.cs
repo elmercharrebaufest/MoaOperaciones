@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Interfaces.QRCamiones;
@@ -7,6 +9,7 @@ using SustitucionMOAWS.ScatoWebService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Formatting;
 using System.Web.Http;
 
 namespace SustitucionMOAExternalAPI.Controllers
@@ -27,119 +30,130 @@ namespace SustitucionMOAExternalAPI.Controllers
         [Route("search")]
 		// [Authorize(Roles = "API QR CAMIONES")]
 		public IHttpActionResult Search([FromUri] TrackingRequestDto request)
-        {
-            try
-            {
-                if (request == null || string.IsNullOrWhiteSpace(request.Ctg) || string.IsNullOrWhiteSpace(request.Patente))
-                {
-                    return Ok(new TrackingResponseDto
-                    {
-                        Resultado = false,
-                        Mensaje = "Los parámetros CTG y Patente son requeridos"
-                    });
-                }
+		{
+			try
+			{
+				if (request == null || string.IsNullOrWhiteSpace(request.Ctg) || string.IsNullOrWhiteSpace(request.Patente))
+				{
+					return JsonCamelCase(new TrackingResponseDto
+					{
+						Resultado = false,
+						Mensaje = "Los parámetros CTG y Patente son requeridos"
+					});
+				}
 
-                Log.ExternalAPIInfo($"QRCamionesAPI - Search: CTG={request.Ctg}, Patente={request.Patente}");
+				Log.ExternalAPIInfo($"QRCamionesAPI - Search: CTG={request.Ctg}, Patente={request.Patente}");
 
-                var trackingDataScato = _scatoConsumer.ObtenerTrackingDataQRCamiones(request.Ctg, request.Patente);
-
+				var trackingDataScato = _scatoConsumer.ObtenerTrackingDataQRCamiones(request.Ctg, request.Patente);
 				var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
 
 				Log.ExternalAPIInfo($"QRCamionesAPI - Search: existe TrackingDataScato: {trackingDataScato != null}, existe configuraciones: {configuraciones != null}");
 
 				if (trackingDataScato == null || configuraciones == null)
-                {
-                    return Ok(new TrackingResponseDto
-                    {
-                        Resultado = true,
-                        Mensaje = "Datos encontrados",
-                        Data = null
-                    });
-                }                
+				{
+					return JsonCamelCase(new TrackingResponseDto
+					{
+						Resultado = true,
+						Mensaje = "Datos encontrados",
+						Data = null
+					});
+				}
 
-                var trackingDto = ConvertirScatoTrackingDataADto(trackingDataScato, configuraciones);
+				var trackingDto = ConvertirScatoTrackingDataADto(trackingDataScato, configuraciones);
 
-                return Ok(new TrackingResponseDto
-                {
-                    Resultado = true,
-                    Mensaje = "Datos encontrados",
-                    Data = trackingDto
-                });
-            }
-            catch (Exception ex)
-            {
-                Log.ExternalAPIError(ex);
-                
-                return Ok(new TrackingResponseDto
-                {
-                    Resultado = false,
-                    Mensaje = $"Error al obtener los datos: {ex.Message}"
-                });
-            }
-        }
+				return JsonCamelCase(new TrackingResponseDto
+				{
+					Resultado = true,
+					Mensaje = "Datos encontrados",
+					Data = trackingDto
+				});
+			}
+			catch (Exception ex)
+			{
+				Log.ExternalAPIError(ex);
 
-        [HttpGet]
+				return JsonCamelCase(new TrackingResponseDto
+				{
+					Resultado = false,
+					Mensaje = $"Error al obtener los datos: {ex.Message}"
+				});
+			}
+		}
+
+		[HttpGet]
         [Route("estadoEtapas")]
 		// [Authorize(Roles = "API QR CAMIONES")]
 		public IHttpActionResult EstadoEtapas([FromUri] TrackingRequestDto request)
-        {
-            try
-            {
-                if (request == null || string.IsNullOrWhiteSpace(request.Ctg) || string.IsNullOrWhiteSpace(request.Patente))
-                {
-                    return Ok(new EstadoEtapasResponseDto
-                    {
-                        Resultado = false,
-                        Mensaje = "Los parámetros CTG y Patente son requeridos"
-                    });
-                }
+		{
+			try
+			{
+				if (request == null || string.IsNullOrWhiteSpace(request.Ctg) || string.IsNullOrWhiteSpace(request.Patente))
+				{
+					return JsonCamelCase(new EstadoEtapasResponseDto
+					{
+						Resultado = false,
+						Mensaje = "Los parámetros CTG y Patente son requeridos"
+					});
+				}
 
-                Log.ExternalAPIInfo($"QRCamionesAPI - EstadoEtapas: CTG={request.Ctg}, Patente={request.Patente}");
+				Log.ExternalAPIInfo($"QRCamionesAPI - EstadoEtapas: CTG={request.Ctg}, Patente={request.Patente}");
 
-                var trackingDataScato = _scatoConsumer.ObtenerTrackingDataQRCamiones(request.Ctg, request.Patente);
-
+				var trackingDataScato = _scatoConsumer.ObtenerTrackingDataQRCamiones(request.Ctg, request.Patente);
 				var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
 
-				Log.ExternalAPIInfo($"QRCamionesAPI - Search: existe TrackingDataScato: {trackingDataScato != null}, existe configuraciones: {configuraciones != null}");
+				Log.ExternalAPIInfo($"QRCamionesAPI - EstadoEtapas: existe TrackingDataScato: {trackingDataScato != null}, existe configuraciones: {configuraciones != null}");
 
 				if (trackingDataScato == null || configuraciones == null)
-                {
-                    return Ok(new EstadoEtapasResponseDto
-                    {
-                        Resultado = true,
-                        Mensaje = "Datos encontrados",
-                        Data = null
-                    });
-                }                
+				{
+					return JsonCamelCase(new EstadoEtapasResponseDto
+					{
+						Resultado = true,
+						Mensaje = "Datos encontrados",
+						Data = null
+					});
+				}
 
 				var estadoEtapasDto = new EstadoEtapasQRCamionesDto
-                {
-                    DatosAdicionales = ConvertirDatosAdicionalesScatoADto(trackingDataScato.DatosAdicionales),
-                    Etapas = ConvertirEtapasScatoADto(trackingDataScato.Etapas, configuraciones)
-                };
+				{
+					DatosAdicionales = ConvertirDatosAdicionalesScatoADto(trackingDataScato.DatosAdicionales),
+					Etapas = ConvertirEtapasScatoADto(trackingDataScato.Etapas, configuraciones)
+				};
 
-                return Ok(new EstadoEtapasResponseDto
-                {
-                    Resultado = true,
-                    Mensaje = "Datos encontrados",
-                    Data = estadoEtapasDto
-                });
-            }
-            catch (Exception ex)
-            {
-                Log.ExternalAPIError(ex);
-                
-                return Ok(new EstadoEtapasResponseDto
-                {
-                    Resultado = false,
-                    Mensaje = $"Error al obtener los datos: {ex.Message}"
-                });
-            }
-        }
+				return JsonCamelCase(new EstadoEtapasResponseDto
+				{
+					Resultado = true,
+					Mensaje = "Datos encontrados",
+					Data = estadoEtapasDto
+				});
+			}
+			catch (Exception ex)
+			{
+				Log.ExternalAPIError(ex);
 
-        #region Metodos Privados de Conversion
+				return JsonCamelCase(new EstadoEtapasResponseDto
+				{
+					Resultado = false,
+					Mensaje = $"Error al obtener los datos: {ex.Message}"
+				});
+			}
+		}
 
-        private TrackingDataDto ConvertirScatoTrackingDataADto(
+		#region Metodos Privados de Conversion
+
+		private IHttpActionResult JsonCamelCase(object data)
+		{
+			var jsonFormatter = new JsonMediaTypeFormatter
+			{
+				SerializerSettings = new JsonSerializerSettings
+				{
+					ContractResolver = new CamelCasePropertyNamesContractResolver()
+				}
+			};
+
+			return Content(System.Net.HttpStatusCode.OK, data, jsonFormatter);
+		}
+
+		private TrackingDataDto ConvertirScatoTrackingDataADto(
             TrackingDataQRCamiones trackingDataScato,
             List<QRCamionesConfiguracion> configuraciones)
         {
