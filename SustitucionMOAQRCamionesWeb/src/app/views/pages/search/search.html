@@ -24,15 +24,22 @@
         <input
           id="ctg"
           type="text"
+          inputmode="numeric"
           class="form-input"
+          [class.input-error]="ctgError()"
           [ngModel]="ctg()"
-          (ngModelChange)="ctg.set($event)"
+          (ngModelChange)="onCtgChange($event)"
           name="ctg"
           placeholder=""
           [disabled]="isLoading()"
           autocomplete="off"
         />
         <p class="form-helper">Código de Trazabilidad de Granos</p>
+        @if (ctgError()) {
+          <div class="error-message">
+            El CTG solo permite números
+          </div>
+        }
       </div>
 
       <div class="form-group">
@@ -41,13 +48,19 @@
           id="patente"
           type="text"
           class="form-input"
+          [class.input-error]="patenteError()"
           [ngModel]="patente()"
-          (ngModelChange)="patente.set($event)"
+          (ngModelChange)="onPatenteChange($event)"
           name="patente"
           placeholder=""
           [disabled]="isLoading()"
           autocomplete="off"
         />
+        @if (patenteError()) {
+          <div class="error-message">
+            La patente solo permite números y letras
+          </div>
+        }
       </div>
 
         <div class="recaptcha-container">

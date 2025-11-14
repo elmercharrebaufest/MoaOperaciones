@@ -19,6 +19,9 @@ export class SearchComponent {
   patente = signal('');
   isLoading = signal(false);
   captchaOk: string | null = null;
+  
+  ctgError = signal(false);
+  patenteError = signal(false);
 
   recaptchaSiteKey = environment.recaptchaSiteKey;
   isProduction = environment.production;
@@ -31,9 +34,7 @@ export class SearchComponent {
     private trackingService: TrackingService,
     private authService: AuthService
   ) {
-    if (environment.production) {
-      this.authService.logout();
-    }
+    this.authService.logout();
   }
 
   handleCorrectCaptcha(event: string | null) {
@@ -43,20 +44,40 @@ export class SearchComponent {
     }
   }
 
+  onCtgChange(value: string) {
+    const hasInvalidChars = /[^0-9]/.test(value);
+    this.ctgError.set(hasInvalidChars);
+    
+    const sanitized = value.replace(/[^0-9]/g, '');
+    this.ctg.set(sanitized);
+  }
+
+  onPatenteChange(value: string) {
+    const hasInvalidChars = /[^a-zA-Z0-9]/.test(value);
+    this.patenteError.set(hasInvalidChars);
+    
+    const sanitized = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    this.patente.set(sanitized);
+  }
+
   onSubmit() {
+    if (this.isLoading()) {
+      return;
+    }
+
     if (!this.ctg() || !this.patente()) {
       alert('Por favor, complete todos los campos');
       return;
     }
 
-    if (environment.production && !this.captchaOk) {
-      alert('Debe completar el Captcha');
-      return;
-    }
+    // if (environment.production && !this.captchaOk) {
+    //   alert('Debe completar el Captcha');
+    //   return;
+    // }
 
     this.isLoading.set(true);
 
-    this.trackingService.getTrackingData(this.ctg(), this.patente(), this.captchaOk || undefined)
+    this.trackingService.getTrackingData(this.ctg(), this.patente())
       .subscribe({
         next: (response) => {
           this.isLoading.set(false);
@@ -67,7 +88,7 @@ export class SearchComponent {
           } else {
             this.authService.logout();
             this.router.navigate(['/search-error'], {
-              queryParams: { mensaje: response.mensaje }
+              queryParams: { mensaje: response.mensaje || 'No se encontraron datos' }
             });
           }
 
@@ -79,8 +100,12 @@ export class SearchComponent {
         error: (error) => {
           this.isLoading.set(false);
           this.authService.logout();
+          
+          const errorMessage = error.error?.mensaje || error.message || 'Error de conexión';
+          console.error('Error fetching tracking data:', error);
+          
           this.router.navigate(['/search-error'], {
-            queryParams: { mensaje: error.error?.mensaje || 'Error de conexión' }
+            queryParams: { mensaje: errorMessage }
           });
 
           if (environment.production && this.captcha) {

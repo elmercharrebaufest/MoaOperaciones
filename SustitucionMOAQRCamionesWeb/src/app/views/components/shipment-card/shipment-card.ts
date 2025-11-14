@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./shipment-card.scss']
 })
 export class ShipmentCardComponent {
-  ctg = input.required<string>();
-  patente = input.required<string>();
-  patenteAcoplado = input.required<string>();
+  @Input({ required: true }) ctg!: string;
+  @Input({ required: true }) patente!: string;
+  @Input({ required: true }) patenteAcoplado!: string;
 }
