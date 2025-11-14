@@ -374,6 +374,30 @@ namespace SustitucionMOAWS.WSConsumers
                     resultado.Cabecera.MontoTotal += pos.NET_PRICE * pos.QUANTITY;
                     var region = POADDRDELIVERY.SingleOrDefault(x => x.PO_ITEM == pos.PO_ITEM);
                     var plazo = POSCHEDULE.SingleOrDefault(x => x.PO_ITEM == pos.PO_ITEM);
+                    DateTime? plazoOfertaParsed = null;
+                    if (!string.IsNullOrEmpty(plazo?.DELIVERY_DATE))
+                    {
+                        // Intentar primero con formato dd.MM.yyyy
+                        try
+                        {
+                            plazoOfertaParsed = DateTime.ParseExact(plazo.DELIVERY_DATE, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                        }
+                        catch
+                        {
+                            // Si falla, asumir que puede ser MM.yyyy; usar entonces STAT_DATE (yyyy-MM-dd)
+                            if (!string.IsNullOrEmpty(plazo.STAT_DATE))
+                            {
+                                try
+                                {
+                                    plazoOfertaParsed = DateTime.ParseExact(plazo.STAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                                }
+                                catch
+                                {
+                                    // No se pudo parsear STAT_DATE, queda null
+                                }
+                            }
+                        }
+                    }
                     resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
                     {
                         Indice = pos.PO_ITEM,
@@ -385,8 +409,7 @@ namespace SustitucionMOAWS.WSConsumers
                         {
                             RegionSap = region?.REGION
                         },
-                        PlazoDeOferta = !string.IsNullOrEmpty(plazo?.DELIVERY_DATE) ?
-                             DateTime.ParseExact(plazo.DELIVERY_DATE, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null,
+                        PlazoDeOferta = plazoOfertaParsed,
                         AcuerdoMarco = pos.AGREEMENT
                     });
                 }
@@ -464,6 +487,32 @@ namespace SustitucionMOAWS.WSConsumers
                     resultado.Cabecera.MontoTotal += pos.NET_PRICE * pos.QUANTITY;
                     var region = response.POADDRDELIVERY.SingleOrDefault(x => x.PO_ITEM == pos.PO_ITEM);
                     var plazo = response.POSCHEDULE.SingleOrDefault(x => x.PO_ITEM == pos.PO_ITEM);
+
+                    DateTime? plazoOfertaParsed = null;
+                    if (!string.IsNullOrEmpty(plazo?.DELIVERY_DATE))
+                    {
+                        // Intentar primero con formato dd.MM.yyyy
+                        try
+                        {
+                            plazoOfertaParsed = DateTime.ParseExact(plazo.DELIVERY_DATE, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                        }
+                        catch
+                        {
+                            // Si falla, asumir que puede ser MM.yyyy; usar entonces STAT_DATE (yyyy-MM-dd)
+                            if (!string.IsNullOrEmpty(plazo.STAT_DATE))
+                            {
+                                try
+                                {
+                                    plazoOfertaParsed = DateTime.ParseExact(plazo.STAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                                }
+                                catch
+                                {
+                                    // No se pudo parsear STAT_DATE, queda null
+                                }
+                            }
+                        }
+                    }
+
                     resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
                     {
                         Indice = pos.PO_ITEM,
@@ -475,9 +524,7 @@ namespace SustitucionMOAWS.WSConsumers
                         {
                             RegionSap = region?.REGION
                         },
-                        PlazoDeOferta = !string.IsNullOrEmpty(plazo?.DELIVERY_DATE) ?
-                             DateTime.ParseExact(plazo.DELIVERY_DATE, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null
-
+                        PlazoDeOferta = plazoOfertaParsed
                     });
                 }
 

@@ -606,13 +606,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     redirigirADetalles() {
-        this.goToSeccionParam('/ordenes-de-carga/detalle/', this.ordenDeCargaId.toString())
+        this.goToSeccionParamDos('/ordenes-de-carga/detalle/', this.ordenDeCargaId.toString(), this.tipoOperacion)
     }
 
     redirigirAListado() {
-        this.navService.navegarSeccion(
-            "/ordenes-de-carga"
-        );
+        if (this.tipoOperacion == "CyO") {
+            this.navService.navegarSeccion(
+                "/ordenes-de-carga-cyo"
+            );
+        } else {
+            this.navService.navegarSeccion(
+                "/ordenes-de-carga"
+            );
+        }
     }
 
     getPatentes() {

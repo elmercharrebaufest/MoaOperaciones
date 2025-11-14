@@ -328,8 +328,9 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                 },
                 (error) => {
                     this.blockUI.stop();
+                    console.error(error);
                     this.confirmationService.confirm({
-                        message: error.error.Message,
+                        message: "Ha ocurrido un error",
                         accept: () => {
                             this.closeDialog.emit();
                         },
