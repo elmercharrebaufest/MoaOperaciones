@@ -1,8 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, Observable, of, tap } from 'rxjs';
 import { TrackingData } from '../../../models/tracking-data.model';
-import { MOCK_CARGO_DATA } from '../../../data/mock-tracking.data';
 import { TrackingResponse } from '../../../models/tracking-response.model';
 import { EstadoEtapas } from '../../../models/estado-etapas.model';
 import { environment } from '../../../../environments/environment';
@@ -15,34 +14,27 @@ export class TrackingService {
   private apiUrl = environment.apiUrl;
   
   trackingData = signal<TrackingData | null>(null);
-  private isUsingInitialMock = signal<boolean>(true);
 
   getTrackingData(ctg: string, patente: string, captcha?: string): Observable<TrackingResponse> {
-    if (!environment.production) {
-      this.loadMockData();
-      return of({
-        resultado: true,
-        mensaje: 'Datos encontrados',
-        data: MOCK_CARGO_DATA
-      });
+    let params = new HttpParams()
+      .set('request.ctg', ctg)
+      .set('request.patente', patente);
+
+    if (captcha) {
+      params = params.set('request.captcha', captcha);
     }
 
-    const requestBody: any = {
-      ctg: ctg,
-      patente: patente
-    };
-
-    if (environment.production && captcha) {
-      requestBody.captcha = captcha;
-    }
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    });
 
     return this.http
-      .post<TrackingResponse>(`${this.apiUrl}/api/qrcamiones/search`, requestBody)
+      .get<TrackingResponse>(`${this.apiUrl}/api/qrcamiones/search`, { params, headers })
       .pipe(
         tap((response) => {
           if (response.resultado && response.data) {
-            this.trackingData.set(response.data);
-            this.isUsingInitialMock.set(false);
+            this.trackingData.set(response.data);            
           }
         }),
         catchError((error) => {
@@ -50,16 +42,11 @@ export class TrackingService {
           
           return of({
             resultado: false,
-            mensaje: error.message || 'Datos no encontrados',
+            mensaje: error.error?.mensaje || error.message || 'Datos no encontrados',
             data: null as any
           });
         })
       );
-  }
-
-  loadMockData(): void {
-    this.trackingData.set(MOCK_CARGO_DATA);
-    this.isUsingInitialMock.set(true);
   }
 
   updateFromEstadoEtapas(estadoEtapas: EstadoEtapas): void {
@@ -70,16 +57,11 @@ export class TrackingService {
         etapas: estadoEtapas.etapas,
         datosAdicionales: estadoEtapas.datosAdicionales
       });
-      this.isUsingInitialMock.set(false);
     }
   }
 
-  resetToInitialMock(): void {
-    this.loadMockData();
-  }
-
-  getIsUsingInitialMock(): boolean {
-    return this.isUsingInitialMock();
+  clearTrackingData(): void {
+    this.trackingData.set(null);
   }
 
   updateCurrentStage(stageIndex: number): void {

@@ -1,8 +1,7 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Etapa } from '../../../models/estado-etapas.model';
-import { environment } from '../../../../environments/environment';
 // Components
 import { ShipmentCardComponent } from '../../components/shipment-card/shipment-card';
 import { ProgressStepperComponent } from '../../components/progress-stepper/progress-stepper';
@@ -41,8 +40,9 @@ import { EstadoEtapasService } from '../../../infrastructure/services/external/e
 })
 export class TrackingComponent {
   cargoData = computed(() => this.trackingService.trackingData());
+  
   isExpanded = signal(false);
-  private updateCount = signal<number>(0);
+  isUpdating = signal(false);
 
   selectedIndex = computed(() => this.stageStateService.getSelectedIndex()());
 
@@ -76,12 +76,12 @@ export class TrackingComponent {
     const stageName = stage.nombre.toLowerCase();
     const datosAdicionales = data.datosAdicionales;
 
-    if (stageName === 'pre calado' && datosAdicionales?.pre_calado_fila) {
-      return `FILA ${datosAdicionales.pre_calado_fila}`;
+    if (stageName === 'pre calado' && datosAdicionales?.preCaladoFila) {
+      return `FILA ${datosAdicionales.preCaladoFila}`;
     }
 
-    if (stageName === 'post calado' && datosAdicionales?.post_calado_fila) {
-      return `FILA ${datosAdicionales.post_calado_fila}`;
+    if (stageName === 'post calado' && datosAdicionales?.postCaladoFila) {
+      return `FILA ${datosAdicionales.postCaladoFila}`;
     }
 
     return null;
@@ -89,7 +89,7 @@ export class TrackingComponent {
 
   caladoEstado = computed(() => {
     const data = this.cargoData();
-    return data?.datosAdicionales?.calado_estado || null;
+    return data?.datosAdicionales?.caladoEstado || null;
   });
 
   shouldShowPesajeInfo = computed(() => {
@@ -142,18 +142,18 @@ export class TrackingComponent {
     private trackingService: TrackingService,
     private estadoEtapasService: EstadoEtapasService
   ) {
-    if (!this.cargoData() && environment.production) {
-      this.router.navigate(['/search']);
-      return;
-    }
-    this.initializeData();
-  }
-
-  private initializeData() {
-    const data = this.cargoData();
-    if (data) {
-      this.stageStateService.updateStages(data.etapas, data.rechazado);
-    }
+    effect(() => {
+      const data = this.trackingService.trackingData();
+      
+      if (!data) {
+        this.router.navigate(['/search']);
+        return;
+      }
+      
+      if (data.etapas && data.etapas.length > 0) {
+        this.stageStateService.updateStages(data.etapas, data.rechazado);
+      }
+    });
   }
 
   onStageChange(index: number) {
@@ -165,53 +165,34 @@ export class TrackingComponent {
   }
 
   onActualizar() {
-    if (!environment.production) {
-      const currentCount = this.updateCount();
-      
-      if (currentCount === 7) {
-        this.trackingService.resetToInitialMock();
-        this.estadoEtapasService.resetMockCycle();
-        this.updateCount.set(0);
-        this.initializeData();
-        return;
-      }
+    const data = this.cargoData();
+    if (!data || this.isUpdating()) return;
 
-      const data = this.cargoData();
-      if (data) {
-        this.estadoEtapasService.getEstadoEtapas(data.ctg, data.camion.patente)
-          .subscribe({
-            next: (response) => {
-              if (response.resultado && response.data) {
-                this.trackingService.updateFromEstadoEtapas(response.data);
-                this.updateCount.update(count => count + 1);
-                this.initializeData();
-              }
-            },
-            error: (error) => {
-              console.error('Error updating estado etapas:', error);
-            }
-          });
-      }
-    } else {
-      const data = this.cargoData();
-      if (data) {
-        this.estadoEtapasService.getEstadoEtapas(data.ctg, data.camion.patente)
-          .subscribe({
-            next: (response) => {
-              if (response.resultado && response.data) {
-                this.trackingService.updateFromEstadoEtapas(response.data);
-                this.initializeData();
-              }
-            },
-            error: (error) => {
-              console.error('Error updating estado etapas:', error);
-            }
-          });
-      }
-    }
+    this.isUpdating.set(true);
+
+    this.estadoEtapasService.getEstadoEtapas(data.ctg, data.camion.patente)
+      .subscribe({
+        next: (response) => {
+          this.isUpdating.set(false);
+          
+          if (response.resultado && response.data) {
+            this.trackingService.updateFromEstadoEtapas(response.data);
+            // this.cdr.detectChanges();
+          } else {
+            console.warn('No se pudieron actualizar los datos:', response.mensaje);
+          }
+        },
+        error: (error) => {
+          this.isUpdating.set(false);
+          console.error('Error updating estado etapas:', error);
+          alert('Error al actualizar los datos. Por favor, intente nuevamente.');
+        }
+      });
   }
 
   consultarOtraCTG() {
+    this.trackingService.clearTrackingData();
+    this.estadoEtapasService.clearEstadoEtapas();
     this.router.navigate(['/search']);
   }
 

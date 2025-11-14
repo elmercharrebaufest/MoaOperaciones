@@ -13,15 +13,24 @@
         </app-shipment-card>
       </app-container>
 
-      <button class="actualizar-button" (click)="onActualizar()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="refresh-icon">
-          <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" 
-            stroke="currentColor" 
-            stroke-width="2" 
-            stroke-linecap="round" 
-            stroke-linejoin="round"/>
-        </svg>
-        Actualizar
+      <button 
+        class="actualizar-button" 
+        (click)="onActualizar()"
+        [disabled]="isUpdating()"
+        [class.updating]="isUpdating()">
+        @if (isUpdating()) {
+          <span class="spinner"></span>
+          Actualizando...
+        } @else {
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="refresh-icon">
+            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" 
+              stroke="currentColor" 
+              stroke-width="2" 
+              stroke-linecap="round" 
+              stroke-linejoin="round"/>
+          </svg>
+          Actualizar
+        }
       </button>
     </app-section-wrapper>
 
@@ -34,12 +43,12 @@
           </div>
         }
 
-        @if (shouldShowPesajeInfo() && data.datosAdicionales?.pesada_bruto) {
+        @if (shouldShowPesajeInfo() && data.datosAdicionales.pesadaBruto) {
           <div class="pesaje-info-wrapper">
             <app-pesaje-info
-              [pesadaBruto]="data.datosAdicionales.pesada_bruto"
-              [pesadaTara]="data.datosAdicionales.pesada_tara"
-              [pesadaDescargado]="data.datosAdicionales.pesada_descargado"
+              [pesadaBruto]="data.datosAdicionales.pesadaBruto"
+              [pesadaTara]="data.datosAdicionales.pesadaTara"
+              [pesadaDescargado]="data.datosAdicionales.pesadaDescargado"
               [fechaPesajeBruto]="pesajeBrutoDate()">
             </app-pesaje-info>
           </div>

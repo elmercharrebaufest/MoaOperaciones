@@ -10,13 +10,7 @@ export class AuthService {
   private isAuthenticated = signal(false);
   private captchaVerified = signal(false);
 
-  constructor() {
-    if (!environment.production) {
-      this.trackingService.loadMockData();
-      this.isAuthenticated.set(true);
-      this.captchaVerified.set(true);
-    }
-  }
+  constructor() { }
 
   login() {
     const hasData = this.trackingService.trackingData() !== null;
@@ -26,15 +20,14 @@ export class AuthService {
   }
 
   logout() {
-    if (environment.production) {
-      this.trackingService.trackingData.set(null);
-      this.isAuthenticated.set(false);
-      this.captchaVerified.set(false);
-    }
+    this.trackingService.clearTrackingData();
+    this.isAuthenticated.set(false);
+    this.captchaVerified.set(false);
   }
 
   setCaptchaVerified(verified: boolean) {
-    this.captchaVerified.set(verified);
+    // this.captchaVerified.set(verified);
+    this.captchaVerified.set(true);
   }
 
   getIsAuthenticated() {
