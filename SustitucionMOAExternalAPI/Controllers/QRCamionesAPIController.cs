@@ -202,10 +202,10 @@ namespace SustitucionMOAExternalAPI.Controllers
 
 			foreach (var config in configuraciones.OrderBy(c => c.Id))
 			{
-				// Check if etapa exists in the API list
 				var etapaApi = etapasArray
 					.Where(x => 
                         string.Equals(x.Nombre, config.FinEtapa)
+                        // Validacion si es ControlRecorrido o LogActividad
                     )
 					.OrderByDescending(e => e.Fecha)
 					.FirstOrDefault();
