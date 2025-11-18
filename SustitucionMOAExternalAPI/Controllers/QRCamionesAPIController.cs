@@ -229,7 +229,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 							EsLogActividad(etapasArray[i].NombreTabla, config.FinEtapaEsControlRecorrido))
 					   )
 					{
-						Log.ExternalAPIInfo($"Etapa: {config.NombreEtapa}, Nombre SCATO: {etapasArray[i].Nombre}");
+						Log.ExternalAPIInfo($"Etapa: {config.NombreEtapa}, Nombre SCATO: {etapasArray[i].Nombre}, Texto FinEtapa: {config.FinEtapa}");
 						Log.ExternalAPIInfo($"EsControlRecorrido: {EsControlRecorrido(etapasArray[i].NombreTabla, config.FinEtapaEsControlRecorrido)}, EsLogActividad: {EsLogActividad(etapasArray[i].NombreTabla, config.FinEtapaEsControlRecorrido)}");
 						etapaApi = etapasArray[i];
 						foundIndex = i;
@@ -252,8 +252,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 				if (!encontradoPrimerPendiente && !esFinDeEtapa)
 				{
 					encontradoPrimerPendiente = true;
-
-					if (ultimaEtapaCompleta != null) ultimaEtapaCompleta.Estado = "en-proceso";
+					dto.Estado = "en-proceso";
 				}
 
 				if (esFinDeEtapa)
