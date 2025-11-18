@@ -34,7 +34,6 @@ namespace SustitucionMOAModel.Dto
         public string Entregador { get; set; }
         public string Transportista { get; set; }
         public string Material { get; set; }
-        public bool Rechazado { get; set; }
         public CamionQRCamionesDto Camion { get; set; }
         public ChoferQRCamionesDto Chofer { get; set; }
         public DatosAdicionalesQRCamionesDto DatosAdicionales { get; set; }
@@ -64,7 +63,8 @@ namespace SustitucionMOAModel.Dto
 
     public class DatosAdicionalesQRCamionesDto
     {
-        public string PreCaladoFila { get; set; }
+		public bool Rechazado { get; set; }
+		public string PreCaladoFila { get; set; }
         public string PostCaladoFila { get; set; }
         public string CaladoEstado { get; set; }
         public int? PesadaBruto { get; set; }
