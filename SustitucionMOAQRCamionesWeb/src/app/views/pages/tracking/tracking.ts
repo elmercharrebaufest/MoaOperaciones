@@ -98,11 +98,13 @@ export class TrackingComponent {
     const datosAdicionales = data.datosAdicionales;
 
     if (stageName === 'pre calado' && datosAdicionales?.preCaladoFila) {
-      return `FILA ${datosAdicionales.preCaladoFila}`;
+      var filaYNumeroArray = datosAdicionales.preCaladoFila.split(' ');
+      return filaYNumeroArray[0].toUpperCase() + ' ' + filaYNumeroArray[1];
     }
 
     if (stageName === 'post calado' && datosAdicionales?.postCaladoFila) {
-      return `FILA ${datosAdicionales.postCaladoFila}`;
+      var filaYNumeroArray = datosAdicionales.postCaladoFila.split(' ');
+      return filaYNumeroArray[0].toUpperCase() + ' ' + filaYNumeroArray[1];
     }
 
     return null;
