@@ -97,8 +97,8 @@
                  [responsive]="true"
                  dataKey="NumeroOrdenDeCompra"
                  [columns]="columns"
-                 [paginator]="true"
-                 [alwaysShowPaginator]="false"
+                 
+
                  [loading]="loading"
                  [rows]="10"
                  [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor', 'NombreProveedor']"
@@ -132,7 +132,7 @@
             <!-- TABLE 1 EMPTY MESSAGE -->
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td class="emptyData" [attr.colspan]="cantidadColumnasTabla('ordenes')">No hay ordenes de compra para mostrar</td>
+                    <td class="emptyData" [attr.colspan]="cantidadColumnasTabla('ordenes')">No hay órdenes de compra para mostrar</td>
                 </tr>
             </ng-template>
 
@@ -398,6 +398,8 @@
                 </tr>
             </ng-template>
         </p-table>
+        <p-paginator #paginator [rows]="10" [totalRecords]="length" (onPageChange)="handlePageEvent($event)"></p-paginator>
+        
         <div class="container-button">
             <button (click)="openModal()" class="btn btn-certificar" [attr.disabled]="itemSelected.length === 0? true : null">
                 Certificar ES - Ítem
@@ -431,18 +433,17 @@
 </div>
 
 
-    <app-modal-alta-entrada-de-servicio-proveedor *ngIf="showModal"
-                                        [showModal]="showModal"
-                                        [itemSelected]="itemSelected"
-                                        [posicionSelected] ="posicionSelected"
-                                        [elementSelected]="elementSelected"
-                                        [itemIdSelected]="itemIdSelected"
-                                        [formularioResumenCertificacion]="formularioResumenCertificacion"
-                                        (closeModal)="onCloseModal()"
-                                        (closeDialog)="onCloseDialog()"
-                                        (enviarMensajeGrilla)="actualizarGrilla($event)">
-    </app-modal-alta-entrada-de-servicio-proveedor>
-
+<app-modal-alta-entrada-de-servicio-proveedor *ngIf="showModal"
+                                    [showModal]="showModal"
+                                    [itemSelected]="itemSelected"
+                                    [posicionSelected] ="posicionSelected"
+                                    [elementSelected]="elementSelected"
+                                    [itemIdSelected]="itemIdSelected"
+                                    [formularioResumenCertificacion]="formularioResumenCertificacion"
+                                    (closeModal)="onCloseModal()"
+                                    (closeDialog)="onCloseDialog()"
+                                    (enviarMensajeGrilla)="actualizarGrilla($event)">
+</app-modal-alta-entrada-de-servicio-proveedor>
 
 
 <p-confirmDialog [(visible)]="showDialog"

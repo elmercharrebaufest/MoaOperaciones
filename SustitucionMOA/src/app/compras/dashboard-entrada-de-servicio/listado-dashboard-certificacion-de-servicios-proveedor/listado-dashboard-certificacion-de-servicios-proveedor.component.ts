@@ -127,6 +127,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
     displayContent: boolean = false;
     isInputActive: boolean = false;
 
+    loading: boolean = false;
 
     // COLUMNS CONFIG
     userTablesConfig: any[] = [];
@@ -407,12 +408,13 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
     getListarPO(proveedor, ordenCompraId, fecha_inicio, fecha_fin) {
         this.getFecha();
         try {
+            this.loading = true;
             this.spinnerComponent.showIt();
             this.unsubscribe();
             // this.subscripcionPO = this.service.getByProveedor("2023-01-28", proveedor, "4123001336", this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
             this.subscripcionPO = this.service.getByProveedor(fecha_inicio, fecha_fin, proveedor, ordenCompraId, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
                 (result: any) => {
-
+                    this.loading = false;
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -442,12 +444,14 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
                     this.posicionesCompletas = [].concat.apply([], this.tablaPO.map(oc => this.calcularPorcentaje(oc)));
                 },
                 error => {
+                    this.loading = false;
                     this.floatMsgService.setErrorMsg(error.message);
                     this.spinnerComponent.hideIt();
                     this.displayContent = true;
                 }
             );
         } catch (e) {
+            this.loading = false;
             this.floatMsgService.setErrorMsg(e);
             this.spinnerComponent.hideIt()
             return false; //<-- Prevent Refresh
@@ -1222,8 +1226,6 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         return deshabilitarCheckboxDeItem;
     }
 
-
-
     fileTypes: { [key: string]: string } = {
         ".pdf": 'application/pdf',
         ".csv": "text/csv",
@@ -1314,4 +1316,9 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         return false;
     }
 
+    handlePageEvent(e: any) {
+        this.pageSize = e.rows;
+        this.pageIndex = e.page + 1;
+        this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+    }
 }
