@@ -15,4 +15,5 @@ export class ContainerComponent {
   background = input<string>('bg-white');
   maxWidth = input<string>('max-w-3xl');
   gap = input<string>('gap-2');
+  marginBottom = input<string>('');
 }

@@ -67,7 +67,7 @@
         }
 
         @if (!isCircuitoFinalizado()) {
-          <app-container [padding]="'p-0'" class="main-content-container">
+          <app-container [padding]="'p-0'" [marginBottom]="'10px'" class="main-content-container">
             <div class="stage-section">
               <div class="current-stage-info">
                 <div class="stage-header-row">
@@ -89,8 +89,8 @@
                 </div>
                 
                 <div class="stage-description">
-                  <p>Texto fijo a definir.</p>
-                  <p class="estimated-time">Tiempo estimado: aprox. {{ stage.estimatedTime }}</p>
+                  <!-- <p>Texto fijo a definir.</p> -->
+                  <p class="estimated-time">Tiempo estimado: aprox. {{ stage.estimatedTime() }}</p>
                 </div>
               </div>
 
@@ -118,7 +118,7 @@
         }
 
         <app-container>
-          <div class="expandable-sections">
+          <div class="information-button">
             <app-information-button
               title="Información general de la carga"
               navigateTo="carga">
@@ -127,8 +127,8 @@
             <hr class="section-divider">
 
             <app-information-button 
-              title="Información general de la planta"
-              navigateTo="planta">
+              title="Descarga de documentos"
+              navigateTo="documentos">
             </app-information-button>
           </div>
         </app-container>        

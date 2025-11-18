@@ -213,16 +213,25 @@ namespace SustitucionMOAExternalAPI.Controllers
 
 			bool encontradoPrimerPendiente = false;
 			EtapaQRCamionesDto ultimaEtapaCompleta = null;
+			int lastFoundIndex = -1;
 
 			foreach (var config in configuraciones.OrderBy(c => c.Id))
 			{
-				var etapaApi = etapasArray
-					.Where(x => 
-                        string.Equals(x.Nombre, config.FinEtapa)
-                        // Validacion si es ControlRecorrido o LogActividad
-                    )
-					.OrderByDescending(e => e.Fecha)
-					.FirstOrDefault();
+				int searchStartIndex = lastFoundIndex + 1;
+				EtapaQRCamiones etapaApi = null;
+				int foundIndex = -1;
+
+				for (int i = searchStartIndex; i < etapasArray.Length; i++)
+				{
+					if (string.Equals(etapasArray[i].Nombre, config.FinEtapa) && 
+						((etapasArray[i].NombreTabla == "ControlRecorrido" && config.FinEtapaEsControlRecorrido) ||
+						(etapasArray[i].NombreTabla == "LogActividad" && !config.FinEtapaEsControlRecorrido)))
+					{
+						etapaApi = etapasArray[i];
+						foundIndex = i;
+						break;
+					}
+				}
 
 				bool esFinDeEtapa = etapaApi != null;
 
@@ -244,7 +253,10 @@ namespace SustitucionMOAExternalAPI.Controllers
 				}
 
 				if (esFinDeEtapa)
+				{
 					ultimaEtapaCompleta = dto;
+					lastFoundIndex = foundIndex;
+				}
 			}
 
 			// Todas las etapas completas, ultima etapa se encuentra "en-proceso"

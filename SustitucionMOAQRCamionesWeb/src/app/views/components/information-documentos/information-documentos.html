@@ -1,0 +1,35 @@
+<div class="content-section">
+  <app-container [padding]="'p-2'">
+    <div class="info-section">
+      <h2 class="section-title">Documentos disponibles</h2>
+      
+      <div class="document-list">
+        @for (doc of documents; track doc.title) {
+          <button 
+            class="document-button" 
+            [class.disabled]="!doc.available"
+            [disabled]="!doc.available"
+            (click)="onDownload(doc)">
+            <div class="document-info">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="document-icon">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="document-title">{{ doc.title }}</span>
+              @if (!doc.available) {
+                <span class="not-available-badge">No disponible</span>
+              }
+            </div>
+            @if (doc.available) {
+              <img src="assets/download_icon.svg" alt="Descargar documento" class="download_icon">
+            }
+          </button>
+          
+          @if (!$last) {
+            <hr class="document-divider">
+          }
+        }
+      </div>
+    </div>
+  </app-container>
+</div>
