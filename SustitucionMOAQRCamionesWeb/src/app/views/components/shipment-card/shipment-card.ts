@@ -12,4 +12,11 @@ export class ShipmentCardComponent {
   @Input({ required: true }) ctg!: string;
   @Input({ required: true }) patente!: string;
   @Input({ required: true }) patenteAcoplado!: string;
+
+  displayValue(value: string | number | null | undefined): string {
+    if (value === null || value === undefined || value === '') {
+      return 'N/A';
+    }
+    return String(value);
+  }
 }

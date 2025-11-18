@@ -57,7 +57,28 @@ export class TrackingComponent {
         total: data.etapas.length,
         name: stage.nombre,
         date: formatDate(stage.fecha),
-        estimatedTime: stage.tiempoEstimado,
+        estimatedTime: (() => {
+          const totalMinutes = Number(stage.tiempoEstimado);
+
+          if (!totalMinutes || totalMinutes <= 0) {
+            return '0m';
+          }
+
+          const hours = Math.floor(totalMinutes / 60);
+          const minutes = totalMinutes % 60;
+
+          const parts = [];
+
+          if (hours > 0) {
+            parts.push(`${hours}h`);
+          }
+
+          if (minutes > 0) {
+            parts.push(`${minutes}m`);
+          }
+
+          return parts.join(' ');
+        }),
         status: this.getStatusUppercase(stage.estado),
         rawStatus: stage.estado
       };
@@ -155,6 +176,8 @@ export class TrackingComponent {
       }
     });
   }
+
+  
 
   onStageChange(index: number) {
     this.stageStateService.setSelectedIndex(index);
