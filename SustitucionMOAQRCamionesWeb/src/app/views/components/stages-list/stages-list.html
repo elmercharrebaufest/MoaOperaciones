@@ -1,15 +1,15 @@
 <div class="stages-list">
-  @for (stage of stages(); track $index; let isLast = $last) {
+  @for (item of orderedStages(); track item.originalIndex; let isLast = $last) {
     <div 
       class="stage-item"
-      [class.active]="isActive($index, stage)"
-      [class.en-proceso]="stage.estado === 'en-proceso'"
-      (click)="onStageClick($index)">
+      [class.active]="isActive(item.originalIndex, item.stage)"
+      [class.en-proceso]="item.stage.estado === 'en-proceso'"
+      (click)="onStageClick(item.originalIndex)">
       
       <div class="stage-icon">
         <img 
-          [src]="getIconPath(stage.nombre)" 
-          [alt]="stage.nombre + ' icon'" 
+          [src]="getIconPath(item.stage.nombre)" 
+          [alt]="item.stage.nombre + ' icon'" 
           onerror="this.onerror=null; this.src='assets/etapas/ingreso_icon.svg';" 
           loading="lazy"
         />
@@ -18,20 +18,20 @@
       <div class="stage-content">
         <div class="stage-header">
           <span class="stage-number">
-            ETAPA {{ $index + 1 }} de {{ stages().length }}
+            ETAPA {{ item.originalIndex + 1 }} de {{ stages().length }}
           </span>
           
-          <div class="stage-status" [ngClass]="getStatusClass(stage.estado)">
-            {{ getStatusUppercase(stage.estado) }}
+          <div class="stage-status" [ngClass]="getStatusClass(item.stage.estado)">
+            {{ getStatusUppercase(item.stage.estado) }}
           </div>
         </div>
-        <div class="stage-name">{{ stage.nombre }}</div>
+        <div class="stage-name">{{ item.stage.nombre }}</div>
         
-        @if (shouldShowDate(stage.estado)) {
-          <div class="stage-date">{{ formatStageDate(stage.fecha) }}</div>
+        @if (shouldShowDate(item.stage.estado)) {
+          <div class="stage-date">{{ formatStageDate(item.stage.fecha) }}</div>
         }
         
-        @if (shouldShowCaladoNoteForStage(stage.nombre)) {
+        @if (shouldShowCaladoNoteForStage(item.stage.nombre)) {
           <div class="stage-calado-note">
             NOTA: {{ caladoEstado() }}
           </div>
