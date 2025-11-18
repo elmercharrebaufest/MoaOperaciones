@@ -59,7 +59,7 @@
             <app-etapas-completadas
               [stages]="data.etapas"
               [currentStageIndex]="selectedIndex()"
-              [rechazado]="data.rechazado"
+              [rechazado]="rechazado()"
               [caladoEstado]="caladoEstado()"
               (stageClicked)="onStageChange($event)">
             </app-etapas-completadas>
@@ -99,7 +99,7 @@
                 [currentStep]="selectedIndex()"
                 [isExpanded]="isExpanded()"
                 [stages]="data.etapas"
-                [rechazado]="data.rechazado"
+                [rechazado]="rechazado()"
                 (stageChanged)="onStageChange($event)"
                 (toggleExpanded)="toggleExpanded()">
               </app-progress-stepper>
@@ -108,7 +108,7 @@
                 <app-stages-list
                   [stages]="data.etapas"
                   [currentStageIndex]="selectedIndex()"
-                  [rechazado]="data.rechazado"
+                  [rechazado]="rechazado()"
                   [caladoEstado]="caladoEstado()"
                   (stageClicked)="onStageChange($event)">
                 </app-stages-list>

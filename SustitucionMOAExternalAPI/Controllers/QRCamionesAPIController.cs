@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Ninject.Activation;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Interfaces.QRCamiones;
@@ -115,7 +116,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 
 				var estadoEtapasDto = new EstadoEtapasQRCamionesDto
 				{
-					DatosAdicionales = ConvertirDatosAdicionalesScatoADto(trackingDataScato.DatosAdicionales),
+					DatosAdicionales = ConvertirDatosAdicionalesScatoADto(trackingDataScato.DatosAdicionales, trackingDataScato.Rechazado),
 					Etapas = ConvertirEtapasScatoADto(trackingDataScato.Etapas, configuraciones)
 				};
 
@@ -168,7 +169,6 @@ namespace SustitucionMOAExternalAPI.Controllers
                 Entregador = trackingDataScato.Entregador,
                 Transportista = trackingDataScato.Transportista,
                 Material = trackingDataScato.Material,
-                Rechazado = trackingDataScato.Rechazado,
                 Camion = new CamionQRCamionesDto
                 {
                     Patente = trackingDataScato.Camion?.Patente,
@@ -182,12 +182,12 @@ namespace SustitucionMOAExternalAPI.Controllers
                     Extranjero = trackingDataScato.Chofer?.Extranjero.ToString() ?? "false",
                     NombreApellido = trackingDataScato.Chofer?.NombreApellido
                 },
-                DatosAdicionales = ConvertirDatosAdicionalesScatoADto(trackingDataScato.DatosAdicionales),
+                DatosAdicionales = ConvertirDatosAdicionalesScatoADto(trackingDataScato.DatosAdicionales, trackingDataScato.Rechazado),
                 Etapas = ConvertirEtapasScatoADto(trackingDataScato.Etapas, configuraciones)
             };
         }
 
-        private DatosAdicionalesQRCamionesDto ConvertirDatosAdicionalesScatoADto(DatosAdicionalesQRCamiones datosAdicionales)
+        private DatosAdicionalesQRCamionesDto ConvertirDatosAdicionalesScatoADto(DatosAdicionalesQRCamiones datosAdicionales, bool rechazado = false)
         {
             if (datosAdicionales == null)
             {
@@ -196,6 +196,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 
             return new DatosAdicionalesQRCamionesDto
             {
+				Rechazado = rechazado,
                 PreCaladoFila = datosAdicionales.PreCaladoFila,
                 PostCaladoFila = datosAdicionales.PostCaladoFila,
                 CaladoEstado = datosAdicionales.CaladoEstado,
@@ -224,9 +225,12 @@ namespace SustitucionMOAExternalAPI.Controllers
 				for (int i = searchStartIndex; i < etapasArray.Length; i++)
 				{
 					if (string.Equals(etapasArray[i].Nombre, config.FinEtapa) && 
-						((etapasArray[i].NombreTabla == "ControlRecorrido" && config.FinEtapaEsControlRecorrido) ||
-						(etapasArray[i].NombreTabla == "LogActividad" && !config.FinEtapaEsControlRecorrido)))
+							(EsControlRecorrido(etapasArray[i].NombreTabla, config.FinEtapaEsControlRecorrido) ||
+							EsLogActividad(etapasArray[i].NombreTabla, config.FinEtapaEsControlRecorrido))
+					   )
 					{
+						Log.ExternalAPIInfo($"Etapa: {config.NombreEtapa}, Nombre SCATO: {etapasArray[i].Nombre}");
+						Log.ExternalAPIInfo($"EsControlRecorrido: {EsControlRecorrido(etapasArray[i].NombreTabla, config.FinEtapaEsControlRecorrido)}, EsLogActividad: {EsLogActividad(etapasArray[i].NombreTabla, config.FinEtapaEsControlRecorrido)}");
 						etapaApi = etapasArray[i];
 						foundIndex = i;
 						break;
@@ -270,6 +274,16 @@ namespace SustitucionMOAExternalAPI.Controllers
 			return result;
 		}
 
-        #endregion
-    }
+		private bool EsControlRecorrido(string nombreTabla, bool provieneDeControlRecorrido)
+		{
+			return nombreTabla == "ControlRecorrido" && provieneDeControlRecorrido;
+		}
+
+		private bool EsLogActividad(string nombreTabla, bool provieneDeControlRecorrido)
+		{
+			return nombreTabla == "LogActividad" && !provieneDeControlRecorrido;
+		}
+
+		#endregion
+	}
 }

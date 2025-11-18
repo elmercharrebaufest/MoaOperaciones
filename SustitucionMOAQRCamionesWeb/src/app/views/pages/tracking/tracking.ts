@@ -46,6 +46,11 @@ export class TrackingComponent {
 
   selectedIndex = computed(() => this.stageStateService.getSelectedIndex()());
 
+  rechazado = computed(() => {
+    const data = this.cargoData();
+    return data?.datosAdicionales?.rechazado ?? false;
+  });
+
   currentStage = computed(() => {
     const data = this.cargoData();
     const stage = this.stageStateService.currentStage();
@@ -144,7 +149,7 @@ export class TrackingComponent {
     const data = this.cargoData();
     if (!data) return false;
 
-    if (data.rechazado) return false;
+    if (data.datosAdicionales?.rechazado) return false;
 
     const cierreStage = data.etapas.find(
       stage => stage.nombre.toLowerCase() === 'cierre'
@@ -174,12 +179,10 @@ export class TrackingComponent {
       }
       
       if (data.etapas && data.etapas.length > 0) {
-        this.stageStateService.updateStages(data.etapas, data.rechazado);
+        this.stageStateService.updateStages(data.etapas, data.datosAdicionales?.rechazado ?? false);
       }
     });
   }
-
-  
 
   onStageChange(index: number) {
     this.stageStateService.setSelectedIndex(index);
@@ -202,7 +205,6 @@ export class TrackingComponent {
           
           if (response.resultado && response.data) {
             this.trackingService.updateFromEstadoEtapas(response.data);
-            // this.cdr.detectChanges();
           } else {
             console.warn('No se pudieron actualizar los datos:', response.mensaje);
           }
@@ -222,12 +224,10 @@ export class TrackingComponent {
   }
 
   getStatusUppercase(status: Etapa['estado']): string {
-    const data = this.cargoData();
-    return data ? returnStatusUppercase(status, data.rechazado) : '';
+    return returnStatusUppercase(status, this.rechazado());
   }
 
   getStatusClass(status: Etapa['estado']): string {
-    const data = this.cargoData();
-    return data ? returnStatusClass(status, data.rechazado) : '';
+    return returnStatusClass(status, this.rechazado());
   }
 }
