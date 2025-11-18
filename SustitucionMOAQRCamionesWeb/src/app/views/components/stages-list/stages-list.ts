@@ -19,6 +19,17 @@ export class StagesListComponent {
   caladoEstado = input<string | null>(null);
   stageClicked = output<number>();
 
+  orderedStages = computed(() => {
+    const stages = this.stages();
+    const stagesWithIndex = stages.map((stage, index) => ({ stage, originalIndex: index }));
+
+    const pendientes = stagesWithIndex.filter(s => s.stage.estado === 'pendiente');
+    const enProceso = stagesWithIndex.filter(s => s.stage.estado === 'en-proceso');
+    const completados = stagesWithIndex.filter(s => s.stage.estado === 'completado');
+
+    return [...pendientes, ...completados];
+  });
+
   postCaladoStageIndex = computed(() => {
     const stages = this.stages();
     return stages.findIndex(s => s.nombre.toLowerCase() === 'post calado');
