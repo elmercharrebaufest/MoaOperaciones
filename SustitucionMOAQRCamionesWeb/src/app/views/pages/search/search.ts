@@ -24,7 +24,7 @@ export class SearchComponent {
   patenteError = signal(false);
 
   recaptchaSiteKey = environment.recaptchaSiteKey;
-  isProduction = environment.production;
+  needsCaptcha = environment.production || environment.isQA;
 
   @ViewChild('recaptchaComponent')
   protected captcha!: RecaptchaComponent;
@@ -70,14 +70,14 @@ export class SearchComponent {
       return;
     }
 
-    // if (environment.production && !this.captchaOk) {
-    //   alert('Debe completar el Captcha');
-    //   return;
-    // }
+    if (this.needsCaptcha && !this.captchaOk) {
+      alert('Debe completar el Captcha');
+      return;
+    }
 
     this.isLoading.set(true);
 
-    this.trackingService.getTrackingData(this.ctg(), this.patente())
+    this.trackingService.getTrackingData(this.ctg(), this.patente(), this.captchaOk || undefined)
       .subscribe({
         next: (response) => {
           this.isLoading.set(false);
@@ -92,9 +92,10 @@ export class SearchComponent {
             });
           }
 
-          if (environment.production && this.captcha) {
+          if (this.needsCaptcha && this.captcha) {
             this.captcha.reset();
             this.captchaOk = null;
+            this.authService.setCaptchaVerified(false);
           }
         },
         error: (error) => {
@@ -108,9 +109,10 @@ export class SearchComponent {
             queryParams: { mensaje: errorMessage }
           });
 
-          if (environment.production && this.captcha) {
+          if (this.needsCaptcha && this.captcha) {
             this.captcha.reset();
             this.captchaOk = null;
+            this.authService.setCaptchaVerified(false);
           }
         }
       });

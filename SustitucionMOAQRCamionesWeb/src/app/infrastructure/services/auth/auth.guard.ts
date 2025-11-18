@@ -9,7 +9,7 @@ export const authGuard = () => {
   const authService = inject(AuthService);
   const trackingService = inject(TrackingService);
 
-  if (!environment.production) {
+  if (!environment.production && !environment.isQA) {
     return true;
   }
 

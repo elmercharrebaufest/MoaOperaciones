@@ -10,11 +10,16 @@ export class AuthService {
   private isAuthenticated = signal(false);
   private captchaVerified = signal(false);
 
-  constructor() { }
+  constructor() { 
+    if (!environment.production && !environment.isQA) {
+      this.captchaVerified.set(true);
+    }
+  }
 
   login() {
     const hasData = this.trackingService.trackingData() !== null;
-    if (hasData && (this.captchaVerified() || !environment.production)) {
+    const needsCaptcha = environment.production || environment.isQA;
+    if (hasData && (this.captchaVerified() || !needsCaptcha)) {
       this.isAuthenticated.set(true);
     }
   }
@@ -22,12 +27,16 @@ export class AuthService {
   logout() {
     this.trackingService.clearTrackingData();
     this.isAuthenticated.set(false);
-    this.captchaVerified.set(false);
+
+    if (!environment.production && !environment.isQA) {
+      this.captchaVerified.set(true);
+    } else {
+      this.captchaVerified.set(false);
+    }
   }
 
   setCaptchaVerified(verified: boolean) {
-    // this.captchaVerified.set(verified);
-    this.captchaVerified.set(true);
+    this.captchaVerified.set(verified);
   }
 
   getIsAuthenticated() {
@@ -40,7 +49,8 @@ export class AuthService {
 
   isFullyAuthenticated(): boolean {
     const hasData = this.trackingService.trackingData() !== null;
-    const captchaOk = this.captchaVerified() || !environment.production;
+    const needsCaptcha = environment.production || environment.isQA;
+    const captchaOk = this.captchaVerified() || !needsCaptcha;
     return this.isAuthenticated() && hasData && captchaOk;
   }
 
