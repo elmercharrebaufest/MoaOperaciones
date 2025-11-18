@@ -63,6 +63,7 @@
         }
       </div>
 
+      @if (needsCaptcha) {
         <div class="recaptcha-container">
           <re-captcha
             #recaptchaComponent
@@ -70,11 +71,12 @@
             [siteKey]="recaptchaSiteKey"
           ></re-captcha>
         </div>
+      }
 
       <button
         type="submit"
         class="submit-button"
-        [disabled]="isLoading() || (isProduction && !captchaOk)"
+        [disabled]="isLoading() || (needsCaptcha && !captchaOk)"
         [class.loading]="isLoading()">
         @if (isLoading()) {
           <span class="spinner"></span>

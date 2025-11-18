@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:44385/external/Api/',
+  isQA: false,
+  apiUrl: 'https://qacompras.moaoperaciones.com.ar/externalApi',
   apiKey: '1',
-  recaptchaSiteKey: '6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide'
+  recaptchaSiteKey: 'YOUR_RECAPTCHA_SITE_KEY'
 };
