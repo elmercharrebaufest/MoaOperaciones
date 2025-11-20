@@ -253,6 +253,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 				{
 					encontradoPrimerPendiente = true;
 					dto.Estado = "en-proceso";
+					dto.Fecha = DateTime.Now;
 				}
 
 				if (esFinDeEtapa)
@@ -261,10 +262,6 @@ namespace SustitucionMOAExternalAPI.Controllers
 					lastFoundIndex = foundIndex;
 				}
 			}
-
-			// Todas las etapas completas, ultima etapa se encuentra "en-proceso"
-			if (!encontradoPrimerPendiente && ultimaEtapaCompleta != null)
-				ultimaEtapaCompleta.Estado = "en-proceso";
 
 			// Ninguna etapa esta completa, primer etapa se pone en "en-proceso"
 			if (ultimaEtapaCompleta == null && result.Any())
