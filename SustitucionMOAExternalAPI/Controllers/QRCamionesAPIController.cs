@@ -151,7 +151,22 @@ namespace SustitucionMOAExternalAPI.Controllers
 					Mensaje = $"Error al obtener los datos: {ex.Message}"
 				});
 			}
-		}		
+		}
+
+		[HttpPost]
+		[Route("log")]
+		public void LogIntoExternalApi(string log, bool isError)
+		{
+			if (isError)
+			{
+				var ex = new Exception(log);
+				Log.ExternalAPIError(ex);
+			}
+			else
+			{
+				Log.ExternalAPIInfo($"QRCamionesAPI Info - Log: {log}");
+			}
+		}
 
 		#region Metodos Privados de Conversion
 
