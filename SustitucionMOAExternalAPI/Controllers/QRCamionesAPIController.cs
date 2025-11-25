@@ -33,6 +33,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 			_ticketPesadaService = ticketPesadaService;
 		}
 
+		#region GET
 		[HttpGet]
 		[Route("files")]
 		public IHttpActionResult Obtener([FromUri] TrackingRequestDto request)
@@ -42,7 +43,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 		}
 
 		[HttpGet]
-        [Route("search")]
+		[Route("search")]
 		// [Authorize(Roles = "API QR CAMIONES")]
 		public IHttpActionResult Search([FromUri] TrackingRequestDto request)
 		{
@@ -96,7 +97,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 		}
 
 		[HttpGet]
-        [Route("estadoEtapas")]
+		[Route("estadoEtapas")]
 		// [Authorize(Roles = "API QR CAMIONES")]
 		public IHttpActionResult EstadoEtapas([FromUri] TrackingRequestDto request)
 		{
@@ -152,7 +153,9 @@ namespace SustitucionMOAExternalAPI.Controllers
 				});
 			}
 		}
+		#endregion
 
+		#region POST
 		[HttpPost]
 		[Route("log")]
 		public void LogIntoExternalApi(string log, bool isError)
@@ -167,7 +170,8 @@ namespace SustitucionMOAExternalAPI.Controllers
 				Log.ExternalAPIInfo($"QRCamionesAPI Info - Log: {log}");
 			}
 		}
-
+		#endregion
+		
 		#region Metodos Privados de Conversion
 
 		private IHttpActionResult JsonCamelCase(object data)
