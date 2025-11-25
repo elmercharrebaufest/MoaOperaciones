@@ -24,40 +24,63 @@ namespace SustitucionMOAUtils.Services
             this.scatoComandosConsumer = scatoComandosConsumer;
         }
 
-        public List<ArchivoDescargaDto> ObtenerTicket(ConsultaTicketPesada consultaTicketPesada)
+		public List<ArchivoDescargaDto> ObtenerTicket(ConsultaTicketPesada consultaTicketPesada)
+		{
+			ResultadoTickets resultado;
+			try
+			{
+				resultado = scatoComandosConsumer.ObtenerTicketPesada(consultaTicketPesada.NumeroCartaPorte);
+			}
+			catch (Exception)
+			{
+				throw new ValidationCustomException("No se encontró una CCPP con el número ingresado.");
+			}
+
+			if (resultado.Patente == "" || resultado.Patente.ToLower() != consultaTicketPesada.PatenteCamion.ToLower())
+			{
+				throw new ValidationCustomException("La patente del cambio no coincide con la patente del camión.");
+			}
+
+			var listadoArchivos = GenerarListadoArchivos(resultado);
+			byte[] archivoResultado = listadoArchivos.FirstOrDefault(a => a.Nombre.Contains("zip")).Datos;
+
+			if (consultaTicketPesada.Mail != null)
+			{
+				if (consultaTicketPesada.Mail.Length > 0)
+				{
+					try
+					{
+						Task.Run(() => EnviarMail(consultaTicketPesada, archivoResultado));
+					}
+					catch
+					{
+						//En el caso de que no podamos mandar el mail, ignoramos la excepción
+					}
+				}
+			}
+
+			return listadoArchivos;
+		}
+
+		public List<ArchivoDescargaDto> ObtenerTicket(TrackingRequestDto trackingRequest)
         {
             ResultadoTickets resultado;
             try
             {
-                resultado = scatoComandosConsumer.ObtenerTicketPesada(consultaTicketPesada.NumeroCartaPorte);
+                resultado = scatoComandosConsumer.ObtenerTicketPesada(trackingRequest.Ctg);
             }
             catch (Exception)
             {
                 throw new ValidationCustomException("No se encontró una CCPP con el número ingresado.");
             }
 
-            if (resultado.Patente == "" || resultado.Patente.ToLower() != consultaTicketPesada.PatenteCamion.ToLower())
+            if (resultado.Patente == "" || resultado.Patente.ToLower() != trackingRequest.Patente.ToLower())
             {
                 throw new ValidationCustomException("La patente del cambio no coincide con la patente del camión.");
             }
 
             var listadoArchivos = GenerarListadoArchivos(resultado);
             byte[] archivoResultado = listadoArchivos.FirstOrDefault(a => a.Nombre.Contains("zip")).Datos;
-
-            if (consultaTicketPesada.Mail != null)
-            {
-                if (consultaTicketPesada.Mail.Length > 0)
-                {
-                    try
-                    {
-                        Task.Run(() => EnviarMail(consultaTicketPesada, archivoResultado));
-                    }
-                    catch
-                    {
-                        //En el caso de que no podamos mandar el mail, ignoramos la excepción
-                    }
-                }
-            }
 
             return listadoArchivos;
         }
