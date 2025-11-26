@@ -17,7 +17,8 @@ export class EstadoEtapasService {
   getEstadoEtapas(ctg: string, patente: string): Observable<EstadoEtapasResponse> {
     const params = new HttpParams()
       .set('request.ctg', ctg)
-      .set('request.patente', patente);
+      .set('request.patente', patente)
+      .set('request.tipoWorkflow', "Ingreso por Compra de Granos - Calada Externa");
 
     return this.http
       .get<EstadoEtapasResponse>(`${this.apiUrl}/api/qrcamiones/estadoEtapas`, { params })

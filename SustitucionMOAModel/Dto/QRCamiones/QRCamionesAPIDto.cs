@@ -13,6 +13,7 @@ namespace SustitucionMOAModel.Dto
     {
         public string Ctg { get; set; }
         public string Patente { get; set; }
+        public string TipoWorkflow { get; set; }
     }
 
     public class TrackingResponseDto
