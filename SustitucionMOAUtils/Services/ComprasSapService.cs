@@ -2789,7 +2789,7 @@ namespace SustitucionMOAUtils.Services
                     posicionSap.QUANTITY = posAdj.Cantidad;
                     //posicionSap.QUANTITYSpecified = true;
                     posicionSapX.QUANTITY = "X";
-                    if (modificarPedidoSAP.POACCOUNT.Count > 0)
+                    if (modificarPedidoSAP.POACCOUNT.Count > 0 && imputacionSap != null)
                     {
                         imputacionSap.QUANTITY = posAdj.Cantidad;
                         imputacionSapX.QUANTITY = "X";
