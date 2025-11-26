@@ -1,8 +1,10 @@
-﻿using SustitucionMOAAssets;
+﻿using Newtonsoft.Json;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
@@ -446,12 +448,14 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public SustitucionMOAWS.DataAgroServices.DatosIniContrato InicializarContrato(int tipoNegocioId)
+        public string InicializarContrato(int tipoNegocioId)
         {
             try
             {
                 var datosIniContrato = new DataAgroConsumer().InicializarContrato(tipoNegocioId);
-                return datosIniContrato;
+                string json = JsonConvert.SerializeObject(datosIniContrato);
+                json = json.Replace("ñ", "ni");
+                return json;
             }
             catch (Exception ex)
             {
@@ -460,12 +464,14 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public SustitucionMOAWS.DataAgroServices.DatosCompraNetDto ObtenerDatosCompraNet(int id)
+        public string ObtenerDatosCompraNet(int id)
         {
             try
             {
                 var datosCompraNet = new DataAgroConsumer().ObtenerDatosCompraNet(id);
-                return datosCompraNet;
+                string json = JsonConvert.SerializeObject(datosCompraNet);
+                json = json.Replace("ñ", "ni");
+                return json;
             }
             catch (Exception ex)
             {
@@ -474,12 +480,14 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public SustitucionMOAWS.DataAgroServices.DatosFijacionDeContratoDto[] ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual)
+        public string ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual)
         {
             try
             {
                 var fijaciones = new DataAgroConsumer().ObtenerFijacionesAutomaticas(cuitProveedor, cuitCorredor, materialId, filtro, fijacionId, esVirtual);
-                return fijaciones;
+                string json = JsonConvert.SerializeObject(fijaciones);
+                json = json.Replace("ñ", "ni");
+                return json;
             }
             catch (Exception ex)
             {
@@ -488,12 +496,14 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public SustitucionMOAWS.DataAgroServices.AltaTempranaNRCODto ValidarProveedor(int proveedorId)
+        public string ValidarProveedor(int proveedorId)
         {
             try
             {
                 var altaTempranaNRCO = new DataAgroConsumer().ValidarProveedor(proveedorId);
-                return altaTempranaNRCO;
+                string json = JsonConvert.SerializeObject(altaTempranaNRCO);
+                json = json.Replace("ñ", "ni");
+                return json;
             }
             catch (Exception ex)
             {

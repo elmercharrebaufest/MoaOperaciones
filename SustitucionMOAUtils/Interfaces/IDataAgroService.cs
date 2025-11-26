@@ -17,9 +17,9 @@ namespace SustitucionMOAUtils.Interfaces
         decimal TraerTipoDeCambio();
         SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(CampoProveedor campo, string kmz);
         List<EstadoProveedorDto> ObtenerEstadoProveedores(string[] cuits);
-        SustitucionMOAWS.DataAgroServices.DatosIniContrato InicializarContrato(int tipoNegocioId);
-        SustitucionMOAWS.DataAgroServices.DatosCompraNetDto ObtenerDatosCompraNet(int id);
-        SustitucionMOAWS.DataAgroServices.DatosFijacionDeContratoDto[] ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual);
-        SustitucionMOAWS.DataAgroServices.AltaTempranaNRCODto ValidarProveedor(int proveedorId);        
+        string InicializarContrato(int tipoNegocioId);
+        string ObtenerDatosCompraNet(int id);
+        string ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual);
+        string ValidarProveedor(int proveedorId);        
     }
 }

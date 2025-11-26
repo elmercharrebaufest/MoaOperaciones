@@ -29,11 +29,12 @@ namespace SustitucionMOA.Controllers
     {
         protected readonly IRepositorio repositorio;
         readonly IDataAgroApiService dataAgroApiService;
-
-        public CrearContratoController(IDataAgroApiService dataAgroApiService, IRepositorio repositorio)
+        private IDataAgroService dataAgroService;
+        public CrearContratoController(IDataAgroApiService dataAgroApiService, IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.dataAgroApiService = dataAgroApiService;
             this.repositorio = repositorio;
+            this.dataAgroService = dataAgroService;
         }
 
         public ActionResult GetLocalidadCombo(string localidad)
@@ -59,17 +60,17 @@ namespace SustitucionMOA.Controllers
         public ActionResult ObteneDatosContrato(int tiponegocio)
         {
             string BolsaAutomatica = dataAgroApiService.ConfiguracionBolsaAutomatica();
-            string DatosContrato = dataAgroApiService.ObteneDatosContrato(tiponegocio);
+            string DatosContrato = dataAgroService.InicializarContrato(tiponegocio);
             return JsonCustom(new { DatosContrato, BolsaAutomatica });
         }
         public ActionResult ObtenerDatosCompraNet(int? idProveedorDataAgro)
         {
             if (idProveedorDataAgro.HasValue)
             {
-                return JsonCustom(dataAgroApiService.ObtenerDatosCompraNet(idProveedorDataAgro.Value));
+                return JsonCustom(dataAgroService.ObtenerDatosCompraNet(idProveedorDataAgro.Value));
             }
             var proveedor = ObtenerProveedor();
-            return JsonCustom(dataAgroApiService.ObtenerDatosCompraNet(proveedor.IdDataAgro.Value));
+            return JsonCustom(dataAgroService.ObtenerDatosCompraNet(proveedor.IdDataAgro.Value));
         }
         public ActionResult CrearContratoAPrecio(string contrato)
         {
@@ -178,11 +179,11 @@ namespace SustitucionMOA.Controllers
 
             if (esCorredorEnDataAgro)
             {
-                return JsonCustom(dataAgroApiService.ObtenerFijacionesAutomaticas(cuitProveedor, proveedor.CUIT, materialId, filtro, 0));
+                return JsonCustom(dataAgroService.ObtenerFijacionesAutomaticas(cuitProveedor, proveedor.CUIT, materialId, filtro, 0, false));
             }
             else
             {
-                return JsonCustom(dataAgroApiService.ObtenerFijacionesAutomaticas(proveedor.CUIT, "", materialId, filtro, 0));
+                return JsonCustom(dataAgroService.ObtenerFijacionesAutomaticas(proveedor.CUIT, "", materialId, filtro, 0, false));
 
             }
         }
@@ -330,11 +331,12 @@ namespace SustitucionMOA.Controllers
         {
             if (!string.IsNullOrEmpty(proveedorId) && proveedorId != "0")
             {
-                return JsonCustom(dataAgroApiService.ValidarProveedor(proveedorId));
+                int id = int.Parse(proveedorId);
+                return JsonCustom(dataAgroService.ValidarProveedor(id));
             }
             Proveedor proveedor = ObtenerProveedor();
 
-            return JsonCustom(dataAgroApiService.ValidarProveedor(proveedor.IdDataAgro.Value.ToString()));
+            return JsonCustom(dataAgroService.ValidarProveedor(proveedor.IdDataAgro.Value));
         }
 
         public ActionResult TraerPrecioMoaMateriales(int tipoNegocioId = 0)
