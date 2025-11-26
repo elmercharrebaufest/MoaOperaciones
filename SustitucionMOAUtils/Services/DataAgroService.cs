@@ -445,6 +445,62 @@ namespace SustitucionMOAUtils.Services
             }
 
         }
+
+        public SustitucionMOAWS.DataAgroServices.DatosIniContrato InicializarContrato(int tipoNegocioId)
+        {
+            try
+            {
+                var datosIniContrato = new DataAgroConsumer().InicializarContrato(tipoNegocioId);
+                return datosIniContrato;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public SustitucionMOAWS.DataAgroServices.DatosCompraNetDto ObtenerDatosCompraNet(int id)
+        {
+            try
+            {
+                var datosCompraNet = new DataAgroConsumer().ObtenerDatosCompraNet(id);
+                return datosCompraNet;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public SustitucionMOAWS.DataAgroServices.DatosFijacionDeContratoDto[] ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual)
+        {
+            try
+            {
+                var fijaciones = new DataAgroConsumer().ObtenerFijacionesAutomaticas(cuitProveedor, cuitCorredor, materialId, filtro, fijacionId, esVirtual);
+                return fijaciones;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public SustitucionMOAWS.DataAgroServices.AltaTempranaNRCODto ValidarProveedor(int proveedorId)
+        {
+            try
+            {
+                var altaTempranaNRCO = new DataAgroConsumer().ValidarProveedor(proveedorId);
+                return altaTempranaNRCO;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
     }
 
 }
