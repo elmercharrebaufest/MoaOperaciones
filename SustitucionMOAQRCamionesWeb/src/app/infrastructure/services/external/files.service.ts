@@ -24,25 +24,34 @@ export class FilesService {
   
   filesData = signal<FileItem[]>([]);
 
-  getFiles(ctg: string, patente: string): Observable<FilesResponse> {
+  getFiles(ctg: string, patente: string): Observable<any> {
     const params = new HttpParams()
-      .set('request. ctg', ctg)
+      .set('request.ctg', ctg)
       .set('request.patente', patente);
 
-    return this. http
-      .get<FilesResponse>(`${this.apiUrl}/api/qrcamiones/files`, { params })
-      . pipe(
+    return this.http
+      .get<any>(`${this.apiUrl}/api/qrcamiones/files`, { params })
+      .pipe(
         tap((response) => {
-          if (response.resultado && response.data) {
-            this.filesData.set(response.data);
+          const rawFiles = response.data || [];
+
+          if (rawFiles.length > 0) {
+            const mappedFiles = rawFiles.map((file: any) => ({
+              nombre: file.nombre,
+              url: file.url,
+              contenido: file.datos || file.contenido 
+            }));
+
+            this.filesData.set(mappedFiles);
+          } else {
+             console.warn('API returned no files in data property');
           }
         }),
         catchError((error) => {
           console.error('Error fetching files:', error);
-          
           return of({
             resultado: false,
-            mensaje: error.error?. mensaje || error.message || 'Error al obtener archivos',
+            mensaje: error.error?.mensaje || error.message || 'Error al obtener archivos',
             data: []
           });
         })
@@ -57,14 +66,14 @@ export class FilesService {
   }
 
   downloadFile(file: FileItem): void {
-    if (! file.url && !file.contenido) {
+    if (!file.url && !file.contenido) {
       console.error('No URL or content available for download');
       return;
     }
 
     if (file.url) {
       window.open(file.url, '_blank');
-    } else if (file. contenido) {
+    } else if (file.contenido) {
       this.downloadFromBase64(file.contenido, file.nombre);
     }
   }

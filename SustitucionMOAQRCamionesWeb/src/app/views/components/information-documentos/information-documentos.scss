@@ -88,9 +88,25 @@
   font-weight: 500;
 }
 
-.download-icon {
-  width: 20px;
-  height: 20px;
+.download_icon {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.spinner {
+  width: 25px;
+  height: 25px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #003087;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .document-divider {
