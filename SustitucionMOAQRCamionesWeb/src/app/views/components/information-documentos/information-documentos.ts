@@ -1,13 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContainerComponent } from '../../../shared/container/container';
 import { TrackingData } from '../../../models/tracking-data.model';
+import { FilesService } from '../../../infrastructure/services/external/files.service';
 
 interface Document {
   title: string;
   icon: string;
   url?: string;
   available: boolean;
+  fileKeyword?: string;
 }
 
 @Component({
@@ -17,46 +19,93 @@ interface Document {
   templateUrl: './information-documentos.html',
   styleUrls: ['./information-documentos.scss']
 })
-export class InformationDocumentosComponent {
+export class InformationDocumentosComponent implements OnInit {
   @Input({ required: true }) data!: TrackingData;
+  
+  private filesService = inject(FilesService);
 
   documents: Document[] = [
     {
       title: 'Pago de tasa municipal con QR',
       icon: 'document',
-      available: true,
-      url: ''
+      available: false,
+      fileKeyword: 'Ticket Recibo Municipal'
     },
     {
       title: 'Manuales de SHYMA',
       icon: 'document',
-      available: true,
-      url: ''
+      available: false,
+      url: '' // Azure moapublic URL
     },
     {
       title: 'Planos de planta',
       icon: 'document',
-      available: true,
-      url: ''
+      available: false,
+      url: '' // Azure moapublic URL
     },
     {
       title: 'Información del pesaje',
       icon: 'document',
-      available: false
+      available: false,
+      fileKeyword: 'Certificado CP'
     },
     {
       title: 'Preguntas frecuentes',
       icon: 'document',
-      available: true,
-      url: ''
+      available: false,
+      url: '' // Azure moapublic URL
     }
   ];
 
-  onDownload(document: Document) {
-    if (document.available && document.url) {
-      // Implement download logic here
-      console.log('Downloading:', document.title);
-      // window.open(document.url, '_blank');
+  constructor() {
+    effect(() => {
+      const files = this.filesService.filesData();
+      this.updateDocumentAvailability(files);
+    });
+  }
+
+  ngOnInit() {
+    if (this.data?. ctg && this.data?.camion?. patente) {
+      this. filesService.getFiles(this.data.ctg, this.data. camion.patente).subscribe({
+        next: (response) => {
+          if (! response.resultado) {
+            console.warn('Files not available:', response.mensaje);
+          }
+        },
+        error: (error) => {
+          console.error('Error loading files:', error);
+        }
+      });
     }
+  }
+
+  private updateDocumentAvailability(files: any[]): void {
+    this.documents.forEach(doc => {
+      if (doc.fileKeyword) {
+        const file = this.filesService.findFileByName(doc.fileKeyword);
+        doc.available = !!file;
+      }
+    });
+  }
+
+  onDownload(document: Document): void {
+    if (! document.available) {
+      return;
+    }
+
+    if (document.fileKeyword) {
+      const file = this.filesService.findFileByName(document.fileKeyword);
+      if (file) {
+        this.filesService. downloadFile(file);
+        return;
+      }
+    }
+
+    if (document.url) {
+      window.open(document. url, '_blank');
+      return;
+    }
+
+    console.warn('No file or URL available for:', document.title);
   }
 }

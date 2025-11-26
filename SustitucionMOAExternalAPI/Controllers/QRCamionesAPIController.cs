@@ -3,8 +3,11 @@ using Newtonsoft.Json.Serialization;
 using Ninject.Activation;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.QRCamiones;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ScatoWebService;
 using System;
@@ -20,15 +23,27 @@ namespace SustitucionMOAExternalAPI.Controllers
     {
         private readonly IQRCamionesAPIService _qrCamionesService;
         private readonly IScatoConsumer _scatoConsumer;
+		private readonly ITicketPesadaService _ticketPesadaService;
 
-        public QRCamionesAPIController(IQRCamionesAPIService qrCamionesService, IScatoConsumer scatoConsumer)
-        {
-            _qrCamionesService = qrCamionesService;
-            _scatoConsumer = scatoConsumer;
-        }
+		public QRCamionesAPIController(IQRCamionesAPIService qrCamionesService, IScatoConsumer scatoConsumer, 
+			ITicketPesadaService ticketPesadaService)
+		{
+			_qrCamionesService = qrCamionesService;
+			_scatoConsumer = scatoConsumer;
+			_ticketPesadaService = ticketPesadaService;
+		}
 
-        [HttpGet]
-        [Route("search")]
+		#region GET
+		[HttpGet]
+		[Route("files")]
+		public IHttpActionResult Files([FromUri] TrackingRequestDto request)
+		{
+			var listadoArchivos = _ticketPesadaService.ObtenerTicket(request);
+			return JsonCamelCase(new { data = listadoArchivos });
+		}
+
+		[HttpGet]
+		[Route("search")]
 		// [Authorize(Roles = "API QR CAMIONES")]
 		public IHttpActionResult Search([FromUri] TrackingRequestDto request)
 		{
@@ -49,6 +64,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 				var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
 
 				Log.ExternalAPIInfo($"QRCamionesAPI - Search: existe TrackingDataScato: {trackingDataScato != null}, existe configuraciones: {configuraciones != null}");
+				Log.ExternalAPIInfo($"Existe etapas SCATO: {trackingDataScato.Etapas.Length > 0}");
 
 				if (trackingDataScato == null || configuraciones == null)
 				{
@@ -82,7 +98,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 		}
 
 		[HttpGet]
-        [Route("estadoEtapas")]
+		[Route("estadoEtapas")]
 		// [Authorize(Roles = "API QR CAMIONES")]
 		public IHttpActionResult EstadoEtapas([FromUri] TrackingRequestDto request)
 		{
@@ -138,6 +154,38 @@ namespace SustitucionMOAExternalAPI.Controllers
 				});
 			}
 		}
+		#endregion
+
+		#region POST
+		[HttpPost]
+		[Route("log")]
+		public IHttpActionResult LogIntoExternalApi([FromBody] LogRequestDto request)
+		{
+			try
+			{
+				if (request == null)
+				{
+					return BadRequest("El cuerpo de la solicitud no puede ser nulo.");
+				}
+
+				if (request.IsError)
+				{
+					var ex = new Exception(request.Log);
+					Log.ExternalAPIError(ex);
+				}
+				else
+				{
+					Log.ExternalAPIInfo($"QRCamionesAPI Info - Log: {request.Log}");
+				}
+
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return InternalServerError(ex);
+			}
+		}
+		#endregion
 
 		#region Metodos Privados de Conversion
 
