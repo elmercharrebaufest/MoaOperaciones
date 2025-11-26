@@ -61,7 +61,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 				Log.ExternalAPIInfo($"QRCamionesAPI - Search: CTG={request.Ctg}, Patente={request.Patente}");
 
 				var trackingDataScato = _scatoConsumer.ObtenerTrackingDataQRCamiones(request.Ctg, request.Patente);
-				var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
+				var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow(request.TipoWorkflow);
 
 				Log.ExternalAPIInfo($"QRCamionesAPI - Search: existe TrackingDataScato: {trackingDataScato != null}, existe configuraciones: {configuraciones != null}");
 				Log.ExternalAPIInfo($"Existe etapas SCATO: {trackingDataScato.Etapas.Length > 0}");
@@ -116,7 +116,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 				Log.ExternalAPIInfo($"QRCamionesAPI - EstadoEtapas: CTG={request.Ctg}, Patente={request.Patente}");
 
 				var trackingDataScato = _scatoConsumer.ObtenerTrackingDataQRCamiones(request.Ctg, request.Patente);
-				var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
+				var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow(request.TipoWorkflow);
 
 				Log.ExternalAPIInfo($"QRCamionesAPI - EstadoEtapas: existe TrackingDataScato: {trackingDataScato != null}, existe configuraciones: {configuraciones != null}");
 

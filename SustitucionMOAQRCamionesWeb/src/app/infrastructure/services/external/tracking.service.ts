@@ -18,7 +18,8 @@ export class TrackingService {
   getTrackingData(ctg: string, patente: string, captcha?: string): Observable<TrackingResponse> {
     let params = new HttpParams()
       .set('request.ctg', ctg)
-      .set('request.patente', patente);
+      .set('request.patente', patente)
+      .set('request.tipoWorkflow', "Ingreso por Compra de Granos - Calada Externa");
 
     if (captcha) {
       params = params.set('request.captcha', captcha);
