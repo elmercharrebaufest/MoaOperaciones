@@ -6,6 +6,6 @@ export class GlobalErrorHandler implements ErrorHandler {
   constructor(private loggingService: LoggingService) {}
 
   handleError(error: any): void {
-    // this.loggingService.logError(error, 'Global error');
+    this.loggingService.logError(error, 'Global error');
   }
 }

@@ -3,7 +3,13 @@ using System.Collections.Generic;
 
 namespace SustitucionMOAModel.Dto
 {
-    public class TrackingRequestDto
+
+	public class LogRequestDto
+	{
+		public string Log { get; set; }
+		public bool IsError { get; set; }
+	}
+	public class TrackingRequestDto
     {
         public string Ctg { get; set; }
         public string Patente { get; set; }

@@ -158,20 +158,34 @@ namespace SustitucionMOAExternalAPI.Controllers
 		#region POST
 		[HttpPost]
 		[Route("log")]
-		public void LogIntoExternalApi(string log, bool isError)
+		public IHttpActionResult LogIntoExternalApi([FromBody] LogRequestDto request)
 		{
-			if (isError)
+			try
 			{
-				var ex = new Exception(log);
-				Log.ExternalAPIError(ex);
+				if (request == null)
+				{
+					return BadRequest("El cuerpo de la solicitud no puede ser nulo.");
+				}
+
+				if (request.IsError)
+				{
+					var ex = new Exception(request.Log);
+					Log.ExternalAPIError(ex);
+				}
+				else
+				{
+					Log.ExternalAPIInfo($"QRCamionesAPI Info - Log: {request.Log}");
+				}
+
+				return Ok();
 			}
-			else
+			catch (Exception ex)
 			{
-				Log.ExternalAPIInfo($"QRCamionesAPI Info - Log: {log}");
+				return InternalServerError(ex);
 			}
 		}
 		#endregion
-		
+
 		#region Metodos Privados de Conversion
 
 		private IHttpActionResult JsonCamelCase(object data)
