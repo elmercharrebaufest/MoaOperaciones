@@ -64,6 +64,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 				var configuraciones = _qrCamionesService.ObtenerConfiguracionesPorTipoWorkflow("Granos");
 
 				Log.ExternalAPIInfo($"QRCamionesAPI - Search: existe TrackingDataScato: {trackingDataScato != null}, existe configuraciones: {configuraciones != null}");
+				Log.ExternalAPIInfo($"Existe etapas SCATO: {trackingDataScato.Etapas.Length > 0}");
 
 				if (trackingDataScato == null || configuraciones == null)
 				{
