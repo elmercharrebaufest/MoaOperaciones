@@ -102,7 +102,7 @@ export class FilesService {
   private getMimeType(fileName: string): string {
     const extension = fileName.split('.').pop()?.toLowerCase();
     
-    const mimeTypes: { [key: string]: string } = {
+    const mimeTypes: Record<string, string> = {
       'pdf': 'application/pdf',
       'jpg': 'image/jpeg',
       'jpeg': 'image/jpeg',
