@@ -1,7 +1,7 @@
 <div class="error-container">
   <div class="image-section">
     <img 
-      src="assets/login_image.jpg" 
+      src="assets/login_image.webp" 
       alt="Molinos Agro" 
       class="background-image"
     />
@@ -12,10 +12,12 @@
     />
   </div>
 
-  <!-- Error Message Section -->
   <div class="error-section">
+    <div class="logo-desktop">
+      <img src="assets/moa_full_logo.svg" alt="Molinos Agro" />
+    </div>
+
     <div class="error-content">
-      <!-- Info Icon -->
       <div class="info-icon">
         <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
           <circle cx="40" cy="40" r="38" stroke="#003087" stroke-width="4"/>
@@ -23,7 +25,6 @@
         </svg>
       </div>
 
-      <!-- Error Message -->
       <h1 class="error-title">
         No encontramos resultados con las credenciales ingresadas
       </h1>
@@ -32,7 +33,6 @@
         Por favor, verificá que los datos sean correctos e intentá nuevamente.
       </p>
 
-      <!-- Retry Button -->
       <button class="retry-button" (click)="onRetry()">
         Reintentar
       </button>
