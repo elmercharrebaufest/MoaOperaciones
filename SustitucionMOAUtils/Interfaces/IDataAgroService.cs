@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using System.Collections.Generic;
 
@@ -20,6 +21,15 @@ namespace SustitucionMOAUtils.Interfaces
         string InicializarContrato(int tipoNegocioId);
         string ObtenerDatosCompraNet(int id);
         string ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual);
-        string ValidarProveedor(int proveedorId);        
+        string ValidarProveedor(int proveedorId);
+        string HabilitarPizarra(int material, int tiponegocio);
+        string TraerPagosDiferido();
+        string HabilitarCampaña(int material);
+        string TraerPrecioMoaV2(int material, int tipoNegocio);
+        string TraerPrecioMoa(int tipoNegocio);
+        string AnularNegocio(int negocioId, int tipoNegocioId, string motivoRechazo);
+        string HabilitarSustentable();
+        string BuscarProveedoresConCorredor(string filtroProveedor, string filtro, int? agenteCompraId);
+        List<MaterialDto> BuscarMateriales();
     }
 }

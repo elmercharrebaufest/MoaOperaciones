@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
@@ -453,9 +455,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var datosIniContrato = new DataAgroConsumer().InicializarContrato(tipoNegocioId);
-                string json = JsonConvert.SerializeObject(datosIniContrato);
-                json = json.Replace("ñ", "ni");
-                return json;
+                return SerializeAndSanitize(datosIniContrato);
             }
             catch (Exception ex)
             {
@@ -469,9 +469,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var datosCompraNet = new DataAgroConsumer().ObtenerDatosCompraNet(id);
-                string json = JsonConvert.SerializeObject(datosCompraNet);
-                json = json.Replace("ñ", "ni");
-                return json;
+                return SerializeAndSanitize(datosCompraNet);
             }
             catch (Exception ex)
             {
@@ -485,9 +483,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var fijaciones = new DataAgroConsumer().ObtenerFijacionesAutomaticas(cuitProveedor, cuitCorredor, materialId, filtro, fijacionId, esVirtual);
-                string json = JsonConvert.SerializeObject(fijaciones);
-                json = json.Replace("ñ", "ni");
-                return json;
+                return SerializeAndSanitize(fijaciones);
             }
             catch (Exception ex)
             {
@@ -501,15 +497,162 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var altaTempranaNRCO = new DataAgroConsumer().ValidarProveedor(proveedorId);
-                string json = JsonConvert.SerializeObject(altaTempranaNRCO);
-                json = json.Replace("ñ", "ni");
-                return json;
+                return SerializeAndSanitize(altaTempranaNRCO);
+
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
                 throw;
             }
+        }
+
+        public string HabilitarPizarra(int material, int tipoNegocio)
+        {
+            try
+            {
+                var habilitacionPizarra = new DataAgroConsumer().HabilitarPizarra(material, tipoNegocio);
+                return SerializeAndSanitize(habilitacionPizarra);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public string TraerPagosDiferido()
+        {
+            try
+            {
+                var habilitacionPagos = new DataAgroConsumer().TraerPagosDiferido();
+                return SerializeAndSanitize(habilitacionPagos);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public string HabilitarCampaña(int material)
+        {
+            try
+            {
+                var habilitacionCampaña = new DataAgroConsumer().HabilitarCampaña(material);
+                return SerializeAndSanitize(habilitacionCampaña);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public string TraerPrecioMoa(int tipoNegocio)
+        {
+            try
+            {
+                var precioMoaCompraNet = new DataAgroConsumer().TraerPrecioMOA(tipoNegocio);
+                return SerializeAndSanitize(precioMoaCompraNet);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public string TraerPrecioMoaV2(int material, int tipoNegocio)
+        {
+            try
+            {
+                var precioMoaCompraNet = new DataAgroConsumer().TraerPrecioMoaV2(material, tipoNegocio);
+                return SerializeAndSanitize(precioMoaCompraNet);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public string AnularNegocio(int negocioId, int tipoNegocioId, string motivoRechazo)
+        {
+            try
+            {
+                if (tipoNegocioId == 1 || tipoNegocioId == 2)
+                {
+                    return SerializeAndSanitize(new DataAgroConsumer().AnularContrato(negocioId, motivoRechazo));
+                }
+                else if (tipoNegocioId == 3)
+                {
+                    return SerializeAndSanitize(new DataAgroConsumer().AnularFijacion(negocioId, motivoRechazo));
+
+                }
+                else
+                {
+                    throw new ValidationCustomException("No se puede anular este tipo de negocios.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public string HabilitarSustentable()
+        {
+            try
+            {
+                var habilitacion = new DataAgroConsumer().HabilitarSustentable();
+                return SerializeAndSanitize(habilitacion);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public string BuscarProveedoresConCorredor(string filtroProveedor, string filtro, int? agenteCompraId)
+        {
+            try
+            {
+                var busqueda = new DataAgroConsumer().BuscarProveedoresConCorredor(filtroProveedor, filtro, agenteCompraId);
+                return SerializeAndSanitize(busqueda);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public List<MaterialDto> BuscarMateriales()
+        {
+            try
+            {
+                var result = new DataAgroConsumer().BuscarMateriales();
+                var materiales = SerializeAndSanitize(result);
+                JObject json = JObject.Parse(materiales);
+                var data = ((Newtonsoft.Json.Linq.JArray)((Newtonsoft.Json.Linq.JContainer)json.First).First).ToObject<List<MaterialDto>>();
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+
+
+        private string SerializeAndSanitize(object value)
+        {
+            string json = JsonConvert.SerializeObject(value);
+            return json.Replace("ñ", "ni");
         }
     }
 

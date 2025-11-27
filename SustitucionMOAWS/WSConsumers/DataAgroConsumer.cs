@@ -106,8 +106,66 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
+        public HabilitacionPizarraDto HabilitarPizarra(int material, int tipoNegocio)
+        {
+            var result = service.HabilitarPizarra(material, tipoNegocio);
+            return result;
+        }
+
+        public HabilitacionPagoDiferidoDto[] TraerPagosDiferido()
+        {
+            var result = service.TraerPagosDiferido();
+            return result;
+        }
+
+        public HabilitacionCampañaDto[] HabilitarCampaña(int material)
+        {
+            var result = service.HabilitarCampaña(material);
+            return result;
+        }
+
+        public PrecioMoaGroupDto[] TraerPrecioMOA(int tipoNegocio)
+        {
+            var result = service.TraerPrecioMoa(tipoNegocio);
+            return result;
+        }
+
+        public PrecioMoaCompraNetDto[] TraerPrecioMoaV2(int material, int tipoNegocio)
+        {
+            var result = service.TraerPrecioMoaV2(material, tipoNegocio);
+            return result;
+        }
+
+        public Resultado AnularFijacion(int negocioId, string motivoRechazo)
+        {
+            var result = service.AnularFijacion(negocioId, motivoRechazo);
+            return result;
+        }
+
+        public Resultado AnularContrato(int negocioId, string motivoRechazo)
+        {
+            var result = service.AnularContrato(negocioId, motivoRechazo);
+            return result;
+        }
+
+        public HabilitacionSustentableDto[] HabilitarSustentable()
+        {
+            var result = service.HabilitarSustentable();
+            return result;
+        }
+
+        public BusquedaHome[] BuscarProveedoresConCorredor(string filtroProveedor, string filtro, int? agenteCompraId)
+        {
+            var result = service.BuscarProveedoresConCorredor(filtroProveedor, filtro, agenteCompraId);
+            return result;
+        }
+
+        public ResultIniMaterialModel BuscarMateriales()
+        {
+            var result = service.BuscarMateriales();
+            return result;
+        }
 
 
     }
-
 }

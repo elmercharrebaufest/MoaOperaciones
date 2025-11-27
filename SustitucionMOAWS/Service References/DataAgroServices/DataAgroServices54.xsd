@@ -1134,6 +1134,45 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ValoresRuca" nillable="true" type="tns:ValoresRuca" />
+  <xs:complexType name="ArrayOfPrecioMoaGroupDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PrecioMoaGroupDto" nillable="true" type="tns:PrecioMoaGroupDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPrecioMoaGroupDto" nillable="true" type="tns:ArrayOfPrecioMoaGroupDto" />
+  <xs:complexType name="PrecioMoaGroupDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
+      <xs:element minOccurs="0" name="PrecioMoaCompraNetDtoList" nillable="true" type="tns:ArrayOfPrecioMoaCompraNetDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PrecioMoaGroupDto" nillable="true" type="tns:PrecioMoaGroupDto" />
+  <xs:complexType name="ArrayOfPrecioMoaCompraNetDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PrecioMoaCompraNetDto" nillable="true" type="tns:PrecioMoaCompraNetDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPrecioMoaCompraNetDto" nillable="true" type="tns:ArrayOfPrecioMoaCompraNetDto" />
+  <xs:complexType name="PrecioMoaCompraNetDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DesdeEntrega" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="DesdeFijacion" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Destino" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinoId" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="HastaEntrega" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="HastaFijacion" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Material" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
+      <xs:element minOccurs="0" name="MonedaId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Pizarra" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Precio" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Retirado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="TipoNegocio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TipoNegocioId" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PrecioMoaCompraNetDto" nillable="true" type="tns:PrecioMoaCompraNetDto" />
   <xs:complexType name="BasicoContrato">
     <xs:sequence>
       <xs:element minOccurs="0" name="Acuerdo" nillable="true" type="xs:int" />
@@ -1459,12 +1498,19 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ServicioValorDto" nillable="true" type="tns:ServicioValorDto" />
+  <xs:complexType name="ResultadoDto">
+    <xs:sequence>
+      <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Errores" nillable="true" type="q3:ArrayOfstring" />
+      <xs:element minOccurs="0" name="Ok" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResultadoDto" nillable="true" type="tns:ResultadoDto" />
   <xs:complexType name="GrabarContratoResult">
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Resultado">
         <xs:sequence>
           <xs:element minOccurs="0" name="ContratoId" nillable="true" type="xs:int" />
-          <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ListaCupos" nillable="true" type="q3:ArrayOfstring" />
+          <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ListaCupos" nillable="true" type="q4:ArrayOfstring" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1503,7 +1549,7 @@
   <xs:element name="ArrayOfaltaItemDto" nillable="true" type="tns:ArrayOfaltaItemDto" />
   <xs:complexType name="altaItemDto">
     <xs:sequence>
-      <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="altaErrores" nillable="true" type="q4:ArrayOfstring" />
+      <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="altaErrores" nillable="true" type="q5:ArrayOfstring" />
       <xs:element minOccurs="0" name="altaEstadoDocumento" type="xs:int" />
       <xs:element minOccurs="0" name="altaIdDocumento" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="altaIdDocumentoExistente" nillable="true" type="xs:string" />
@@ -1563,7 +1609,7 @@
   <xs:element name="ArrayOfaltaItemBorradorDto" nillable="true" type="tns:ArrayOfaltaItemBorradorDto" />
   <xs:complexType name="altaItemBorradorDto">
     <xs:sequence>
-      <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="altaErrores" nillable="true" type="q5:ArrayOfstring" />
+      <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="altaErrores" nillable="true" type="q6:ArrayOfstring" />
       <xs:element minOccurs="0" name="altaEstadoDocumento" type="xs:int" />
       <xs:element minOccurs="0" name="altaIdBolsa" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="altaIdDocumentoExistente" nillable="true" type="xs:string" />
@@ -1578,8 +1624,8 @@
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Resultado">
         <xs:sequence>
-          <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" minOccurs="0" name="confirma" nillable="true" type="q6:Confirma" />
-          <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" minOccurs="0" name="confirmas" nillable="true" type="q7:ArrayOfConfirma" />
+          <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" minOccurs="0" name="confirma" nillable="true" type="q7:Confirma" />
+          <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" minOccurs="0" name="confirmas" nillable="true" type="q8:ArrayOfConfirma" />
           <xs:element minOccurs="0" name="confirmasGenerados" nillable="true" type="tns:ArrayOfConfirmaGeneradoDto" />
         </xs:sequence>
       </xs:extension>
@@ -1595,7 +1641,7 @@
   <xs:complexType name="ConfirmaGeneradoDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="ClaseNegocioId" type="xs:int" />
-      <xs:element xmlns:q8="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Clausulas" nillable="true" type="q8:ArrayOfstring" />
+      <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Clausulas" nillable="true" type="q9:ArrayOfstring" />
       <xs:element minOccurs="0" name="ComercialId" type="xs:int" />
       <xs:element minOccurs="0" name="ContratoSAP" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="FechaGeneracion" type="xs:dateTime" />
@@ -1615,7 +1661,7 @@
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Resultado">
         <xs:sequence>
-          <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" minOccurs="0" name="cupo" nillable="true" type="q9:Cupo" />
+          <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" minOccurs="0" name="cupo" nillable="true" type="q10:Cupo" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1633,9 +1679,9 @@
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Resultado">
         <xs:sequence>
-          <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" minOccurs="0" name="Boleto" nillable="true" type="q10:Boleto" />
+          <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" minOccurs="0" name="Boleto" nillable="true" type="q11:Boleto" />
           <xs:element minOccurs="0" name="BoletosDto" nillable="true" type="tns:ArrayOfBoletoDto" />
-          <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" minOccurs="0" name="BoletosGenerados" nillable="true" type="q11:ArrayOfBoleto" />
+          <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" minOccurs="0" name="BoletosGenerados" nillable="true" type="q12:ArrayOfBoleto" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1649,7 +1695,7 @@
   <xs:element name="ArrayOfBoletoDto" nillable="true" type="tns:ArrayOfBoletoDto" />
   <xs:complexType name="BoletoDto">
     <xs:sequence>
-      <xs:element xmlns:q12="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Clausulas" nillable="true" type="q12:ArrayOfstring" />
+      <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Clausulas" nillable="true" type="q13:ArrayOfstring" />
       <xs:element minOccurs="0" name="ComercialId" type="xs:int" />
       <xs:element minOccurs="0" name="ContratoSAP" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="FechaGeneracion" type="xs:dateTime" />
@@ -1735,8 +1781,8 @@
           <xs:element minOccurs="0" name="CupoNoPropios" nillable="true" type="tns:ArrayOfCupoNoPropioDto" />
           <xs:element minOccurs="0" name="CuposFlete" type="xs:int" />
           <xs:element minOccurs="0" name="CuposNormales" type="xs:int" />
-          <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Estados" nillable="true" type="q13:ArrayOfstring" />
-          <xs:element xmlns:q14="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ListaCupos" nillable="true" type="q14:ArrayOfstring" />
+          <xs:element xmlns:q14="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Estados" nillable="true" type="q14:ArrayOfstring" />
+          <xs:element xmlns:q15="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ListaCupos" nillable="true" type="q15:ArrayOfstring" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1967,7 +2013,7 @@
       <xs:extension base="tns:Resultado">
         <xs:sequence>
           <xs:element minOccurs="0" name="AcuerdoId" nillable="true" type="xs:int" />
-          <xs:element xmlns:q15="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ListaCupos" nillable="true" type="q15:ArrayOfstring" />
+          <xs:element xmlns:q16="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ListaCupos" nillable="true" type="q16:ArrayOfstring" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2178,7 +2224,7 @@
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Resultado">
         <xs:sequence>
-          <xs:element xmlns:q16="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="DownloadKey" nillable="true" type="q16:ArrayOfstring" />
+          <xs:element xmlns:q17="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="DownloadKey" nillable="true" type="q17:ArrayOfstring" />
           <xs:element minOccurs="0" name="ProveedorId" nillable="true" type="xs:int" />
         </xs:sequence>
       </xs:extension>
@@ -2248,32 +2294,6 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="HabilitacionCampañaDto" nillable="true" type="tns:HabilitacionCampañaDto" />
-  <xs:complexType name="ArrayOfPrecioMoaCompraNetDto">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="PrecioMoaCompraNetDto" nillable="true" type="tns:PrecioMoaCompraNetDto" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ArrayOfPrecioMoaCompraNetDto" nillable="true" type="tns:ArrayOfPrecioMoaCompraNetDto" />
-  <xs:complexType name="PrecioMoaCompraNetDto">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="DesdeEntrega" nillable="true" type="xs:dateTime" />
-      <xs:element minOccurs="0" name="DesdeFijacion" nillable="true" type="xs:dateTime" />
-      <xs:element minOccurs="0" name="Destino" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="DestinoId" nillable="true" type="xs:int" />
-      <xs:element minOccurs="0" name="HastaEntrega" nillable="true" type="xs:dateTime" />
-      <xs:element minOccurs="0" name="HastaFijacion" nillable="true" type="xs:dateTime" />
-      <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element minOccurs="0" name="Material" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
-      <xs:element minOccurs="0" name="MonedaId" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Pizarra" type="xs:boolean" />
-      <xs:element minOccurs="0" name="Precio" type="xs:decimal" />
-      <xs:element minOccurs="0" name="Retirado" type="xs:boolean" />
-      <xs:element minOccurs="0" name="TipoNegocio" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="TipoNegocioId" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="PrecioMoaCompraNetDto" nillable="true" type="tns:PrecioMoaCompraNetDto" />
   <xs:complexType name="ArrayOfContratoCopiar">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="ContratoCopiar" nillable="true" type="tns:ContratoCopiar" />
