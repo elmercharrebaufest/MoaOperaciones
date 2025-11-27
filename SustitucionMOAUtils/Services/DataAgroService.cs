@@ -1,8 +1,10 @@
-﻿using SustitucionMOAAssets;
+﻿using Newtonsoft.Json;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
@@ -444,6 +446,70 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
 
+        }
+
+        public string InicializarContrato(int tipoNegocioId)
+        {
+            try
+            {
+                var datosIniContrato = new DataAgroConsumer().InicializarContrato(tipoNegocioId);
+                string json = JsonConvert.SerializeObject(datosIniContrato);
+                json = json.Replace("ñ", "ni");
+                return json;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public string ObtenerDatosCompraNet(int id)
+        {
+            try
+            {
+                var datosCompraNet = new DataAgroConsumer().ObtenerDatosCompraNet(id);
+                string json = JsonConvert.SerializeObject(datosCompraNet);
+                json = json.Replace("ñ", "ni");
+                return json;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public string ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual)
+        {
+            try
+            {
+                var fijaciones = new DataAgroConsumer().ObtenerFijacionesAutomaticas(cuitProveedor, cuitCorredor, materialId, filtro, fijacionId, esVirtual);
+                string json = JsonConvert.SerializeObject(fijaciones);
+                json = json.Replace("ñ", "ni");
+                return json;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public string ValidarProveedor(int proveedorId)
+        {
+            try
+            {
+                var altaTempranaNRCO = new DataAgroConsumer().ValidarProveedor(proveedorId);
+                string json = JsonConvert.SerializeObject(altaTempranaNRCO);
+                json = json.Replace("ñ", "ni");
+                return json;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
         }
     }
 

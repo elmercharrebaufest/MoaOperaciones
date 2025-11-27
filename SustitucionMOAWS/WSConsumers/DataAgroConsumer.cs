@@ -1,6 +1,8 @@
-﻿using SustitucionMOAWS.CredentialService;
+﻿using SustitucionMOAModel.Models.DataAgro;
+using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.DataAgroServices;
 using System;
+using System.Collections;
 using System.Linq;
 
 namespace SustitucionMOAWS.WSConsumers
@@ -79,6 +81,32 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
 
         }
+
+        public DatosIniContrato InicializarContrato(int tipoNegocioId)
+        {
+            var result = service.InicializarContrato(tipoNegocioId);
+            return result; 
+        }
+
+        public DatosCompraNetDto ObtenerDatosCompraNet(int id)
+        {
+            var result = service.ObtenerDatosCompraNet(id);
+            return result;
+        }
+
+        public SustitucionMOAWS.DataAgroServices.DatosFijacionDeContratoDto[] ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual)
+        {
+            var result = service.ObtenerFijacionesAutomaticas(cuitProveedor, cuitCorredor, materialId, filtro, fijacionId, esVirtual);
+            return result;
+        }
+
+        public AltaTempranaNRCODto ValidarProveedor(int proveedorId)
+        {
+            var result = service.ValidarProveedor(proveedorId);
+            return result;
+        }
+
+
 
     }
 
