@@ -15,5 +15,6 @@ namespace SustitucionMOARepositorio.Repositorios.Interfaces
         List<UsuarioDto> ObtenerUsuarios();
         List<ProveedorARelacionar> GetProveedoresARelacionar(string cuit);
         bool VerificarActividadUsuario(Usuario usuario);
+        List<string> GetMailsUsuariosConPermisos(ICollection<string> permisos);
     }
 }
