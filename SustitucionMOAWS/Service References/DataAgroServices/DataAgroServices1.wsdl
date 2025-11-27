@@ -186,6 +186,21 @@
   <wsdl:message name="IDataAgroServices_ValidarProveedor_OutputMessage">
     <wsdl:part name="parameters" element="tns:ValidarProveedorResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataAgroServices_TraerPrecioMoa_InputMessage">
+    <wsdl:part name="parameters" element="tns:TraerPrecioMoa" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_TraerPrecioMoa_OutputMessage">
+    <wsdl:part name="parameters" element="tns:TraerPrecioMoaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_TraerContratoCompleto_InputMessage">
+    <wsdl:part name="parameters" element="tns:TraerContratoCompleto" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_TraerContratoCompleto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:TraerContratoCompletoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_TraerContratoCompleto_ResultadoDtoFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" name="detail" element="q1:ResultadoDto" />
+  </wsdl:message>
   <wsdl:message name="IDataAgroServices_TraerFijacionCompleto_InputMessage">
     <wsdl:part name="parameters" element="tns:TraerFijacionCompleto" />
   </wsdl:message>
@@ -228,11 +243,11 @@
   <wsdl:message name="IDataAgroServices_HabilitarCampaña_OutputMessage">
     <wsdl:part name="parameters" element="tns:HabilitarCampañaResponse" />
   </wsdl:message>
-  <wsdl:message name="IDataAgroServices_TraerPrecioMoa_InputMessage">
-    <wsdl:part name="parameters" element="tns:TraerPrecioMoa" />
+  <wsdl:message name="IDataAgroServices_TraerPrecioMoaV2_InputMessage">
+    <wsdl:part name="parameters" element="tns:TraerPrecioMoaV2" />
   </wsdl:message>
-  <wsdl:message name="IDataAgroServices_TraerPrecioMoa_OutputMessage">
-    <wsdl:part name="parameters" element="tns:TraerPrecioMoaResponse" />
+  <wsdl:message name="IDataAgroServices_TraerPrecioMoaV2_OutputMessage">
+    <wsdl:part name="parameters" element="tns:TraerPrecioMoaV2Response" />
   </wsdl:message>
   <wsdl:message name="IDataAgroServices_GrabarFijacion_InputMessage">
     <wsdl:part name="parameters" element="tns:GrabarFijacion" />
@@ -419,6 +434,15 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/ValidarProveedor" message="tns:IDataAgroServices_ValidarProveedor_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/ValidarProveedorResponse" message="tns:IDataAgroServices_ValidarProveedor_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="TraerPrecioMoa">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/TraerPrecioMoa" message="tns:IDataAgroServices_TraerPrecioMoa_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/TraerPrecioMoaResponse" message="tns:IDataAgroServices_TraerPrecioMoa_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="TraerContratoCompleto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/TraerContratoCompleto" message="tns:IDataAgroServices_TraerContratoCompleto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/TraerContratoCompletoResponse" message="tns:IDataAgroServices_TraerContratoCompleto_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://tempuri.org/IDataAgroServices/TraerContratoCompletoResultadoDtoFault" name="ResultadoDtoFault" message="tns:IDataAgroServices_TraerContratoCompleto_ResultadoDtoFault_FaultMessage" />
+    </wsdl:operation>
     <wsdl:operation name="TraerFijacionCompleto">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/TraerFijacionCompleto" message="tns:IDataAgroServices_TraerFijacionCompleto_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/TraerFijacionCompletoResponse" message="tns:IDataAgroServices_TraerFijacionCompleto_OutputMessage" />
@@ -447,9 +471,9 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/HabilitarCampaña" message="tns:IDataAgroServices_HabilitarCampaña_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/HabilitarCampañaResponse" message="tns:IDataAgroServices_HabilitarCampaña_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="TraerPrecioMoa">
-      <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/TraerPrecioMoa" message="tns:IDataAgroServices_TraerPrecioMoa_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/TraerPrecioMoaResponse" message="tns:IDataAgroServices_TraerPrecioMoa_OutputMessage" />
+    <wsdl:operation name="TraerPrecioMoaV2">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/TraerPrecioMoaV2" message="tns:IDataAgroServices_TraerPrecioMoaV2_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/TraerPrecioMoaV2Response" message="tns:IDataAgroServices_TraerPrecioMoaV2_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="GrabarFijacion">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/GrabarFijacion" message="tns:IDataAgroServices_GrabarFijacion_InputMessage" />
@@ -755,6 +779,27 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="TraerPrecioMoa">
+      <soap:operation soapAction="http://tempuri.org/IDataAgroServices/TraerPrecioMoa" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TraerContratoCompleto">
+      <soap:operation soapAction="http://tempuri.org/IDataAgroServices/TraerContratoCompleto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ResultadoDtoFault">
+        <soap:fault use="literal" name="ResultadoDtoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
     <wsdl:operation name="TraerFijacionCompleto">
       <soap:operation soapAction="http://tempuri.org/IDataAgroServices/TraerFijacionCompleto" style="document" />
       <wsdl:input>
@@ -818,8 +863,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="TraerPrecioMoa">
-      <soap:operation soapAction="http://tempuri.org/IDataAgroServices/TraerPrecioMoa" style="document" />
+    <wsdl:operation name="TraerPrecioMoaV2">
+      <soap:operation soapAction="http://tempuri.org/IDataAgroServices/TraerPrecioMoaV2" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

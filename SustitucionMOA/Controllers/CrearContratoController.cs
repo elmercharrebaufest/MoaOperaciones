@@ -147,7 +147,7 @@ namespace SustitucionMOA.Controllers
             {
                 var proveedor = ObtenerProveedor();
 
-                return JsonCustom(dataAgroApiService.BuscarProveedoresConCorredor(filtro, proveedor.CUIT));
+                return JsonCustom(dataAgroService.BuscarProveedoresConCorredor(filtro, proveedor.CUIT, null));
             }
             else
             {
@@ -157,21 +157,21 @@ namespace SustitucionMOA.Controllers
         }
         public ActionResult Habilitaciones(int material, int tiponegocio)
         {
-            string HabilitarPizarra = dataAgroApiService.HabilitarPizarra(material, tiponegocio);
-            string HabilitarCampana = dataAgroApiService.HabilitarCampaña(material);
-            string TraerPrecioMoa = dataAgroApiService.TraerPrecioMoa(material, tiponegocio);
-            string TraerPagosDiferido = dataAgroApiService.TraerPagosDiferido(material, tiponegocio);
-            string TraerHabilitarSustentable = dataAgroApiService.TraerHabilitarSustentable();
+            string HabilitarPizarra = dataAgroService.HabilitarPizarra(material, tiponegocio);
+            string HabilitarCampana = dataAgroService.HabilitarCampaña(material);
+            string TraerPrecioMoa = dataAgroService.TraerPrecioMoaV2(material, tiponegocio);
+            string TraerPagosDiferido = dataAgroService.TraerPagosDiferido();
+            string TraerHabilitarSustentable = dataAgroService.HabilitarSustentable();
             var result = new { HabilitarPizarra, HabilitarCampana, TraerPrecioMoa, TraerPagosDiferido, TraerHabilitarSustentable };
             return JsonCustom(result);
         }
         public ActionResult HabilitarCampana(int material)
         {
-            return JsonCustom(dataAgroApiService.HabilitarCampaña(material));
+            return JsonCustom(dataAgroService.HabilitarCampaña(material));
         }
         public ActionResult HabilitarPizarra(int material, int tiponegocio)
         {
-            return JsonCustom(dataAgroApiService.HabilitarPizarra(material, tiponegocio));
+            return JsonCustom(dataAgroService.HabilitarPizarra(material, tiponegocio));
         }
         public ActionResult ObtenerFijacionesAutomaticas(bool esCorredorEnDataAgro, string cuitProveedor, int materialId, string filtro)
         {
@@ -346,7 +346,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult AnularNegocio(int negocioId, int tipoNegocioId, string motivo)
         {
-            return JsonCustom(dataAgroApiService.AnularNegocio(negocioId, tipoNegocioId, motivo));
+            return JsonCustom(dataAgroService.AnularNegocio(negocioId, tipoNegocioId, motivo));
         }
 
         public ActionResult TraerContratoCompleto(int negocioId, int tipoNegocioId)
@@ -402,7 +402,7 @@ namespace SustitucionMOA.Controllers
             if (fileSubido.ContentLength > 0)
             {
                 var dsExcel = ExcelImport.LeerExcelDesdeHttpRequest(Request);
-                var materiales = dataAgroApiService.BuscarMateriales();
+                var materiales = dataAgroService.BuscarMateriales();
                 var centros = dataAgroApiService.BuscarCentros();
                 var campanias = dataAgroApiService.BuscarCampanias();
                 var validations = GetValidatorContratos(materiales, centros, campanias);
