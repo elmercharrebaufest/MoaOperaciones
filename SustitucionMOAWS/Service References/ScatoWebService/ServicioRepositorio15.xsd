@@ -181,9 +181,11 @@
           <xs:element minOccurs="0" name="IdExcepcionPagoMunicipal" nillable="true" type="xs:int" />
           <xs:element minOccurs="0" name="IdPagoMunicipal" nillable="true" type="xs:int" />
           <xs:element minOccurs="0" name="MensajeTasaMunicipal" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="MotivoExcepcionTasaMunicipal" nillable="true" type="xs:string" />
           <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="OrdenCargaFasDto" nillable="true" type="q11:OrdenCargaFasDto" />
           <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="OrdenCargaInterna" nillable="true" type="q12:OrdenCargaInternaDto" />
           <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="OrdenCargaInternaFason" nillable="true" type="q13:OrdenCargaInternaFasonDto" />
+          <xs:element minOccurs="0" name="TieneExcepcionTasaMunicipal" type="xs:boolean" />
           <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="tipoAlerta" type="q14:TipoAlerta" />
         </xs:sequence>
       </xs:extension>

@@ -130,42 +130,6 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="TieneExcepcionDeTicketMunicipal">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDeTicketMunicipal" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerMonitoreoServicioExternoPorJob">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMonitoreoServicioExternoPorJob" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ListarMonitoreoServicioExterno">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarMonitoreoServicioExterno" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerRegistroJobEjecucionPorProceso">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorProceso" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="ListarRENSPAPorProveedorYTerm">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarRENSPAPorProveedorYTerm" style="document" />
       <wsdl:input>
@@ -202,8 +166,62 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="ObtenerMonitoreoServicioExternoPorJob">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMonitoreoServicioExternoPorJob" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarMonitoreoServicioExterno">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarMonitoreoServicioExterno" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerRegistroJobEjecucionPorProceso">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorProceso" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="ObtenerTrackingData">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTrackingData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EstaDemoradoPorTasaAdeudada">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/EstaDemoradoPorTasaAdeudada" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerExcepcionDeTicketMunicipal">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerExcepcionDeTicketMunicipal" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TieneExcepcionDePagoDeTasaMunicipal">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDePagoDeTasaMunicipal" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

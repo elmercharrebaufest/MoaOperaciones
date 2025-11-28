@@ -58,15 +58,6 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="CartaPorteElectronicaDto" nillable="true" type="tns:CartaPorteElectronicaDto" />
-  <xs:complexType name="RegistroJobEjecucionDto">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="FechaEjecucion" type="xs:dateTime" />
-      <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element minOccurs="0" name="NombreProceso" nillable="true" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="RegistroJobEjecucionDto" nillable="true" type="tns:RegistroJobEjecucionDto" />
   <xs:complexType name="ArrayOfProveedorRENSPADto">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="ProveedorRENSPADto" nillable="true" type="tns:ProveedorRENSPADto" />
@@ -165,6 +156,25 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="AuditoriaBaseDto" nillable="true" type="tns:AuditoriaBaseDto" />
+  <xs:complexType name="RegistroJobEjecucionDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FechaEjecucion" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="NombreProceso" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RegistroJobEjecucionDto" nillable="true" type="tns:RegistroJobEjecucionDto" />
+  <xs:complexType name="ExceptuadosTicketMunicipalDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="FechaCreacionExcepcion" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="NombreUsuario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="WorkflowInstanceId" nillable="true" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ExceptuadosTicketMunicipalDto" nillable="true" type="tns:ExceptuadosTicketMunicipalDto" />
   <xs:complexType name="ArrayOfLogDispositivoDto">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="LogDispositivoDto" nillable="true" type="tns:LogDispositivoDto" />
@@ -2762,20 +2772,6 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfExceptuadosTicketMunicipalDto" nillable="true" type="tns:ArrayOfExceptuadosTicketMunicipalDto" />
-  <xs:complexType name="ExceptuadosTicketMunicipalDto">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
-      <xs:element minOccurs="0" name="FechaCreacionExcepcion" type="xs:dateTime" />
-      <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element minOccurs="0" name="NombreUsuario" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="NumeroDocumentoIngreso" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="PermiteAcciones" type="xs:boolean" />
-      <xs:element minOccurs="0" name="WorkflowCodigo" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="WorkflowDescripcion" nillable="true" type="xs:string" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ExceptuadosTicketMunicipalDto" nillable="true" type="tns:ExceptuadosTicketMunicipalDto" />
   <xs:complexType name="ArrayOfOrdenCargaFasDto">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="OrdenCargaFasDto" nillable="true" type="tns:OrdenCargaFasDto" />
@@ -6741,6 +6737,7 @@
       <xs:element minOccurs="0" name="LocalidadCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Material" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialCodigoCamara" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MaterialCodigoSAP" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MercadoATermino" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MercadoATerminoCuit" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NombreUsuario" nillable="true" type="xs:string" />

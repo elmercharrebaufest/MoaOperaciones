@@ -2656,13 +2656,6 @@
           </xs:appinfo>
         </xs:annotation>
       </xs:enumeration>
-      <xs:enumeration value="MonitoreoServicioExterno">
-        <xs:annotation>
-          <xs:appinfo>
-            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">711</EnumerationValue>
-          </xs:appinfo>
-        </xs:annotation>
-      </xs:enumeration>
       <xs:enumeration value="PanelDeControlTransaccionesVisec">
         <xs:annotation>
           <xs:appinfo>
@@ -2674,6 +2667,13 @@
         <xs:annotation>
           <xs:appinfo>
             <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">712</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="MonitoreoServicioExterno">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">713</EnumerationValue>
           </xs:appinfo>
         </xs:annotation>
       </xs:enumeration>
