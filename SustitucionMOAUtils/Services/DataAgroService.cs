@@ -797,6 +797,150 @@ namespace SustitucionMOAUtils.Services
             return contratoDA;
         }
 
+        public string GrabarFijacion(ContratoFijacion contratoFijacion)
+        {
+            try
+            {
+                var fijacionDePrecioContrato = new SustitucionMOAWS.DataAgroServices.FijacionDePrecioContrato
+                {
+                    TipoNegocioId = contratoFijacion.TipoNegocioId,
+                    Id = contratoFijacion.Id,
+                    MaterialId = contratoFijacion.MaterialId,
+                    Cantidad = contratoFijacion.Cantidad,
+                    Precio = contratoFijacion.Precio,
+                    PrecioNeto = contratoFijacion.PrecioNeto,
+                    CampanaId = contratoFijacion.CampanaId,
+                    MonedaId = contratoFijacion.MonedaId,
+                    ComercialId = contratoFijacion.ComercialId,
+                    ContratoSAP = contratoFijacion.ContratoSAP,
+                    PorcentajeDePago = contratoFijacion.PorcentajeDePago,
+                    ComercialCreadorId = contratoFijacion.ComercialCreadorId,
+                    EstadoId = contratoFijacion.EstadoId,
+                    Observacion = contratoFijacion.Observacion,
+                    DestinoId = contratoFijacion.DestinoId,
+                    BoletoId = contratoFijacion.BoletoId,
+                    BolsaId = contratoFijacion.BolsaId,
+                    ProveedorId = contratoFijacion.ProveedorId,
+                    CorredorId = contratoFijacion.CorredorId,
+                    DiasPesificado = contratoFijacion.DiasPesificado,
+                    FechaOperacion = contratoFijacion.FechaOperacion,
+                    FechaEntrega = contratoFijacion.FechaEntrega,
+                    FechaDesde = contratoFijacion.FechaDesde,
+                    Fecha = contratoFijacion.Fecha,
+                    FechaHasta = contratoFijacion.FechaHasta,
+                    ProveedorCreadorId = contratoFijacion.ProveedorCreadorId,
+                    StandardDeCalidadId = contratoFijacion.StandardDeCalidadId,
+                    CondicionFijacionId = contratoFijacion.CondicionFijacionId,
+                    CantidadCamiones = contratoFijacion.CantidadCamiones,
+                    ImporteSustentable = contratoFijacion.ImporteSustentable,
+                    EstablecimientoPropio = contratoFijacion.EstablecimientoPropio,
+                    Consignatario = contratoFijacion.Consignatario,
+                    PlanCanje = contratoFijacion.PlanCanje,
+                    ZonaId = contratoFijacion.ZonaId,
+                    Pizarra = contratoFijacion.Pizarra,
+                    ContratoId = contratoFijacion.ContratoId,
+                    Posicion = contratoFijacion.Posicion,
+                    ObservacionTercero = contratoFijacion.ObservacionTercero,
+                    CalidadTercero = contratoFijacion.CalidadTercero,
+                    PagoDiferidoTercero = contratoFijacion.PagoDiferidoTercero,
+                    DolarizadoTercero = contratoFijacion.DolarizadoTercero,
+                    TrigoEspecial = contratoFijacion.TrigoEspecial,
+                    UsuarioTercero = contratoFijacion.UsuarioTercero
+                };
+
+                var busqueda = new DataAgroConsumer().GrabarFijacion(fijacionDePrecioContrato);
+                return SerializeAndSanitize(busqueda);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public string ObteneContratosAcuerdo(int corredorId)
+        {
+            try
+            {
+                var contratos = new DataAgroConsumer().TraerContratosAcuerdoPorCorredor(corredorId);
+                return SerializeAndSanitize(contratos);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos)
+        {
+            try
+            {
+                // Mapear modelos MOA a los DTOs del consumer de DataAgro
+                var contratosDto = contratos.Select(c => new SustitucionMOAWS.DataAgroServices.BasicoContrato
+                {
+                    ContratoAcuerdoId = c.ContratoAcuerdoId,
+                    CorredorId = c.CorredorId,
+                    ContratoCorredor = c.ContratoCorredor,
+                    ContratoVendedor = c.ContratoVendedor,
+                    MaterialId = c.MaterialId,
+                    CampanaId = c.CampanaId,
+                    FechaOperacion = c.FechaOperacion,
+                    FechaDesde = c.FechaDesde,
+                    FechaHasta = c.FechaHasta,
+                    FechaEntrega = c.FechaEntrega,
+                    Cantidad = c.Cantidad,
+                    Cuit = c.Cuit,
+                    ClasificacionId = c.ClasificacionId,
+                    PlanCanje = c.PlanCanje,
+                    Consignatario = c.Consignatario,
+                    DestinoId = c.DestinoId,
+                    LocalidadId = c.LocalidadId,
+                    ProvinciaId = c.ProvinciaId,
+                    Observacion = c.Observacion,
+                    UsuarioTercero = c.UsuarioTercero,
+                }).ToArray();
+
+                // Llamada al consumer que ejecuta la operación en DataAgro
+                var rawResult = new DataAgroConsumer().GrabarContratoMasivo(contratosDto);
+
+                var json = JsonConvert.SerializeObject(rawResult);
+                var result = JsonConvert.DeserializeObject<List<GrabarContratoResult>>(json);
+
+                return result ?? new List<GrabarContratoResult>();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public string TraerContratoCompleto(int negocioId, int tipoNegocioId)
+        {
+            try
+            {
+                if (tipoNegocioId == 1 || tipoNegocioId == 2)
+                {
+                    return SerializeAndSanitize(new DataAgroConsumer().TraerContratoCompleto(negocioId, null));
+                }
+                else if (tipoNegocioId == 3)
+                {
+                    return SerializeAndSanitize(new DataAgroConsumer().TraerFijacionCompleto(negocioId));
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+
         private static string SerializeAndSanitize(object value)
         {
             string json = JsonConvert.SerializeObject(value);

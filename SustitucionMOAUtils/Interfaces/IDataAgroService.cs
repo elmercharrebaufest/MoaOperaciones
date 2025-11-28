@@ -34,5 +34,9 @@ namespace SustitucionMOAUtils.Interfaces
         string CrearContratoAPrecio(ContratoAPrecio contrato);
         string CrearContratoAFijar(ContratoAFijar contrato);
         string ValidarDirecto(string cuit);
+        string GrabarFijacion(ContratoFijacion contratoFijacion);
+        string ObteneContratosAcuerdo(int corredorId);
+        List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos);
+        string TraerContratoCompleto(int negocioId, int tipoNegocioId);
     }
 }
