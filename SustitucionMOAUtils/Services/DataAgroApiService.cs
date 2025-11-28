@@ -40,6 +40,7 @@ namespace SustitucionMOAUtils.Services
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
         }
 
+        [Obsolete("Reemplazado por DataAgroService.CrearContratoAPrecio")]
         public string CrearContratoAPrecio(ContratoAPrecio contratoAPrecio)
         {
             try
@@ -108,6 +109,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete("Reemplazado por DataAgroService.CrearContratoAFijar")]
         public string CrearContratoAFijar(ContratoAFijar contratoAPrecio)
         {
             try
@@ -130,6 +132,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete("Reemplazado por DataAgroService.ValidarDirecto")]
         public string ValidarDirecto(string cuit)
         {
             try

@@ -31,5 +31,8 @@ namespace SustitucionMOAUtils.Interfaces
         string HabilitarSustentable();
         string BuscarProveedoresConCorredor(string filtroProveedor, string filtro, int? agenteCompraId);
         List<MaterialDto> BuscarMateriales();
+        string CrearContratoAPrecio(ContratoAPrecio contrato);
+        string CrearContratoAFijar(ContratoAFijar contrato);
+        string ValidarDirecto(string cuit);
     }
 }

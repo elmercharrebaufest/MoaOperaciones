@@ -29,7 +29,8 @@ namespace SustitucionMOA.Controllers
     {
         protected readonly IRepositorio repositorio;
         readonly IDataAgroApiService dataAgroApiService;
-        private IDataAgroService dataAgroService;
+        private readonly IDataAgroService dataAgroService;
+
         public CrearContratoController(IDataAgroApiService dataAgroApiService, IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.dataAgroApiService = dataAgroApiService;
@@ -95,7 +96,7 @@ namespace SustitucionMOA.Controllers
             contratoAPrecio.CantidadCamiones = contratoAPrecio.CantidadCamiones == 0 ? null : contratoAPrecio.CantidadCamiones;
             contratoAPrecio.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-            string result = dataAgroApiService.CrearContratoAPrecio(contratoAPrecio);
+            string result = dataAgroService.CrearContratoAPrecio(contratoAPrecio);
 
             return JsonCustom(result);
         }
@@ -122,7 +123,7 @@ namespace SustitucionMOA.Controllers
             contratoAFijar.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
 
-            string result = dataAgroApiService.CrearContratoAFijar(contratoAFijar);
+            string result = dataAgroService.CrearContratoAFijar(contratoAFijar);
 
             return JsonCustom(result);
         }
@@ -130,7 +131,7 @@ namespace SustitucionMOA.Controllers
         {
             var proveedor = ObtenerProveedor();
 
-            var directo = dataAgroApiService.ValidarDirecto(proveedor.CUIT);
+            var directo = dataAgroService.ValidarDirecto(proveedor.CUIT);
             int result = 0;
             if (directo == "false")
             {

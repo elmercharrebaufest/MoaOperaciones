@@ -166,6 +166,22 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
+        public DataAgroServices.GrabarContratoResult GrabarContratoAPrecio(Contrato contrato)
+        {
+            var grabarContratoResult = service.GrabarContratoAPrecio(contrato);
+            return grabarContratoResult;
+        }
 
+        public DataAgroServices.GrabarContratoResult GrabarContratoAFijar(Contrato contrato)
+        {
+            var grabarContratoResult = service.GrabarContratoAFijar(contrato);
+            return grabarContratoResult;
+        }
+
+        public bool ValidarDirecto(string cuit)
+        {
+            var esValido = service.ValidarDirecto(cuit);
+            return esValido;
+        }
     }
 }

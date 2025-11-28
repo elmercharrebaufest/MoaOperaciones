@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
@@ -19,7 +20,7 @@ using System.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class DataAgroService : SustitucionMOAUtils.Interfaces.IDataAgroService
+    public class DataAgroService : Interfaces.IDataAgroService
     {
         protected readonly IRepositorio repositorio;
 
@@ -236,7 +237,6 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-
         public decimal TraerTipoDeCambio()
         {
             try
@@ -282,7 +282,6 @@ namespace SustitucionMOAUtils.Services
                 proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
             }
         }
-
 
         public string VerificarEstadoProveedor(int proveedorId, string usuarioMail)
         {
@@ -358,11 +357,6 @@ namespace SustitucionMOAUtils.Services
             return resultado;
         }
 
-        private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
-        {
-            return repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
-        }
-
         public Rol ObtenerRolPorCodigo(string codigo)
         {
             return repositorio.Obtener<Rol>(u => u.Codigo.Equals(codigo));
@@ -395,11 +389,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private string FormatearCodigoProveedor(string CUIT)
-        {
-            return string.Concat("00", CUIT.Substring(2, 8));
-        }
-
         public bool ProveedorApocrifo(string CUIT)
         {
             return new DataAgroConsumer().ProveedorApocrifo(CUIT);
@@ -424,7 +413,6 @@ namespace SustitucionMOAUtils.Services
                 return resultado;
             }
         }
-
 
         public List<EstadoProveedorDto> ObtenerEstadoProveedores(string[] cuits)
         {
@@ -647,13 +635,172 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public string CrearContratoAPrecio(ContratoAPrecio contrato)
+        {
+            try
+            {
+                var contratoAPrecio = ConvertirAModeloDataAgro(contrato);
+                var grabarContratoResult = new DataAgroConsumer().GrabarContratoAPrecio(contratoAPrecio);
+                return SerializeAndSanitize(grabarContratoResult);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
 
+        public string CrearContratoAFijar(ContratoAFijar contrato)
+        {
+            try
+            {
+                var contratoAFijar = ConvertirAModeloDataAgro(contrato);
+                var grabarContratoResult = new DataAgroConsumer().GrabarContratoAFijar(contratoAFijar);
+                return SerializeAndSanitize(grabarContratoResult);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
 
-        private string SerializeAndSanitize(object value)
+        public string ValidarDirecto(string cuit)
+        {
+            try
+            {
+                var esValido = new DataAgroConsumer().ValidarDirecto(cuit);
+                return SerializeAndSanitize(esValido);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
+        {
+            return repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
+        }
+
+        private static string FormatearCodigoProveedor(string CUIT)
+        {
+            return string.Concat("00", CUIT.Substring(2, 8));
+        }
+
+        private static SustitucionMOAWS.DataAgroServices.Contrato ConvertirAModeloDataAgro(ContratoAPrecio contrato)
+        {
+            var contratoDA = new SustitucionMOAWS.DataAgroServices.Contrato();
+
+            contratoDA.BolsaId = contrato.BolsaId;
+            contratoDA.CampanaId = contrato.CampanaId;
+            contratoDA.Cantidad = contrato.Cantidad;
+            contratoDA.CantidadCamiones = contrato.CantidadCamiones;
+            contratoDA.CalidadTercero = contrato.CalidadTercero;
+            contratoDA.ClasificacionId = contrato.ClasificacionId;
+            contratoDA.ComercialCreadorId = contrato.ComercialCreadorId;
+            contratoDA.ComercialId = contrato.ComercialId;
+            contratoDA.CondicionFijacionId = contrato.CondicionFijacionId;
+            contratoDA.Consignatario = contrato.Consignatario;
+            contratoDA.ContratoCorredor = contrato.ContratoCorredor;
+            contratoDA.ContratoSAP = contrato.ContratoSAP;
+            contratoDA.ContratoVendedor = contrato.ContratoVendedor;
+            contratoDA.CorredorId = contrato.CorredorId;
+            contratoDA.DestinoId = contrato.DestinoId;
+            contratoDA.DiasPesificado = contrato.DiasPesificado;
+            contratoDA.DolarizadoTercero = contrato.DolarizadoTercero;
+            contratoDA.EstadoId = contrato.EstadoId;
+            contratoDA.EstablecimientoPropio = contrato.EstablecimientoPropio;
+            contratoDA.Fecha = contrato.Fecha;
+            contratoDA.FechaDesde = contrato.FechaDesde;
+            contratoDA.FechaEntrega = contrato.FechaEntrega;
+            contratoDA.FechaHasta = contrato.FechaHasta;
+            contratoDA.FechaOperacion = contrato.FechaOperacion;
+            contratoDA.Id = contrato.Id;
+            contratoDA.ImporteSustentable = contrato.ImporteSustentable;
+            contratoDA.LocalidadId = contrato.LocalidadId;
+            contratoDA.MaterialId = contrato.MaterialId;
+            contratoDA.MonedaId = contrato.MonedaId;
+            contratoDA.MonedaSustentableId = contrato.MonedaSustentableId;
+            contratoDA.Observacion = contrato.Observacion;
+            contratoDA.ObservacionTercero = contrato.ObservacionTercero;
+            contratoDA.PagoDiferidoTercero = contrato.PagoDiferidoTercero;
+            contratoDA.Pizarra = contrato.Pizarra;
+            contratoDA.PlanCanje = contrato.PlanCanje;
+            contratoDA.PorcentajeDePago = contrato.PorcentajeDePago;
+            contratoDA.Precio = contrato.Precio;
+            contratoDA.PrecioNeto = contrato.PrecioNeto;
+            contratoDA.ProveedorCreadorId = contrato.ProveedorCreadorId;
+            contratoDA.ProveedorId = contrato.ProveedorId;
+            contratoDA.ProvinciaId = contrato.ProvinciaId;
+            contratoDA.StandardDeCalidadId = contrato.StandardDeCalidadId;
+            contratoDA.Sustentable = contrato.Sustentable ?? false;
+            contratoDA.SustentableTercero = contrato.SustentableTercero;
+            contratoDA.TipoNegocioId = contrato.TipoNegocioId;
+            contratoDA.UsuarioTercero = contrato.UsuarioTercero;
+            contratoDA.ZonaId = contrato.ZonaId;
+
+            return contratoDA;
+        }
+
+        private static SustitucionMOAWS.DataAgroServices.Contrato ConvertirAModeloDataAgro(ContratoAFijar contrato)
+        {
+            var contratoDA = new SustitucionMOAWS.DataAgroServices.Contrato();
+
+            contratoDA.BolsaId = contrato.BolsaId;
+            contratoDA.CalidadTercero = contrato.CalidadTercero;
+            contratoDA.CampanaId = contrato.CampanaId;
+            contratoDA.Cantidad = contrato.Cantidad;
+            contratoDA.CantidadCamiones = contrato.CantidadCamiones;
+            contratoDA.ClasificacionId = contrato.ClasificacionId;
+            contratoDA.ComercialCreadorId = contrato.ComercialCreadorId;
+            contratoDA.ComercialId = contrato.ComercialId;
+            contratoDA.Consignatario = contrato.Consignatario;
+            contratoDA.CondicionFijacionId = contrato.CondicionFijacionId;
+            contratoDA.ContratoCorredor = contrato.ContratoCorredor;
+            contratoDA.ContratoSAP = contrato.ContratoSAP;
+            contratoDA.ContratoVendedor = contrato.ContratoVendedor;
+            contratoDA.CorredorId = contrato.CorredorId;
+            contratoDA.DestinoId = contrato.DestinoId;
+            contratoDA.DesdeFijacion = contrato.DesdeFijacion;
+            contratoDA.EstadoId = contrato.EstadoId;
+            contratoDA.EstablecimientoPropio = contrato.EstablecimientoPropio;
+            contratoDA.Fecha = contrato.Fecha;
+            contratoDA.FechaDesde = contrato.FechaDesde;
+            contratoDA.FechaEntrega = contrato.FechaEntrega;
+            contratoDA.FechaHasta = contrato.FechaHasta;
+            contratoDA.FechaOperacion = contrato.FechaOperacion;
+            contratoDA.HastaFijacion = contrato.HastaFijacion;
+            contratoDA.Id = contrato.Id;
+            contratoDA.ImporteSustentable = contrato.ImporteSustentable;
+            contratoDA.LocalidadId = contrato.LocalidadId;
+            contratoDA.MaterialId = contrato.MaterialId;
+            contratoDA.MonedaId = contrato.MonedaId;
+            contratoDA.MonedaSustentableId = contrato.MonedaSustentableId;
+            contratoDA.Observacion = contrato.Observacion;
+            contratoDA.ObservacionTercero = contrato.ObservacionTercero;
+            contratoDA.PlanCanje = contrato.PlanCanje;
+            contratoDA.PorcentajeDePago = contrato.PorcentajeDePago;
+            contratoDA.Precio = contrato.Precio;
+            contratoDA.PrecioNeto = contrato.PrecioNeto;
+            contratoDA.ProveedorCreadorId = contrato.ProveedorCreadorId;
+            contratoDA.ProveedorId = contrato.ProveedorId;
+            contratoDA.ProvinciaId = contrato.ProvinciaId;
+            contratoDA.StandardDeCalidadId = contrato.StandardDeCalidadId;
+            contratoDA.Sustentable = contrato.Sustentable ?? false;
+            contratoDA.SustentableTercero = contrato.SustentableTercero;
+            contratoDA.TipoNegocioId = contrato.TipoNegocioId;
+            contratoDA.UsuarioTercero = contrato.UsuarioTercero;
+            contratoDA.ZonaId = contrato.ZonaId;
+
+            return contratoDA;
+        }
+
+        private static string SerializeAndSanitize(object value)
         {
             string json = JsonConvert.SerializeObject(value);
             return json.Replace("ñ", "ni");
         }
     }
-
 }
