@@ -3,7 +3,7 @@
   <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" />
   <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" />
   <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" />
+  <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" />
   <xs:element name="Ping">
     <xs:complexType>
       <xs:sequence />
@@ -352,7 +352,7 @@
   <xs:element name="InicializarContratoResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q38="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="InicializarContratoResult" nillable="true" type="q38:DatosIniContrato" />
+        <xs:element xmlns:q38="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" minOccurs="0" name="InicializarContratoResult" nillable="true" type="q38:ContratoModel_prueba" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -413,7 +413,7 @@
   <xs:element name="TraerPrecioMoaResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q42="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="TraerPrecioMoaResult" nillable="true" type="q42:ArrayOfPrecioMoaGroupDto" />
+        <xs:element xmlns:q42="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="TraerPrecioMoaResult" nillable="true" type="q42:ArrayOfArrayOfPrecioMoaCompraNetDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -644,6 +644,20 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="BuscaDatosTablaContrato">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q62="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="filtro" nillable="true" type="q62:KendoDataSourceRequestDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BuscaDatosTablaContratoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q63="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="BuscaDatosTablaContratoResult" nillable="true" type="q63:KendoDataSourceResultDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="BuscarMateriales">
     <xs:complexType>
       <xs:sequence />
@@ -652,7 +666,7 @@
   <xs:element name="BuscarMaterialesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q62="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" minOccurs="0" name="BuscarMaterialesResult" nillable="true" type="q62:ResultIniMaterialModel" />
+        <xs:element xmlns:q64="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" minOccurs="0" name="BuscarMaterialesResult" nillable="true" type="q64:ResultIniMaterialModel" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -664,7 +678,7 @@
   <xs:element name="BuscarCentroResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q63="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" minOccurs="0" name="BuscarCentroResult" nillable="true" type="q63:ResultIniCentroModel" />
+        <xs:element xmlns:q65="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" minOccurs="0" name="BuscarCentroResult" nillable="true" type="q65:ResultIniCentroModel" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -676,7 +690,19 @@
   <xs:element name="BuscarCampanaResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q64="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="BuscarCampanaResult" nillable="true" type="q64:ArrayOfCampañaDto" />
+        <xs:element xmlns:q66="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="BuscarCampanaResult" nillable="true" type="q66:ArrayOfCampañaDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExcelModeloAltaMasiva">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExcelModeloAltaMasivaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ExcelModeloAltaMasivaResult" nillable="true" type="xs:base64Binary" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -688,7 +714,7 @@
   <xs:element name="ListarLocalidadesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q65="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ListarLocalidadesResult" nillable="true" type="q65:ArrayOfLocalidadDto" />
+        <xs:element xmlns:q67="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ListarLocalidadesResult" nillable="true" type="q67:ArrayOfLocalidadDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -700,7 +726,7 @@
   <xs:element name="ListarPartidosResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q66="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ListarPartidosResult" nillable="true" type="q66:ArrayOfPartidoDto" />
+        <xs:element xmlns:q68="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ListarPartidosResult" nillable="true" type="q68:ArrayOfPartidoDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
