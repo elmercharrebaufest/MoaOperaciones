@@ -82,14 +82,6 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="TipoVehiculo" nillable="true" type="tns:TipoVehiculo" />
-  <xs:simpleType name="HealthCheckStatus">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Desconocido" />
-      <xs:enumeration value="Conectado" />
-      <xs:enumeration value="Desconectado" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="HealthCheckStatus" nillable="true" type="tns:HealthCheckStatus" />
   <xs:simpleType name="EstadoTransmisionAVisec">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Pendiente" />
@@ -100,6 +92,14 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="EstadoTransmisionAVisec" nillable="true" type="tns:EstadoTransmisionAVisec" />
+  <xs:simpleType name="HealthCheckStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Desconocido" />
+      <xs:enumeration value="Conectado" />
+      <xs:enumeration value="Desconectado" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="HealthCheckStatus" nillable="true" type="tns:HealthCheckStatus" />
   <xs:simpleType name="CamaraFormatoDeArchivo">
     <xs:restriction base="xs:string">
       <xs:enumeration value="NoEspecificado" />

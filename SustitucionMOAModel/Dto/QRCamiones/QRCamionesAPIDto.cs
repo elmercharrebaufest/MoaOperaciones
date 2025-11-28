@@ -36,7 +36,7 @@ namespace SustitucionMOAModel.Dto
         public string Ctg { get; set; }
         public DateTime FechaHoraIngreso { get; set; }
         public string TitularCartaPorte { get; set; }
-        public string RemitenteComercial { get; set; }
+        public string RemitenteComercialProd { get; set; }
         public string RemitenteComercialVtaPrim { get; set; }
         public string Entregador { get; set; }
         public string Transportista { get; set; }

@@ -212,7 +212,7 @@ namespace SustitucionMOAExternalAPI.Controllers
                 Ctg = trackingDataScato.CTG,
                 FechaHoraIngreso = trackingDataScato.FechaHoraIngreso,
                 TitularCartaPorte = trackingDataScato.TitularCartaPorte,
-                RemitenteComercial = trackingDataScato.RemitenteComercial,
+                RemitenteComercialProd = trackingDataScato.RemitenteComercial,
                 RemitenteComercialVtaPrim = trackingDataScato.RemitenteComercialVtaPrim,
                 Entregador = trackingDataScato.Entregador,
                 Transportista = trackingDataScato.Transportista,

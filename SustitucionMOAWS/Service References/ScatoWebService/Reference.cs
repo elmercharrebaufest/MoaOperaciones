@@ -949,254 +949,6 @@ namespace SustitucionMOAWS.ScatoWebService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="MonitoreoServicioExternoDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto.HealthCheck")]
-    [System.SerializableAttribute()]
-    public partial class MonitoreoServicioExternoDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string HealthCheckConfigField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string HealthCheckUrlField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string KeyJobField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NombreField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<System.DateTime> UltimaVerificacionField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private SustitucionMOAWS.ScatoWebService.HealthCheckStatus UltimoEstadoField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string HealthCheckConfig {
-            get {
-                return this.HealthCheckConfigField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.HealthCheckConfigField, value) != true)) {
-                    this.HealthCheckConfigField = value;
-                    this.RaisePropertyChanged("HealthCheckConfig");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string HealthCheckUrl {
-            get {
-                return this.HealthCheckUrlField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.HealthCheckUrlField, value) != true)) {
-                    this.HealthCheckUrlField = value;
-                    this.RaisePropertyChanged("HealthCheckUrl");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Id {
-            get {
-                return this.IdField;
-            }
-            set {
-                if ((this.IdField.Equals(value) != true)) {
-                    this.IdField = value;
-                    this.RaisePropertyChanged("Id");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string KeyJob {
-            get {
-                return this.KeyJobField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.KeyJobField, value) != true)) {
-                    this.KeyJobField = value;
-                    this.RaisePropertyChanged("KeyJob");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Nombre {
-            get {
-                return this.NombreField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NombreField, value) != true)) {
-                    this.NombreField = value;
-                    this.RaisePropertyChanged("Nombre");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<System.DateTime> UltimaVerificacion {
-            get {
-                return this.UltimaVerificacionField;
-            }
-            set {
-                if ((this.UltimaVerificacionField.Equals(value) != true)) {
-                    this.UltimaVerificacionField = value;
-                    this.RaisePropertyChanged("UltimaVerificacion");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public SustitucionMOAWS.ScatoWebService.HealthCheckStatus UltimoEstado {
-            get {
-                return this.UltimoEstadoField;
-            }
-            set {
-                if ((this.UltimoEstadoField.Equals(value) != true)) {
-                    this.UltimoEstadoField = value;
-                    this.RaisePropertyChanged("UltimoEstado");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="HealthCheckStatus", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums")]
-    public enum HealthCheckStatus : int {
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Desconocido = 0,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Conectado = 1,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Desconectado = 2,
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="RegistroJobEjecucionDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto")]
-    [System.SerializableAttribute()]
-    public partial class RegistroJobEjecucionDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string DescripcionField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime FechaEjecucionField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NombreProcesoField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Descripcion {
-            get {
-                return this.DescripcionField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.DescripcionField, value) != true)) {
-                    this.DescripcionField = value;
-                    this.RaisePropertyChanged("Descripcion");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime FechaEjecucion {
-            get {
-                return this.FechaEjecucionField;
-            }
-            set {
-                if ((this.FechaEjecucionField.Equals(value) != true)) {
-                    this.FechaEjecucionField = value;
-                    this.RaisePropertyChanged("FechaEjecucion");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Id {
-            get {
-                return this.IdField;
-            }
-            set {
-                if ((this.IdField.Equals(value) != true)) {
-                    this.IdField = value;
-                    this.RaisePropertyChanged("Id");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string NombreProceso {
-            get {
-                return this.NombreProcesoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NombreProcesoField, value) != true)) {
-                    this.NombreProcesoField = value;
-                    this.RaisePropertyChanged("NombreProceso");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="ProveedorRENSPADto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto")]
     [System.SerializableAttribute()]
     public partial class ProveedorRENSPADto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
@@ -3866,6 +3618,254 @@ namespace SustitucionMOAWS.ScatoWebService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="MonitoreoServicioExternoDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto.HealthCheck")]
+    [System.SerializableAttribute()]
+    public partial class MonitoreoServicioExternoDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string HealthCheckConfigField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string HealthCheckUrlField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string KeyJobField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NombreField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> UltimaVerificacionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private SustitucionMOAWS.ScatoWebService.HealthCheckStatus UltimoEstadoField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string HealthCheckConfig {
+            get {
+                return this.HealthCheckConfigField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.HealthCheckConfigField, value) != true)) {
+                    this.HealthCheckConfigField = value;
+                    this.RaisePropertyChanged("HealthCheckConfig");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string HealthCheckUrl {
+            get {
+                return this.HealthCheckUrlField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.HealthCheckUrlField, value) != true)) {
+                    this.HealthCheckUrlField = value;
+                    this.RaisePropertyChanged("HealthCheckUrl");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string KeyJob {
+            get {
+                return this.KeyJobField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.KeyJobField, value) != true)) {
+                    this.KeyJobField = value;
+                    this.RaisePropertyChanged("KeyJob");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Nombre {
+            get {
+                return this.NombreField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NombreField, value) != true)) {
+                    this.NombreField = value;
+                    this.RaisePropertyChanged("Nombre");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> UltimaVerificacion {
+            get {
+                return this.UltimaVerificacionField;
+            }
+            set {
+                if ((this.UltimaVerificacionField.Equals(value) != true)) {
+                    this.UltimaVerificacionField = value;
+                    this.RaisePropertyChanged("UltimaVerificacion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public SustitucionMOAWS.ScatoWebService.HealthCheckStatus UltimoEstado {
+            get {
+                return this.UltimoEstadoField;
+            }
+            set {
+                if ((this.UltimoEstadoField.Equals(value) != true)) {
+                    this.UltimoEstadoField = value;
+                    this.RaisePropertyChanged("UltimoEstado");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="HealthCheckStatus", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums")]
+    public enum HealthCheckStatus : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Desconocido = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Conectado = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Desconectado = 2,
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="RegistroJobEjecucionDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto")]
+    [System.SerializableAttribute()]
+    public partial class RegistroJobEjecucionDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string DescripcionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.DateTime FechaEjecucionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NombreProcesoField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Descripcion {
+            get {
+                return this.DescripcionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DescripcionField, value) != true)) {
+                    this.DescripcionField = value;
+                    this.RaisePropertyChanged("Descripcion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime FechaEjecucion {
+            get {
+                return this.FechaEjecucionField;
+            }
+            set {
+                if ((this.FechaEjecucionField.Equals(value) != true)) {
+                    this.FechaEjecucionField = value;
+                    this.RaisePropertyChanged("FechaEjecucion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string NombreProceso {
+            get {
+                return this.NombreProcesoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NombreProcesoField, value) != true)) {
+                    this.NombreProcesoField = value;
+                    this.RaisePropertyChanged("NombreProceso");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="TrackingDataQRCamiones", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto.QRCamiones")]
     [System.SerializableAttribute()]
     public partial class TrackingDataQRCamiones : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
@@ -3901,7 +3901,7 @@ namespace SustitucionMOAWS.ScatoWebService {
         private bool RechazadoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string RemitenteComercialField;
+        private string RemitenteComercialProdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string RemitenteComercialVtaPrimField;
@@ -4043,14 +4043,14 @@ namespace SustitucionMOAWS.ScatoWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string RemitenteComercial {
+        public string RemitenteComercialProd {
             get {
-                return this.RemitenteComercialField;
+                return this.RemitenteComercialProdField;
             }
             set {
-                if ((object.ReferenceEquals(this.RemitenteComercialField, value) != true)) {
-                    this.RemitenteComercialField = value;
-                    this.RaisePropertyChanged("RemitenteComercial");
+                if ((object.ReferenceEquals(this.RemitenteComercialProdField, value) != true)) {
+                    this.RemitenteComercialProdField = value;
+                    this.RaisePropertyChanged("RemitenteComercialProd");
                 }
             }
         }
@@ -4433,9 +4433,6 @@ namespace SustitucionMOAWS.ScatoWebService {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NombreTablaField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string TiempoEstimadoField;
-        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -4498,19 +4495,6 @@ namespace SustitucionMOAWS.ScatoWebService {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string TiempoEstimado {
-            get {
-                return this.TiempoEstimadoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.TiempoEstimadoField, value) != true)) {
-                    this.TiempoEstimadoField = value;
-                    this.RaisePropertyChanged("TiempoEstimado");
-                }
-            }
-        }
-        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -4533,6 +4517,115 @@ namespace SustitucionMOAWS.ScatoWebService {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Pendiente = 2,
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ExceptuadosTicketMunicipalDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto")]
+    [System.SerializableAttribute()]
+    public partial class ExceptuadosTicketMunicipalDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.DateTime FechaCreacionExcepcionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NombreUsuarioField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string PatenteField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> WorkflowInstanceIdField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime FechaCreacionExcepcion {
+            get {
+                return this.FechaCreacionExcepcionField;
+            }
+            set {
+                if ((this.FechaCreacionExcepcionField.Equals(value) != true)) {
+                    this.FechaCreacionExcepcionField = value;
+                    this.RaisePropertyChanged("FechaCreacionExcepcion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string NombreUsuario {
+            get {
+                return this.NombreUsuarioField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NombreUsuarioField, value) != true)) {
+                    this.NombreUsuarioField = value;
+                    this.RaisePropertyChanged("NombreUsuario");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Patente {
+            get {
+                return this.PatenteField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PatenteField, value) != true)) {
+                    this.PatenteField = value;
+                    this.RaisePropertyChanged("Patente");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> WorkflowInstanceId {
+            get {
+                return this.WorkflowInstanceIdField;
+            }
+            set {
+                if ((this.WorkflowInstanceIdField.Equals(value) != true)) {
+                    this.WorkflowInstanceIdField = value;
+                    this.RaisePropertyChanged("WorkflowInstanceId");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -23018,13 +23111,13 @@ namespace SustitucionMOAWS.ScatoWebService {
         PesadaTaraExportacion = 708,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        MonitoreoServicioExterno = 711,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
         PanelDeControlTransaccionesVisec = 711,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ActividadImportacionEgresoVisec = 712,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        MonitoreoServicioExterno = 713,
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
@@ -33471,9 +33564,9 @@ namespace SustitucionMOAWS.ScatoWebService {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoWebService.ResultadoSincronizarClientes))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoWebService.ResultadoConsultarOrdenInsumos))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoWebService.ResultadoConsultarOrdenesNoGranosCargaDeCupo))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoWebService.ResultadoConsultarPagoTasaMunicipal))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoWebService.ResultadoConsultarCategoriaVehiculo))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoWebService.ResultadoConsultarEstadoTransmisionVisec))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoWebService.ResultadoConsultarPagoTasaMunicipal))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoWebService.ResultadoConsultarDataAgroVisec))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoWebService.ResultadoVisecDistribuirStock))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoWebService.ResultadoOrdenFas))]
@@ -34233,6 +34326,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         private string MensajeTasaMunicipalField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MotivoExcepcionTasaMunicipalField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private SustitucionMOAWS.ScatoWebService.OrdenCargaFasDto OrdenCargaFasDtoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -34240,6 +34336,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private SustitucionMOAWS.ScatoWebService.OrdenCargaInternaFasonDto OrdenCargaInternaFasonField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool TieneExcepcionTasaMunicipalField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private SustitucionMOAWS.ScatoWebService.TipoAlerta tipoAlertaField;
@@ -34336,6 +34435,19 @@ namespace SustitucionMOAWS.ScatoWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string MotivoExcepcionTasaMunicipal {
+            get {
+                return this.MotivoExcepcionTasaMunicipalField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MotivoExcepcionTasaMunicipalField, value) != true)) {
+                    this.MotivoExcepcionTasaMunicipalField = value;
+                    this.RaisePropertyChanged("MotivoExcepcionTasaMunicipal");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public SustitucionMOAWS.ScatoWebService.OrdenCargaFasDto OrdenCargaFasDto {
             get {
                 return this.OrdenCargaFasDtoField;
@@ -34370,6 +34482,19 @@ namespace SustitucionMOAWS.ScatoWebService {
                 if ((object.ReferenceEquals(this.OrdenCargaInternaFasonField, value) != true)) {
                     this.OrdenCargaInternaFasonField = value;
                     this.RaisePropertyChanged("OrdenCargaInternaFason");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool TieneExcepcionTasaMunicipal {
+            get {
+                return this.TieneExcepcionTasaMunicipalField;
+            }
+            set {
+                if ((this.TieneExcepcionTasaMunicipalField.Equals(value) != true)) {
+                    this.TieneExcepcionTasaMunicipalField = value;
+                    this.RaisePropertyChanged("TieneExcepcionTasaMunicipal");
                 }
             }
         }
@@ -35834,6 +35959,70 @@ namespace SustitucionMOAWS.ScatoWebService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ResultadoConsultarCategoriaVehiculo", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos.ResultadoS" +
+        "ervicio")]
+    [System.SerializableAttribute()]
+    public partial class ResultadoConsultarCategoriaVehiculo : SustitucionMOAWS.ScatoWebService.Resultado {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EsAutomotorField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Collections.Generic.Dictionary<System.DateTime, decimal> ImporteTasaMunicipalField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool EsAutomotor {
+            get {
+                return this.EsAutomotorField;
+            }
+            set {
+                if ((this.EsAutomotorField.Equals(value) != true)) {
+                    this.EsAutomotorField = value;
+                    this.RaisePropertyChanged("EsAutomotor");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.Generic.Dictionary<System.DateTime, decimal> ImporteTasaMunicipal {
+            get {
+                return this.ImporteTasaMunicipalField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ImporteTasaMunicipalField, value) != true)) {
+                    this.ImporteTasaMunicipalField = value;
+                    this.RaisePropertyChanged("ImporteTasaMunicipal");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ResultadoConsultarEstadoTransmisionVisec", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos.ResultadoS" +
+        "ervicio")]
+    [System.SerializableAttribute()]
+    public partial class ResultadoConsultarEstadoTransmisionVisec : SustitucionMOAWS.ScatoWebService.Resultado {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<SustitucionMOAWS.ScatoWebService.EstadoTransmisionAVisec> EstadoField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<SustitucionMOAWS.ScatoWebService.EstadoTransmisionAVisec> Estado {
+            get {
+                return this.EstadoField;
+            }
+            set {
+                if ((this.EstadoField.Equals(value) != true)) {
+                    this.EstadoField = value;
+                    this.RaisePropertyChanged("Estado");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="ResultadoConsultarPagoTasaMunicipal", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos.ResultadoS" +
         "ervicio")]
     [System.SerializableAttribute()]
@@ -35864,6 +36053,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         private string MensajeAlertaField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MotivoExcepcionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool SeLevantaBarreraField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -35871,6 +36063,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool TieneDiferenciaDePagoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool TieneExcepcionField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private SustitucionMOAWS.ScatoWebService.TipoAlerta TipoAlertaField;
@@ -35980,6 +36175,19 @@ namespace SustitucionMOAWS.ScatoWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string MotivoExcepcion {
+            get {
+                return this.MotivoExcepcionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MotivoExcepcionField, value) != true)) {
+                    this.MotivoExcepcionField = value;
+                    this.RaisePropertyChanged("MotivoExcepcion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public bool SeLevantaBarrera {
             get {
                 return this.SeLevantaBarreraField;
@@ -36019,6 +36227,19 @@ namespace SustitucionMOAWS.ScatoWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool TieneExcepcion {
+            get {
+                return this.TieneExcepcionField;
+            }
+            set {
+                if ((this.TieneExcepcionField.Equals(value) != true)) {
+                    this.TieneExcepcionField = value;
+                    this.RaisePropertyChanged("TieneExcepcion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public SustitucionMOAWS.ScatoWebService.TipoAlerta TipoAlerta {
             get {
                 return this.TipoAlertaField;
@@ -36027,70 +36248,6 @@ namespace SustitucionMOAWS.ScatoWebService {
                 if ((this.TipoAlertaField.Equals(value) != true)) {
                     this.TipoAlertaField = value;
                     this.RaisePropertyChanged("TipoAlerta");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ResultadoConsultarCategoriaVehiculo", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos.ResultadoS" +
-        "ervicio")]
-    [System.SerializableAttribute()]
-    public partial class ResultadoConsultarCategoriaVehiculo : SustitucionMOAWS.ScatoWebService.Resultado {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool EsAutomotorField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Collections.Generic.Dictionary<System.DateTime, decimal> ImporteTasaMunicipalField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool EsAutomotor {
-            get {
-                return this.EsAutomotorField;
-            }
-            set {
-                if ((this.EsAutomotorField.Equals(value) != true)) {
-                    this.EsAutomotorField = value;
-                    this.RaisePropertyChanged("EsAutomotor");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Collections.Generic.Dictionary<System.DateTime, decimal> ImporteTasaMunicipal {
-            get {
-                return this.ImporteTasaMunicipalField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ImporteTasaMunicipalField, value) != true)) {
-                    this.ImporteTasaMunicipalField = value;
-                    this.RaisePropertyChanged("ImporteTasaMunicipal");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ResultadoConsultarEstadoTransmisionVisec", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos.ResultadoS" +
-        "ervicio")]
-    [System.SerializableAttribute()]
-    public partial class ResultadoConsultarEstadoTransmisionVisec : SustitucionMOAWS.ScatoWebService.Resultado {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<SustitucionMOAWS.ScatoWebService.EstadoTransmisionAVisec> EstadoField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<SustitucionMOAWS.ScatoWebService.EstadoTransmisionAVisec> Estado {
-            get {
-                return this.EstadoField;
-            }
-            set {
-                if ((this.EstadoField.Equals(value) != true)) {
-                    this.EstadoField = value;
-                    this.RaisePropertyChanged("Estado");
                 }
             }
         }
@@ -36657,179 +36814,6 @@ namespace SustitucionMOAWS.ScatoWebService {
                 if ((this.PaginaField.Equals(value) != true)) {
                     this.PaginaField = value;
                     this.RaisePropertyChanged("Pagina");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ExceptuadosTicketMunicipalDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto")]
-    [System.SerializableAttribute()]
-    public partial class ExceptuadosTicketMunicipalDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool ActivoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime FechaCreacionExcepcionField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NombreUsuarioField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NumeroDocumentoIngresoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string PatenteField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool PermiteAccionesField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string WorkflowCodigoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string WorkflowDescripcionField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Activo {
-            get {
-                return this.ActivoField;
-            }
-            set {
-                if ((this.ActivoField.Equals(value) != true)) {
-                    this.ActivoField = value;
-                    this.RaisePropertyChanged("Activo");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime FechaCreacionExcepcion {
-            get {
-                return this.FechaCreacionExcepcionField;
-            }
-            set {
-                if ((this.FechaCreacionExcepcionField.Equals(value) != true)) {
-                    this.FechaCreacionExcepcionField = value;
-                    this.RaisePropertyChanged("FechaCreacionExcepcion");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Id {
-            get {
-                return this.IdField;
-            }
-            set {
-                if ((this.IdField.Equals(value) != true)) {
-                    this.IdField = value;
-                    this.RaisePropertyChanged("Id");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string NombreUsuario {
-            get {
-                return this.NombreUsuarioField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NombreUsuarioField, value) != true)) {
-                    this.NombreUsuarioField = value;
-                    this.RaisePropertyChanged("NombreUsuario");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string NumeroDocumentoIngreso {
-            get {
-                return this.NumeroDocumentoIngresoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NumeroDocumentoIngresoField, value) != true)) {
-                    this.NumeroDocumentoIngresoField = value;
-                    this.RaisePropertyChanged("NumeroDocumentoIngreso");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Patente {
-            get {
-                return this.PatenteField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.PatenteField, value) != true)) {
-                    this.PatenteField = value;
-                    this.RaisePropertyChanged("Patente");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool PermiteAcciones {
-            get {
-                return this.PermiteAccionesField;
-            }
-            set {
-                if ((this.PermiteAccionesField.Equals(value) != true)) {
-                    this.PermiteAccionesField = value;
-                    this.RaisePropertyChanged("PermiteAcciones");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string WorkflowCodigo {
-            get {
-                return this.WorkflowCodigoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.WorkflowCodigoField, value) != true)) {
-                    this.WorkflowCodigoField = value;
-                    this.RaisePropertyChanged("WorkflowCodigo");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string WorkflowDescripcion {
-            get {
-                return this.WorkflowDescripcionField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.WorkflowDescripcionField, value) != true)) {
-                    this.WorkflowDescripcionField = value;
-                    this.RaisePropertyChanged("WorkflowDescripcion");
                 }
             }
         }
@@ -84565,6 +84549,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         private string MaterialCodigoCamaraField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MaterialCodigoSAPField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string MercadoATerminoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -85266,6 +85253,19 @@ namespace SustitucionMOAWS.ScatoWebService {
                 if ((object.ReferenceEquals(this.MaterialCodigoCamaraField, value) != true)) {
                     this.MaterialCodigoCamaraField = value;
                     this.RaisePropertyChanged("MaterialCodigoCamara");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string MaterialCodigoSAP {
+            get {
+                return this.MaterialCodigoSAPField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MaterialCodigoSAPField, value) != true)) {
+                    this.MaterialCodigoSAPField = value;
+                    this.RaisePropertyChanged("MaterialCodigoSAP");
                 }
             }
         }
@@ -102803,42 +102803,6 @@ namespace SustitucionMOAWS.ScatoWebService {
             "idoResponse")]
         System.Threading.Tasks.Task<bool> EsUltimaActividadEnControlRecorridoAsync(System.Guid workflowId, string actividad);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDeTicketMunicipal", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDeTicketMunicipalR" +
-            "esponse")]
-        bool TieneExcepcionDeTicketMunicipal(string patente, string numeroDeDocumento, string codigoWorkflow);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDeTicketMunicipal", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDeTicketMunicipalR" +
-            "esponse")]
-        System.Threading.Tasks.Task<bool> TieneExcepcionDeTicketMunicipalAsync(string patente, string numeroDeDocumento, string codigoWorkflow);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMonitoreoServicioExternoP" +
-            "orJob", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMonitoreoServicioExternoP" +
-            "orJobResponse")]
-        SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto ObtenerMonitoreoServicioExternoPorJob(string nombre);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMonitoreoServicioExternoP" +
-            "orJob", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMonitoreoServicioExternoP" +
-            "orJobResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto> ObtenerMonitoreoServicioExternoPorJobAsync(string nombre);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarMonitoreoServicioExterno", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarMonitoreoServicioExternoRe" +
-            "sponse")]
-        SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto[] ListarMonitoreoServicioExterno();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarMonitoreoServicioExterno", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarMonitoreoServicioExternoRe" +
-            "sponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto[]> ListarMonitoreoServicioExternoAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorPr" +
-            "oceso", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorPr" +
-            "ocesoResponse")]
-        SustitucionMOAWS.ScatoWebService.RegistroJobEjecucionDto ObtenerRegistroJobEjecucionPorProceso(string proceso);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorPr" +
-            "oceso", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorPr" +
-            "ocesoResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.RegistroJobEjecucionDto> ObtenerRegistroJobEjecucionPorProcesoAsync(string proceso);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarRENSPAPorProveedorYTerm", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarRENSPAPorProveedorYTermRes" +
             "ponse")]
         SustitucionMOAWS.ScatoWebService.ProveedorRENSPADto[] ListarRENSPAPorProveedorYTerm(int proveedorId, string term);
@@ -102871,11 +102835,67 @@ namespace SustitucionMOAWS.ScatoWebService {
             "onse")]
         System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.TipoVariedadDto> ObtenerTipoVariedadPorCodigoAsync(string codigo);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMonitoreoServicioExternoP" +
+            "orJob", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMonitoreoServicioExternoP" +
+            "orJobResponse")]
+        SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto ObtenerMonitoreoServicioExternoPorJob(string nombre);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMonitoreoServicioExternoP" +
+            "orJob", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMonitoreoServicioExternoP" +
+            "orJobResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto> ObtenerMonitoreoServicioExternoPorJobAsync(string nombre);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarMonitoreoServicioExterno", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarMonitoreoServicioExternoRe" +
+            "sponse")]
+        SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto[] ListarMonitoreoServicioExterno();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarMonitoreoServicioExterno", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarMonitoreoServicioExternoRe" +
+            "sponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto[]> ListarMonitoreoServicioExternoAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorPr" +
+            "oceso", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorPr" +
+            "ocesoResponse")]
+        SustitucionMOAWS.ScatoWebService.RegistroJobEjecucionDto ObtenerRegistroJobEjecucionPorProceso(string proceso);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorPr" +
+            "oceso", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorPr" +
+            "ocesoResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.RegistroJobEjecucionDto> ObtenerRegistroJobEjecucionPorProcesoAsync(string proceso);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTrackingData", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTrackingDataResponse")]
         SustitucionMOAWS.ScatoWebService.TrackingDataQRCamiones ObtenerTrackingData(string numeroCTG, string patente);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTrackingData", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTrackingDataResponse")]
         System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.TrackingDataQRCamiones> ObtenerTrackingDataAsync(string numeroCTG, string patente);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/EstaDemoradoPorTasaAdeudada", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/EstaDemoradoPorTasaAdeudadaRespo" +
+            "nse")]
+        bool EstaDemoradoPorTasaAdeudada(System.Guid instanceWorkflowId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/EstaDemoradoPorTasaAdeudada", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/EstaDemoradoPorTasaAdeudadaRespo" +
+            "nse")]
+        System.Threading.Tasks.Task<bool> EstaDemoradoPorTasaAdeudadaAsync(System.Guid instanceWorkflowId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerExcepcionDeTicketMunicipa" +
+            "l", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerExcepcionDeTicketMunicipa" +
+            "lResponse")]
+        SustitucionMOAWS.ScatoWebService.ExceptuadosTicketMunicipalDto ObtenerExcepcionDeTicketMunicipal(string patente, System.Nullable<System.Guid> workflowInstanceId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerExcepcionDeTicketMunicipa" +
+            "l", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerExcepcionDeTicketMunicipa" +
+            "lResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.ExceptuadosTicketMunicipalDto> ObtenerExcepcionDeTicketMunicipalAsync(string patente, System.Nullable<System.Guid> workflowInstanceId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDePagoDeTasaMunici" +
+            "pal", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDePagoDeTasaMunici" +
+            "palResponse")]
+        bool TieneExcepcionDePagoDeTasaMunicipal(string patente, System.Nullable<System.Guid> workflowInstanceId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDePagoDeTasaMunici" +
+            "pal", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDePagoDeTasaMunici" +
+            "palResponse")]
+        System.Threading.Tasks.Task<bool> TieneExcepcionDePagoDeTasaMunicipalAsync(string patente, System.Nullable<System.Guid> workflowInstanceId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerGruposBarreraEnUso", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerGruposBarreraEnUsoRespons" +
             "e")]
@@ -111043,38 +111063,6 @@ namespace SustitucionMOAWS.ScatoWebService {
             return base.Channel.EsUltimaActividadEnControlRecorridoAsync(workflowId, actividad);
         }
         
-        public bool TieneExcepcionDeTicketMunicipal(string patente, string numeroDeDocumento, string codigoWorkflow) {
-            return base.Channel.TieneExcepcionDeTicketMunicipal(patente, numeroDeDocumento, codigoWorkflow);
-        }
-        
-        public System.Threading.Tasks.Task<bool> TieneExcepcionDeTicketMunicipalAsync(string patente, string numeroDeDocumento, string codigoWorkflow) {
-            return base.Channel.TieneExcepcionDeTicketMunicipalAsync(patente, numeroDeDocumento, codigoWorkflow);
-        }
-        
-        public SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto ObtenerMonitoreoServicioExternoPorJob(string nombre) {
-            return base.Channel.ObtenerMonitoreoServicioExternoPorJob(nombre);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto> ObtenerMonitoreoServicioExternoPorJobAsync(string nombre) {
-            return base.Channel.ObtenerMonitoreoServicioExternoPorJobAsync(nombre);
-        }
-        
-        public SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto[] ListarMonitoreoServicioExterno() {
-            return base.Channel.ListarMonitoreoServicioExterno();
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto[]> ListarMonitoreoServicioExternoAsync() {
-            return base.Channel.ListarMonitoreoServicioExternoAsync();
-        }
-        
-        public SustitucionMOAWS.ScatoWebService.RegistroJobEjecucionDto ObtenerRegistroJobEjecucionPorProceso(string proceso) {
-            return base.Channel.ObtenerRegistroJobEjecucionPorProceso(proceso);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.RegistroJobEjecucionDto> ObtenerRegistroJobEjecucionPorProcesoAsync(string proceso) {
-            return base.Channel.ObtenerRegistroJobEjecucionPorProcesoAsync(proceso);
-        }
-        
         public SustitucionMOAWS.ScatoWebService.ProveedorRENSPADto[] ListarRENSPAPorProveedorYTerm(int proveedorId, string term) {
             return base.Channel.ListarRENSPAPorProveedorYTerm(proveedorId, term);
         }
@@ -111107,12 +111095,60 @@ namespace SustitucionMOAWS.ScatoWebService {
             return base.Channel.ObtenerTipoVariedadPorCodigoAsync(codigo);
         }
         
+        public SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto ObtenerMonitoreoServicioExternoPorJob(string nombre) {
+            return base.Channel.ObtenerMonitoreoServicioExternoPorJob(nombre);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto> ObtenerMonitoreoServicioExternoPorJobAsync(string nombre) {
+            return base.Channel.ObtenerMonitoreoServicioExternoPorJobAsync(nombre);
+        }
+        
+        public SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto[] ListarMonitoreoServicioExterno() {
+            return base.Channel.ListarMonitoreoServicioExterno();
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.MonitoreoServicioExternoDto[]> ListarMonitoreoServicioExternoAsync() {
+            return base.Channel.ListarMonitoreoServicioExternoAsync();
+        }
+        
+        public SustitucionMOAWS.ScatoWebService.RegistroJobEjecucionDto ObtenerRegistroJobEjecucionPorProceso(string proceso) {
+            return base.Channel.ObtenerRegistroJobEjecucionPorProceso(proceso);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.RegistroJobEjecucionDto> ObtenerRegistroJobEjecucionPorProcesoAsync(string proceso) {
+            return base.Channel.ObtenerRegistroJobEjecucionPorProcesoAsync(proceso);
+        }
+        
         public SustitucionMOAWS.ScatoWebService.TrackingDataQRCamiones ObtenerTrackingData(string numeroCTG, string patente) {
             return base.Channel.ObtenerTrackingData(numeroCTG, patente);
         }
         
         public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.TrackingDataQRCamiones> ObtenerTrackingDataAsync(string numeroCTG, string patente) {
             return base.Channel.ObtenerTrackingDataAsync(numeroCTG, patente);
+        }
+        
+        public bool EstaDemoradoPorTasaAdeudada(System.Guid instanceWorkflowId) {
+            return base.Channel.EstaDemoradoPorTasaAdeudada(instanceWorkflowId);
+        }
+        
+        public System.Threading.Tasks.Task<bool> EstaDemoradoPorTasaAdeudadaAsync(System.Guid instanceWorkflowId) {
+            return base.Channel.EstaDemoradoPorTasaAdeudadaAsync(instanceWorkflowId);
+        }
+        
+        public SustitucionMOAWS.ScatoWebService.ExceptuadosTicketMunicipalDto ObtenerExcepcionDeTicketMunicipal(string patente, System.Nullable<System.Guid> workflowInstanceId) {
+            return base.Channel.ObtenerExcepcionDeTicketMunicipal(patente, workflowInstanceId);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.ExceptuadosTicketMunicipalDto> ObtenerExcepcionDeTicketMunicipalAsync(string patente, System.Nullable<System.Guid> workflowInstanceId) {
+            return base.Channel.ObtenerExcepcionDeTicketMunicipalAsync(patente, workflowInstanceId);
+        }
+        
+        public bool TieneExcepcionDePagoDeTasaMunicipal(string patente, System.Nullable<System.Guid> workflowInstanceId) {
+            return base.Channel.TieneExcepcionDePagoDeTasaMunicipal(patente, workflowInstanceId);
+        }
+        
+        public System.Threading.Tasks.Task<bool> TieneExcepcionDePagoDeTasaMunicipalAsync(string patente, System.Nullable<System.Guid> workflowInstanceId) {
+            return base.Channel.TieneExcepcionDePagoDeTasaMunicipalAsync(patente, workflowInstanceId);
         }
         
         public string[] ObtenerGruposBarreraEnUso(string[] codigos) {
