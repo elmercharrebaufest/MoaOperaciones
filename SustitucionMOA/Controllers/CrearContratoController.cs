@@ -342,7 +342,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult TraerPrecioMoaMateriales(int tipoNegocioId = 0)
         {
-            return JsonCustom(dataAgroApiService.TraerPrecioMoaMateriales(tipoNegocioId));
+            return JsonCustom(dataAgroService.TraerPrecioMoa(tipoNegocioId));
         }
 
         public ActionResult AnularNegocio(int negocioId, int tipoNegocioId, string motivo)
