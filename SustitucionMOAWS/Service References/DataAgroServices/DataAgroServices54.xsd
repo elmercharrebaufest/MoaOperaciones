@@ -446,6 +446,12 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ResultProveedoresIni" nillable="true" type="tns:ResultProveedoresIni" />
+  <xs:complexType name="InicializarContratoDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Datos" nillable="true" type="tns:DatosIniContrato" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="InicializarContratoDto" nillable="true" type="tns:InicializarContratoDto" />
   <xs:complexType name="DatosIniContrato">
     <xs:sequence>
       <xs:element minOccurs="0" name="BoletoVenta" nillable="true" type="tns:ArrayOfBoletoVentaQry" />
@@ -1134,19 +1140,12 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ValoresRuca" nillable="true" type="tns:ValoresRuca" />
-  <xs:complexType name="ArrayOfPrecioMoaGroupDto">
+  <xs:complexType name="ArrayOfArrayOfPrecioMoaCompraNetDto">
     <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="PrecioMoaGroupDto" nillable="true" type="tns:PrecioMoaGroupDto" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ArrayOfPrecioMoaCompraNetDto" nillable="true" type="tns:ArrayOfPrecioMoaCompraNetDto" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ArrayOfPrecioMoaGroupDto" nillable="true" type="tns:ArrayOfPrecioMoaGroupDto" />
-  <xs:complexType name="PrecioMoaGroupDto">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
-      <xs:element minOccurs="0" name="PrecioMoaCompraNetDtoList" nillable="true" type="tns:ArrayOfPrecioMoaCompraNetDto" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="PrecioMoaGroupDto" nillable="true" type="tns:PrecioMoaGroupDto" />
+  <xs:element name="ArrayOfArrayOfPrecioMoaCompraNetDto" nillable="true" type="tns:ArrayOfArrayOfPrecioMoaCompraNetDto" />
   <xs:complexType name="ArrayOfPrecioMoaCompraNetDto">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="PrecioMoaCompraNetDto" nillable="true" type="tns:PrecioMoaCompraNetDto" />
@@ -2386,6 +2385,52 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="BusquedaHome" nillable="true" type="tns:BusquedaHome" />
+  <xs:complexType name="KendoDataSourceRequestDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Filter" nillable="true" type="tns:KendoFilterDto" />
+      <xs:element minOccurs="0" name="Skip" type="xs:int" />
+      <xs:element minOccurs="0" name="Sort" nillable="true" type="tns:ArrayOfKendoSortDto" />
+      <xs:element minOccurs="0" name="Take" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="KendoDataSourceRequestDto" nillable="true" type="tns:KendoDataSourceRequestDto" />
+  <xs:complexType name="KendoFilterDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="field" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="filters" nillable="true" type="tns:ArrayOfKendoFilterDto" />
+      <xs:element minOccurs="0" name="logic" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="operator" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="value" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="KendoFilterDto" nillable="true" type="tns:KendoFilterDto" />
+  <xs:complexType name="ArrayOfKendoFilterDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="KendoFilterDto" nillable="true" type="tns:KendoFilterDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfKendoFilterDto" nillable="true" type="tns:ArrayOfKendoFilterDto" />
+  <xs:complexType name="ArrayOfKendoSortDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="KendoSortDto" nillable="true" type="tns:KendoSortDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfKendoSortDto" nillable="true" type="tns:ArrayOfKendoSortDto" />
+  <xs:complexType name="KendoSortDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dir" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="field" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="KendoSortDto" nillable="true" type="tns:KendoSortDto" />
+  <xs:complexType name="KendoDataSourceResultDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AggregatesJson" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Data" nillable="true" type="tns:ArrayOfBasicoContrato" />
+      <xs:element minOccurs="0" name="Total" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="KendoDataSourceResultDto" nillable="true" type="tns:KendoDataSourceResultDto" />
   <xs:complexType name="ArrayOfMaterialIni">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="MaterialIni" nillable="true" type="tns:MaterialIni" />

@@ -82,7 +82,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
-        public DatosIniContrato InicializarContrato(int tipoNegocioId)
+        public InicializarContratoDto InicializarContrato(int tipoNegocioId)
         {
             var result = service.InicializarContrato(tipoNegocioId);
             return result; 
@@ -124,7 +124,7 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        public PrecioMoaGroupDto[] TraerPrecioMOA(int tipoNegocio)
+        public PrecioMoaCompraNetDto[][] TraerPrecioMOA(int tipoNegocio)
         {
             var result = service.TraerPrecioMoa(tipoNegocio);
             return result;
@@ -178,10 +178,46 @@ namespace SustitucionMOAWS.WSConsumers
             return grabarContratoResult;
         }
 
+        public GrabarFijacionResult GrabarFijacion(FijacionDePrecioContrato contrato)
+        {
+            var result = service.GrabarFijacion(contrato);
+            return result;
+        }
+
+        public ContratoCopiar[] TraerContratosAcuerdoPorCorredor(int corredorId)
+        {
+            var result = service.TraerContratosAcuerdoPorCorredor(corredorId);
+            return result;
+        }
+
+        public DataAgroServices.GrabarContratoResult[] GrabarContratoMasivo(DataAgroServices.BasicoContrato[] contratos)
+        {
+            var result = service.GrabarContratoMasivo(contratos);
+            return result;
+        }
+        public DataAgroServices.BasicoContrato TraerContratoCompleto(int id, string tipo)
+        {
+            var result = service.TraerContratoCompleto(id, tipo);
+            return result;
+        }
+
+        public DataAgroServices.BasicoContrato TraerFijacionCompleto(int id)
+        {
+            var result = service.TraerFijacionCompleto(id);
+            return result;
+        }
+
+
         public bool ValidarDirecto(string cuit)
         {
             var esValido = service.ValidarDirecto(cuit);
             return esValido;
+        }
+
+        public Byte[] ExcelModeloAltaMasiva()
+        {
+            var result = service.ExcelModeloAltaMasiva();
+            return result;
         }
     }
 }

@@ -212,7 +212,7 @@ namespace SustitucionMOA.Controllers
             contratoFijacion.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
 
-            string result = dataAgroApiService.CrearContratoFijacion(contratoFijacion);
+            string result = dataAgroService.GrabarFijacion(contratoFijacion);
 
             return JsonCustom(result);
         }
@@ -342,7 +342,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult TraerPrecioMoaMateriales(int tipoNegocioId = 0)
         {
-            return JsonCustom(dataAgroApiService.TraerPrecioMoaMateriales(tipoNegocioId));
+            return JsonCustom(dataAgroService.TraerPrecioMoa(tipoNegocioId));
         }
 
         public ActionResult AnularNegocio(int negocioId, int tipoNegocioId, string motivo)
@@ -352,7 +352,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult TraerContratoCompleto(int negocioId, int tipoNegocioId)
         {
-            return JsonCustom(dataAgroApiService.TraerContratoCompleto(negocioId, tipoNegocioId));
+            return JsonCustom(dataAgroService.TraerContratoCompleto(negocioId, tipoNegocioId));
         }
 
 
@@ -464,7 +464,7 @@ namespace SustitucionMOA.Controllers
                     }
                     else
                     {
-                        List<GrabarContratoResult> resultados = dataAgroApiService.CrearContratoMasivo(contratos);
+                        List<GrabarContratoResult> resultados = dataAgroService.CrearContratoMasivo(contratos);
 
                         foreach (var item in resultados)
                         {
@@ -694,12 +694,12 @@ namespace SustitucionMOA.Controllers
         {
             var proveedor = ObtenerProveedor();
 
-            return JsonCustom(dataAgroApiService.ObteneContratosAcuerdo(proveedor.IdDataAgro.Value));
+            return JsonCustom(dataAgroService.ObteneContratosAcuerdo(proveedor.IdDataAgro.Value));
         }
 
         public ActionResult ExcelModeloAltaMasiva()
         {
-            var excel = dataAgroApiService.ExcelModeloAltaMasiva();
+            var excel = dataAgroService.ObtenerExcelModeloAltaMasiva();
             PDFResponse result = new PDFResponse
             {
                 Pdf = new Pdf()

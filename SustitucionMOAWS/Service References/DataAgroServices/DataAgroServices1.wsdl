@@ -291,6 +291,12 @@
   <wsdl:message name="IDataAgroServices_BuscarProveedoresConCorredor_OutputMessage">
     <wsdl:part name="parameters" element="tns:BuscarProveedoresConCorredorResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataAgroServices_BuscaDatosTablaContrato_InputMessage">
+    <wsdl:part name="parameters" element="tns:BuscaDatosTablaContrato" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_BuscaDatosTablaContrato_OutputMessage">
+    <wsdl:part name="parameters" element="tns:BuscaDatosTablaContratoResponse" />
+  </wsdl:message>
   <wsdl:message name="IDataAgroServices_BuscarMateriales_InputMessage">
     <wsdl:part name="parameters" element="tns:BuscarMateriales" />
   </wsdl:message>
@@ -308,6 +314,12 @@
   </wsdl:message>
   <wsdl:message name="IDataAgroServices_BuscarCampana_OutputMessage">
     <wsdl:part name="parameters" element="tns:BuscarCampanaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_ExcelModeloAltaMasiva_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExcelModeloAltaMasiva" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_ExcelModeloAltaMasiva_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExcelModeloAltaMasivaResponse" />
   </wsdl:message>
   <wsdl:message name="IDataAgroServices_ListarLocalidades_InputMessage">
     <wsdl:part name="parameters" element="tns:ListarLocalidades" />
@@ -503,6 +515,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/BuscarProveedoresConCorredor" message="tns:IDataAgroServices_BuscarProveedoresConCorredor_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/BuscarProveedoresConCorredorResponse" message="tns:IDataAgroServices_BuscarProveedoresConCorredor_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="BuscaDatosTablaContrato">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/BuscaDatosTablaContrato" message="tns:IDataAgroServices_BuscaDatosTablaContrato_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/BuscaDatosTablaContratoResponse" message="tns:IDataAgroServices_BuscaDatosTablaContrato_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="BuscarMateriales">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/BuscarMateriales" message="tns:IDataAgroServices_BuscarMateriales_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/BuscarMaterialesResponse" message="tns:IDataAgroServices_BuscarMateriales_OutputMessage" />
@@ -514,6 +530,10 @@
     <wsdl:operation name="BuscarCampana">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/BuscarCampana" message="tns:IDataAgroServices_BuscarCampana_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/BuscarCampanaResponse" message="tns:IDataAgroServices_BuscarCampana_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExcelModeloAltaMasiva">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/ExcelModeloAltaMasiva" message="tns:IDataAgroServices_ExcelModeloAltaMasiva_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/ExcelModeloAltaMasivaResponse" message="tns:IDataAgroServices_ExcelModeloAltaMasiva_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ListarLocalidades">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/ListarLocalidades" message="tns:IDataAgroServices_ListarLocalidades_InputMessage" />
@@ -935,6 +955,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="BuscaDatosTablaContrato">
+      <soap:operation soapAction="http://tempuri.org/IDataAgroServices/BuscaDatosTablaContrato" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="BuscarMateriales">
       <soap:operation soapAction="http://tempuri.org/IDataAgroServices/BuscarMateriales" style="document" />
       <wsdl:input>
@@ -955,6 +984,15 @@
     </wsdl:operation>
     <wsdl:operation name="BuscarCampana">
       <soap:operation soapAction="http://tempuri.org/IDataAgroServices/BuscarCampana" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExcelModeloAltaMasiva">
+      <soap:operation soapAction="http://tempuri.org/IDataAgroServices/ExcelModeloAltaMasiva" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
