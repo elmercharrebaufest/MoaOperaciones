@@ -82,7 +82,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
-        public ContratoModel_prueba InicializarContrato(int tipoNegocioId)
+        public InicializarContratoDto InicializarContrato(int tipoNegocioId)
         {
             var result = service.InicializarContrato(tipoNegocioId);
             return result; 
@@ -212,6 +212,12 @@ namespace SustitucionMOAWS.WSConsumers
         {
             var esValido = service.ValidarDirecto(cuit);
             return esValido;
+        }
+
+        public Byte[] ExcelModeloAltaMasiva()
+        {
+            var result = service.ExcelModeloAltaMasiva();
+            return result;
         }
     }
 }

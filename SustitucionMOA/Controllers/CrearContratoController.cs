@@ -699,7 +699,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ExcelModeloAltaMasiva()
         {
-            var excel = dataAgroApiService.ExcelModeloAltaMasiva();
+            var excel = dataAgroService.ObtenerExcelModeloAltaMasiva();
             PDFResponse result = new PDFResponse
             {
                 Pdf = new Pdf()

@@ -3,7 +3,7 @@
   <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" />
   <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" />
   <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" />
+  <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" />
   <xs:element name="Ping">
     <xs:complexType>
       <xs:sequence />
@@ -352,7 +352,7 @@
   <xs:element name="InicializarContratoResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q38="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" minOccurs="0" name="InicializarContratoResult" nillable="true" type="q38:ContratoModel_prueba" />
+        <xs:element xmlns:q38="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="InicializarContratoResult" nillable="true" type="q38:InicializarContratoDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

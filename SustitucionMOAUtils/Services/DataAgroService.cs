@@ -940,6 +940,20 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public byte[] ObtenerExcelModeloAltaMasiva()
+        {
+            try
+            {
+                var result = new DataAgroConsumer().ExcelModeloAltaMasiva();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
 
         private static string SerializeAndSanitize(object value)
         {
