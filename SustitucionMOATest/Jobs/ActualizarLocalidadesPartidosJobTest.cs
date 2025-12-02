@@ -19,6 +19,7 @@ namespace SustitucionMOATest.Jobs
 
         private Mock<IRepositorio> repositorio;
         private Mock<IDataAgroApiService> dataAgroApiService;
+        private Mock<IDataAgroService> dataAgroService;
 
         private IActualizarLocalidadesPartidosJob actualizarLocalidadesPartidos;
 
@@ -41,11 +42,13 @@ namespace SustitucionMOATest.Jobs
         {
             repositorio = new Mock<IRepositorio>();
             dataAgroApiService = new Mock<IDataAgroApiService>();
+            dataAgroService = new Mock<IDataAgroService>();
             habilitacionJob = new HabilitacionJob { Nombre = NombreHabilitacion };
 
             actualizarLocalidadesPartidos = new ActualizarLocalidadesPartidosJob(
                 repositorio.Object,
-                dataAgroApiService.Object
+                dataAgroApiService.Object,
+                dataAgroService.Object
                 );
 
             localidadDA1 = new LocalidadDto { LocalidadId = 1, CodLocalidad = "1", PartidoId = 1, ProvinciaId = 1 };

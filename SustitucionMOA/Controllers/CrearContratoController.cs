@@ -29,11 +29,13 @@ namespace SustitucionMOA.Controllers
     {
         protected readonly IRepositorio repositorio;
         readonly IDataAgroApiService dataAgroApiService;
+        private readonly IDataAgroService dataAgroService;
 
-        public CrearContratoController(IDataAgroApiService dataAgroApiService, IRepositorio repositorio)
+        public CrearContratoController(IDataAgroApiService dataAgroApiService, IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.dataAgroApiService = dataAgroApiService;
             this.repositorio = repositorio;
+            this.dataAgroService = dataAgroService;
         }
 
         public ActionResult GetLocalidadCombo(string localidad)
@@ -56,21 +58,24 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom("");
         }
+
         public ActionResult ObteneDatosContrato(int tiponegocio)
         {
             string BolsaAutomatica = dataAgroApiService.ConfiguracionBolsaAutomatica();
-            string DatosContrato = dataAgroApiService.ObteneDatosContrato(tiponegocio);
+            string DatosContrato = dataAgroService.InicializarContrato(tiponegocio);
             return JsonCustom(new { DatosContrato, BolsaAutomatica });
         }
+
         public ActionResult ObtenerDatosCompraNet(int? idProveedorDataAgro)
         {
             if (idProveedorDataAgro.HasValue)
             {
-                return JsonCustom(dataAgroApiService.ObtenerDatosCompraNet(idProveedorDataAgro.Value));
+                return JsonCustom(dataAgroService.ObtenerDatosCompraNet(idProveedorDataAgro.Value));
             }
             var proveedor = ObtenerProveedor();
-            return JsonCustom(dataAgroApiService.ObtenerDatosCompraNet(proveedor.IdDataAgro.Value));
+            return JsonCustom(dataAgroService.ObtenerDatosCompraNet(proveedor.IdDataAgro.Value));
         }
+
         public ActionResult CrearContratoAPrecio(string contrato)
         {
             contrato = contrato.Replace("nia", "ña");
@@ -94,10 +99,11 @@ namespace SustitucionMOA.Controllers
             contratoAPrecio.CantidadCamiones = contratoAPrecio.CantidadCamiones == 0 ? null : contratoAPrecio.CantidadCamiones;
             contratoAPrecio.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-            string result = dataAgroApiService.CrearContratoAPrecio(contratoAPrecio);
+            string result = dataAgroService.CrearContratoAPrecio(contratoAPrecio);
 
             return JsonCustom(result);
         }
+
         public ActionResult CrearContratoAFijar(string contrato)
         {
             contrato = contrato.Replace("nia", "ña");
@@ -121,7 +127,7 @@ namespace SustitucionMOA.Controllers
             contratoAFijar.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
 
-            string result = dataAgroApiService.CrearContratoAFijar(contratoAFijar);
+            string result = dataAgroService.CrearContratoAFijar(contratoAFijar);
 
             return JsonCustom(result);
         }
@@ -129,7 +135,7 @@ namespace SustitucionMOA.Controllers
         {
             var proveedor = ObtenerProveedor();
 
-            var directo = dataAgroApiService.ValidarDirecto(proveedor.CUIT);
+            var directo = dataAgroService.ValidarDirecto(proveedor.CUIT);
             int result = 0;
             if (directo == "false")
             {
@@ -146,7 +152,7 @@ namespace SustitucionMOA.Controllers
             {
                 var proveedor = ObtenerProveedor();
 
-                return JsonCustom(dataAgroApiService.BuscarProveedoresConCorredor(filtro, proveedor.CUIT));
+                return JsonCustom(dataAgroService.BuscarProveedoresConCorredor(filtro, proveedor.CUIT, null));
             }
             else
             {
@@ -156,21 +162,21 @@ namespace SustitucionMOA.Controllers
         }
         public ActionResult Habilitaciones(int material, int tiponegocio)
         {
-            string HabilitarPizarra = dataAgroApiService.HabilitarPizarra(material, tiponegocio);
-            string HabilitarCampana = dataAgroApiService.HabilitarCampaña(material);
-            string TraerPrecioMoa = dataAgroApiService.TraerPrecioMoa(material, tiponegocio);
-            string TraerPagosDiferido = dataAgroApiService.TraerPagosDiferido(material, tiponegocio);
-            string TraerHabilitarSustentable = dataAgroApiService.TraerHabilitarSustentable();
+            string HabilitarPizarra = dataAgroService.HabilitarPizarra(material, tiponegocio);
+            string HabilitarCampana = dataAgroService.HabilitarCampaña(material);
+            string TraerPrecioMoa = dataAgroService.TraerPrecioMoaV2(material, tiponegocio);
+            string TraerPagosDiferido = dataAgroService.TraerPagosDiferido();
+            string TraerHabilitarSustentable = dataAgroService.HabilitarSustentable();
             var result = new { HabilitarPizarra, HabilitarCampana, TraerPrecioMoa, TraerPagosDiferido, TraerHabilitarSustentable };
             return JsonCustom(result);
         }
         public ActionResult HabilitarCampana(int material)
         {
-            return JsonCustom(dataAgroApiService.HabilitarCampaña(material));
+            return JsonCustom(dataAgroService.HabilitarCampaña(material));
         }
         public ActionResult HabilitarPizarra(int material, int tiponegocio)
         {
-            return JsonCustom(dataAgroApiService.HabilitarPizarra(material, tiponegocio));
+            return JsonCustom(dataAgroService.HabilitarPizarra(material, tiponegocio));
         }
         public ActionResult ObtenerFijacionesAutomaticas(bool esCorredorEnDataAgro, string cuitProveedor, int materialId, string filtro)
         {
@@ -178,11 +184,11 @@ namespace SustitucionMOA.Controllers
 
             if (esCorredorEnDataAgro)
             {
-                return JsonCustom(dataAgroApiService.ObtenerFijacionesAutomaticas(cuitProveedor, proveedor.CUIT, materialId, filtro, 0));
+                return JsonCustom(dataAgroService.ObtenerFijacionesAutomaticas(cuitProveedor, proveedor.CUIT, materialId, filtro, 0, false));
             }
             else
             {
-                return JsonCustom(dataAgroApiService.ObtenerFijacionesAutomaticas(proveedor.CUIT, "", materialId, filtro, 0));
+                return JsonCustom(dataAgroService.ObtenerFijacionesAutomaticas(proveedor.CUIT, "", materialId, filtro, 0, false));
 
             }
         }
@@ -210,7 +216,7 @@ namespace SustitucionMOA.Controllers
             contratoFijacion.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
 
-            string result = dataAgroApiService.CrearContratoFijacion(contratoFijacion);
+            string result = dataAgroService.GrabarFijacion(contratoFijacion);
 
             return JsonCustom(result);
         }
@@ -330,26 +336,27 @@ namespace SustitucionMOA.Controllers
         {
             if (!string.IsNullOrEmpty(proveedorId) && proveedorId != "0")
             {
-                return JsonCustom(dataAgroApiService.ValidarProveedor(proveedorId));
+                int id = int.Parse(proveedorId);
+                return JsonCustom(dataAgroService.ValidarProveedor(id));
             }
             Proveedor proveedor = ObtenerProveedor();
 
-            return JsonCustom(dataAgroApiService.ValidarProveedor(proveedor.IdDataAgro.Value.ToString()));
+            return JsonCustom(dataAgroService.ValidarProveedor(proveedor.IdDataAgro.Value));
         }
 
         public ActionResult TraerPrecioMoaMateriales(int tipoNegocioId = 0)
         {
-            return JsonCustom(dataAgroApiService.TraerPrecioMoaMateriales(tipoNegocioId));
+            return JsonCustom(dataAgroService.TraerPrecioMoa(tipoNegocioId));
         }
 
         public ActionResult AnularNegocio(int negocioId, int tipoNegocioId, string motivo)
         {
-            return JsonCustom(dataAgroApiService.AnularNegocio(negocioId, tipoNegocioId, motivo));
+            return JsonCustom(dataAgroService.AnularNegocio(negocioId, tipoNegocioId, motivo));
         }
 
         public ActionResult TraerContratoCompleto(int negocioId, int tipoNegocioId)
         {
-            return JsonCustom(dataAgroApiService.TraerContratoCompleto(negocioId, tipoNegocioId));
+            return JsonCustom(dataAgroService.TraerContratoCompleto(negocioId, tipoNegocioId));
         }
 
 
@@ -400,9 +407,12 @@ namespace SustitucionMOA.Controllers
             if (fileSubido.ContentLength > 0)
             {
                 var dsExcel = ExcelImport.LeerExcelDesdeHttpRequest(Request);
-                var materiales = dataAgroApiService.BuscarMateriales();
-                var centros = dataAgroApiService.BuscarCentros();
-                var campanias = dataAgroApiService.BuscarCampanias();
+                var materiales = dataAgroService.BuscarMateriales();
+
+                var centros = dataAgroService.BuscarCentros();
+                
+                var campanias = dataAgroService.BuscarCampanias();
+
                 var validations = GetValidatorContratos(materiales, centros, campanias);
                 var validator = new ExcelValidator(validations);
 
@@ -461,7 +471,7 @@ namespace SustitucionMOA.Controllers
                     }
                     else
                     {
-                        List<GrabarContratoResult> resultados = dataAgroApiService.CrearContratoMasivo(contratos);
+                        List<GrabarContratoResult> resultados = dataAgroService.CrearContratoMasivo(contratos);
 
                         foreach (var item in resultados)
                         {
@@ -691,12 +701,12 @@ namespace SustitucionMOA.Controllers
         {
             var proveedor = ObtenerProveedor();
 
-            return JsonCustom(dataAgroApiService.ObteneContratosAcuerdo(proveedor.IdDataAgro.Value));
+            return JsonCustom(dataAgroService.ObteneContratosAcuerdo(proveedor.IdDataAgro.Value));
         }
 
         public ActionResult ExcelModeloAltaMasiva()
         {
-            var excel = dataAgroApiService.ExcelModeloAltaMasiva();
+            var excel = dataAgroService.ObtenerExcelModeloAltaMasiva();
             PDFResponse result = new PDFResponse
             {
                 Pdf = new Pdf()

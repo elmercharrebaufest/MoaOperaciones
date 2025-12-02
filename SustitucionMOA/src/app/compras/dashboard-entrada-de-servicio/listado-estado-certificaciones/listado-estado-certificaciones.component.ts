@@ -211,7 +211,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         if (permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES")) {
             this.havePermission = true;
         }
-        
+
         // Esperar un momento para que el aux-panel emita las fechas iniciales
         setTimeout(async () => {
             await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
@@ -381,7 +381,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
     getOrdenCompraFiltro(ocIngresada: string) {
         this.ordenCompraFiltro = ocIngresada;
-        this.tabla.filter(ocIngresada, 'OrdenCompra', 'contains');
+        this.getListarPO();
     }
 
     toggleRow(rowData: any): void {
@@ -930,7 +930,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             elementExpanded.click();
         }
     }
-    
+
     async onBuscar() {
         this.collapseExpandedRow();
 

@@ -40,6 +40,7 @@ namespace SustitucionMOAUtils.Services
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
         }
 
+        [Obsolete("Reemplazado por DataAgroService.CrearContratoAPrecio")]
         public string CrearContratoAPrecio(ContratoAPrecio contratoAPrecio)
         {
             try
@@ -108,6 +109,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete("Reemplazado por DataAgroService.CrearContratoAFijar")]
         public string CrearContratoAFijar(ContratoAFijar contratoAPrecio)
         {
             try
@@ -130,6 +132,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete("Reemplazado por DataAgroService.ValidarDirecto")]
         public string ValidarDirecto(string cuit)
         {
             try
@@ -405,6 +408,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete("Reemplazado por DataAgroService.BuscarCentros")]
         public List<CentroDto> BuscarCentros()
         {
             try
@@ -431,6 +435,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete("Reemplazado por DataAgroService.BuscarCampanias")]
         public List<CampaniaDto> BuscarCampanias()
         {
             try
@@ -753,6 +758,8 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        [Obsolete("Reemplazado por DataAgroService.ListarLocalidades")]
         public List<LocalidadDto> ListarLocalidades()
         {
             try
@@ -777,6 +784,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete("Reemplazado por DataAgroService.ListarPartidos")]
         public List<PartidoDto> ListarPartidos()
         {
             try
