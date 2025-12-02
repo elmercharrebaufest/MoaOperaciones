@@ -58,12 +58,14 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom("");
         }
+
         public ActionResult ObteneDatosContrato(int tiponegocio)
         {
             string BolsaAutomatica = dataAgroApiService.ConfiguracionBolsaAutomatica();
             string DatosContrato = dataAgroService.InicializarContrato(tiponegocio);
             return JsonCustom(new { DatosContrato, BolsaAutomatica });
         }
+
         public ActionResult ObtenerDatosCompraNet(int? idProveedorDataAgro)
         {
             if (idProveedorDataAgro.HasValue)
@@ -73,6 +75,7 @@ namespace SustitucionMOA.Controllers
             var proveedor = ObtenerProveedor();
             return JsonCustom(dataAgroService.ObtenerDatosCompraNet(proveedor.IdDataAgro.Value));
         }
+
         public ActionResult CrearContratoAPrecio(string contrato)
         {
             contrato = contrato.Replace("nia", "ña");
@@ -100,6 +103,7 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom(result);
         }
+
         public ActionResult CrearContratoAFijar(string contrato)
         {
             contrato = contrato.Replace("nia", "ña");
@@ -404,8 +408,11 @@ namespace SustitucionMOA.Controllers
             {
                 var dsExcel = ExcelImport.LeerExcelDesdeHttpRequest(Request);
                 var materiales = dataAgroService.BuscarMateriales();
-                var centros = dataAgroApiService.BuscarCentros();
-                var campanias = dataAgroApiService.BuscarCampanias();
+
+                var centros = dataAgroService.BuscarCentros();
+                
+                var campanias = dataAgroService.BuscarCampanias();
+
                 var validations = GetValidatorContratos(materiales, centros, campanias);
                 var validator = new ExcelValidator(validations);
 

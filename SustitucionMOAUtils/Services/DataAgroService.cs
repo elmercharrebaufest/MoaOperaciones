@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
@@ -7,7 +6,6 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
-using SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
@@ -671,6 +669,118 @@ namespace SustitucionMOAUtils.Services
             {
                 var esValido = new DataAgroConsumer().ValidarDirecto(cuit);
                 return SerializeAndSanitize(esValido);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public List<CentroDto> BuscarCentros()
+        {
+            try
+            {
+                var centrosDA = new DataAgroConsumer().BuscarCentro();
+
+                var centros = new List<CentroDto>();
+
+                if (centrosDA?.Datos != null && centrosDA.Datos.Length > 0)
+                {
+                    centros = centrosDA.Datos.Select(c => new CentroDto
+                    {
+                        CodigoSap = c.CodigoSap,
+                        Descripcion = c.Descripcion,
+                        Id = c.Id
+                    }).ToList();
+                }
+
+                return centros;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public List<CampaniaDto> BuscarCampanias()
+        {
+            try
+            {
+                var campanasDA = new DataAgroConsumer().BuscarCampanas();
+
+                var campanias = new List<CampaniaDto>();
+
+                if (campanasDA != null && campanasDA.Length > 0)
+                {
+                    campanias = campanasDA.Select(c => new CampaniaDto
+                    {
+                        CampaniaId = c.CampañaId,
+                        Descripcion = c.Descripcion
+                    }).ToList();
+                }
+
+                return campanias;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public List<LocalidadDto> ListarLocalidades()
+        {
+            try
+            {
+                var localidadesDA = new DataAgroConsumer().ListarLocalidades();
+
+                var localidades = new List<LocalidadDto>();
+
+                if (localidadesDA != null && localidadesDA.Length > 0)
+                {
+                    localidades = localidadesDA.Select(l => new LocalidadDto
+                    {
+                        CodLocalidad = l.CodLocalidad,
+                        LocalidadId = l.LocalidadId,
+                        Nombre = l.Nombre,
+                        PartidoId = l.PartidoId,
+                        Partido_Nombre = l.Partido_Nombre,
+                        ProvinciaId = l.ProvinciaId,
+                        Provincia_Nombre = l.Provincia_Nombre
+                    }).ToList();
+                }
+
+                return localidades;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public List<PartidoDto> ListarPartidos()
+        {
+            try
+            {
+                var partidosDA = new DataAgroConsumer().ListarPartidos();
+
+                var partidos = new List<PartidoDto>();
+
+                if (partidosDA != null && partidosDA.Length > 0)
+                {
+                    partidos = partidosDA.Select(p => new PartidoDto
+                    {
+                        Descripcion = p.Descripcion,
+                        Id = p.Id,
+                        Provincia = p.Provincia,
+                        ProvinciaId = p.ProvinciaId
+                    }).ToList();
+                }
+
+                return partidos;
             }
             catch (Exception ex)
             {

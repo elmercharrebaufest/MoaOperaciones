@@ -408,6 +408,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete("Reemplazado por DataAgroService.BuscarCentros")]
         public List<CentroDto> BuscarCentros()
         {
             try
@@ -434,6 +435,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete("Reemplazado por DataAgroService.BuscarCampanias")]
         public List<CampaniaDto> BuscarCampanias()
         {
             try
@@ -756,6 +758,8 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        [Obsolete("Reemplazado por DataAgroService.ListarLocalidades")]
         public List<LocalidadDto> ListarLocalidades()
         {
             try
@@ -780,6 +784,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete("Reemplazado por DataAgroService.ListarPartidos")]
         public List<PartidoDto> ListarPartidos()
         {
             try

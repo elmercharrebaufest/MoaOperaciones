@@ -219,5 +219,29 @@ namespace SustitucionMOAWS.WSConsumers
             var result = service.ExcelModeloAltaMasiva();
             return result;
         }
+
+        public DataAgroServices.BuscarCentroDto BuscarCentro()
+        {
+            var resultIniCentro = service.BuscarCentro();
+            return resultIniCentro;
+        }
+
+        public CampañaDto[] BuscarCampanas()
+        {
+            var campanasDto = service.BuscarCampana();
+            return campanasDto;
+        }
+
+        public LocalidadDto[] ListarLocalidades()
+        {
+            var localidades = service.ListarLocalidades();
+            return localidades;
+        }
+
+        public PartidoDto[] ListarPartidos()
+        {
+            var partidos = service.ListarPartidos();
+            return partidos;
+        }
     }
 }

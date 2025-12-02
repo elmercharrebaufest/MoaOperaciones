@@ -2450,6 +2450,12 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="MaterialIni" nillable="true" type="tns:MaterialIni" />
+  <xs:complexType name="BuscarCentroDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Datos" nillable="true" type="tns:ArrayOfCentroIni" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BuscarCentroDto" nillable="true" type="tns:BuscarCentroDto" />
   <xs:complexType name="ArrayOfCentroIni">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="CentroIni" nillable="true" type="tns:CentroIni" />

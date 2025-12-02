@@ -11,14 +11,4 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="ResultIniMaterialModel" nillable="true" type="tns:ResultIniMaterialModel" />
-  <xs:complexType name="ResultIniCentroModel">
-    <xs:complexContent mixed="false">
-      <xs:extension xmlns:q2="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" base="q2:Resultado">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="Datos" nillable="true" type="q2:ArrayOfCentroIni" />
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="ResultIniCentroModel" nillable="true" type="tns:ResultIniCentroModel" />
 </xs:schema>

@@ -678,7 +678,7 @@
   <xs:element name="BuscarCentroResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q65="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" minOccurs="0" name="BuscarCentroResult" nillable="true" type="q65:ResultIniCentroModel" />
+        <xs:element xmlns:q65="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="BuscarCentroResult" nillable="true" type="q65:BuscarCentroDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

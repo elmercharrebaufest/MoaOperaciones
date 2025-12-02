@@ -39,5 +39,9 @@ namespace SustitucionMOAUtils.Interfaces
         List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos);
         string TraerContratoCompleto(int negocioId, int tipoNegocioId);
         byte[] ObtenerExcelModeloAltaMasiva();
+        List<CentroDto> BuscarCentros();
+        List<CampaniaDto> BuscarCampanias();
+        List<LocalidadDto> ListarLocalidades();
+        List<PartidoDto> ListarPartidos();
     }
 }
