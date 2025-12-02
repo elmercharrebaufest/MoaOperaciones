@@ -232,67 +232,99 @@ export class ReporteFacturasCertificacionesComponent implements OnInit {
     }
 
     exportarListadoAExcel() {
-        const workbook = XLSX.utils.book_new();
-
-        const encabezados: string[] = [
-            'Razón social',
-            'Nro OC',
-            'Nro certificación',
-            'Importe',
-            'Moneda',
-            'Usuario',
-            'Fecha de registro',
-            'Archivo'
-        ];
-        const datosAExportar = this.datosCertificaciones.map(x => [
-            x.RazonSocial,
-            x.NRO_OC,
-            x.NRO_Certificacion,
-            x.Importe.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }),
-            x.Moneda,
-            x.Mail,
-            (new Date(parseInt(x.FechaDeRegistro.slice(6, -2)))).toLocaleString('es-AR'),
-            this.obtenerNombreDeArchivo(x.Archivo.Ruta)]
-        );
-        const datosExcel = [encabezados, ...datosAExportar];
-
-        const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(datosExcel);
-        
-        datosExcel[0].forEach((_, colInd) => {
-            const cellAddress = XLSX.utils.encode_cell({ r: 0, c: colInd });
-            if (!worksheet[cellAddress]) {
-                worksheet[cellAddress] = {};
-            }
-            worksheet[cellAddress].s = {
-                fill: {
-                    patternType: "solid",
-                    fgColor: { rgb: "D3D3D3" }
-                },
-                font: {
-                    bold: true
-                },
-                alignment: {
-                    horizontal: "center",
-                    vertical: "center"
+        this.blockUI.start("Exportando...");
+        this.reporteFacturasCertificacionesService.GetDatosReporte(
+            this.facturasCertificacionFilterModel.periodo,
+            this.facturasCertificacionFilterModel.fechaInicio,
+            this.facturasCertificacionFilterModel.fechaFin,
+            1,
+            1000,
+            this.ordenActual,
+            this.columnaActual,
+            this.facturasCertificacionFilterModel.ordenDeCompra,
+            this.facturasCertificacionFilterModel.proveedor
+        ).subscribe(
+            (result: any) => {
+                this.blockUI.stop();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                    return;
                 }
-            };
-        });
 
-        const anchosCols = datosExcel[0].map((_, colInd) =>
-            Math.max(
-                ...datosExcel.map(row => (
-                    row[colInd] !== null && row[colInd] !== undefined ? row[colInd].toString().length : 0))
-            )
+                if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                    return;
+                }
+
+                const datosParaExcel = result.certificaciones || [];
+
+                const workbook = XLSX.utils.book_new();
+
+                const encabezados: string[] = [
+                    'Razón social',
+                    'Nro OC',
+                    'Nro certificación',
+                    'Importe',
+                    'Moneda',
+                    'Usuario',
+                    'Fecha de registro',
+                    'Archivo'
+                ];
+                const datosAExportar = datosParaExcel.map(x => [
+                    x.RazonSocial,
+                    x.NRO_OC,
+                    x.NRO_Certificacion,
+                    x.Importe.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' }),
+                    x.Moneda,
+                    x.Mail,
+                    (new Date(parseInt(x.FechaDeRegistro.slice(6, -2)))).toLocaleString('es-AR'),
+                    this.obtenerNombreDeArchivo(x.Archivo.Ruta)]
+                );
+                const datosExcel = [encabezados, ...datosAExportar];
+
+                const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(datosExcel);
+
+                datosExcel[0].forEach((_, colInd) => {
+                    const cellAddress = XLSX.utils.encode_cell({ r: 0, c: colInd });
+                    if (!worksheet[cellAddress]) {
+                        worksheet[cellAddress] = {};
+                    }
+                    worksheet[cellAddress].s = {
+                        fill: {
+                            patternType: "solid",
+                            fgColor: { rgb: "D3D3D3" }
+                        },
+                        font: {
+                            bold: true
+                        },
+                        alignment: {
+                            horizontal: "center",
+                            vertical: "center"
+                        }
+                    };
+                });
+
+                const anchosCols = datosExcel[0].map((_, colInd) =>
+                    Math.max(
+                        ...datosExcel.map(row => (
+                            row[colInd] !== null && row[colInd] !== undefined ? row[colInd].toString().length : 0))
+                    )
+                );
+
+                worksheet["!cols"] = anchosCols.map(ancho => ({ wch: ancho }));
+
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Facturas');
+
+                const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+                this.guardarComoExcel(excelBuffer, 'Facturas de OCs');
+            },
+            error => {
+                this.blockUI.stop();
+                this.floatMsgService.setErrorMsg("Error al exportar: " + error.message);
+            }
         );
-
-        worksheet["!cols"] = anchosCols.map(ancho => ({ wch: ancho }));
-
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Facturas');
-
-        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-        this.guardarComoExcel(excelBuffer, 'Facturas de OCs');
     }
-    
+
     guardarComoExcel(buffer: any, nombreArchivo: string): void {
         const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
         const link = document.createElement('a');

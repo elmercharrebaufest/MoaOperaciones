@@ -18,17 +18,21 @@ namespace SustitucionMOA.Jobs
     {
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroApiService dataAgroApiService;
+        private readonly IDataAgroService dataAgroService;
 
         private bool _Habilitado = false;
         public bool Habilitado()
         {
             return _Habilitado;
         }
-        public ActualizarLocalidadesPartidosJob(IRepositorio repositorio, IDataAgroApiService dataAgroApiService)
+
+        public ActualizarLocalidadesPartidosJob(IRepositorio repositorio, IDataAgroApiService dataAgroApiService, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
             this.dataAgroApiService = dataAgroApiService;
+            this.dataAgroService = dataAgroService;
         }
+
         public void Execute()
         {
             try
@@ -38,10 +42,12 @@ namespace SustitucionMOA.Jobs
                     return;
 
                 _Habilitado = true;
-                var localidades = dataAgroApiService.ListarLocalidades();
+                //var localidades = dataAgroApiService.ListarLocalidades();
+                var localidades = dataAgroService.ListarLocalidades();
 
                 SincronizarLocalidades(localidades);
-                var partidos = dataAgroApiService.ListarPartidos();
+                //var partidos = dataAgroApiService.ListarPartidos();
+                var partidos = dataAgroService.ListarPartidos();
                 SincronizarPartidos(partidos);
             }
             catch(Exception e)

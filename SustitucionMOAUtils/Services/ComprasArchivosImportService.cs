@@ -323,6 +323,10 @@ namespace SustitucionMOAUtils.Services
                     {
                         errores.Add($"Orden: {ordenFila}. El número de subposición no es válido");
                     }
+                    if (reg.DescripcionItem != null && reg.DescripcionItem.Length > 40)
+                    {
+                        errores.Add($"Orden: {ordenFila}. La descripción del servicio no puede tener más de 40 caracteres");
+                    }
                     if (reg.NombreServicio != null && reg.NombreServicio.Length > 40)
                     {
                         errores.Add($"Orden: {ordenFila}. El nombre del servicio no puede tener más de 40 caracteres");
