@@ -6,11 +6,13 @@
       </header>
 
       <app-container>
-        <app-shipment-card 
-          [ctg]="data.ctg"
-          [patente]="data.camion.patente"
-          [patenteAcoplado]="data.camion.patenteAcoplado">
-        </app-shipment-card>
+        <div class="shipment-card-tutorial-target">
+          <app-shipment-card 
+            [ctg]="data.ctg"
+            [patente]="data.camion.patente"
+            [patenteAcoplado]="data.camion.patenteAcoplado">
+          </app-shipment-card>
+        </div>
       </app-container>
 
       <button 
@@ -131,7 +133,7 @@
               navigateTo="documentos">
             </app-information-button>
           </div>
-        </app-container>        
+        </app-container>
       }
 
       <button class="consult-button" (click)="consultarOtraCTG()">
@@ -139,5 +141,27 @@
         Consultar otra CTG
       </button>
     </app-section-wrapper>
+  } @else {
+    <div class="no-data-container">
+      <p>No hay datos de seguimiento disponibles.</p>
+      <button class="consult-button" (click)="consultarOtraCTG()">
+        <img src="assets/magnifying_glass.svg" alt="Lupa">
+        Ir a búsqueda
+      </button>
+    </div>
+  }
+  
+  @if (tutorialService.showWelcomeModal()) {
+    <app-tutorial-welcome-modal
+      (startTutorial)="onStartTutorial()"
+      (skipTutorial)="onSkipTutorial()">
+    </app-tutorial-welcome-modal>
+  }
+  
+  @if (tutorialService.showTutorial() && tutorialService.getCurrentStep(); as step) {
+    <app-tutorial-tooltip
+      [step]="step"
+      (nextStep)="onNextTutorialStep()">
+    </app-tutorial-tooltip>
   }
 </div>

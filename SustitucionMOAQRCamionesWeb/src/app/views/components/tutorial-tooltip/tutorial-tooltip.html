@@ -1,0 +1,24 @@
+<div class="tutorial-overlay"></div>
+
+<div class="tutorial-tooltip" 
+     #tooltipContainer
+     [attr.data-position]="step().position"
+     [style.top.px]="tooltipPosition().top"
+     [style.left.px]="tooltipPosition().left"
+     style="position: fixed; z-index: 10002;">
+     
+  <div class="tooltip-content">
+    <div class="tooltip-header">
+      <h3 class="tooltip-title">{{ step().title }}</h3>
+      <span class="tooltip-step">{{ step().stepNumber }}/{{ step().totalSteps }}</span>
+    </div>
+    
+    <p class="tooltip-description">{{ step().description }}</p>
+    
+    <button class="btn-next" (click)="onNext()">
+      {{ isLastStep() ? '¡Entendido!' : 'Siguiente' }}
+    </button>
+  </div>
+  
+  <div class="tooltip-arrow" [style.left.px]="arrowPosition()"></div>
+</div>

@@ -1,27 +1,27 @@
-import { Component, signal, computed, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { Etapa } from '../../../models/estado-etapas.model';
-// Components
-import { ShipmentCardComponent } from '../../components/shipment-card/shipment-card';
-import { ProgressStepperComponent } from '../../components/progress-stepper/progress-stepper';
-import { StagesListComponent } from '../../components/stages-list/stages-list';
-import { InformationButtonComponent } from '../../components/information-button/information-button';
-import { ContainerComponent } from '../../../shared/container/container';
-import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper';
-import { PesajeInfoComponent } from '../../components/pesaje-info/pesaje-info';
-import { CircuitoFinalizadoComponent } from '../../components/circuito-finalizado/circuito-finalizado';
-import { EtapasCompletadasComponent } from '../../components/etapas-completadas/etapas-completadas';
-// Helpers
-import { formatDate } from '../../../shared/helpers/date.helper';
-import { returnStatusUppercase, returnStatusClass } from '../../../shared/helpers/status.helper'
-// Services
-import { StageStateService } from '../../../infrastructure/services/internal/stage-state.service';
-import { TrackingService } from '../../../infrastructure/services/external/tracking.service'
-import { EstadoEtapasService } from '../../../infrastructure/services/external/estado-etapas.service';
+import { Component, signal, computed, effect, type OnInit } from "@angular/core"
+import { CommonModule } from "@angular/common"
+import { Router } from "@angular/router"
+import type { Etapa } from "../../../models/estado-etapas.model"
+import { ShipmentCardComponent } from "../../components/shipment-card/shipment-card"
+import { ProgressStepperComponent } from "../../components/progress-stepper/progress-stepper"
+import { StagesListComponent } from "../../components/stages-list/stages-list"
+import { InformationButtonComponent } from "../../components/information-button/information-button"
+import { ContainerComponent } from "../../../shared/container/container"
+import { SectionWrapperComponent } from "../../components/section-wrapper/section-wrapper"
+import { PesajeInfoComponent } from "../../components/pesaje-info/pesaje-info"
+import { CircuitoFinalizadoComponent } from "../../components/circuito-finalizado/circuito-finalizado"
+import { EtapasCompletadasComponent } from "../../components/etapas-completadas/etapas-completadas"
+import { TutorialWelcomeModalComponent } from "../../components/tutorial-welcome-modal/tutorial-welcome-modal"
+import { TutorialTooltipComponent } from "../../components/tutorial-tooltip/tutorial-tooltip"
+import { formatDate } from "../../../shared/helpers/date.helper"
+import { returnStatusUppercase, returnStatusClass } from "../../../shared/helpers/status.helper"
+import { StageStateService } from "../../../infrastructure/services/internal/stage-state.service"
+import { TrackingService } from "../../../infrastructure/services/external/tracking.service"
+import { EstadoEtapasService } from "../../../infrastructure/services/external/estado-etapas.service"
+import { TutorialService } from "../../../infrastructure/services/internal/tutorial.service"
 
 @Component({
-  selector: 'app-tracking-page',
+  selector: "app-tracking-page",
   standalone: true,
   imports: [
     CommonModule,
@@ -33,16 +33,18 @@ import { EstadoEtapasService } from '../../../infrastructure/services/external/e
     SectionWrapperComponent,
     PesajeInfoComponent,
     CircuitoFinalizadoComponent,
-    EtapasCompletadasComponent
+    EtapasCompletadasComponent,
+    TutorialWelcomeModalComponent,
+    TutorialTooltipComponent,
   ],
-  templateUrl: './tracking.html',
-  styleUrls: ['./tracking.scss']
+  templateUrl: "./tracking.html",
+  styleUrls: ["./tracking.scss"],
 })
-export class TrackingComponent {
-  cargoData = computed(() => this.trackingService.trackingData());
-  
-  isExpanded = signal(false);
-  isUpdating = signal(false);
+export class TrackingComponent implements OnInit {
+  cargoData = computed(() => this.trackingService.trackingData())
+
+  isExpanded = signal(false)
+  isUpdating = signal(false)
 
   selectedIndex = computed(() => this.stageStateService.getSelectedIndex()());
 
@@ -168,7 +170,8 @@ export class TrackingComponent {
     private router: Router,
     public stageStateService: StageStateService,
     private trackingService: TrackingService,
-    private estadoEtapasService: EstadoEtapasService
+    private estadoEtapasService: EstadoEtapasService,
+    public tutorialService: TutorialService,
   ) {
     effect(() => {
       const data = this.trackingService.trackingData();
@@ -182,6 +185,26 @@ export class TrackingComponent {
         this.stageStateService.updateStages(data.etapas, data.datosAdicionales?.rechazado ?? false);
       }
     });
+  }
+
+  ngOnInit() {
+    const data = this.cargoData()
+
+    if (!data) {
+      this.router.navigate(["/search"])
+      return
+    }
+
+    this.initializeData()
+    this.tutorialService.initializeTutorial()
+  }
+
+  private initializeData() {
+    const data = this.cargoData()
+
+    if (data && data.etapas) {
+      this.stageStateService.updateStages(data.etapas, data.datosAdicionales.rechazado)
+    }
   }
 
   onStageChange(index: number) {
@@ -221,6 +244,18 @@ export class TrackingComponent {
     this.trackingService.clearTrackingData();
     this.estadoEtapasService.clearEstadoEtapas();
     this.router.navigate(['/search']);
+  }
+
+  onStartTutorial() {
+    this.tutorialService.startTutorial()
+  }
+
+  onSkipTutorial() {
+    this.tutorialService.skipTutorial()
+  }
+
+  onNextTutorialStep() {
+    this.tutorialService.nextStep()
   }
 
   getStatusUppercase(status: Etapa['estado']): string {
