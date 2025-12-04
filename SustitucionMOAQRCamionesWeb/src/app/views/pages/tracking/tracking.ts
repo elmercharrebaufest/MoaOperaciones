@@ -19,6 +19,7 @@ import { StageStateService } from "../../../infrastructure/services/internal/sta
 import { TrackingService } from "../../../infrastructure/services/external/tracking.service"
 import { EstadoEtapasService } from "../../../infrastructure/services/external/estado-etapas.service"
 import { TutorialService } from "../../../infrastructure/services/internal/tutorial.service"
+import { CookieService } from "../../../infrastructure/services/internal/cookie.service"
 
 @Component({
   selector: "app-tracking-page",
@@ -45,6 +46,7 @@ export class TrackingComponent implements OnInit {
 
   isExpanded = signal(false)
   isUpdating = signal(false)
+  isRestoringSession = signal(false)
 
   selectedIndex = computed(() => this.stageStateService.getSelectedIndex()());
 
@@ -172,16 +174,12 @@ export class TrackingComponent implements OnInit {
     private trackingService: TrackingService,
     private estadoEtapasService: EstadoEtapasService,
     public tutorialService: TutorialService,
+    private cookieService: CookieService
   ) {
     effect(() => {
       const data = this.trackingService.trackingData();
       
-      if (!data) {
-        this.router.navigate(['/search']);
-        return;
-      }
-      
-      if (data.etapas && data.etapas.length > 0) {
+      if (data && data.etapas && data.etapas.length > 0) {
         this.stageStateService.updateStages(data.etapas, data.datosAdicionales?.rechazado ?? false);
       }
     });
@@ -190,13 +188,41 @@ export class TrackingComponent implements OnInit {
   ngOnInit() {
     const data = this.cargoData()
 
-    if (!data) {
-      this.router.navigate(["/search"])
-      return
+    if (data) {
+      this.initializeData()
+      this.tutorialService.initializeTutorial()
+    } else {
+      this.attemptSessionRestore();
     }
+  }
 
-    this.initializeData()
-    this.tutorialService.initializeTutorial()
+  private attemptSessionRestore() {
+    const ctg = this.cookieService.getCookie('ctg');
+    const patente = this.cookieService.getCookie('patente');
+
+    if (ctg && patente) {
+      this.isRestoringSession.set(true);
+
+      this.trackingService.getTrackingData(ctg, patente, undefined)
+        .subscribe({
+          next: (response) => {
+            this.isRestoringSession.set(false);
+            
+            if (response.resultado && response.data) {
+              this.initializeData();
+              this.tutorialService.initializeTutorial();
+            } else {
+              this.router.navigate(['/search']);
+            }
+          },
+          error: () => {
+            this.isRestoringSession.set(false);
+            this.router.navigate(['/search']);
+          }
+        });
+    } else {
+      this.router.navigate(['/search']);
+    }
   }
 
   private initializeData() {
@@ -243,6 +269,8 @@ export class TrackingComponent implements OnInit {
   consultarOtraCTG() {
     this.trackingService.clearTrackingData();
     this.estadoEtapasService.clearEstadoEtapas();
+    this.cookieService.deleteCookie('ctg');
+    this.cookieService.deleteCookie('patente');
     this.router.navigate(['/search']);
   }
 

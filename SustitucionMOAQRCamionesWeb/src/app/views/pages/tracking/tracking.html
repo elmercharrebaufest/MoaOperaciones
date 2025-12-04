@@ -1,167 +1,173 @@
 <div class="cargo-tracking-container">
-  @if (cargoData(); as data) {
-    <app-section-wrapper backgroundColor="#EAE9E9" [roundedBottom]="true">
-      <header class="header">
-        <img src="assets/moa_full_logo.svg" alt="Molinos agro" class="logo">
-      </header>
+  @if (isRestoringSession()) {
+    <div class="restoring-overlay">
+      <span class="spinner"></span>
+      <p>Actulizando seguimiento...</p>
+    </div>
+  } @else {
+    @if (cargoData(); as data) {
+      <app-section-wrapper backgroundColor="#EAE9E9" [roundedBottom]="true">
+        <header class="header">
+          <img src="assets/moa_full_logo.svg" alt="Molinos agro" class="logo">
+        </header>
 
-      <app-container>
-        <div class="shipment-card-tutorial-target">
-          <app-shipment-card 
-            [ctg]="data.ctg"
-            [patente]="data.camion.patente"
-            [patenteAcoplado]="data.camion.patenteAcoplado">
-          </app-shipment-card>
-        </div>
-      </app-container>
-
-      <button 
-        class="actualizar-button" 
-        (click)="onActualizar()"
-        [disabled]="isUpdating()"
-        [class.updating]="isUpdating()">
-        @if (isUpdating()) {
-          <span class="spinner"></span>
-          Actualizando...
-        } @else {
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="refresh-icon">
-            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" 
-              stroke="currentColor" 
-              stroke-width="2" 
-              stroke-linecap="round" 
-              stroke-linejoin="round"/>
-          </svg>
-          Actualizar
-        }
-      </button>
-    </app-section-wrapper>
-
-    <app-section-wrapper backgroundColor="#f5f5f5" class="content-section">
-      @if (currentStage(); as stage) {
-
-        @if (isCircuitoFinalizado()) {
-          <div class="circuito-finalizado-wrapper">
-            <app-circuito-finalizado></app-circuito-finalizado>
+        <app-container>
+          <div class="shipment-card-tutorial-target">
+            <app-shipment-card 
+              [ctg]="data.ctg"
+              [patente]="data.camion.patente"
+              [patenteAcoplado]="data.camion.patenteAcoplado">
+            </app-shipment-card>
           </div>
-        }
+        </app-container>
 
-        @if (shouldShowPesajeInfo() && data.datosAdicionales.pesadaBruto) {
-          <div class="pesaje-info-wrapper">
-            <app-pesaje-info
-              [pesadaBruto]="data.datosAdicionales.pesadaBruto"
-              [pesadaTara]="data.datosAdicionales.pesadaTara"
-              [pesadaDescargado]="data.datosAdicionales.pesadaDescargado"
-              [fechaPesajeBruto]="pesajeBrutoDate()">
-            </app-pesaje-info>
-          </div>
-        }
+        <button 
+          class="actualizar-button" 
+          (click)="onActualizar()"
+          [disabled]="isUpdating()"
+          [class.updating]="isUpdating()">
+          @if (isUpdating()) {
+            <span class="spinner"></span>
+            Actualizando...
+          } @else {
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="refresh-icon">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" 
+                stroke="currentColor" 
+                stroke-width="2" 
+                stroke-linecap="round" 
+                stroke-linejoin="round"/>
+            </svg>
+            Actualizar
+          }
+        </button>
+      </app-section-wrapper>
 
-        @if (isCircuitoFinalizado()) {
-          <div class="etapas-completadas-wrapper">
-            <app-etapas-completadas
-              [stages]="data.etapas"
-              [currentStageIndex]="selectedIndex()"
-              [rechazado]="rechazado()"
-              [caladoEstado]="caladoEstado()"
-              (stageClicked)="onStageChange($event)">
-            </app-etapas-completadas>
-          </div>
-        }
+      <app-section-wrapper backgroundColor="#f5f5f5" class="content-section">
+        @if (currentStage(); as stage) {
 
-        @if (!isCircuitoFinalizado()) {
-          <app-container [padding]="'p-0'" [marginBottom]="'10px'" class="main-content-container">
-            <div class="stage-section">
-              <div class="current-stage-info">
-                <div class="stage-header-row">
-                  <div>
-                    <div class="stage-label">ETAPA ACTUAL {{ stage.index + 1 }} de {{ stage.total }}</div>
-                    <div class="stage-name">{{ stage.name }}</div>
-                    <div class="stage-date">{{ stage.date }}</div>
-                  </div>
-                  <div class="stage-status-wrapper">
-                    @if (filaTag()) {
-                      <div class="stage-fila">
-                        {{ filaTag() }}
+          @if (isCircuitoFinalizado()) {
+            <div class="circuito-finalizado-wrapper">
+              <app-circuito-finalizado></app-circuito-finalizado>
+            </div>
+          }
+
+          @if (shouldShowPesajeInfo() && data.datosAdicionales.pesadaBruto) {
+            <div class="pesaje-info-wrapper">
+              <app-pesaje-info
+                [pesadaBruto]="data.datosAdicionales.pesadaBruto"
+                [pesadaTara]="data.datosAdicionales.pesadaTara"
+                [pesadaDescargado]="data.datosAdicionales.pesadaDescargado"
+                [fechaPesajeBruto]="pesajeBrutoDate()">
+              </app-pesaje-info>
+            </div>
+          }
+
+          @if (isCircuitoFinalizado()) {
+            <div class="etapas-completadas-wrapper">
+              <app-etapas-completadas
+                [stages]="data.etapas"
+                [currentStageIndex]="selectedIndex()"
+                [rechazado]="rechazado()"
+                [caladoEstado]="caladoEstado()"
+                (stageClicked)="onStageChange($event)">
+              </app-etapas-completadas>
+            </div>
+          }
+
+          @if (!isCircuitoFinalizado()) {
+            <app-container [padding]="'p-0'" [marginBottom]="'10px'" class="main-content-container">
+              <div class="stage-section">
+                <div class="current-stage-info">
+                  <div class="stage-header-row">
+                    <div>
+                      <div class="stage-label">ETAPA ACTUAL {{ stage.index + 1 }} de {{ stage.total }}</div>
+                      <div class="stage-name">{{ stage.name }}</div>
+                      <div class="stage-date">{{ stage.date }}</div>
+                    </div>
+                    <div class="stage-status-wrapper">
+                      @if (filaTag()) {
+                        <div class="stage-fila">
+                          {{ filaTag() }}
+                        </div>
+                      }
+                      <div [ngClass]="['stage-status', getStatusClass(stage.rawStatus)]">
+                        {{ stage.status }}
                       </div>
-                    }
-                    <div [ngClass]="['stage-status', getStatusClass(stage.rawStatus)]">
-                      {{ stage.status }}
                     </div>
                   </div>
+                  
+                  <div class="stage-description">
+                    <p class="estimated-time">Tiempo estimado: aprox. {{ stage.estimatedTime() }}</p>
+                  </div>
                 </div>
-                
-                <div class="stage-description">
-                  <!-- <p>Texto fijo a definir.</p> -->
-                  <p class="estimated-time">Tiempo estimado: aprox. {{ stage.estimatedTime() }}</p>
-                </div>
-              </div>
 
-              <app-progress-stepper
-                [totalSteps]="stage.total"
-                [currentStep]="selectedIndex()"
-                [isExpanded]="isExpanded()"
-                [stages]="data.etapas"
-                [rechazado]="rechazado()"
-                (stageChanged)="onStageChange($event)"
-                (toggleExpanded)="toggleExpanded()">
-              </app-progress-stepper>
-
-              <div class="stages-list-wrapper" [class.expanded]="isExpanded()">
-                <app-stages-list
+                <app-progress-stepper
+                  [totalSteps]="stage.total"
+                  [currentStep]="selectedIndex()"
+                  [isExpanded]="isExpanded()"
                   [stages]="data.etapas"
-                  [currentStageIndex]="selectedIndex()"
                   [rechazado]="rechazado()"
-                  [caladoEstado]="caladoEstado()"
-                  (stageClicked)="onStageChange($event)">
-                </app-stages-list>
+                  (stageChanged)="onStageChange($event)"
+                  (toggleExpanded)="toggleExpanded()">
+                </app-progress-stepper>
+
+                <div class="stages-list-wrapper" [class.expanded]="isExpanded()">
+                  <app-stages-list
+                    [stages]="data.etapas"
+                    [currentStageIndex]="selectedIndex()"
+                    [rechazado]="rechazado()"
+                    [caladoEstado]="caladoEstado()"
+                    (stageClicked)="onStageChange($event)">
+                  </app-stages-list>
+                </div>
               </div>
+            </app-container>
+          }
+
+          <app-container>
+            <div class="information-button">
+              <app-information-button
+                title="Información general de la carga"
+                navigateTo="carga">
+              </app-information-button>
+
+              <hr class="section-divider">
+
+              <app-information-button 
+                title="Descarga de documentos"
+                navigateTo="documentos">
+              </app-information-button>
             </div>
           </app-container>
         }
 
-        <app-container>
-          <div class="information-button">
-            <app-information-button
-              title="Información general de la carga"
-              navigateTo="carga">
-            </app-information-button>
-
-            <hr class="section-divider">
-
-            <app-information-button 
-              title="Descarga de documentos"
-              navigateTo="documentos">
-            </app-information-button>
-          </div>
-        </app-container>
-      }
-
-      <button class="consult-button" (click)="consultarOtraCTG()">
-        <img src="assets/magnifying_glass.svg" alt="Lupa">
-        Consultar otra CTG
-      </button>
-    </app-section-wrapper>
-  } @else {
-    <div class="no-data-container">
-      <p>No hay datos de seguimiento disponibles.</p>
-      <button class="consult-button" (click)="consultarOtraCTG()">
-        <img src="assets/magnifying_glass.svg" alt="Lupa">
-        Ir a búsqueda
-      </button>
-    </div>
-  }
-  
-  @if (tutorialService.showWelcomeModal()) {
-    <app-tutorial-welcome-modal
-      (startTutorial)="onStartTutorial()"
-      (skipTutorial)="onSkipTutorial()">
-    </app-tutorial-welcome-modal>
-  }
-  
-  @if (tutorialService.showTutorial() && tutorialService.getCurrentStep(); as step) {
-    <app-tutorial-tooltip
-      [step]="step"
-      (nextStep)="onNextTutorialStep()">
-    </app-tutorial-tooltip>
+        <button class="consult-button" (click)="consultarOtraCTG()">
+          <img src="assets/magnifying_glass.svg" alt="Lupa">
+          Consultar otra CTG
+        </button>
+      </app-section-wrapper>
+    } @else {
+      <div class="no-data-container">
+        <p>No hay datos de seguimiento disponibles.</p>
+        <button class="consult-button" (click)="consultarOtraCTG()">
+          <img src="assets/magnifying_glass.svg" alt="Lupa">
+          Ir a búsqueda
+        </button>
+      </div>
+    }
+    
+    @if (tutorialService.showWelcomeModal()) {
+      <app-tutorial-welcome-modal
+        (startTutorial)="onStartTutorial()"
+        (skipTutorial)="onSkipTutorial()">
+      </app-tutorial-welcome-modal>
+    }
+    
+    @if (tutorialService.showTutorial() && tutorialService.getCurrentStep(); as step) {
+      <app-tutorial-tooltip
+        [step]="step"
+        (nextStep)="onNextTutorialStep()">
+      </app-tutorial-tooltip>
+    }
   }
 </div>

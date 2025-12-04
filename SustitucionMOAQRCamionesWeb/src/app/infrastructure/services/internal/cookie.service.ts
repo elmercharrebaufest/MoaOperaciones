@@ -11,6 +11,11 @@ export class CookieService {
     document.cookie = `${name}=${value};${expires};path=/`
   }
 
+  setSessionCookie(name: string, value: string, minutes: number): void {
+    const maxAge = minutes * 60; // 5 minutes = 300 seconds
+    document.cookie = `${name}=${value};max-age=${maxAge};path=/`;
+  }
+
   getCookie(name: string): string | null {
     const nameEQ = `${name}=`
     const ca = document.cookie.split(";")

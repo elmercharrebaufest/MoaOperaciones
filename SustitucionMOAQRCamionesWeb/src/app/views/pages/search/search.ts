@@ -6,6 +6,7 @@ import { RecaptchaModule, RecaptchaComponent } from "ng-recaptcha-2";
 import { environment } from '../../../../environments/environment';
 import { TrackingService } from '../../../infrastructure/services/external/tracking.service';
 import { AuthService } from '../../../infrastructure/services/auth/auth.service';
+import { CookieService } from '../../../infrastructure/services/internal/cookie.service';
 
 @Component({
   selector: 'app-search',
@@ -32,9 +33,12 @@ export class SearchComponent {
   constructor(
     private router: Router,
     private trackingService: TrackingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cookieService: CookieService
   ) {
     this.authService.logout();
+    this.cookieService.deleteCookie('ctg');
+    this.cookieService.deleteCookie('patente');
   }
 
   handleCorrectCaptcha(event: string | null) {
@@ -83,6 +87,9 @@ export class SearchComponent {
           this.isLoading.set(false);
           
           if (response.resultado && response.data) {
+            this.cookieService.setSessionCookie('ctg', this.ctg(), 5);
+            this.cookieService.setSessionCookie('patente', this.patente(), 5);
+
             this.authService.login();
             this.router.navigate(['/tracking']);
           } else {
