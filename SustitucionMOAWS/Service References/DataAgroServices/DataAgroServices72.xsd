@@ -694,6 +694,18 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="ObtenerConfiguracionBolsa">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ObtenerConfiguracionBolsaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q67="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ObtenerConfiguracionBolsaResult" nillable="true" type="q67:KendoGridResponseDtoOfConfiguracionBolsaDtocyovIo6p" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="ExcelModeloAltaMasiva">
     <xs:complexType>
       <xs:sequence />
@@ -714,7 +726,7 @@
   <xs:element name="ListarLocalidadesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q67="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ListarLocalidadesResult" nillable="true" type="q67:ArrayOfLocalidadDto" />
+        <xs:element xmlns:q68="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ListarLocalidadesResult" nillable="true" type="q68:ArrayOfLocalidadDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -726,7 +738,7 @@
   <xs:element name="ListarPartidosResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q68="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ListarPartidosResult" nillable="true" type="q68:ArrayOfPartidoDto" />
+        <xs:element xmlns:q69="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ListarPartidosResult" nillable="true" type="q69:ArrayOfPartidoDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

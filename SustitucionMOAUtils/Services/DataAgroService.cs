@@ -456,7 +456,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var resp = new DataAgroConsumer().ConfiguracionBolsaAutomatica();
-                return resp;
+                return SerializeAndSanitize(resp);
             }
             catch (Exception ex)
             {
