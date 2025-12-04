@@ -308,6 +308,12 @@
   <wsdl:message name="IDataAgroServices_BuscarCampana_OutputMessage">
     <wsdl:part name="parameters" element="tns:BuscarCampanaResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataAgroServices_ObtenerConfiguracionBolsa_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerConfiguracionBolsa" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_ObtenerConfiguracionBolsa_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerConfiguracionBolsaResponse" />
+  </wsdl:message>
   <wsdl:message name="IDataAgroServices_ExcelModeloAltaMasiva_InputMessage">
     <wsdl:part name="parameters" element="tns:ExcelModeloAltaMasiva" />
   </wsdl:message>
@@ -523,6 +529,10 @@
     <wsdl:operation name="BuscarCampana">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/BuscarCampana" message="tns:IDataAgroServices_BuscarCampana_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/BuscarCampanaResponse" message="tns:IDataAgroServices_BuscarCampana_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerConfiguracionBolsa">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/ObtenerConfiguracionBolsa" message="tns:IDataAgroServices_ObtenerConfiguracionBolsa_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/ObtenerConfiguracionBolsaResponse" message="tns:IDataAgroServices_ObtenerConfiguracionBolsa_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ExcelModeloAltaMasiva">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/ExcelModeloAltaMasiva" message="tns:IDataAgroServices_ExcelModeloAltaMasiva_InputMessage" />
@@ -976,6 +986,15 @@
     </wsdl:operation>
     <wsdl:operation name="BuscarCampana">
       <soap:operation soapAction="http://tempuri.org/IDataAgroServices/BuscarCampana" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerConfiguracionBolsa">
+      <soap:operation soapAction="http://tempuri.org/IDataAgroServices/ObtenerConfiguracionBolsa" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

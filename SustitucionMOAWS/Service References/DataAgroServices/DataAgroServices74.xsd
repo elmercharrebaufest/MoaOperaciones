@@ -2499,6 +2499,38 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="CampañaDto" nillable="true" type="tns:CampañaDto" />
+  <xs:complexType name="KendoGridResponseDtoOfConfiguracionBolsaDtocyovIo6p">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="KendoGridResponseDtoOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ConfiguracionBolsaDto" Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Data" nillable="true" type="tns:ArrayOfConfiguracionBolsaDto" />
+      <xs:element minOccurs="0" name="Total" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="KendoGridResponseDtoOfConfiguracionBolsaDtocyovIo6p" nillable="true" type="tns:KendoGridResponseDtoOfConfiguracionBolsaDtocyovIo6p" />
+  <xs:complexType name="ArrayOfConfiguracionBolsaDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ConfiguracionBolsaDto" nillable="true" type="tns:ConfiguracionBolsaDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfConfiguracionBolsaDto" nillable="true" type="tns:ArrayOfConfiguracionBolsaDto" />
+  <xs:complexType name="ConfiguracionBolsaDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Bolsa" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="BolsaId" type="xs:int" />
+      <xs:element minOccurs="0" name="Destino" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinoId" type="xs:int" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Provincia" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProvinciaId" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConfiguracionBolsaDto" nillable="true" type="tns:ConfiguracionBolsaDto" />
   <xs:complexType name="ArrayOfLocalidadDto">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="LocalidadDto" nillable="true" type="tns:LocalidadDto" />

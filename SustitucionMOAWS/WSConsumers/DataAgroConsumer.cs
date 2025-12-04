@@ -87,9 +87,10 @@ namespace SustitucionMOAWS.WSConsumers
             return result; 
         }
 
-        public string ConfiguracionBolsaAutomatica()
+        public KendoGridResponseDtoOfConfiguracionBolsaDtocyovIo6p ConfiguracionBolsaAutomatica()
         {
-            throw new NotImplementedException();
+            var configuracion = service.ObtenerConfiguracionBolsa();
+            return configuracion;
         }
 
         public DatosCompraNetDto ObtenerDatosCompraNet(int id)
