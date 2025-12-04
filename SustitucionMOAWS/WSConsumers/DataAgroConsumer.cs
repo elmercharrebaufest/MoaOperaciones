@@ -1,5 +1,4 @@
-﻿using SustitucionMOAModel.Models.DataAgro;
-using SustitucionMOAWS.CredentialService;
+﻿using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections;
@@ -9,7 +8,7 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class DataAgroConsumer
     {
-        private DataAgroServicesClient service = new DataAgroServicesClient();
+        private readonly DataAgroServicesClient service = new DataAgroServicesClient();
 
         public DataAgroConsumer()
         {
@@ -86,6 +85,11 @@ namespace SustitucionMOAWS.WSConsumers
         {
             var result = service.InicializarContrato(tipoNegocioId);
             return result; 
+        }
+
+        public string ConfiguracionBolsaAutomatica()
+        {
+            throw new NotImplementedException();
         }
 
         public DatosCompraNetDto ObtenerDatosCompraNet(int id)
@@ -195,6 +199,7 @@ namespace SustitucionMOAWS.WSConsumers
             var result = service.GrabarContratoMasivo(contratos);
             return result;
         }
+
         public DataAgroServices.BasicoContrato TraerContratoCompleto(int id, string tipo)
         {
             var result = service.TraerContratoCompleto(id, tipo);
@@ -242,6 +247,12 @@ namespace SustitucionMOAWS.WSConsumers
         {
             var partidos = service.ListarPartidos();
             return partidos;
+        }
+
+        public DataAgroServices.KendoDataSourceResultDto BuscaDatosTablaContrato(DataAgroServices.KendoDataSourceRequestDto filtro)
+        {
+            var resultDto = service.BuscaDatosTablaContrato(filtro);
+            return resultDto;
         }
     }
 }

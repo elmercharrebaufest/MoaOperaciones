@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Dto;
+﻿using Kendo.DynamicLinq;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
@@ -38,10 +39,13 @@ namespace SustitucionMOAUtils.Interfaces
         string ObteneContratosAcuerdo(int corredorId);
         List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos);
         string TraerContratoCompleto(int negocioId, int tipoNegocioId);
+        BasicoContrato TraerContratoCompleto(int id, string tipo);
         byte[] ObtenerExcelModeloAltaMasiva();
         List<CentroDto> BuscarCentros();
         List<CampaniaDto> BuscarCampanias();
         List<LocalidadDto> ListarLocalidades();
         List<PartidoDto> ListarPartidos();
+        string GetContratos(DataSourceRequest request);
+        string ConfiguracionBolsaAutomatica();
     }
 }

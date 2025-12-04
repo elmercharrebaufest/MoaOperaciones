@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Kendo.DynamicLinq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
@@ -450,6 +451,20 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public string ConfiguracionBolsaAutomatica()
+        {
+            try
+            {
+                var resp = new DataAgroConsumer().ConfiguracionBolsaAutomatica();
+                return resp;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
         public string ObtenerDatosCompraNet(int id)
         {
             try
@@ -789,122 +804,37 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
+        public string GetContratos(DataSourceRequest request)
         {
-            return repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
-        }
+            try
+            {
+                var filtro = new SustitucionMOAWS.DataAgroServices.KendoDataSourceRequestDto
+                {
+                    Filter = new SustitucionMOAWS.DataAgroServices.KendoFilterDto
+                    {
+                        field = request.Filter.Field,
+                        logic = request.Filter.Logic,
+                        @operator = request.Filter.Operator,
+                        value = request.Filter.Value?.ToString(),
+                        filters = request.Filter?.Filters?.Select(f => ConvertirFiltroKendo(f)).ToArray()
+                    },
+                    Skip = request.Skip,
+                    Take = request.Take,
+                    Sort = request.Sort?.Select(s => new SustitucionMOAWS.DataAgroServices.KendoSortDto
+                    {
+                        field = s.Field,
+                        dir = s.Dir
+                    }).ToArray()
+                };
 
-        private static string FormatearCodigoProveedor(string CUIT)
-        {
-            return string.Concat("00", CUIT.Substring(2, 8));
-        }
-
-        private static SustitucionMOAWS.DataAgroServices.Contrato ConvertirAModeloDataAgro(ContratoAPrecio contrato)
-        {
-            var contratoDA = new SustitucionMOAWS.DataAgroServices.Contrato();
-
-            contratoDA.BolsaId = contrato.BolsaId;
-            contratoDA.CampanaId = contrato.CampanaId;
-            contratoDA.Cantidad = contrato.Cantidad;
-            contratoDA.CantidadCamiones = contrato.CantidadCamiones;
-            contratoDA.CalidadTercero = contrato.CalidadTercero;
-            contratoDA.ClasificacionId = contrato.ClasificacionId;
-            contratoDA.ComercialCreadorId = contrato.ComercialCreadorId;
-            contratoDA.ComercialId = contrato.ComercialId;
-            contratoDA.CondicionFijacionId = contrato.CondicionFijacionId;
-            contratoDA.Consignatario = contrato.Consignatario;
-            contratoDA.ContratoCorredor = contrato.ContratoCorredor;
-            contratoDA.ContratoSAP = contrato.ContratoSAP;
-            contratoDA.ContratoVendedor = contrato.ContratoVendedor;
-            contratoDA.CorredorId = contrato.CorredorId;
-            contratoDA.DestinoId = contrato.DestinoId;
-            contratoDA.DiasPesificado = contrato.DiasPesificado;
-            contratoDA.DolarizadoTercero = contrato.DolarizadoTercero;
-            contratoDA.EstadoId = contrato.EstadoId;
-            contratoDA.EstablecimientoPropio = contrato.EstablecimientoPropio;
-            contratoDA.Fecha = contrato.Fecha;
-            contratoDA.FechaDesde = contrato.FechaDesde;
-            contratoDA.FechaEntrega = contrato.FechaEntrega;
-            contratoDA.FechaHasta = contrato.FechaHasta;
-            contratoDA.FechaOperacion = contrato.FechaOperacion;
-            contratoDA.Id = contrato.Id;
-            contratoDA.ImporteSustentable = contrato.ImporteSustentable;
-            contratoDA.LocalidadId = contrato.LocalidadId;
-            contratoDA.MaterialId = contrato.MaterialId;
-            contratoDA.MonedaId = contrato.MonedaId;
-            contratoDA.MonedaSustentableId = contrato.MonedaSustentableId;
-            contratoDA.Observacion = contrato.Observacion;
-            contratoDA.ObservacionTercero = contrato.ObservacionTercero;
-            contratoDA.PagoDiferidoTercero = contrato.PagoDiferidoTercero;
-            contratoDA.Pizarra = contrato.Pizarra;
-            contratoDA.PlanCanje = contrato.PlanCanje;
-            contratoDA.PorcentajeDePago = contrato.PorcentajeDePago;
-            contratoDA.Precio = contrato.Precio;
-            contratoDA.PrecioNeto = contrato.PrecioNeto;
-            contratoDA.ProveedorCreadorId = contrato.ProveedorCreadorId;
-            contratoDA.ProveedorId = contrato.ProveedorId;
-            contratoDA.ProvinciaId = contrato.ProvinciaId;
-            contratoDA.StandardDeCalidadId = contrato.StandardDeCalidadId;
-            contratoDA.Sustentable = contrato.Sustentable ?? false;
-            contratoDA.SustentableTercero = contrato.SustentableTercero;
-            contratoDA.TipoNegocioId = contrato.TipoNegocioId;
-            contratoDA.UsuarioTercero = contrato.UsuarioTercero;
-            contratoDA.ZonaId = contrato.ZonaId;
-
-            return contratoDA;
-        }
-
-        private static SustitucionMOAWS.DataAgroServices.Contrato ConvertirAModeloDataAgro(ContratoAFijar contrato)
-        {
-            var contratoDA = new SustitucionMOAWS.DataAgroServices.Contrato();
-
-            contratoDA.BolsaId = contrato.BolsaId;
-            contratoDA.CalidadTercero = contrato.CalidadTercero;
-            contratoDA.CampanaId = contrato.CampanaId;
-            contratoDA.Cantidad = contrato.Cantidad;
-            contratoDA.CantidadCamiones = contrato.CantidadCamiones;
-            contratoDA.ClasificacionId = contrato.ClasificacionId;
-            contratoDA.ComercialCreadorId = contrato.ComercialCreadorId;
-            contratoDA.ComercialId = contrato.ComercialId;
-            contratoDA.Consignatario = contrato.Consignatario;
-            contratoDA.CondicionFijacionId = contrato.CondicionFijacionId;
-            contratoDA.ContratoCorredor = contrato.ContratoCorredor;
-            contratoDA.ContratoSAP = contrato.ContratoSAP;
-            contratoDA.ContratoVendedor = contrato.ContratoVendedor;
-            contratoDA.CorredorId = contrato.CorredorId;
-            contratoDA.DestinoId = contrato.DestinoId;
-            contratoDA.DesdeFijacion = contrato.DesdeFijacion;
-            contratoDA.EstadoId = contrato.EstadoId;
-            contratoDA.EstablecimientoPropio = contrato.EstablecimientoPropio;
-            contratoDA.Fecha = contrato.Fecha;
-            contratoDA.FechaDesde = contrato.FechaDesde;
-            contratoDA.FechaEntrega = contrato.FechaEntrega;
-            contratoDA.FechaHasta = contrato.FechaHasta;
-            contratoDA.FechaOperacion = contrato.FechaOperacion;
-            contratoDA.HastaFijacion = contrato.HastaFijacion;
-            contratoDA.Id = contrato.Id;
-            contratoDA.ImporteSustentable = contrato.ImporteSustentable;
-            contratoDA.LocalidadId = contrato.LocalidadId;
-            contratoDA.MaterialId = contrato.MaterialId;
-            contratoDA.MonedaId = contrato.MonedaId;
-            contratoDA.MonedaSustentableId = contrato.MonedaSustentableId;
-            contratoDA.Observacion = contrato.Observacion;
-            contratoDA.ObservacionTercero = contrato.ObservacionTercero;
-            contratoDA.PlanCanje = contrato.PlanCanje;
-            contratoDA.PorcentajeDePago = contrato.PorcentajeDePago;
-            contratoDA.Precio = contrato.Precio;
-            contratoDA.PrecioNeto = contrato.PrecioNeto;
-            contratoDA.ProveedorCreadorId = contrato.ProveedorCreadorId;
-            contratoDA.ProveedorId = contrato.ProveedorId;
-            contratoDA.ProvinciaId = contrato.ProvinciaId;
-            contratoDA.StandardDeCalidadId = contrato.StandardDeCalidadId;
-            contratoDA.Sustentable = contrato.Sustentable ?? false;
-            contratoDA.SustentableTercero = contrato.SustentableTercero;
-            contratoDA.TipoNegocioId = contrato.TipoNegocioId;
-            contratoDA.UsuarioTercero = contrato.UsuarioTercero;
-            contratoDA.ZonaId = contrato.ZonaId;
-
-            return contratoDA;
+                var resultDto = new DataAgroConsumer().BuscaDatosTablaContrato(filtro);
+                return SerializeAndSanitize(resultDto);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
         }
 
         public string GrabarFijacion(ContratoFijacion contratoFijacion)
@@ -1050,6 +980,23 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public BasicoContrato TraerContratoCompleto(int id, string tipo)
+        {
+            try
+            {
+                var basicoContratoDA = new DataAgroConsumer().TraerContratoCompleto(id, tipo);
+
+                var basicoContrato = ConvertirAModeloOperaciones(basicoContratoDA);
+
+                return basicoContrato;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
         public byte[] ObtenerExcelModeloAltaMasiva()
         {
             try
@@ -1064,6 +1011,425 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
+        {
+            return repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
+        }
+
+        private static string FormatearCodigoProveedor(string CUIT)
+        {
+            return string.Concat("00", CUIT.Substring(2, 8));
+        }
+
+        private static SustitucionMOAWS.DataAgroServices.Contrato ConvertirAModeloDataAgro(ContratoAPrecio contrato)
+        {
+            var contratoDA = new SustitucionMOAWS.DataAgroServices.Contrato();
+
+            contratoDA.BolsaId = contrato.BolsaId;
+            contratoDA.CampanaId = contrato.CampanaId;
+            contratoDA.Cantidad = contrato.Cantidad;
+            contratoDA.CantidadCamiones = contrato.CantidadCamiones;
+            contratoDA.CalidadTercero = contrato.CalidadTercero;
+            contratoDA.ClasificacionId = contrato.ClasificacionId;
+            contratoDA.ComercialCreadorId = contrato.ComercialCreadorId;
+            contratoDA.ComercialId = contrato.ComercialId;
+            contratoDA.CondicionFijacionId = contrato.CondicionFijacionId;
+            contratoDA.Consignatario = contrato.Consignatario;
+            contratoDA.ContratoCorredor = contrato.ContratoCorredor;
+            contratoDA.ContratoSAP = contrato.ContratoSAP;
+            contratoDA.ContratoVendedor = contrato.ContratoVendedor;
+            contratoDA.CorredorId = contrato.CorredorId;
+            contratoDA.DestinoId = contrato.DestinoId;
+            contratoDA.DiasPesificado = contrato.DiasPesificado;
+            contratoDA.DolarizadoTercero = contrato.DolarizadoTercero;
+            contratoDA.EstadoId = contrato.EstadoId;
+            contratoDA.EstablecimientoPropio = contrato.EstablecimientoPropio;
+            contratoDA.Fecha = contrato.Fecha;
+            contratoDA.FechaDesde = contrato.FechaDesde;
+            contratoDA.FechaEntrega = contrato.FechaEntrega;
+            contratoDA.FechaHasta = contrato.FechaHasta;
+            contratoDA.FechaOperacion = contrato.FechaOperacion;
+            contratoDA.Id = contrato.Id;
+            contratoDA.ImporteSustentable = contrato.ImporteSustentable;
+            contratoDA.LocalidadId = contrato.LocalidadId;
+            contratoDA.MaterialId = contrato.MaterialId;
+            contratoDA.MonedaId = contrato.MonedaId;
+            contratoDA.MonedaSustentableId = contrato.MonedaSustentableId;
+            contratoDA.Observacion = contrato.Observacion;
+            contratoDA.ObservacionTercero = contrato.ObservacionTercero;
+            contratoDA.PagoDiferidoTercero = contrato.PagoDiferidoTercero;
+            contratoDA.Pizarra = contrato.Pizarra;
+            contratoDA.PlanCanje = contrato.PlanCanje;
+            contratoDA.PorcentajeDePago = contrato.PorcentajeDePago;
+            contratoDA.Precio = contrato.Precio;
+            contratoDA.PrecioNeto = contrato.PrecioNeto;
+            contratoDA.ProveedorCreadorId = contrato.ProveedorCreadorId;
+            contratoDA.ProveedorId = contrato.ProveedorId;
+            contratoDA.ProvinciaId = contrato.ProvinciaId;
+            contratoDA.StandardDeCalidadId = contrato.StandardDeCalidadId;
+            contratoDA.Sustentable = contrato.Sustentable ?? false;
+            contratoDA.SustentableTercero = contrato.SustentableTercero;
+            contratoDA.TipoNegocioId = contrato.TipoNegocioId;
+            contratoDA.UsuarioTercero = contrato.UsuarioTercero;
+            contratoDA.ZonaId = contrato.ZonaId;
+
+            return contratoDA;
+        }
+
+        private static SustitucionMOAWS.DataAgroServices.Contrato ConvertirAModeloDataAgro(ContratoAFijar contrato)
+        {
+            var contratoDA = new SustitucionMOAWS.DataAgroServices.Contrato();
+
+            contratoDA.BolsaId = contrato.BolsaId;
+            contratoDA.CalidadTercero = contrato.CalidadTercero;
+            contratoDA.CampanaId = contrato.CampanaId;
+            contratoDA.Cantidad = contrato.Cantidad;
+            contratoDA.CantidadCamiones = contrato.CantidadCamiones;
+            contratoDA.ClasificacionId = contrato.ClasificacionId;
+            contratoDA.ComercialCreadorId = contrato.ComercialCreadorId;
+            contratoDA.ComercialId = contrato.ComercialId;
+            contratoDA.Consignatario = contrato.Consignatario;
+            contratoDA.CondicionFijacionId = contrato.CondicionFijacionId;
+            contratoDA.ContratoCorredor = contrato.ContratoCorredor;
+            contratoDA.ContratoSAP = contrato.ContratoSAP;
+            contratoDA.ContratoVendedor = contrato.ContratoVendedor;
+            contratoDA.CorredorId = contrato.CorredorId;
+            contratoDA.DestinoId = contrato.DestinoId;
+            contratoDA.DesdeFijacion = contrato.DesdeFijacion;
+            contratoDA.EstadoId = contrato.EstadoId;
+            contratoDA.EstablecimientoPropio = contrato.EstablecimientoPropio;
+            contratoDA.Fecha = contrato.Fecha;
+            contratoDA.FechaDesde = contrato.FechaDesde;
+            contratoDA.FechaEntrega = contrato.FechaEntrega;
+            contratoDA.FechaHasta = contrato.FechaHasta;
+            contratoDA.FechaOperacion = contrato.FechaOperacion;
+            contratoDA.HastaFijacion = contrato.HastaFijacion;
+            contratoDA.Id = contrato.Id;
+            contratoDA.ImporteSustentable = contrato.ImporteSustentable;
+            contratoDA.LocalidadId = contrato.LocalidadId;
+            contratoDA.MaterialId = contrato.MaterialId;
+            contratoDA.MonedaId = contrato.MonedaId;
+            contratoDA.MonedaSustentableId = contrato.MonedaSustentableId;
+            contratoDA.Observacion = contrato.Observacion;
+            contratoDA.ObservacionTercero = contrato.ObservacionTercero;
+            contratoDA.PlanCanje = contrato.PlanCanje;
+            contratoDA.PorcentajeDePago = contrato.PorcentajeDePago;
+            contratoDA.Precio = contrato.Precio;
+            contratoDA.PrecioNeto = contrato.PrecioNeto;
+            contratoDA.ProveedorCreadorId = contrato.ProveedorCreadorId;
+            contratoDA.ProveedorId = contrato.ProveedorId;
+            contratoDA.ProvinciaId = contrato.ProvinciaId;
+            contratoDA.StandardDeCalidadId = contrato.StandardDeCalidadId;
+            contratoDA.Sustentable = contrato.Sustentable ?? false;
+            contratoDA.SustentableTercero = contrato.SustentableTercero;
+            contratoDA.TipoNegocioId = contrato.TipoNegocioId;
+            contratoDA.UsuarioTercero = contrato.UsuarioTercero;
+            contratoDA.ZonaId = contrato.ZonaId;
+
+            return contratoDA;
+        }
+
+        private static BasicoContrato ConvertirAModeloOperaciones(SustitucionMOAWS.DataAgroServices.BasicoContrato modeloDA)
+        {
+            var basicoContrato = new BasicoContrato();
+
+            basicoContrato.Acuerdo = modeloDA.Acuerdo;
+            basicoContrato.AcuerdoId = modeloDA.AcuerdoId;
+            basicoContrato.AgenteId = modeloDA.AgenteId;
+            basicoContrato.Ampliaciones = modeloDA.Ampliaciones;
+            basicoContrato.Anticipo = modeloDA.Anticipo;
+            basicoContrato.AperturaPrecios = modeloDA.AperturaPrecios?.Select(x => ConvertirAModeloOperaciones(x)).ToList();
+            basicoContrato.Base = modeloDA.Base;
+            basicoContrato.BoletoDescripcion = modeloDA.BoletoDescripcion;
+            basicoContrato.BoletoId = modeloDA.BoletoId;
+            basicoContrato.BolsaDescripcion = modeloDA.BolsaDescripcion;
+            basicoContrato.BolsaId = modeloDA.BolsaId;
+            basicoContrato.CD = modeloDA.CD;
+            basicoContrato.CUITCorredor = modeloDA.CUITCorredor;
+            basicoContrato.CalidadDescripcion = modeloDA.CalidadDescripcion;
+            basicoContrato.CalidadTercero = modeloDA.CalidadTercero;
+            basicoContrato.Calidades = modeloDA.Calidades?.Select(x => ConvertirAModeloOperaciones(x)).ToList();
+            basicoContrato.CampanaId = modeloDA.CampanaId;
+            basicoContrato.CampanaMaterialId = modeloDA.CampanaMaterialId;
+            basicoContrato.Campania = modeloDA.Campania;
+            basicoContrato.Canje = modeloDA.Canje;
+            basicoContrato.Cantidad = modeloDA.Cantidad;
+            basicoContrato.CantidadCamiones = modeloDA.CantidadCamiones;
+            basicoContrato.CantidadMaximaCupo = modeloDA.CantidadMaximaCupo;
+            basicoContrato.CaratulaExtension = modeloDA.CaratulaExtension;
+            basicoContrato.CaratulaMAT = modeloDA.CaratulaMAT;
+            basicoContrato.Cesion = modeloDA.Cesion;
+            basicoContrato.ChequeElectronico = modeloDA.ChequeElectronico;
+            basicoContrato.ChequeElectronicoValor = modeloDA.ChequeElectronicoValor;
+            basicoContrato.ClasificacionContrato = modeloDA.ClasificacionContrato;
+            basicoContrato.ClasificacionDescripcion = modeloDA.ClasificacionDescripcion;
+            basicoContrato.ClasificacionId = modeloDA.ClasificacionId;
+            basicoContrato.Comercial = modeloDA.Comercial;
+            basicoContrato.ComercialCreador = modeloDA.ComercialCreador;
+            basicoContrato.ComercialCreadorId = modeloDA.ComercialCreadorId;
+            basicoContrato.ComercialId = modeloDA.ComercialId;
+            basicoContrato.ComercialZonaDescripcion = modeloDA.ComercialZonaDescripcion;
+            basicoContrato.ComercialZonaId = modeloDA.ComercialZonaId;
+            basicoContrato.Compensacion = modeloDA.Compensacion;
+            basicoContrato.CondicionFijacion = modeloDA.CondicionFijacion;
+            basicoContrato.CondicionFijacionDescripcion = modeloDA.CondicionFijacionDescripcion;
+            basicoContrato.Consignatario = modeloDA.Consignatario;
+            basicoContrato.ContratoAcuerdoId = modeloDA.ContratoAcuerdoId;
+            basicoContrato.ContratoCorredor = modeloDA.ContratoCorredor;
+            basicoContrato.ContratoId = modeloDA.ContratoId;
+            basicoContrato.ContratoMadre = modeloDA.ContratoMadre;
+            basicoContrato.ContratoSAP = modeloDA.ContratoSAP;
+            basicoContrato.ContratoVendedor = modeloDA.ContratoVendedor;
+            basicoContrato.Corredor = modeloDA.Corredor;
+            basicoContrato.CorredorId = modeloDA.CorredorId;
+            basicoContrato.Cuit = modeloDA.Cuit;
+            basicoContrato.DatosFijacion = ConvertirAModeloOperaciones(modeloDA.DatosFijacion);
+            basicoContrato.Descuentos = modeloDA.Descuentos?.Select(x => ConvertirAModeloOperaciones(x)).ToList();
+            basicoContrato.DesdeFijacion = modeloDA.DesdeFijacion;
+            basicoContrato.DesdeFijacionFormateado = modeloDA.DesdeFijacionFormateado;
+            basicoContrato.DestinoDescripcion = modeloDA.DestinoDescripcion;
+            basicoContrato.DestinoId = modeloDA.DestinoId;
+            basicoContrato.Dias_Pesificado = modeloDA.Dias_Pesificado;
+            basicoContrato.Dolarizado = modeloDA.Dolarizado;
+            basicoContrato.DolarizadoCorredor = modeloDA.DolarizadoCorredor;
+            basicoContrato.DolarizadoExpress = modeloDA.DolarizadoExpress;
+            basicoContrato.DolarizadoExpressValor = modeloDA.DolarizadoExpressValor;
+            basicoContrato.DolarizadoTercero = modeloDA.DolarizadoTercero;
+            basicoContrato.DolarizadoValor = modeloDA.DolarizadoValor;
+            basicoContrato.EsFason = modeloDA.EsFason;
+            basicoContrato.EstablecimientoPropio = modeloDA.EstablecimientoPropio;
+            basicoContrato.Estado = modeloDA.Estado;
+            basicoContrato.Estado_Contrato = modeloDA.Estado_Contrato;
+            basicoContrato.Estado_Order = modeloDA.Estado_Order;
+            basicoContrato.FasonId = modeloDA.FasonId;
+            basicoContrato.Fecha = modeloDA.Fecha;
+            basicoContrato.FechaCierta = modeloDA.FechaCierta;
+            basicoContrato.FechaCiertaFormateado = modeloDA.FechaCiertaFormateado;
+            basicoContrato.FechaConfirmacion = modeloDA.FechaConfirmacion;
+            basicoContrato.FechaDesde = modeloDA.FechaDesde;
+            basicoContrato.FechaDesdeFormateado = modeloDA.FechaDesdeFormateado;
+            basicoContrato.FechaDesde_Sustentable = modeloDA.FechaDesde_Sustentable;
+            basicoContrato.FechaDesde_SustentableFormateado = modeloDA.FechaDesde_SustentableFormateado;
+            basicoContrato.FechaEntrega = modeloDA.FechaEntrega;
+            basicoContrato.FechaFormateado = modeloDA.FechaFormateado;
+            basicoContrato.FechaHasta = modeloDA.FechaHasta;
+            basicoContrato.FechaHastaFormateado = modeloDA.FechaHastaFormateado;
+            basicoContrato.FechaHasta_Sustentable = modeloDA.FechaHasta_Sustentable;
+            basicoContrato.FechaHasta_SustentableFormateado = modeloDA.FechaHasta_SustentableFormateado;
+            basicoContrato.FechaOperacion = modeloDA.FechaOperacion;
+            basicoContrato.FechaOperacionFormateado = modeloDA.FechaOperacionFormateado;
+            basicoContrato.Fecha_Dolarizado = modeloDA.Fecha_Dolarizado;
+            basicoContrato.Fecha_DolarizadoFormateado = modeloDA.Fecha_DolarizadoFormateado;
+            basicoContrato.Fecha_Order = modeloDA.Fecha_Order;
+            basicoContrato.FijacionDePrecioContratoId = modeloDA.FijacionDePrecioContratoId;
+            basicoContrato.GrupoCompra = modeloDA.GrupoCompra;
+            basicoContrato.GrupoCompraDescripcion = modeloDA.GrupoCompraDescripcion;
+            basicoContrato.HastaFijacion = modeloDA.HastaFijacion;
+            basicoContrato.HastaFijacionFormateado = modeloDA.HastaFijacionFormateado;
+            basicoContrato.Hora = modeloDA.Hora;
+            basicoContrato.Id = modeloDA.Id;
+            basicoContrato.ImporteBonificacion = modeloDA.ImporteBonificacion;
+            basicoContrato.ImporteComision = modeloDA.ImporteComision;
+            basicoContrato.ImporteFinanciero = modeloDA.ImporteFinanciero;
+            basicoContrato.ImporteRedespacho = modeloDA.ImporteRedespacho;
+            basicoContrato.Importe_Sustentable = modeloDA.Importe_Sustentable;
+            basicoContrato.Insumo = modeloDA.Insumo;
+            basicoContrato.Localidad = modeloDA.Localidad;
+            basicoContrato.LocalidadId = modeloDA.LocalidadId;
+            basicoContrato.Madre = modeloDA.Madre;
+            basicoContrato.Material = modeloDA.Material;
+            basicoContrato.MaterialId = modeloDA.MaterialId;
+            basicoContrato.MercsDeposito = modeloDA.MercsDeposito;
+            basicoContrato.MesPosicion = modeloDA.MesPosicion;
+            basicoContrato.Moneda = modeloDA.Moneda;
+            basicoContrato.MonedaAjusteComisionId = modeloDA.MonedaAjusteComisionId;
+            basicoContrato.MonedaBonificacion = modeloDA.MonedaBonificacion;
+            basicoContrato.MonedaCanjeId = modeloDA.MonedaCanjeId;
+            basicoContrato.MonedaId = modeloDA.MonedaId;
+            basicoContrato.MonedaId_Sustentable = modeloDA.MonedaId_Sustentable;
+            basicoContrato.Moneda_Sustentable = modeloDA.Moneda_Sustentable;
+            basicoContrato.Monto = modeloDA.Monto;
+            basicoContrato.MotivoOperacionAnterior = modeloDA.MotivoOperacionAnterior;
+            basicoContrato.Negocio = modeloDA.Negocio;
+            basicoContrato.NivelTarifa = modeloDA.NivelTarifa;
+            basicoContrato.NivelTarifaId = modeloDA.NivelTarifaId;
+            basicoContrato.NoInformaSIO = modeloDA.NoInformaSIO;
+            basicoContrato.Observacion = modeloDA.Observacion;
+            basicoContrato.ObservacionTercero = modeloDA.ObservacionTercero;
+            basicoContrato.OcultarEnTablero = modeloDA.OcultarEnTablero;
+            basicoContrato.Operador = modeloDA.Operador;
+            basicoContrato.OperadorId = modeloDA.OperadorId;
+            basicoContrato.PagoCBU = modeloDA.PagoCBU;
+            basicoContrato.PagoDiferido = modeloDA.PagoDiferido;
+            basicoContrato.PagoDiferidoTercero = modeloDA.PagoDiferidoTercero;
+            basicoContrato.PagoDiferidoTerceroId = modeloDA.PagoDiferidoTerceroId;
+            basicoContrato.PagoDirectoVendedor = modeloDA.PagoDirectoVendedor;
+            basicoContrato.Pesificado = modeloDA.Pesificado;
+            basicoContrato.Pizarra = modeloDA.Pizarra;
+            basicoContrato.PlanCanje = modeloDA.PlanCanje;
+            basicoContrato.PlantaDestinoDescripcion = modeloDA.PlantaDestinoDescripcion;
+            basicoContrato.PlantaDestinoId = modeloDA.PlantaDestinoId;
+            basicoContrato.PorcentajeBonificacion = modeloDA.PorcentajeBonificacion;
+            basicoContrato.PorcentajeComision = modeloDA.PorcentajeComision;
+            basicoContrato.PorcentajeDePago = modeloDA.PorcentajeDePago;
+            basicoContrato.Posicion = modeloDA.Posicion;
+            basicoContrato.Precio = modeloDA.Precio;
+            basicoContrato.PrecioAjusteComision = modeloDA.PrecioAjusteComision;
+            basicoContrato.PrecioNeto = modeloDA.PrecioNeto;
+            basicoContrato.PrecioPlazo = modeloDA.PrecioPlazo;
+            basicoContrato.PreciosPactados = modeloDA.PreciosPactados?.Select(x => ConvertirAModeloOperaciones(x)).ToList();
+            basicoContrato.PrestamoDevolucion = modeloDA.PrestamoDevolucion;
+            basicoContrato.Proveedor = modeloDA.Proveedor;
+            basicoContrato.ProveedorId = modeloDA.ProveedorId;
+            basicoContrato.Provincia = modeloDA.Provincia;
+            basicoContrato.ProvinciaId = modeloDA.ProvinciaId;
+            basicoContrato.Rechazo = modeloDA.Rechazo;
+            basicoContrato.SelCargoMOA = modeloDA.SelCargoMOA;
+            basicoContrato.SelCargoVendedor = modeloDA.SelCargoVendedor;
+            basicoContrato.StandardCalidadId = modeloDA.StandardDeCalidadId;
+            basicoContrato.StandardDeCalidadDescripcion = modeloDA.StandardDeCalidadDescripcion;
+            basicoContrato.Sustentable = modeloDA.Sustentable;
+            basicoContrato.SustentableTercero = modeloDA.SustentableTercero;
+            basicoContrato.TarifaFlete = modeloDA.TarifaFlete;
+            basicoContrato.TipoAgenteCompra = modeloDA.TipoAgenteCompra;
+            basicoContrato.TipoAgenteCompraId = modeloDA.TipoAgenteCompraId;
+            basicoContrato.TipoFason = modeloDA.TipoFason;
+            basicoContrato.TipoFasonId = modeloDA.TipoFasonId;
+            basicoContrato.TipoNegocio = modeloDA.TipoNegocio;
+            basicoContrato.TipoNegocioId = modeloDA.TipoNegocioId;
+            basicoContrato.TrigoEspecial = modeloDA.TrigoEspecial;
+            basicoContrato.UsuarioConfirmador = modeloDA.UsuarioConfirmador;
+            basicoContrato.UsuarioId = modeloDA.UsuarioId;
+            basicoContrato.UsuarioTercero = modeloDA.UsuarioTercero;
+            basicoContrato.Venta = modeloDA.Venta;
+            basicoContrato.Warrant = modeloDA.Warrant;
+            basicoContrato.ZonaDescripcion = modeloDA.ZonaDescripcion;
+            basicoContrato.ZonaId = modeloDA.ZonaId;
+
+            return basicoContrato;
+        }
+
+        private static AperturaPrecioDto ConvertirAModeloOperaciones(SustitucionMOAWS.DataAgroServices.AperturaPrecioDto x)
+        {
+            return x == null ? null : new AperturaPrecioDto
+            {
+                ConceptoAperturaPrecio = x.ConceptoAperturaPrecio,
+                ConceptoAperturaPrecioId = x.ConceptoAperturaPrecioId,
+                contratoId = x.contratoId,
+                FijacionId = x.FijacionId,
+                Id = x.Id,
+                Importe = x.Importe,
+                Moneda = x.Moneda,
+                MonedaId = x.MonedaId,
+                Porcentaje = x.Porcentaje
+            };
+        }
+
+        private static PrecioPactadosDto ConvertirAModeloOperaciones(SustitucionMOAWS.DataAgroServices.PrecioPactadosDto modeloDA)
+        {
+            return modeloDA == null ? null : new PrecioPactadosDto
+            {
+                ContratoId = modeloDA.ContratoId,
+                FechaDesde = modeloDA.FechaDesde,
+                FechaHasta = modeloDA.FechaHasta,
+                Id = modeloDA.Id,
+                ImportePactado = modeloDA.ImportePactado,
+                MonedaImportePactadoDesc = modeloDA.MonedaImportePactadoDesc,
+                MonedaImportePactadoId = modeloDA.MonedaImportePactadoId,
+                MonedaPactadoDesc = modeloDA.MonedaPactadoDesc,
+                MonedaPactadoId = modeloDA.MonedaPactadoId,
+                Porcentaje = modeloDA.Porcentaje,
+                Precio = modeloDA.Precio
+            };
+        }
+
+        private static DescuentoBonificacionDto ConvertirAModeloOperaciones(SustitucionMOAWS.DataAgroServices.DescuentoBonificacionDto modeloDA)
+        {
+            return new DescuentoBonificacionDto
+            {
+                ContratoId = modeloDA.ContratoId,
+                FechaDesde = modeloDA.FechaDesde,
+                FechaHasta = modeloDA.FechaHasta,
+                Id = modeloDA.Id,
+                Importe = modeloDA.Importe,
+                Moneda = modeloDA.Moneda,
+                MonedaId = modeloDA.MonedaId,
+                Porcentaje = modeloDA.Porcentaje,
+                TipoDBDesc = modeloDA.TipoDBDesc,
+                TipoDBId = modeloDA.TipoDBId,
+                TipoPeriodoDBDesc = modeloDA.TipoPeriodoDBDesc,
+                TipoPeriodoDBId = modeloDA.TipoPeriodoDBId
+            };
+        }
+
+        private static DatosFijacionDeContratoDto ConvertirAModeloOperaciones(SustitucionMOAWS.DataAgroServices.DatosFijacionDeContratoDto modeloDA)
+        {
+            return modeloDA == null ? null : new DatosFijacionDeContratoDto
+            {
+                Anticipo = modeloDA.Anticipo,
+                ARecibirSinPrecio = modeloDA.ARecibirSinPrecio,
+                Calidad = modeloDA.Calidad,
+                Calidades = modeloDA.Calidades?.Select(x => ConvertirAModeloOperaciones(x)).ToList(),
+                Campana = modeloDA.Campana,
+                CampanaId = modeloDA.CampanaId,
+                Centro = modeloDA.Centro,
+                CentroDescripcion = modeloDA.CentroDescripcion,
+                Cesion = modeloDA.Cesion,
+                ChequeElectronico = modeloDA.ChequeElectronico,
+                Clasificacion = modeloDA.Clasificacion,
+                Color = modeloDA.Color,
+                CondicionFijacionCod = modeloDA.CondicionFijacionCod,
+                CondicionFijacionDescripcion = modeloDA.CondicionFijacionDescripcion,
+                CondicionPagoCod = modeloDA.CondicionPagoCod,
+                CondicionPagoDescripcion = modeloDA.CondicionPagoDescripcion,
+                ContratoId = modeloDA.ContratoId,
+                DesdeEntrega = modeloDA.DesdeEntrega,
+                FechaDesde = modeloDA.FechaDesde,
+                FechaHasta = modeloDA.FechaHasta,
+                FijacionSap = modeloDA.FijacionSap,
+                Filtro = modeloDA.Filtro,
+                HastaEntrega = modeloDA.HastaEntrega,
+                ImporteAPrecio = modeloDA.ImporteAPrecio,
+                ImporteSobrePrecio = modeloDA.ImporteSobrePrecio,
+                KilosAplicados = modeloDA.KilosAplicados,
+                KilosContrato = modeloDA.KilosContrato,
+                KilosPendiente = modeloDA.KilosPendiente,
+                MonedaAPrecio = modeloDA.MonedaAPrecio,
+                MonedaSobrePrecio = modeloDA.MonedaSobrePrecio,
+                PagoDiferido = modeloDA.PagoDiferido,
+                PorcentajeAPrecio = modeloDA.PorcentajeAPrecio,
+                PorcentajeSobrePrecio = modeloDA.PorcentajeSobrePrecio,
+                Posicion = modeloDA.Posicion,
+                RecibidoSinFijar = modeloDA.RecibidoSinFijar
+            };
+        }
+
+        private static CalidadDto ConvertirAModeloOperaciones(SustitucionMOAWS.DataAgroServices.CalidadDto modeloDA)
+        {
+            return new CalidadDto
+            {
+                AcuerdoId = modeloDA.AcuerdoId,
+                CalidadEspecialDesc = modeloDA.CalidadEspecialDesc,
+                CalidadEspecialId = modeloDA.CalidadEspecialId,
+                ContratoId = modeloDA.ContratoId,
+                Id = modeloDA.Id,
+                PorcentajeDesde = modeloDA.PorcentajeDesde,
+                PorcentajeHasta = modeloDA.PorcentajeHasta,
+                Valor = modeloDA.Valor
+            };
+        }
+
+        private SustitucionMOAWS.DataAgroServices.KendoFilterDto ConvertirFiltroKendo(Kendo.DynamicLinq.Filter filter)
+        {
+            return new SustitucionMOAWS.DataAgroServices.KendoFilterDto
+            {
+                field = filter.Field,
+                logic = filter.Logic,
+                @operator = filter.Operator,
+                value = filter.Value?.ToString(),
+                filters = filter.Filters?.Select(f => ConvertirFiltroKendo(f)).ToArray()
+            };
+        }
 
         private static string SerializeAndSanitize(object value)
         {
