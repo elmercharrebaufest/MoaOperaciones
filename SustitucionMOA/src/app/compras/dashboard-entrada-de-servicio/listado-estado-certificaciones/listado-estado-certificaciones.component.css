@@ -131,6 +131,16 @@
     ::ng-deep
     .filtro-estado-certificacion
     > p-dropdown#select-estado-certificacion
+    > .ui-dropdown
+    > .ui-dropdown-panel {
+    max-height: 250px !important;
+    min-height: 150px !important;
+}
+
+:host
+    ::ng-deep
+    .filtro-estado-certificacion
+    > p-dropdown#select-estado-certificacion
     > .ui-dropdown.ui-dropdown-open
     > .ui-dropdown-panel
     > .ui-dropdown-items-wrapper

@@ -13,7 +13,7 @@ declare var $: any;
 
 export class AuxPannelComponent implements OnInit {
     constructor() { }
-    
+
     @Input() showOrHideAuxPanel: boolean = false;
     @Input() periodoSeleccionado: string = '1';
     @Input() proveedor: string = '';
@@ -21,7 +21,7 @@ export class AuxPannelComponent implements OnInit {
     @Output() obtenerESSap: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() getFecha: EventEmitter<string> = new EventEmitter<string>();
     @Output() getOrdenCompra: EventEmitter<string> = new EventEmitter<string>();
-    
+
     @Output() onFiltroFechaDesdeChanged: EventEmitter<string> = new EventEmitter<string>();
     @Output() onFiltroFechaHastaChanged: EventEmitter<string> = new EventEmitter<string>();
 
@@ -36,7 +36,7 @@ export class AuxPannelComponent implements OnInit {
     }
 
     ngAfterViewInit(): void {
-        $(document).on('mouseover', '.form_datetime1', function() {
+        $(document).on('mouseover', '.form_datetime1', function () {
             $('.form_datetime1').datetimepicker({
                 format: 'yyyy-mm-dd',
                 language: 'es',
@@ -53,7 +53,7 @@ export class AuxPannelComponent implements OnInit {
             });
         });
 
-        $(document).on('mouseover', '.form_datetime2', function() {
+        $(document).on('mouseover', '.form_datetime2', function () {
             $('.form_datetime2').datetimepicker({
                 format: 'yyyy-mm-dd',
                 language: 'es',
@@ -70,7 +70,7 @@ export class AuxPannelComponent implements OnInit {
             });
         });
     }
-    
+
     subscripciones: Subscription[] = [];
     proveedorSeleccionado: autoCompleteObject;
     filtroFechaDesde: string = "";
@@ -82,7 +82,7 @@ export class AuxPannelComponent implements OnInit {
         new DropdownOption("2", "Última semana"),
         new DropdownOption("3", "Último mes"),
         new DropdownOption("4", "Entre fechas")
-      ];
+    ];
 
     /**
     * Muestra/Oculta un panel según nombre de clase
@@ -133,10 +133,10 @@ export class AuxPannelComponent implements OnInit {
         this.onFiltroFechaHastaChanged.emit(this.filtroFechaHasta);
     }
 
-    setOrdenCompra() : void {
+    setOrdenCompra(): void {
         this.getOrdenCompra.emit(this.ordenCompra);
     }
-    
+
     onBuscar() {
         this.setearFechasDesdeHasta();
         this.onFiltroFechaDesdeChanged.emit(this.filtroFechaDesde);
@@ -182,7 +182,7 @@ export class AuxPannelComponent implements OnInit {
         this.filtroFechaDesde = fechaDesde;
         this.filtroFechaHasta = fechaHasta;
     }
-    
+
     collapseExpandedRow() {
         let elementExpanded = document.querySelector('.pi-chevron-down') as HTMLElement;
         if (elementExpanded != null) {

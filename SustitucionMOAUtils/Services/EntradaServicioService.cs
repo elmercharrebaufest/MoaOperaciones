@@ -918,10 +918,14 @@ namespace SustitucionMOAUtils.Services
         private async Task<List<EntradaServicioCabeceraDto>> ServicioSAP_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario)
         {
             var entradasServicioResponse = new List<EntradaServicioCabeceraDto>();
-            var entradasServicioCabeceraSap = await new ObtenerCabecerasEntradaServicioConsumerMOA().ObtenerEntradasServicioCabeceraAsync(parametros.FechaInicio, parametros.OrdenCompra);
+
+            // Si hay OrdenCompra, no usar fecha para la consulta a SAP
+            var fechaConsultaSAP = string.IsNullOrEmpty(parametros.OrdenCompra) ? parametros.FechaInicio : null;
+
+            var entradasServicioCabeceraSap = await new ObtenerCabecerasEntradaServicioConsumerMOA()
+                .ObtenerEntradasServicioCabeceraAsync(fechaConsultaSAP, parametros.OrdenCompra);
 
             var correoUsuario = usuario.Mail.ToLower();
-
             var fechaHasta = DateTime.Now;
 
             var debeFiltrarPorFecha =
@@ -945,16 +949,16 @@ namespace SustitucionMOAUtils.Services
             foreach (var documento in entradasServicioCabeceraSap)
             {
                 var correoSolp = "-";
-                var nroDoc = documento.EntradaServicio.ToString();
+                    var nroDoc = documento.EntradaServicio.ToString();
                 var nro_es_sap = int.Parse(nroDoc);
 
                 // Se obtiene detalle de una ES
                 documento.entradaServicioDetalle = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(nroDoc);
 
                 if (documento.entradaServicioDetalle != null && documento.entradaServicioDetalle.Count > 0)
-                {
+            {
                     if (ordenParams.OrdenCompraId != documento.entradaServicioDetalle[0].OrdenCompra || string.IsNullOrEmpty(ordenParams.OrdenCompraId))
-                    {
+                {
                         var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFCSinPI(documento.entradaServicioDetalle[0].OrdenCompra);
                         ModificarPedidoSAP POSCHEDULE = new ModificarPedidoSAP
                         {
@@ -964,7 +968,7 @@ namespace SustitucionMOAUtils.Services
                         string nroSolp = POSCHEDULE.NRO_SOLP;
 
                         correoSolp = ObtenerCorreoSolp(nroSolp);
-                    }
+                }
 
                     ordenParams.OrdenCompraId = documento.entradaServicioDetalle[0].OrdenCompra;
 
@@ -979,16 +983,16 @@ namespace SustitucionMOAUtils.Services
                 bool verTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
                 bool certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
 
-                if (verTodo)
-                {
+                    if (verTodo)
+                    {
                     ESTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap);
-                }
-                else
-                {
+                    }
+                    else
+                    {
                     ESTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap &&
                         (x.Ingresante_CDS.ToLower() == correoUsuario ||
-                        x.Fiscal_SOLPED.ToLower() == correoUsuario ||
-                        x.Aprobador_CDS.ToLower() == correoUsuario ||
+                            x.Fiscal_SOLPED.ToLower() == correoUsuario ||
+                            x.Aprobador_CDS.ToLower() == correoUsuario ||
                         (certExt && x.Proveedor == parametros.Vendedor)));
                 }
 
