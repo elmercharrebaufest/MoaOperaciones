@@ -37,7 +37,7 @@ namespace SustitucionMOAUtils.Interfaces
         string ValidarDirecto(string cuit);
         string GrabarFijacion(ContratoFijacion contratoFijacion);
         string ObteneContratosAcuerdo(int corredorId);
-        List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos);
+        List<SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto> CrearContratoMasivo(List<BasicoContrato> contratos);
         string TraerContratoCompleto(int negocioId, int tipoNegocioId);
         BasicoContrato TraerContratoCompleto(int id, string tipo);
         byte[] ObtenerExcelModeloAltaMasiva();

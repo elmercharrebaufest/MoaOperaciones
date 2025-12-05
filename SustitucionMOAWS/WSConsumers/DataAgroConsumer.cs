@@ -141,16 +141,20 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        public Resultado AnularFijacion(int negocioId, string motivoRechazo)
+        public SustitucionMOAModel.Models.DataAgro.ResultadoDataAgro AnularFijacion(int negocioId, string motivoRechazo)
         {
             var result = service.AnularFijacion(negocioId, motivoRechazo);
-            return result;
+            SustitucionMOAModel.Models.DataAgro.ResultadoDataAgro resultado = new SustitucionMOAModel.Models.DataAgro.ResultadoDataAgro();
+            resultado.Errores = result.ListaErrores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessage { Message = a.Message }).ToList();
+            return resultado;
         }
 
-        public Resultado AnularContrato(int negocioId, string motivoRechazo)
+        public SustitucionMOAModel.Models.DataAgro.ResultadoDataAgro AnularContrato(int negocioId, string motivoRechazo)
         {
             var result = service.AnularContrato(negocioId, motivoRechazo);
-            return result;
+            SustitucionMOAModel.Models.DataAgro.ResultadoDataAgro resultado = new SustitucionMOAModel.Models.DataAgro.ResultadoDataAgro();
+            resultado.Errores = result.ListaErrores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessage { Message = a.Message }).ToList();
+            return resultado;
         }
 
         public HabilitacionSustentableDto[] HabilitarSustentable()
@@ -182,6 +186,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto GrabarContratoAFijar(Contrato contrato)
         {
+            contrato.Pizarra = contrato.Pizarra ?? false;
             var grabarContratoResult = service.GrabarContratoAFijar(contrato);
             SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto resultDto = new SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto();
             resultDto.ContratoId = grabarContratoResult.ContratoId;
@@ -216,7 +221,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     FijacionDePrecioContratoId = resultado.FijacionDePrecioContratoId,
                     ContratoId = resultado.ContratoId,
-                    Errores = resultado.Errores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessageDtos { Message = a }).ToList()
+                    Errores = resultado.Errores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessageDtos { Message = a, Source = "" }).ToList()
                 };
                 resultDto.Add(dto);
             }

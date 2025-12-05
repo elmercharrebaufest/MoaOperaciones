@@ -414,7 +414,7 @@ namespace SustitucionMOA.Controllers
                 var materiales = dataAgroService.BuscarMateriales();
 
                 var centros = dataAgroService.BuscarCentros();
-                
+
                 var campanias = dataAgroService.BuscarCampanias();
 
                 var validations = GetValidatorContratos(materiales, centros, campanias);
@@ -475,13 +475,13 @@ namespace SustitucionMOA.Controllers
                     }
                     else
                     {
-                        List<GrabarContratoResult> resultados = dataAgroService.CrearContratoMasivo(contratos);
+                        List<SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto> resultados = dataAgroService.CrearContratoMasivo(contratos);
 
                         foreach (var item in resultados)
                         {
                             if (item.HayError)
                             {
-                                var tipo = item.ListaErrores.Any(a => a.Source == "Fatal") ? ExcelValidationErrorType.Fatal : ExcelValidationErrorType.Error;
+                                var tipo = item.Errores.Any(a => a.Source == "Fatal") ? ExcelValidationErrorType.Fatal : ExcelValidationErrorType.Error;
                                 //item.ContratoId estoy usando ese campo para devolver el numero de row
                                 resultValidation.RowsResult[item.ContratoId ?? 0].ItemsResult.Add(new ExcelValidatorItemResult { Errors = item.Errores.Select(a => a.Message).ToList(), Item = new ExcelValidatorItem { ErrorType = tipo, Name = "", Options = null, Position = 1, Required = true, Type = ExcelValidationColumnType.String } });
                             }
