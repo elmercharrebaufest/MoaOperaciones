@@ -1,7 +1,7 @@
 ﻿using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.DataAgroServices;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SustitucionMOAWS.WSConsumers
@@ -84,7 +84,7 @@ namespace SustitucionMOAWS.WSConsumers
         public InicializarContratoDto InicializarContrato(int tipoNegocioId)
         {
             var result = service.InicializarContrato(tipoNegocioId);
-            return result; 
+            return result;
         }
 
         public KendoGridResponseDtoOfConfiguracionBolsaDtocyovIo6p ConfiguracionBolsaAutomatica()
@@ -165,28 +165,37 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        public ResultIniMaterialModel BuscarMateriales()
+        public BuscarMaterialesDto BuscarMateriales()
         {
             var result = service.BuscarMateriales();
             return result;
         }
 
-        public DataAgroServices.GrabarContratoResult GrabarContratoAPrecio(Contrato contrato)
+        public SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto GrabarContratoAPrecio(Contrato contrato)
         {
             var grabarContratoResult = service.GrabarContratoAPrecio(contrato);
-            return grabarContratoResult;
+            SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto resultDto = new SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto();
+            resultDto.ContratoId = grabarContratoResult.ContratoId;
+            resultDto.Errores = grabarContratoResult.Errores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessageDtos { Message = a }).ToList();
+            return resultDto;
         }
 
-        public DataAgroServices.GrabarContratoResult GrabarContratoAFijar(Contrato contrato)
+        public SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto GrabarContratoAFijar(Contrato contrato)
         {
             var grabarContratoResult = service.GrabarContratoAFijar(contrato);
-            return grabarContratoResult;
+            SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto resultDto = new SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto();
+            resultDto.ContratoId = grabarContratoResult.ContratoId;
+            resultDto.Errores = grabarContratoResult.Errores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessageDtos { Message = a }).ToList();
+            return resultDto;
         }
 
-        public GrabarFijacionResult GrabarFijacion(FijacionDePrecioContrato contrato)
+        public SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto GrabarFijacion(FijacionDePrecioContrato contrato)
         {
             var result = service.GrabarFijacion(contrato);
-            return result;
+            SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto resultDto = new SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto();
+            resultDto.FijacionDePrecioContratoId = result.FijacionDePrecioContratoId;
+            resultDto.Errores = result.Errores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessageDtos { Message = a }).ToList();
+            return resultDto;
         }
 
         public ContratoCopiar[] TraerContratosAcuerdoPorCorredor(int corredorId)
@@ -195,10 +204,23 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        public DataAgroServices.GrabarContratoResult[] GrabarContratoMasivo(DataAgroServices.BasicoContrato[] contratos)
+        public SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto[] GrabarContratoMasivo(DataAgroServices.BasicoContrato[] contratos)
         {
             var result = service.GrabarContratoMasivo(contratos);
-            return result;
+            List<SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto> resultDto = new List<SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto>();
+
+            foreach (var resultado in result)
+            {
+
+                SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto dto = new SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto
+                {
+                    FijacionDePrecioContratoId = resultado.FijacionDePrecioContratoId,
+                    ContratoId = resultado.ContratoId,
+                    Errores = resultado.Errores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessageDtos { Message = a }).ToList()
+                };
+                resultDto.Add(dto);
+            }
+            return resultDto.ToArray();
         }
 
         public DataAgroServices.BasicoContrato TraerContratoCompleto(int id, string tipo)

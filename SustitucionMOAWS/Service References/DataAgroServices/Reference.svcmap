@@ -19,17 +19,16 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="https://test.dataagro.com.ar/services/DataAgroServices.svc?wsdl" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://localhost:52498/Services/DataAgroServices.svc?wsdl" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="DataAgroServices1.wsdl" MetadataType="Wsdl" ID="e588ddaf-8480-4ec7-b9e0-7ddc98a24c0c" SourceId="1" SourceUrl="https://test.dataagro.com.ar/services/DataAgroServices.svc?wsdl" />
-    <MetadataFile FileName="DataAgroServices7.xsd" MetadataType="Schema" ID="f2939bfd-c1b1-4362-8a20-2d7344729b5e" SourceId="1" SourceUrl="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd5" />
-    <MetadataFile FileName="DataAgroServices71.xsd" MetadataType="Schema" ID="b4c812b8-59e0-4612-af59-de159d0ea111" SourceId="1" SourceUrl="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd6" />
-    <MetadataFile FileName="DataAgroServices72.xsd" MetadataType="Schema" ID="d928118d-a54c-4071-af7b-c1dd2587ab1a" SourceId="1" SourceUrl="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd0" />
-    <MetadataFile FileName="DataAgroServices73.xsd" MetadataType="Schema" ID="c79a06a6-8450-48b8-8855-50e964bb33d3" SourceId="1" SourceUrl="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd1" />
-    <MetadataFile FileName="DataAgroServices74.xsd" MetadataType="Schema" ID="1b0e148c-de54-4a28-9af7-00098f9a8a8b" SourceId="1" SourceUrl="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd2" />
-    <MetadataFile FileName="DataAgroServices75.xsd" MetadataType="Schema" ID="715a9eac-878f-46d5-bbe7-2f3e7a27e03a" SourceId="1" SourceUrl="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd3" />
-    <MetadataFile FileName="DataAgroServices76.xsd" MetadataType="Schema" ID="afa2b96e-fe5b-4be3-9377-5be9c58d2417" SourceId="1" SourceUrl="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd4" />
+    <MetadataFile FileName="DataAgroServices1.xsd" MetadataType="Schema" ID="fc6e6533-6387-442b-a953-608fc75af6b0" SourceId="1" SourceUrl="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd5" />
+    <MetadataFile FileName="DataAgroServices.wsdl" MetadataType="Wsdl" ID="81dd6c1a-a505-40db-b123-120aaf63ab17" SourceId="1" SourceUrl="http://localhost:52498/Services/DataAgroServices.svc?wsdl" />
+    <MetadataFile FileName="DataAgroServices2.xsd" MetadataType="Schema" ID="da813e85-169a-4e65-989c-0f3aed1a4bae" SourceId="1" SourceUrl="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd3" />
+    <MetadataFile FileName="DataAgroServices3.xsd" MetadataType="Schema" ID="a97d8056-ce57-4c0a-a5e2-8ff16db8ccb9" SourceId="1" SourceUrl="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd2" />
+    <MetadataFile FileName="DataAgroServices4.xsd" MetadataType="Schema" ID="6aee0fd4-23ab-4cbe-a2d5-3315f0d02585" SourceId="1" SourceUrl="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd1" />
+    <MetadataFile FileName="DataAgroServices5.xsd" MetadataType="Schema" ID="77e0eac6-080e-496e-b92d-02305f81ce3a" SourceId="1" SourceUrl="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd0" />
+    <MetadataFile FileName="DataAgroServices6.xsd" MetadataType="Schema" ID="ca003443-8716-4433-ab25-391841fd8a58" SourceId="1" SourceUrl="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd4" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

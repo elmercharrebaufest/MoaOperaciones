@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" />
-  <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" />
-  <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" />
+  <xs:import schemaLocation="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" />
+  <xs:import schemaLocation="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" />
+  <xs:import schemaLocation="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:element name="Ping">
     <xs:complexType>
       <xs:sequence />
@@ -456,7 +455,7 @@
   <xs:element name="GrabarContratoAPrecioResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q46="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="GrabarContratoAPrecioResult" nillable="true" type="q46:GrabarContratoResult" />
+        <xs:element xmlns:q46="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="GrabarContratoAPrecioResult" nillable="true" type="q46:GrabarContratoResultDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -470,7 +469,7 @@
   <xs:element name="GrabarContratoAFijarResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q48="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="GrabarContratoAFijarResult" nillable="true" type="q48:GrabarContratoResult" />
+        <xs:element xmlns:q48="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="GrabarContratoAFijarResult" nillable="true" type="q48:GrabarContratoResultDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -554,7 +553,7 @@
   <xs:element name="GrabarFijacionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q54="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="GrabarFijacionResult" nillable="true" type="q54:GrabarFijacionResult" />
+        <xs:element xmlns:q54="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="GrabarFijacionResult" nillable="true" type="q54:GrabarContratoResultDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -582,7 +581,7 @@
   <xs:element name="GrabarContratoMasivoResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q57="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="GrabarContratoMasivoResult" nillable="true" type="q57:ArrayOfGrabarContratoResult" />
+        <xs:element xmlns:q57="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="GrabarContratoMasivoResult" nillable="true" type="q57:ArrayOfGrabarContratoResultDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -666,7 +665,7 @@
   <xs:element name="BuscarMaterialesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q64="http://schemas.datacontract.org/2004/07/WebDataAgro.Models" minOccurs="0" name="BuscarMaterialesResult" nillable="true" type="q64:ResultIniMaterialModel" />
+        <xs:element xmlns:q64="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="BuscarMaterialesResult" nillable="true" type="q64:BuscarMaterialesDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

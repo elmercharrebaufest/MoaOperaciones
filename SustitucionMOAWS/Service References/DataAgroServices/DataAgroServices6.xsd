@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="https://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Seguridad" />
+  <xs:import schemaLocation="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Seguridad" />
   <xs:complexType name="ArrayOfSISA">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="SISA" nillable="true" type="tns:SISA" />
@@ -898,6 +898,27 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="PrecioPactado" nillable="true" type="tns:PrecioPactado" />
+  <xs:complexType name="FijacionDePrecioContrato">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Negocio">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Anticipo" nillable="true" type="xs:boolean" />
+          <xs:element minOccurs="0" name="ClasificacionContrato" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Contrato" nillable="true" type="tns:Contrato" />
+          <xs:element minOccurs="0" name="ContratoId" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="FijacionSAP" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ImporteAPrecioContrato" nillable="true" type="xs:decimal" />
+          <xs:element minOccurs="0" name="ImporteSobrePrecioContrato" nillable="true" type="xs:decimal" />
+          <xs:element minOccurs="0" name="MonedaAPrecioContrato" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="MonedaSobrePrecioContrato" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="PagoDiferidoContrato" nillable="true" type="xs:boolean" />
+          <xs:element minOccurs="0" name="PorcentajeAPrecioContrato" nillable="true" type="xs:decimal" />
+          <xs:element minOccurs="0" name="PorcentajeSobrePrecioContrato" nillable="true" type="xs:decimal" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="FijacionDePrecioContrato" nillable="true" type="tns:FijacionDePrecioContrato" />
   <xs:complexType name="Confirma">
     <xs:sequence>
       <xs:element minOccurs="0" name="Archivo" nillable="true" type="xs:string" />
@@ -1128,25 +1149,4 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfBoleto" nillable="true" type="tns:ArrayOfBoleto" />
-  <xs:complexType name="FijacionDePrecioContrato">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:Negocio">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="Anticipo" nillable="true" type="xs:boolean" />
-          <xs:element minOccurs="0" name="ClasificacionContrato" nillable="true" type="xs:string" />
-          <xs:element minOccurs="0" name="Contrato" nillable="true" type="tns:Contrato" />
-          <xs:element minOccurs="0" name="ContratoId" nillable="true" type="xs:int" />
-          <xs:element minOccurs="0" name="FijacionSAP" nillable="true" type="xs:string" />
-          <xs:element minOccurs="0" name="ImporteAPrecioContrato" nillable="true" type="xs:decimal" />
-          <xs:element minOccurs="0" name="ImporteSobrePrecioContrato" nillable="true" type="xs:decimal" />
-          <xs:element minOccurs="0" name="MonedaAPrecioContrato" nillable="true" type="xs:string" />
-          <xs:element minOccurs="0" name="MonedaSobrePrecioContrato" nillable="true" type="xs:string" />
-          <xs:element minOccurs="0" name="PagoDiferidoContrato" nillable="true" type="xs:boolean" />
-          <xs:element minOccurs="0" name="PorcentajeAPrecioContrato" nillable="true" type="xs:decimal" />
-          <xs:element minOccurs="0" name="PorcentajeSobrePrecioContrato" nillable="true" type="xs:decimal" />
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="FijacionDePrecioContrato" nillable="true" type="tns:FijacionDePrecioContrato" />
 </xs:schema>

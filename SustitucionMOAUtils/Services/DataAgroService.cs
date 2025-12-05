@@ -912,7 +912,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos)
+        public List<SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto> CrearContratoMasivo(List<BasicoContrato> contratos)
         {
             try
             {
@@ -945,9 +945,9 @@ namespace SustitucionMOAUtils.Services
                 var rawResult = new DataAgroConsumer().GrabarContratoMasivo(contratosDto);
 
                 var json = JsonConvert.SerializeObject(rawResult);
-                var result = JsonConvert.DeserializeObject<List<GrabarContratoResult>>(json);
+                var result = JsonConvert.DeserializeObject<List<SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto>>(json);
 
-                return result ?? new List<GrabarContratoResult>();
+                return result ?? new List<SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto>();
             }
             catch (Exception ex)
             {
