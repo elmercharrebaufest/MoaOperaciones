@@ -11,7 +11,32 @@
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  animation: slideInLeft 0.2s ease-out forwards;
+  animation: slideInLeft 0.2s ease-out;
+}
+
+.restoring-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  background-color: #f5f5f5;
+  gap: 1rem;
+  
+  p {
+    color: #003087;
+    font-weight: 500;
+  }
+  
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #003087;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
 }
 
 .header {
@@ -24,6 +49,18 @@
   .logo {
     height: 50px;
     width: auto;
+  }
+}
+
+.shipment-card-tutorial-target {
+  position: relative;
+  z-index: 1;
+  
+  &.tutorial-highlight {
+    position: relative;
+    z-index: 10000;
+    box-shadow: 0 0 0 4px rgba(0, 48, 135, 0.5);
+    border-radius: 0.75rem;
   }
 }
 
@@ -44,6 +81,8 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  position: relative;
+  z-index: 1;
   
   @media (min-width: 768px) {
     margin: 0.75rem auto 10px;
@@ -61,6 +100,12 @@
   
   &.updating {
     background-color: #d6d6d6;
+  }
+  
+  &.tutorial-highlight {
+    position: relative;
+    z-index: 10000;
+    box-shadow: 0 0 0 4px rgba(0, 48, 135, 0.5);
   }
   
   .refresh-icon {
@@ -135,6 +180,16 @@
 
 .current-stage-info {
   margin-bottom: 1.5rem;
+  
+  &.tutorial-highlight {
+    position: relative;
+    z-index: 10000;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin: -1rem -1rem 0.5rem -1rem;
+    box-shadow: 0 0 0 4px rgba(0, 48, 135, 0.5);
+  }
 }
 
 .stage-header-row {
@@ -268,6 +323,16 @@
   @media (min-width: 768px) {
     padding: 0 1rem 0;
   }
+  
+  &.tutorial-highlight {
+    position: relative;
+    z-index: 10000;
+    background-color: white;
+    border-radius: 0.75rem;
+    margin: 0 -1rem;
+    padding: 1rem;
+    box-shadow: 0 0 0 4px rgba(0, 48, 135, 0.5);
+  }
 }
 
 .consult-button {
@@ -299,5 +364,21 @@
   img {
     width: 20px;
     height: 20px;
+  }
+}
+
+.no-data-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  padding: 2rem;
+  text-align: center;
+  
+  p {
+    font-size: 1.125rem;
+    color: #666;
+    margin-bottom: 2rem;
   }
 }

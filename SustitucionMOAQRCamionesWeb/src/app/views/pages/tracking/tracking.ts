@@ -1,27 +1,28 @@
-import { Component, signal, computed, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { Etapa } from '../../../models/estado-etapas.model';
-// Components
-import { ShipmentCardComponent } from '../../components/shipment-card/shipment-card';
-import { ProgressStepperComponent } from '../../components/progress-stepper/progress-stepper';
-import { StagesListComponent } from '../../components/stages-list/stages-list';
-import { InformationButtonComponent } from '../../components/information-button/information-button';
-import { ContainerComponent } from '../../../shared/container/container';
-import { SectionWrapperComponent } from '../../components/section-wrapper/section-wrapper';
-import { PesajeInfoComponent } from '../../components/pesaje-info/pesaje-info';
-import { CircuitoFinalizadoComponent } from '../../components/circuito-finalizado/circuito-finalizado';
-import { EtapasCompletadasComponent } from '../../components/etapas-completadas/etapas-completadas';
-// Helpers
-import { formatDate } from '../../../shared/helpers/date.helper';
-import { returnStatusUppercase, returnStatusClass } from '../../../shared/helpers/status.helper'
-// Services
-import { StageStateService } from '../../../infrastructure/services/internal/stage-state.service';
-import { TrackingService } from '../../../infrastructure/services/external/tracking.service'
-import { EstadoEtapasService } from '../../../infrastructure/services/external/estado-etapas.service';
+import { Component, signal, computed, effect, type OnInit } from "@angular/core"
+import { CommonModule } from "@angular/common"
+import { Router } from "@angular/router"
+import type { Etapa } from "../../../models/estado-etapas.model"
+import { ShipmentCardComponent } from "../../components/shipment-card/shipment-card"
+import { ProgressStepperComponent } from "../../components/progress-stepper/progress-stepper"
+import { StagesListComponent } from "../../components/stages-list/stages-list"
+import { InformationButtonComponent } from "../../components/information-button/information-button"
+import { ContainerComponent } from "../../../shared/container/container"
+import { SectionWrapperComponent } from "../../components/section-wrapper/section-wrapper"
+import { PesajeInfoComponent } from "../../components/pesaje-info/pesaje-info"
+import { CircuitoFinalizadoComponent } from "../../components/circuito-finalizado/circuito-finalizado"
+import { EtapasCompletadasComponent } from "../../components/etapas-completadas/etapas-completadas"
+import { TutorialWelcomeModalComponent } from "../../components/tutorial-welcome-modal/tutorial-welcome-modal"
+import { TutorialTooltipComponent } from "../../components/tutorial-tooltip/tutorial-tooltip"
+import { formatDate } from "../../../shared/helpers/date.helper"
+import { returnStatusUppercase, returnStatusClass } from "../../../shared/helpers/status.helper"
+import { StageStateService } from "../../../infrastructure/services/internal/stage-state.service"
+import { TrackingService } from "../../../infrastructure/services/external/tracking.service"
+import { EstadoEtapasService } from "../../../infrastructure/services/external/estado-etapas.service"
+import { TutorialService } from "../../../infrastructure/services/internal/tutorial.service"
+import { CookieService } from "../../../infrastructure/services/internal/cookie.service"
 
 @Component({
-  selector: 'app-tracking-page',
+  selector: "app-tracking-page",
   standalone: true,
   imports: [
     CommonModule,
@@ -33,16 +34,19 @@ import { EstadoEtapasService } from '../../../infrastructure/services/external/e
     SectionWrapperComponent,
     PesajeInfoComponent,
     CircuitoFinalizadoComponent,
-    EtapasCompletadasComponent
+    EtapasCompletadasComponent,
+    TutorialWelcomeModalComponent,
+    TutorialTooltipComponent,
   ],
-  templateUrl: './tracking.html',
-  styleUrls: ['./tracking.scss']
+  templateUrl: "./tracking.html",
+  styleUrls: ["./tracking.scss"],
 })
-export class TrackingComponent {
-  cargoData = computed(() => this.trackingService.trackingData());
-  
-  isExpanded = signal(false);
-  isUpdating = signal(false);
+export class TrackingComponent implements OnInit {
+  cargoData = computed(() => this.trackingService.trackingData())
+
+  isExpanded = signal(false)
+  isUpdating = signal(false)
+  isRestoringSession = signal(false)
 
   selectedIndex = computed(() => this.stageStateService.getSelectedIndex()());
 
@@ -168,20 +172,65 @@ export class TrackingComponent {
     private router: Router,
     public stageStateService: StageStateService,
     private trackingService: TrackingService,
-    private estadoEtapasService: EstadoEtapasService
+    private estadoEtapasService: EstadoEtapasService,
+    public tutorialService: TutorialService,
+    private cookieService: CookieService
   ) {
     effect(() => {
       const data = this.trackingService.trackingData();
       
-      if (!data) {
-        this.router.navigate(['/search']);
-        return;
-      }
-      
-      if (data.etapas && data.etapas.length > 0) {
+      if (data && data.etapas && data.etapas.length > 0) {
         this.stageStateService.updateStages(data.etapas, data.datosAdicionales?.rechazado ?? false);
       }
     });
+  }
+
+  ngOnInit() {
+    const data = this.cargoData()
+
+    if (data) {
+      this.initializeData()
+      this.tutorialService.initializeTutorial()
+    } else {
+      this.attemptSessionRestore();
+    }
+  }
+
+  private attemptSessionRestore() {
+    const ctg = this.cookieService.getCookie('ctg');
+    const patente = this.cookieService.getCookie('patente');
+
+    if (ctg && patente) {
+      this.isRestoringSession.set(true);
+
+      this.trackingService.getTrackingData(ctg, patente, undefined)
+        .subscribe({
+          next: (response) => {
+            this.isRestoringSession.set(false);
+            
+            if (response.resultado && response.data) {
+              this.initializeData();
+              this.tutorialService.initializeTutorial();
+            } else {
+              this.router.navigate(['/search']);
+            }
+          },
+          error: () => {
+            this.isRestoringSession.set(false);
+            this.router.navigate(['/search']);
+          }
+        });
+    } else {
+      this.router.navigate(['/search']);
+    }
+  }
+
+  private initializeData() {
+    const data = this.cargoData()
+
+    if (data && data.etapas) {
+      this.stageStateService.updateStages(data.etapas, data.datosAdicionales.rechazado)
+    }
   }
 
   onStageChange(index: number) {
@@ -220,7 +269,21 @@ export class TrackingComponent {
   consultarOtraCTG() {
     this.trackingService.clearTrackingData();
     this.estadoEtapasService.clearEstadoEtapas();
+    this.cookieService.deleteCookie('ctg');
+    this.cookieService.deleteCookie('patente');
     this.router.navigate(['/search']);
+  }
+
+  onStartTutorial() {
+    this.tutorialService.startTutorial()
+  }
+
+  onSkipTutorial() {
+    this.tutorialService.skipTutorial()
+  }
+
+  onNextTutorialStep() {
+    this.tutorialService.nextStep()
   }
 
   getStatusUppercase(status: Etapa['estado']): string {
