@@ -234,7 +234,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                     this.blockUI.stop();
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    let obj2 = JSON.parse(result.BolsaAutomatica);
+                    let obj2 = JSON.parse(result.bolsaAutomatica);
                     this.bolsasAutomaticas = obj2.Data;
                     let obj = JSON.parse(result.DatosContrato);
                     this.datosContrato = obj;
