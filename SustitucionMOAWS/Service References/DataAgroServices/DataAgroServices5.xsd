@@ -596,7 +596,7 @@
   <xs:element name="AnularContratoResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q58="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="AnularContratoResult" nillable="true" type="q58:Resultado" />
+        <xs:element xmlns:q58="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="AnularContratoResult" nillable="true" type="q58:ResultadoSap" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -611,7 +611,7 @@
   <xs:element name="AnularFijacionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q59="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="AnularFijacionResult" nillable="true" type="q59:Resultado" />
+        <xs:element xmlns:q59="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="AnularFijacionResult" nillable="true" type="q59:ResultadoSap" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

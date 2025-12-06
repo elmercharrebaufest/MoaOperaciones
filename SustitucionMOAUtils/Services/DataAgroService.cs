@@ -1044,11 +1044,11 @@ namespace SustitucionMOAUtils.Services
             contratoDA.DolarizadoTercero = contrato.DolarizadoTercero;
             contratoDA.EstadoId = contrato.EstadoId;
             contratoDA.EstablecimientoPropio = contrato.EstablecimientoPropio;
-            contratoDA.Fecha = contrato.Fecha;
-            contratoDA.FechaDesde = contrato.FechaDesde;
-            contratoDA.FechaEntrega = contrato.FechaEntrega;
-            contratoDA.FechaHasta = contrato.FechaHasta;
-            contratoDA.FechaOperacion = contrato.FechaOperacion;
+            contratoDA.Fecha = DateTime.SpecifyKind(contrato.Fecha.Date, DateTimeKind.Unspecified);
+            contratoDA.FechaDesde = DateTime.SpecifyKind(contrato.FechaDesde.Date, DateTimeKind.Unspecified);
+            contratoDA.FechaEntrega = DateTime.SpecifyKind(contrato.FechaEntrega.Date, DateTimeKind.Unspecified);
+            contratoDA.FechaHasta = DateTime.SpecifyKind(contrato.FechaHasta.Date, DateTimeKind.Unspecified);
+            contratoDA.FechaOperacion = DateTime.SpecifyKind(contrato.FechaOperacion.Date, DateTimeKind.Unspecified);
             contratoDA.Id = contrato.Id;
             contratoDA.ImporteSustentable = contrato.ImporteSustentable;
             contratoDA.LocalidadId = contrato.LocalidadId;
@@ -1072,6 +1072,7 @@ namespace SustitucionMOAUtils.Services
             contratoDA.TipoNegocioId = contrato.TipoNegocioId;
             contratoDA.UsuarioTercero = contrato.UsuarioTercero;
             contratoDA.ZonaId = contrato.ZonaId;
+            contratoDA.BoletoId = contrato.BoletoId;
 
             return contratoDA;
         }
@@ -1426,7 +1427,7 @@ namespace SustitucionMOAUtils.Services
                 field = filter.Field,
                 logic = filter.Logic,
                 @operator = filter.Operator,
-                value = filter.Value?.ToString(),
+                value = filter.Value,
                 filters = filter.Filters?.Select(f => ConvertirFiltroKendo(f)).ToArray()
             };
         }
