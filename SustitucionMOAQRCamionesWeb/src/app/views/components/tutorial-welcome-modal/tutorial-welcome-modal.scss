@@ -39,9 +39,9 @@
 .modal-icon {
   margin-bottom: 1.5rem;
   
-  svg {
-    width: 64px;
-    height: 64px;
+  .icon {
+    width: 80px;
+    height: 80px;
   }
 }
 
@@ -54,8 +54,9 @@
 }
 
 .modal-description {
-  font-size: 0.9375rem;
-  color: #4b5563;
+  font-size: 0.945rem;
+  font-weight: 500;
+  color: #312828;
   line-height: 1.5;
   margin: 0 0 2rem 0;
 }

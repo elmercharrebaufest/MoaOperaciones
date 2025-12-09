@@ -69,24 +69,48 @@ export class TutorialTooltipComponent implements OnDestroy {
   private highlightAndPosition(step: TutorialStep): void {
     this.cleanUpPreviousTarget();
 
-    const target = document.querySelector(step.targetElement) as HTMLElement;
+    const target = document.querySelector(step. targetElement) as HTMLElement;
     if (!target) return;
 
     this.currentTargetElement = target;
 
-    target.scrollIntoView({ behavior: "smooth", block: "center" });
-
-    // Use the class defined in tracking.scss to handle background color and shadows
     this.renderer.addClass(target, 'tutorial-highlight');
     
-    // Ensure styles that might not be in the class are applied for the overlay effect
     const computedStyle = window.getComputedStyle(target);
     if (computedStyle.position === 'static') {
-      this.renderer.setStyle(target, 'position', 'relative');
+      this.renderer. setStyle(target, 'position', 'relative');
     }
-    this.renderer.setStyle(target, 'pointer-events', 'none'); 
-    
-    this.calculateCoords(target, step.position);
+    this. renderer.setStyle(target, 'pointer-events', 'none');
+
+    // Check if element is already in view
+    const rect = target.getBoundingClientRect();
+    const isInView = rect.top >= 0 && rect.bottom <= window.innerHeight;
+
+    if (isInView) {
+      // No scroll needed, calculate immediately
+      this.calculateCoords(target, step.position);
+    } else {
+      // Wait for scroll to complete
+      const scrollContainer = document.scrollingElement || document. documentElement;
+      
+      const onScrollEnd = () => {
+        this.calculateCoords(target, step.position);
+        window.removeEventListener('scrollend', onScrollEnd);
+      };
+      
+      // Fallback for browsers that don't support scrollend
+      const fallbackTimeout = setTimeout(() => {
+        window.removeEventListener('scrollend', onScrollEnd);
+        this.calculateCoords(target, step. position);
+      }, 500);
+      
+      window.addEventListener('scrollend', () => {
+        clearTimeout(fallbackTimeout);
+        onScrollEnd();
+      }, { once: true });
+
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 
   private calculateCoords(target: HTMLElement, position: string) {
