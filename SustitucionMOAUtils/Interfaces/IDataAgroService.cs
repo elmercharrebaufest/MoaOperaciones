@@ -47,5 +47,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<PartidoDto> ListarPartidos();
         string GetContratos(DataSourceRequest request);
         string ConfiguracionBolsaAutomatica();
+        SustitucionMOAWS.DataAgroServices.ListarFeriadosDto ListarFeriados();
     }
 }

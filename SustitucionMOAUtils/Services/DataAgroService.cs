@@ -1438,5 +1438,19 @@ namespace SustitucionMOAUtils.Services
             string json = JsonConvert.SerializeObject(value);
             return json.Replace("ñ", "ni");
         }
+
+        public SustitucionMOAWS.DataAgroServices.ListarFeriadosDto ListarFeriados()
+        {
+            try
+            {
+                var result = new DataAgroConsumer().ListarFeriados();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
     }
 }
