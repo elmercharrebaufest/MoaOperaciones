@@ -1082,6 +1082,7 @@ namespace SustitucionMOAUtils.Services
             var contratoDA = new SustitucionMOAWS.DataAgroServices.Contrato();
 
             contratoDA.BolsaId = contrato.BolsaId;
+            contratoDA.BoletoId = contrato.BoletoId;
             contratoDA.CalidadTercero = contrato.CalidadTercero;
             contratoDA.CampanaId = contrato.CampanaId;
             contratoDA.Cantidad = contrato.Cantidad;
