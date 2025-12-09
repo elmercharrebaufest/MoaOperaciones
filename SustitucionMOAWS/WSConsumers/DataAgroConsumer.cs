@@ -282,5 +282,11 @@ namespace SustitucionMOAWS.WSConsumers
             var resultDto = service.BuscaDatosTablaContrato(filtro);
             return resultDto;
         }
+
+        public DataAgroServices.ListarFeriadosDto ListarFeriados()
+        {
+            var feriados = service.ListarFeriados();
+            return feriados;
+        }
     }
 }
