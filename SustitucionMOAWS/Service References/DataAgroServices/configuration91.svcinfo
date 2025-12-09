@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="+6FR07q0o+BEPRADF9bZkHg9ogGoFGxzVyMu+FCU9uY=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="9VjNY/vHIMzDwwbG9GO2shwDgNxwcXtS17aQPE3CEog=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="basicHttpBinding" name="BasicHttpBinding_IDataAgroServices">
       <properties>
@@ -112,10 +112,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="BasicHttpBinding_IDataAgroServices" contract="DataAgroServices.IDataAgroServices" bindingType="basicHttpBinding" address="http://localhost:52498/Services/DataAgroServices.svc" bindingConfiguration="BasicHttpBinding_IDataAgroServices">
+    <endpoint name="BasicHttpBinding_IDataAgroServices" contract="DataAgroServices.IDataAgroServices" bindingType="basicHttpBinding" address="http://test.dataagro.com.ar/services/DataAgroServices.svc" bindingConfiguration="BasicHttpBinding_IDataAgroServices">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>http://localhost:52498/Services/DataAgroServices.svc</serializedValue>
+          <serializedValue>http://test.dataagro.com.ar/services/DataAgroServices.svc</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

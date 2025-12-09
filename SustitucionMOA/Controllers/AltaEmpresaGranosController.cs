@@ -188,9 +188,9 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(altaEmpresaService.GetLocalidad(localidadId));
         }
 
-        public async Task<ActionResult> GetMateriales()
+        public ActionResult GetMateriales()
         {
-            return JsonCustom(await altaEmpresaService.ObtenerMaterialesDataAgro());
+            return JsonCustom(new { Datos = dataAgroService.BuscarMateriales() });
         }
         public async Task<ActionResult> GetCampanias()
         {

@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:complexType name="ArrayOfstring">
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:complexType name="RespuestaArchivoDto">
     <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Contenido" nillable="true" type="xs:base64Binary" />
+      <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Errores" nillable="true" type="q1:ArrayOfstring" />
+      <xs:element minOccurs="0" name="EsExitoso" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Mensaje" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NombreArchivo" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="ArrayOfstring" nillable="true" type="tns:ArrayOfstring" />
+  <xs:element name="RespuestaArchivoDto" nillable="true" type="tns:RespuestaArchivoDto" />
 </xs:schema>

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" />
-  <xs:import schemaLocation="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" />
-  <xs:import schemaLocation="http://localhost:52498/Services/DataAgroServices.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" />
+  <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" />
+  <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" />
   <xs:element name="Ping">
     <xs:complexType>
       <xs:sequence />
@@ -738,6 +739,83 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q69="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ListarPartidosResult" nillable="true" type="q69:ArrayOfPartidoDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ListarFeriados">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ListarFeriadosResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q70="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ListarFeriadosResult" nillable="true" type="q70:ListarFeriadosDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FormularioAltaNoGranos">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q71="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="oParam" nillable="true" type="q71:ProveedorAltaDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FormularioAltaNoGranosResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q72="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" minOccurs="0" name="FormularioAltaNoGranosResult" nillable="true" type="q72:RespuestaArchivoDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CartaDePresentacion">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q73="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="oParam" nillable="true" type="q73:RptCartaDePresentacionInfo" />
+        <xs:element xmlns:q74="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="nuevosCampos" nillable="true" type="q74:ArrayOfNuevoProduccion" />
+        <xs:element xmlns:q75="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="nuevosAcopios" nillable="true" type="q75:ArrayOfNuevoAcopio" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CartaDePresentacionResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q76="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" minOccurs="0" name="CartaDePresentacionResult" nillable="true" type="q76:RespuestaArchivoDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CamposSustentables">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q77="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="datos" nillable="true" type="q77:DeclaracionCampoSustentable" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CamposSustentablesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q78="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" minOccurs="0" name="CamposSustentablesResult" nillable="true" type="q78:RespuestaArchivoDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="InformeComercial">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q79="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="oParam" nillable="true" type="q79:ParamInformeComercial" />
+        <xs:element minOccurs="0" name="ComercialId" nillable="true" type="xs:int" />
+        <xs:element xmlns:q80="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="nuevosCampos" nillable="true" type="q80:ArrayOfNuevoProduccion" />
+        <xs:element xmlns:q81="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="nuevosAcopios" nillable="true" type="q81:ArrayOfNuevoAcopio" />
+        <xs:element xmlns:q82="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" minOccurs="0" name="contactoComercial" nillable="true" type="q82:ContactoComercial" />
+        <xs:element minOccurs="0" name="direccion" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="codigoPostal" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="localidadId" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="InformeComercialResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q83="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" minOccurs="0" name="InformeComercialResult" nillable="true" type="q83:RespuestaArchivoDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

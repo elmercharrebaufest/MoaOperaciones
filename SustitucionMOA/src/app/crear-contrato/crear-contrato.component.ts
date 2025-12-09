@@ -529,7 +529,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                     //contrato.ClasificacionId = this.datosCompraNet.ComisionPorcentaje;
                     contrato.DestinoId = this.destinos[0].Id;
                     //contrato.MonedaId = this.monedas[0].Id;
-                    //contrato.MaterialId = this.materiales[0].Id;                   
+                    contrato.MaterialId = this.materiales[0].Id;                   
 
                     if (contrato.TipoNegocioId == 1 || contrato.TipoNegocioId == 2) {
                         this.validarProveedor(idProveedorDataAgro, contrato);

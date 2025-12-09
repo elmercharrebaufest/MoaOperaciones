@@ -425,9 +425,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
 
         this.subscription = this.service.obtenerMateriales().subscribe(
             (result:any) => {
-                let obj = JSON.parse(result);
-
-                obj.Datos.forEach(element => {
+                result.Datos.forEach((element: any) => {
                     let el = {
                         Id: element.MaterialId.toString(),
                         Descripcion: element.Descripcion

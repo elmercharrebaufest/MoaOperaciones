@@ -1040,7 +1040,10 @@
     <None Include="Service References\DataAgroAuthWebServiceMOA\SustitucionMOAWS.DataAgroAuthWebServiceMOA.TokenDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\DataAgroServices\DataAgroServices.wsdl" />
+    <None Include="Service References\DataAgroServices\DataAgroServices.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataAgroServices\DataAgroServices1.wsdl" />
     <None Include="Service References\DataAgroServices\DataAgroServices1.xsd">
       <SubType>Designer</SubType>
     </None>

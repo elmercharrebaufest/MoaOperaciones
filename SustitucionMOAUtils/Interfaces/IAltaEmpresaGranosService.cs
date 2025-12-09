@@ -14,7 +14,7 @@ namespace SustitucionMOAUtils.Interfaces
         byte[] GenerarCartaDePresentacion(RptCartaDePresentacionInfo cartadePresentacion, string mailUsuario, int proveedorId);
         Localidad GetLocalidad(int localidadId);
         string GuardarArchivo(HttpPostedFileBase fileSubido, string fileKey, string mailUsuario, int proveedorId);
-        Task<string> ObtenerMaterialesDataAgro();
+        //Task<string> ObtenerMaterialesDataAgro();
         List<ArchivoDto> ObtenerArchivosSubidos(string mailUsuario, int proveedorId, bool esOperador);
         string EnviarSolicitudUsuario(string mailUsuario, int proveedorId, bool esGuardarYNotificar, AltaEmpresaViewModel altaEmpresa);
         string ObtenerArchivo(string mailUsuario, int archivoID, int proveedorId);

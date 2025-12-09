@@ -202,43 +202,43 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public async Task<string> ObtenerMaterialesDataAgro()
-        {
-            try
-            {
-                var urlBusquedaMateriales = string.Concat(DataAgroURL, "/Material/Buscar");
+        //public async Task<string> ObtenerMaterialesDataAgro()
+        //{
+        //    try
+        //    {
+        //        var urlBusquedaMateriales = string.Concat(DataAgroURL, "/Material/Buscar");
 
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
+        //        string userName = DataAgroWSCredential.getUserName();
+        //        string password = DataAgroWSCredential.getPassword();
+        //        string dominio = DataAgroWSCredential.getDominio();
 
-                var httpClientHandler = new HttpClientHandler
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
+        //        var httpClientHandler = new HttpClientHandler
+        //        {
+        //            Credentials = new NetworkCredential(userName, password, dominio),
+        //        };
 
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = await client.PostAsync(urlBusquedaMateriales, null).ConfigureAwait(false);
+        //        using (var client = new HttpClient(httpClientHandler, false))
+        //        {
+        //            var task = await client.PostAsync(urlBusquedaMateriales, null).ConfigureAwait(false);
 
-                    var stringContent = task.Content.ReadAsStringAsync();
+        //            var stringContent = task.Content.ReadAsStringAsync();
 
-                    return stringContent.Result;
-                }
-            }
-            catch (InfoCustomException)
-            {
-                throw;
-            }
-            catch (ValidationCustomException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
+        //            return stringContent.Result;
+        //        }
+        //    }
+        //    catch (InfoCustomException)
+        //    {
+        //        throw;
+        //    }
+        //    catch (ValidationCustomException)
+        //    {
+        //        throw;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new WSCustomException(ErrorMsg.ErrorWS, e);
+        //    }
+        //}
 
         public string GuardarArchivo(HttpPostedFileBase fileSubido, string fileKey, string mailUsuario, int proveedorId)
         {
