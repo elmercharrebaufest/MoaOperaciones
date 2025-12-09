@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -24,11 +25,10 @@ namespace SustitucionMOAUtils.Services
 {
     public class FeriadoService : IFeriadoService
     {
-        private readonly string DataAgroURL;
-
-        public FeriadoService()
+        private readonly IDataAgroService dataAgroService;
+        public FeriadoService(IDataAgroService dataAgroService)
         {
-            this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
+            this.dataAgroService = dataAgroService;
         }
 
         public List<DateTime> ObtenerFeriados()
@@ -36,36 +36,14 @@ namespace SustitucionMOAUtils.Services
             var feriados = new List<DateTime>();
             try
             {
+                var result = dataAgroService.ListarFeriados();
 
-
-                var urlBusquedaMateriales = string.Concat(DataAgroURL, "/FechaFeriado/Buscar");
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
+                for (int i = 0; i < result.Datos.Length; i++)
                 {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(urlBusquedaMateriales, null);
-
-                    task.Wait();
-
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-
-                    dynamic jsonResult = JObject.Parse(stringContent.Result);
-
-                    for (int i = 0; i < jsonResult.Datos.Count; i++)
-                    {
-                        DateTime fecha = jsonResult.Datos[i].Feriado;
-                        feriados.Add(fecha);
-                    }
-                    return feriados;
+                    DateTime fecha = result.Datos[i].Feriado;
+                    feriados.Add(fecha);
                 }
+                return feriados;
             }
             catch (InfoCustomException)
             {
