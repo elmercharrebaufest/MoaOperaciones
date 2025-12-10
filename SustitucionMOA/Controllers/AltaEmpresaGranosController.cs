@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using HttpPostAttribute = System.Web.Mvc.HttpPostAttribute;
 
@@ -130,8 +129,8 @@ namespace SustitucionMOA.Controllers
             cartaPresentacionJson = cartaPresentacionJson.Replace("nia", "ña");
             var cartaPresentacion = JsonConvert.DeserializeObject<RptCartaDePresentacionInfo>(cartaPresentacionJson);
 
-            cartaPresentacion.corredorCuit = corredor.CUIT;
-            cartaPresentacion.corredorRazonSocial = corredor.RazonSocial;
+            cartaPresentacion.corredorCuit = corredor?.CUIT;
+            cartaPresentacion.corredorRazonSocial = corredor?.RazonSocial;
 
             if (cartaPresentacion.vendedorActividad == "Productor")
             {

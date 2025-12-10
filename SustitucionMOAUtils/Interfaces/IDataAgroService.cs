@@ -50,5 +50,7 @@ namespace SustitucionMOAUtils.Interfaces
         SustitucionMOAWS.DataAgroServices.ListarFeriadosDto ListarFeriados();
         SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto CamposSustentables(SustitucionMOAWS.DataAgroServices.DeclaracionCampoSustentable datos);
         SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto FormularioAltaNoGranos(SustitucionMOAWS.DataAgroServices.ProveedorAltaDto proveedorAlta);
+        SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto CartaDePresentacion(SustitucionMOAWS.DataAgroServices.RptCartaDePresentacionInfo oParam, SustitucionMOAWS.DataAgroServices.NuevoProduccion[] nuevosCampos, SustitucionMOAWS.DataAgroServices.NuevoAcopio[] nuevosAcopios);
+
     }
 }

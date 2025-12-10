@@ -25,7 +25,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace SustitucionMOAUtils.Services
@@ -126,8 +125,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var urlCartaPresentacion = string.Concat(DataAgroURL, "/CartaDePresentacion/Generar");
-                var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
 
                 var proveedor = repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(proveedorId);
                 var infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
@@ -135,58 +132,52 @@ namespace SustitucionMOAUtils.Services
                 cartadePresentacion.vendedorCuit = proveedor.CUIT;
                 cartadePresentacion.vendedorRazonSocial = proveedor.RazonSocial;
                 cartadePresentacion.vendedorActividad = infoProveedor.ProveedorClasificacion;
-
-                //ValidarEstadoSolicitud(proveedor);
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
-                string downloadKey = "";
-
                 var content = JsonConvert.SerializeObject(cartadePresentacion);
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                using (var client = new HttpClient(httpClientHandler, false))
+                SustitucionMOAWS.DataAgroServices.RptCartaDePresentacionInfo oParam = new SustitucionMOAWS.DataAgroServices.RptCartaDePresentacionInfo
                 {
-                    var task = client.PostAsync(urlCartaPresentacion, byteContent);
+                    corredorCuit = cartadePresentacion.corredorCuit ?? "",
+                    corredorRazonSocial = cartadePresentacion.corredorRazonSocial ?? "",
+                    corredorBolsa = cartadePresentacion.corredorBolsa ?? "",
+                    corredorNroRegistro = cartadePresentacion.corredorNroRegistro ?? "",
+                    vendedorCuit = cartadePresentacion.vendedorCuit,
+                    vendedorRazonSocial = cartadePresentacion.vendedorRazonSocial,
+                    vendedorDomicilioFiscal = cartadePresentacion.vendedorDomicilioFiscal,
+                    vendedorActividad = cartadePresentacion.vendedorActividad,
+                    vendedorAntiguedadEnActividad = cartadePresentacion.vendedorAntiguedadEnActividad,
+                    vendedorMailContacto = cartadePresentacion.vendedorMailContacto,
+                    vendedorTelefonoContacto = cartadePresentacion.vendedorTelefonoContacto,
+                    vendedorDomicilioReal = cartadePresentacion.vendedorDomicilioReal,
+                    vendedorCosecha = cartadePresentacion.vendedorCosecha,
+                    vendedorAntecedentesComerciales = cartadePresentacion.vendedorAntecedentesComerciales,
+                    CapAlmacenaje = new List<SustitucionMOAWS.DataAgroServices.CartaDePresentacionAcopiadores>().ToArray(),
+                    CapProduccion = new List<SustitucionMOAWS.DataAgroServices.CartaDePresentacionAcopiadores>().ToArray()
+                };
+                List<SustitucionMOAWS.DataAgroServices.NuevoProduccion> nuevoProduccions = cartadePresentacion.NuevosCampos.Select(a => new SustitucionMOAWS.DataAgroServices.NuevoProduccion
+                {
+                    ArrendaPropia = a.ArrendaPropia,
+                    Hectareas = (int)a.Hectareas,
+                    Toneladas = (int)a.Toneladas,
+                    LocalidadId = a.LocalidadId,
+                    MaterialId = a.MaterialId,
+                }).ToList();
 
-                    task.Wait();
+                List<SustitucionMOAWS.DataAgroServices.NuevoAcopio> nuevoAcopios = cartadePresentacion.NuevosAcopios.Select(a => new SustitucionMOAWS.DataAgroServices.NuevoAcopio
+                {
+                    ArrendaPropia = a.ArrendaPropia,
+                    Toneladas = (int)a.Toneladas,
+                    LocalidadId = a.LocalidadID,
+                }).ToList();
 
-                    var response = task.Result;
+                var result = dataAgroService.CartaDePresentacion(oParam, nuevoProduccions.ToArray(), nuevoAcopios.ToArray());
 
-                    var stringContent = response.Content.ReadAsStringAsync();
-
-                    dynamic jsonResult = JObject.Parse(stringContent.Result);
-
-                    if (bool.Parse(jsonResult.HayErrores.ToString()))
-                    {
-                        throw new InfoCustomException(jsonResult.Errores[0].Message);
-                    }
-
-                    downloadKey = jsonResult.DownloadKey;
-
-                    urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
-
-                    byte[] InformeComercialPDF;
-
-                    using (WebClient clienteDescarga = new WebClient())
-                    {
-                        clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
-                        InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
-                    }
-                    ;
-
-                    return InformeComercialPDF;
-
+                if (result.Errores.Any())
+                {
+                    throw new InfoCustomException(result.Errores[0]);
                 }
+                return result.Contenido;
+
+
             }
             catch (InfoCustomException)
             {
@@ -852,47 +843,6 @@ namespace SustitucionMOAUtils.Services
 
             return altaEmpresa;
         }
-
-        //public async Task<string> ObtenerCampañasDataAgroAsync()
-        //{
-        //    try
-        //    {
-        //        var urlBusquedaMateriales = string.Concat(DataAgroURL, "/Campana/Buscar");
-
-        //        string userName = DataAgroWSCredential.getUserName();
-        //        string password = DataAgroWSCredential.getPassword();
-        //        string dominio = DataAgroWSCredential.getDominio();
-
-        //        var httpClientHandler = new HttpClientHandler
-        //        {
-        //            Credentials = new NetworkCredential(userName, password, dominio),
-        //        };
-
-        //        using (var client = new HttpClient(httpClientHandler, false))
-        //        {
-        //            var task = await client.PostAsync(urlBusquedaMateriales, null).ConfigureAwait(false);
-
-        //            var stringContent = task.Content.ReadAsStringAsync();
-
-        //            string scapedJson = stringContent.Result.Replace("ñ", "ni");
-
-        //            return scapedJson;
-        //        }
-        //    }
-        //    catch (InfoCustomException)
-        //    {
-        //        throw;
-        //    }
-        //    catch (ValidationCustomException)
-        //    {
-        //        throw;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw new WSCustomException(ErrorMsg.ErrorWS, e);
-        //    }
-        //}
-
         public SustitucionMOAModel.Entities.Proveedor ObtenerRazonSocialProveedor(int proveedorId)
         {
             var proveedor = repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(proveedorId);

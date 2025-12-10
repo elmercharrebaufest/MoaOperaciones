@@ -300,5 +300,11 @@ namespace SustitucionMOAWS.WSConsumers
             var respuestaArchivo = service.FormularioAltaNoGranos(proveedorAlta);
             return respuestaArchivo;
         }
+
+        public RespuestaArchivoDto CartaDePresentacion(RptCartaDePresentacionInfo oParam, NuevoProduccion[] nuevosCampos, NuevoAcopio[] nuevosAcopios)
+        {
+            var respuesta = service.CartaDePresentacion(oParam, nuevosCampos, nuevosAcopios);
+            return respuesta;
+        }
     }
 }

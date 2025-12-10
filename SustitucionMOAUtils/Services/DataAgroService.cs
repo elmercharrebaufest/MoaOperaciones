@@ -1481,5 +1481,19 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+
+        public SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto CartaDePresentacion(SustitucionMOAWS.DataAgroServices.RptCartaDePresentacionInfo oParam, SustitucionMOAWS.DataAgroServices.NuevoProduccion[] nuevosCampos, SustitucionMOAWS.DataAgroServices.NuevoAcopio[] nuevosAcopios)
+        {
+            try
+            {
+                var respuesta = new DataAgroConsumer().CartaDePresentacion(oParam, nuevosCampos, nuevosAcopios);
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
     }
 }
