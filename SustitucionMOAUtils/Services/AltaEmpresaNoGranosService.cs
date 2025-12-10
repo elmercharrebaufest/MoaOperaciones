@@ -339,55 +339,66 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var url = string.Concat(DataAgroURL, "/FormularioAltaNoGranos/Generar");
-                var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
+                var proveedorAltaDA = ConvertirAModeloDataAgro(proveedorDto);
+                var respuestaArchivo = dataAgroService.FormularioAltaNoGranos(proveedorAltaDA);
 
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
+                if (respuestaArchivo.Errores != null && respuestaArchivo.Errores.Any())
                 {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
-                string downloadKey = "";
-
-                var content = JsonConvert.SerializeObject(proveedorDto); //myDetails is my class object.
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-
-                    task.Wait();
-
-                    var response = task.Result;
-
-                    var stringContent = response.Content.ReadAsStringAsync();
-
-                    dynamic jsonResult = JObject.Parse(stringContent.Result);
-
-                    if (bool.Parse(jsonResult.HayErrores.ToString()))
-                    {
-                        throw new InfoCustomException(jsonResult.Errores[0].Message);
-                    }
-
-                    downloadKey = jsonResult.DownloadKey;
-
-
-                    urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
-
-                    using (WebClient clienteDescarga = new WebClient())
-                    {
-                        clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
-                        byte[] formularioAltaNoGranos = clienteDescarga.DownloadData(urlReporte);
-                        return formularioAltaNoGranos;
-                    }
-
+                    throw new InfoCustomException(respuestaArchivo.Errores[0]);
                 }
+
+                var formularioAltaNoGranos = respuestaArchivo.Contenido;
+                return formularioAltaNoGranos;
+
+                //var url = string.Concat(DataAgroURL, "/FormularioAltaNoGranos/Generar");
+                //var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
+
+                //string userName = DataAgroWSCredential.getUserName();
+                //string password = DataAgroWSCredential.getPassword();
+                //string dominio = DataAgroWSCredential.getDominio();
+
+                //var httpClientHandler = new HttpClientHandler()
+                //{
+                //    Credentials = new NetworkCredential(userName, password, dominio),
+                //};
+
+                //string downloadKey = "";
+
+                //var content = JsonConvert.SerializeObject(proveedorDto); //myDetails is my class object.
+                //var buffer = Encoding.UTF8.GetBytes(content);
+                //var byteContent = new ByteArrayContent(buffer);
+                //byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                //using (var client = new HttpClient(httpClientHandler, false))
+                //{
+                //    var task = client.PostAsync(url, byteContent);
+
+                //    task.Wait();
+
+                //    var response = task.Result;
+
+                //    var stringContent = response.Content.ReadAsStringAsync();
+
+                //    dynamic jsonResult = JObject.Parse(stringContent.Result);
+
+                //    if (bool.Parse(jsonResult.HayErrores.ToString()))
+                //    {
+                //        throw new InfoCustomException(jsonResult.Errores[0].Message);
+                //    }
+
+                //    downloadKey = jsonResult.DownloadKey;
+
+
+                //    urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
+
+                //    using (WebClient clienteDescarga = new WebClient())
+                //    {
+                //        clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
+                //        byte[] formularioAltaNoGranos = clienteDescarga.DownloadData(urlReporte);
+                //        return formularioAltaNoGranos;
+                //    }
+
+                //}
             }
             catch (InfoCustomException)
             {
@@ -446,6 +457,49 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
+        }
+
+        private static SustitucionMOAWS.DataAgroServices.ProveedorAltaDto ConvertirAModeloDataAgro(ProveedorAltaDto proveedorDto)
+        {
+            var modeloDA = new SustitucionMOAWS.DataAgroServices.ProveedorAltaDto();
+
+            modeloDA.AltaInterna = proveedorDto.AltaInterna;
+            modeloDA.CBU = proveedorDto.CBU;
+            modeloDA.CodigoProveedor = proveedorDto.CodigoProveedor;
+            modeloDA.Comercial = proveedorDto.Comercial;
+            modeloDA.CondicionDePago = proveedorDto.CondicionDePago;
+            modeloDA.CUIT = proveedorDto.CUIT;
+            modeloDA.EstadoAprobacion = proveedorDto.EstadoAprobacion.ToString();
+            modeloDA.EstadoAprobacionDescripcion = proveedorDto.EstadoAprobacionDescripcion;
+            modeloDA.EstadoSIPER = proveedorDto.EstadoSIPER;
+            modeloDA.FacturacionAnual = proveedorDto.FacturacionAnual;
+            modeloDA.FechaSolicitud = proveedorDto.FechaSolicitud;
+            modeloDA.Id = proveedorDto.Id;
+            modeloDA.IdDataAgro = proveedorDto.IdDataAgro;
+            modeloDA.IdComercialDataAgro = proveedorDto.IdComercialDataAgro;
+            modeloDA.IdIngresoBruto = proveedorDto.IdIngresoBruto;
+            modeloDA.IdSituacionIVA = proveedorDto.IdSituacionIVA;
+            modeloDA.IdTipoUsuario = proveedorDto.IdTipoUsuario;
+            modeloDA.IngresoAPlanta = proveedorDto.IngresoAPlanta;
+            modeloDA.IngresoBruto = proveedorDto.IngresoBruto;
+            modeloDA.Mail = proveedorDto.Mail;
+            modeloDA.Observaciones = proveedorDto.Observaciones;
+            modeloDA.OrganizacionDeCompra = proveedorDto.OrganizacionDeCompra;
+            modeloDA.RazonDeEleccion = proveedorDto.RazonDeEleccion;
+            modeloDA.RazonSocial = proveedorDto.RazonSocial;
+            modeloDA.RazonSocialCorredor = proveedorDto.RazonSocialCorredor;
+            modeloDA.RealizarAnalisisNOSIS = proveedorDto.RealizarAnalisisNOSIS;
+            modeloDA.RequiereVerificacionCompras = proveedorDto.RequiereVerificacionCompras;
+            modeloDA.Rubro = proveedorDto.Rubro;
+            modeloDA.ServicioPrestado = proveedorDto.ServicioPrestado;
+            modeloDA.SiperObligatorio = proveedorDto.SiperObligatorio;
+            modeloDA.SISAEstadoCuit = proveedorDto.SISAEstadoCuit;
+            modeloDA.SituacionIVA = proveedorDto.SituacionIVA;
+            modeloDA.SolicitanteInterno = proveedorDto.SolicitanteInterno;
+            modeloDA.Telefono = proveedorDto.Telefono;
+            modeloDA.UltimaEdicion = proveedorDto.UltimaEdicion;
+
+            return modeloDA;
         }
     }
 }

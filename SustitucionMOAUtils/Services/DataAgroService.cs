@@ -1467,5 +1467,19 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+
+        public SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto FormularioAltaNoGranos(SustitucionMOAWS.DataAgroServices.ProveedorAltaDto proveedorAlta)
+        {
+            try
+            {
+                var respuestaArchivo = new DataAgroConsumer().FormularioAltaNoGranos(proveedorAlta);
+                return respuestaArchivo;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
     }
 }

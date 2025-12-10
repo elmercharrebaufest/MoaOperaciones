@@ -49,5 +49,6 @@ namespace SustitucionMOAUtils.Interfaces
         string ConfiguracionBolsaAutomatica();
         SustitucionMOAWS.DataAgroServices.ListarFeriadosDto ListarFeriados();
         SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto CamposSustentables(SustitucionMOAWS.DataAgroServices.DeclaracionCampoSustentable datos);
+        SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto FormularioAltaNoGranos(SustitucionMOAWS.DataAgroServices.ProveedorAltaDto proveedorAlta);
     }
 }

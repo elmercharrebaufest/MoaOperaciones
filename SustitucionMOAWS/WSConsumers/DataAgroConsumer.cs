@@ -294,5 +294,11 @@ namespace SustitucionMOAWS.WSConsumers
             var respuesta = service.CamposSustentables(datos);
             return respuesta;
         }
+
+        public RespuestaArchivoDto FormularioAltaNoGranos(ProveedorAltaDto proveedorAlta)
+        {
+            var respuestaArchivo = service.FormularioAltaNoGranos(proveedorAlta);
+            return respuestaArchivo;
+        }
     }
 }
