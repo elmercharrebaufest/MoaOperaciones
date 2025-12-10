@@ -36,7 +36,6 @@ namespace SustitucionMOAUtils.Services
     public class CampoSustentableService : ICampoSustentableService
     {
         private readonly IRepositorioCampoSustentable repositorio;
-        private readonly string DataAgroURL;
         private readonly IExcelExportWrapper excelExport;
         private readonly IDataAgroService dataAgroService;
         private readonly ICampoSustentableGoogleDrive campoSustentableGoogleDrive;
@@ -51,7 +50,6 @@ namespace SustitucionMOAUtils.Services
             )
         {
             this.repositorio = repositorio;
-            this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
             this.excelExport = excelExport;
             this.dataAgroService = dataAgroService;
             this.campoSustentableGoogleDrive = campoSustentableGoogleDrive;
