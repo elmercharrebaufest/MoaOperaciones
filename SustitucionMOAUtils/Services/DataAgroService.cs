@@ -1532,6 +1532,7 @@ namespace SustitucionMOAUtils.Services
                 Toneladas = (int)a.Toneladas,
                 LocalidadId = a.LocalidadId,
                 MaterialId = a.MaterialId,
+                CampañaId = a.CampañaId,
             }).ToList();
 
             List<SustitucionMOAWS.DataAgroServices.NuevoAcopio> nuevoAcopios = oParam.NuevosAcopios.Select(a => new SustitucionMOAWS.DataAgroServices.NuevoAcopio
@@ -1539,6 +1540,7 @@ namespace SustitucionMOAUtils.Services
                 ArrendaPropia = a.ArrendaPropia,
                 Toneladas = (int)a.Toneladas,
                 LocalidadId = a.LocalidadID,
+                CampañaId = a.CampañaID,
             }).ToList();
 
             SustitucionMOAWS.DataAgroServices.ContactoComercial contactoComercial = ConvertirContactoComercial(oParam.ContactoComercial);
