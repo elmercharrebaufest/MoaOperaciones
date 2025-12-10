@@ -1905,6 +1905,16 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ProveedorAltaDto" nillable="true" type="tns:ProveedorAltaDto" />
+  <xs:complexType name="RespuestaArchivoDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Contenido" nillable="true" type="xs:base64Binary" />
+      <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Errores" nillable="true" type="q6:ArrayOfstring" />
+      <xs:element minOccurs="0" name="EsExitoso" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Mensaje" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NombreArchivo" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RespuestaArchivoDto" nillable="true" type="tns:RespuestaArchivoDto" />
   <xs:complexType name="RptCartaDePresentacionInfo">
     <xs:sequence>
       <xs:element minOccurs="0" name="CapAlmacenaje" nillable="true" type="tns:ArrayOfCartaDePresentacionAcopiadores" />

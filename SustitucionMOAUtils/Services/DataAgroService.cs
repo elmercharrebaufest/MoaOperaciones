@@ -10,6 +10,7 @@ using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -19,7 +20,7 @@ using System.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class DataAgroService : Interfaces.IDataAgroService
+    public class DataAgroService : IDataAgroService
     {
         protected readonly IRepositorio repositorio;
 
@@ -1444,6 +1445,20 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var result = new DataAgroConsumer().ListarFeriados();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                throw;
+            }
+        }
+
+        public SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto CamposSustentables(SustitucionMOAWS.DataAgroServices.DeclaracionCampoSustentable datos)
+        {
+            try
+            {
+                var result = new DataAgroConsumer().CamposSustentables(datos);
                 return result;
             }
             catch (Exception ex)

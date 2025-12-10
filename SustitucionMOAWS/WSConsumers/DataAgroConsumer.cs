@@ -49,7 +49,7 @@ namespace SustitucionMOAWS.WSConsumers
             return service.TraerTipoDeCambio(DateTime.Now.Date, "", "M");
         }
 
-        public SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(SustitucionMOAModel.Entities.CampoProveedor campo, string kmz)
+        public ResultadoAltaCampoSustentable AltaCampoSustentable(SustitucionMOAModel.Entities.CampoProveedor campo, string kmz)
         {
 
             return service.AltaCampoSustentable(new CampoDetalleTerceroDto
@@ -99,7 +99,7 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        public SustitucionMOAWS.DataAgroServices.DatosFijacionDeContratoDto[] ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual)
+        public DatosFijacionDeContratoDto[] ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual)
         {
             var result = service.ObtenerFijacionesAutomaticas(cuitProveedor, cuitCorredor, materialId, filtro, fijacionId, esVirtual);
             return result;
@@ -209,7 +209,7 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        public SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto[] GrabarContratoMasivo(DataAgroServices.BasicoContrato[] contratos)
+        public SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto[] GrabarContratoMasivo(BasicoContrato[] contratos)
         {
             var result = service.GrabarContratoMasivo(contratos);
             List<SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto> resultDto = new List<SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto>();
@@ -228,13 +228,13 @@ namespace SustitucionMOAWS.WSConsumers
             return resultDto.ToArray();
         }
 
-        public DataAgroServices.BasicoContrato TraerContratoCompleto(int id, string tipo)
+        public BasicoContrato TraerContratoCompleto(int id, string tipo)
         {
             var result = service.TraerContratoCompleto(id, tipo);
             return result;
         }
 
-        public DataAgroServices.BasicoContrato TraerFijacionCompleto(int id)
+        public BasicoContrato TraerFijacionCompleto(int id)
         {
             var result = service.TraerFijacionCompleto(id);
             return result;
@@ -253,7 +253,7 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        public DataAgroServices.BuscarCentroDto BuscarCentro()
+        public BuscarCentroDto BuscarCentro()
         {
             var resultIniCentro = service.BuscarCentro();
             return resultIniCentro;
@@ -277,16 +277,22 @@ namespace SustitucionMOAWS.WSConsumers
             return partidos;
         }
 
-        public DataAgroServices.KendoDataSourceResultDto BuscaDatosTablaContrato(DataAgroServices.KendoDataSourceRequestDto filtro)
+        public KendoDataSourceResultDto BuscaDatosTablaContrato(KendoDataSourceRequestDto filtro)
         {
             var resultDto = service.BuscaDatosTablaContrato(filtro);
             return resultDto;
         }
 
-        public DataAgroServices.ListarFeriadosDto ListarFeriados()
+        public ListarFeriadosDto ListarFeriados()
         {
             var feriados = service.ListarFeriados();
             return feriados;
+        }
+
+        public RespuestaArchivoDto CamposSustentables(DeclaracionCampoSustentable datos)
+        {
+            var respuesta = service.CamposSustentables(datos);
+            return respuesta;
         }
     }
 }

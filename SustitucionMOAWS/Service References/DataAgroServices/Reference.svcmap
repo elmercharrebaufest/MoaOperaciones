@@ -24,7 +24,6 @@
   <Metadata>
     <MetadataFile FileName="DataAgroServices.xsd" MetadataType="Schema" ID="1b9a69a9-1036-47b7-90cc-a6a7e3a4be87" SourceId="1" SourceUrl="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd2" />
     <MetadataFile FileName="DataAgroServices1.xsd" MetadataType="Schema" ID="6bf2fc35-8437-49a6-ace1-e85c4ba3e8c8" SourceId="1" SourceUrl="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd5" />
-    <MetadataFile FileName="DataAgroServices2.xsd" MetadataType="Schema" ID="eb28d51f-1178-46d7-a0aa-fdc4ae23b3e8" SourceId="1" SourceUrl="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd6" />
     <MetadataFile FileName="DataAgroServices3.xsd" MetadataType="Schema" ID="d6663257-7fd3-4482-9a2a-07338029dd8b" SourceId="1" SourceUrl="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd4" />
     <MetadataFile FileName="DataAgroServices4.xsd" MetadataType="Schema" ID="671eb773-b824-4277-89ff-af5c0360e21b" SourceId="1" SourceUrl="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd3" />
     <MetadataFile FileName="DataAgroServices1.wsdl" MetadataType="Wsdl" ID="120c3747-b2ea-47d4-8b51-2f5718355e14" SourceId="1" SourceUrl="http://test.dataagro.com.ar/Services/DataAgroServices.svc?wsdl" />

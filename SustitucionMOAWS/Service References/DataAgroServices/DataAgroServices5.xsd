@@ -3,7 +3,6 @@
   <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" />
   <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" />
   <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" />
   <xs:element name="Ping">
     <xs:complexType>
       <xs:sequence />
@@ -764,7 +763,7 @@
   <xs:element name="FormularioAltaNoGranosResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q72="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" minOccurs="0" name="FormularioAltaNoGranosResult" nillable="true" type="q72:RespuestaArchivoDto" />
+        <xs:element xmlns:q72="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="FormularioAltaNoGranosResult" nillable="true" type="q72:RespuestaArchivoDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -780,7 +779,7 @@
   <xs:element name="CartaDePresentacionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q76="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" minOccurs="0" name="CartaDePresentacionResult" nillable="true" type="q76:RespuestaArchivoDto" />
+        <xs:element xmlns:q76="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="CartaDePresentacionResult" nillable="true" type="q76:RespuestaArchivoDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -794,7 +793,7 @@
   <xs:element name="CamposSustentablesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q78="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" minOccurs="0" name="CamposSustentablesResult" nillable="true" type="q78:RespuestaArchivoDto" />
+        <xs:element xmlns:q78="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="CamposSustentablesResult" nillable="true" type="q78:RespuestaArchivoDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -815,7 +814,7 @@
   <xs:element name="InformeComercialResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q83="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" minOccurs="0" name="InformeComercialResult" nillable="true" type="q83:RespuestaArchivoDto" />
+        <xs:element xmlns:q83="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="InformeComercialResult" nillable="true" type="q83:RespuestaArchivoDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

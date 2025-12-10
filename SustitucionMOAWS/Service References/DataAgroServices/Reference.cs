@@ -28107,6 +28107,7 @@ namespace SustitucionMOAWS.DataAgroServices {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.FechaFeriadoDto[]))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.FechaFeriadoDto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ProveedorAltaDto))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.RptCartaDePresentacionInfo))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.CartaDePresentacionAcopiadores[]))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.CartaDePresentacionAcopiadores))]
@@ -28121,7 +28122,6 @@ namespace SustitucionMOAWS.DataAgroServices {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ParamInformeComercialMaterial[]))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ParamInformeComercialMaterial))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.PermisosDataAgro))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.SISA[]))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.SISA))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Moneda))]
@@ -30257,6 +30257,115 @@ namespace SustitucionMOAWS.DataAgroServices {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="RespuestaArchivoDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
+    [System.SerializableAttribute()]
+    public partial class RespuestaArchivoDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private byte[] ContenidoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string[] ErroresField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EsExitosoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MensajeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NombreArchivoField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] Contenido {
+            get {
+                return this.ContenidoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ContenidoField, value) != true)) {
+                    this.ContenidoField = value;
+                    this.RaisePropertyChanged("Contenido");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string[] Errores {
+            get {
+                return this.ErroresField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ErroresField, value) != true)) {
+                    this.ErroresField = value;
+                    this.RaisePropertyChanged("Errores");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool EsExitoso {
+            get {
+                return this.EsExitosoField;
+            }
+            set {
+                if ((this.EsExitosoField.Equals(value) != true)) {
+                    this.EsExitosoField = value;
+                    this.RaisePropertyChanged("EsExitoso");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Mensaje {
+            get {
+                return this.MensajeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MensajeField, value) != true)) {
+                    this.MensajeField = value;
+                    this.RaisePropertyChanged("Mensaje");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string NombreArchivo {
+            get {
+                return this.NombreArchivoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NombreArchivoField, value) != true)) {
+                    this.NombreArchivoField = value;
+                    this.RaisePropertyChanged("NombreArchivo");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="RptCartaDePresentacionInfo", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
     [System.SerializableAttribute()]
     public partial class RptCartaDePresentacionInfo : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
@@ -31625,115 +31734,6 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((this.ToneladasField.Equals(value) != true)) {
                     this.ToneladasField = value;
                     this.RaisePropertyChanged("Toneladas");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="RespuestaArchivoDto", Namespace="http://schemas.datacontract.org/2004/07/WebDataAgro.Services")]
-    [System.SerializableAttribute()]
-    public partial class RespuestaArchivoDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte[] ContenidoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string[] ErroresField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool EsExitosoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string MensajeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NombreArchivoField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[] Contenido {
-            get {
-                return this.ContenidoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ContenidoField, value) != true)) {
-                    this.ContenidoField = value;
-                    this.RaisePropertyChanged("Contenido");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string[] Errores {
-            get {
-                return this.ErroresField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ErroresField, value) != true)) {
-                    this.ErroresField = value;
-                    this.RaisePropertyChanged("Errores");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool EsExitoso {
-            get {
-                return this.EsExitosoField;
-            }
-            set {
-                if ((this.EsExitosoField.Equals(value) != true)) {
-                    this.EsExitosoField = value;
-                    this.RaisePropertyChanged("EsExitoso");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Mensaje {
-            get {
-                return this.MensajeField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.MensajeField, value) != true)) {
-                    this.MensajeField = value;
-                    this.RaisePropertyChanged("Mensaje");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string NombreArchivo {
-            get {
-                return this.NombreArchivoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NombreArchivoField, value) != true)) {
-                    this.NombreArchivoField = value;
-                    this.RaisePropertyChanged("NombreArchivo");
                 }
             }
         }

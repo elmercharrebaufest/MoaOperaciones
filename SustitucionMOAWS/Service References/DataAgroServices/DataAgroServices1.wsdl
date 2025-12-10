@@ -8,7 +8,6 @@
       <xsd:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
       <xsd:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" />
       <xsd:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Seguridad" />
-      <xsd:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/WebDataAgro.Services" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IDataAgroServices_Ping_InputMessage">
