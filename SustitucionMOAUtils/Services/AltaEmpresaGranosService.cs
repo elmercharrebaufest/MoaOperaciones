@@ -853,45 +853,45 @@ namespace SustitucionMOAUtils.Services
             return altaEmpresa;
         }
 
-        public async Task<string> ObtenerCampañasDataAgroAsync()
-        {
-            try
-            {
-                var urlBusquedaMateriales = string.Concat(DataAgroURL, "/Campana/Buscar");
+        //public async Task<string> ObtenerCampañasDataAgroAsync()
+        //{
+        //    try
+        //    {
+        //        var urlBusquedaMateriales = string.Concat(DataAgroURL, "/Campana/Buscar");
 
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
+        //        string userName = DataAgroWSCredential.getUserName();
+        //        string password = DataAgroWSCredential.getPassword();
+        //        string dominio = DataAgroWSCredential.getDominio();
 
-                var httpClientHandler = new HttpClientHandler
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
+        //        var httpClientHandler = new HttpClientHandler
+        //        {
+        //            Credentials = new NetworkCredential(userName, password, dominio),
+        //        };
 
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = await client.PostAsync(urlBusquedaMateriales, null).ConfigureAwait(false);
+        //        using (var client = new HttpClient(httpClientHandler, false))
+        //        {
+        //            var task = await client.PostAsync(urlBusquedaMateriales, null).ConfigureAwait(false);
 
-                    var stringContent = task.Content.ReadAsStringAsync();
+        //            var stringContent = task.Content.ReadAsStringAsync();
 
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+        //            string scapedJson = stringContent.Result.Replace("ñ", "ni");
 
-                    return scapedJson;
-                }
-            }
-            catch (InfoCustomException)
-            {
-                throw;
-            }
-            catch (ValidationCustomException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
+        //            return scapedJson;
+        //        }
+        //    }
+        //    catch (InfoCustomException)
+        //    {
+        //        throw;
+        //    }
+        //    catch (ValidationCustomException)
+        //    {
+        //        throw;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new WSCustomException(ErrorMsg.ErrorWS, e);
+        //    }
+        //}
 
         public SustitucionMOAModel.Entities.Proveedor ObtenerRazonSocialProveedor(int proveedorId)
         {

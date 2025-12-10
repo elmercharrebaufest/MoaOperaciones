@@ -22,7 +22,7 @@ namespace SustitucionMOAUtils.Interfaces
         string EliminarArchivo(string mailUsuario, int archivoID, int proveedorId);
         InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario, int proveedorId);
         AltaEmpresaViewModel CargarSolicitudUsuario(string mailUsuario, int proveedorId);
-        Task<string> ObtenerCampañasDataAgroAsync();
+        //Task<string> ObtenerCampañasDataAgroAsync();
 
         string SolicitudAltaInterna(string mailUsuario, int proveedorId, AltaEmpresaViewModel altaEmpresa);
         string GrabarProveedorAltaInternaGranos(string cuit, string mailUsuario, string mailVendedor);

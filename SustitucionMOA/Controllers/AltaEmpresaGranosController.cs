@@ -192,12 +192,11 @@ namespace SustitucionMOA.Controllers
         {
             return JsonCustom(new { Datos = dataAgroService.BuscarMateriales() });
         }
-        public async Task<ActionResult> GetCampanias()
+
+        public ActionResult GetCampanias()
         {
             string CampanaMin = ConfigurationManager.AppSettings["CampanaMin"].ToString();
-            var datosjson = await altaEmpresaService.ObtenerCampañasDataAgroAsync();
-            var listCamp = JsonConvert.DeserializeObject<List<CampaniaDto>>(datosjson);
-
+            var listCamp = dataAgroService.BuscarCampanias();
             var idCamp = listCamp.Where(a => a.Descripcion == CampanaMin).Single().CampaniaId;
             listCamp = listCamp.Where(a => a.CampaniaId >= idCamp).ToList();
             return JsonCustom(listCamp);
