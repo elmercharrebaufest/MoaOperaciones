@@ -50,62 +50,12 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var urlInformeComercial = string.Concat(DataAgroURL, "/InformeComercial/Listar");
-                var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
-
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
-
-                var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
-
-                //ValidarEstadoSolicitud(proveedor);
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler
+                var respuestaArchivo = this.dataAgroService.ListarInformeComercial(informeComercial);
+                if (respuestaArchivo.Errores != null && respuestaArchivo.Errores.Any())
                 {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
-                string downloadKey = "";
-
-                var content = JsonConvert.SerializeObject(informeComercial); //myDetails is my class object.
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(urlInformeComercial, byteContent);
-
-                    task.Wait();
-
-                    var response = task.Result;
-
-                    var stringContent = response.Content.ReadAsStringAsync();
-
-                    dynamic jsonResult = JObject.Parse(stringContent.Result);
-
-                    if (bool.Parse(jsonResult.HayErrores.ToString()))
-                    {
-                        throw new InfoCustomException(jsonResult.Errores[0].Message);
-                    }
-
-                    downloadKey = jsonResult.DownloadKey;
-
-                    byte[] InformeComercialPDF;
-                    urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
-                    using (WebClient clienteDescarga = new WebClient())
-                    {
-                        clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
-
-                        InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
-                    }
-
-                    return InformeComercialPDF;
-
+                    throw new InfoCustomException(respuestaArchivo.Errores.FirstOrDefault() ?? "Error desconocido al generar el informe comercial.");
                 }
+                return respuestaArchivo.Contenido;
             }
             catch (InfoCustomException)
             {

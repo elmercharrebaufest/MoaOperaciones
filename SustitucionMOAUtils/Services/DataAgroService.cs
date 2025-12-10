@@ -1495,5 +1495,86 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+
+        public SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto ListarInformeComercial(ParamInformeComercial oParam)
+        {
+            var paramInformeComercial = new SustitucionMOAWS.DataAgroServices.ParamInformeComercial
+            {
+                ActuacionProd = oParam.ActuacionProd,
+                AntigActividad = oParam.AntigActividad,
+                Campaña = oParam.Campaña,
+                CampañaId = oParam.CampañaId,
+                Chacra = oParam.Chacra,
+                ChacraOtros = oParam.ChacraOtros,
+                ClienteAnt = oParam.ClienteAnt,
+                Comentarios = oParam.Comentarios,
+                ComercialId = oParam.ComercialID,
+                Domicilio = oParam.Domicilio,
+                EmplRelDep = oParam.EmplRelDep,
+                EmplRelDepCant = oParam.EmplRelDepCant,
+                InformeComercialId = oParam.InformeComercialId,
+                Materiales = oParam.Materiales?.Select(m => new SustitucionMOAWS.DataAgroServices.ParamInformeComercialMaterial
+                {
+                    MaterialId = m.MaterialId,
+                    Toneladas = m.Toneladas
+                }).ToArray(),
+                OrigenDA = null,
+                FechaDescarga = null,
+                ProveedorId = oParam.ProveedorId,
+                Rodados = oParam.Rodados,
+                RodadosOtros = oParam.RodadosOtros
+            };
+
+            List<SustitucionMOAWS.DataAgroServices.NuevoProduccion> nuevoProduccions = oParam.NuevosCampos.Select(a => new SustitucionMOAWS.DataAgroServices.NuevoProduccion
+            {
+                ArrendaPropia = a.ArrendaPropia,
+                Hectareas = (int)a.Hectareas,
+                Toneladas = (int)a.Toneladas,
+                LocalidadId = a.LocalidadId,
+                MaterialId = a.MaterialId,
+            }).ToList();
+
+            List<SustitucionMOAWS.DataAgroServices.NuevoAcopio> nuevoAcopios = oParam.NuevosAcopios.Select(a => new SustitucionMOAWS.DataAgroServices.NuevoAcopio
+            {
+                ArrendaPropia = a.ArrendaPropia,
+                Toneladas = (int)a.Toneladas,
+                LocalidadId = a.LocalidadID,
+            }).ToList();
+
+            SustitucionMOAWS.DataAgroServices.ContactoComercial contactoComercial = ConvertirContactoComercial(oParam.ContactoComercial);
+
+            var response = new DataAgroConsumer().ListarInformeComercial(paramInformeComercial, oParam.ComercialID, nuevoProduccions.ToArray(), nuevoAcopios.ToArray(), 
+                contactoComercial, oParam.direccion, oParam.codigoPostal, oParam.localidadId);
+            return response;
+        }
+
+        private SustitucionMOAWS.DataAgroServices.ContactoComercial ConvertirContactoComercial(SustitucionMOAModel.Models.DataAgro.ContactoComercial contacto)
+        {
+            if (contacto == null) return null;
+
+            return new SustitucionMOAWS.DataAgroServices.ContactoComercial
+            {
+                ContactoComercialId = contacto.ContactoComercialId?? 0,
+                ProveedorId = contacto.ProveedorId,
+                Apellido = contacto.Apellido,
+                Nombres = contacto.Nombres,
+                Puesto = contacto.Puesto,
+                Telefono1 = contacto.Telefono1,
+                TipoTelefono1Id = contacto.TipoTelefono1Id,
+                Telefono2 = contacto.Telefono2,
+                TipoTelefono2Id = contacto.TipoTelefono2Id,
+                Telefono3 = contacto.Telefono3,
+                TipoTelefono3Id = contacto.TipoTelefono3Id,
+                Email1 = contacto.Email1,
+                Email2 = contacto.Email2,
+                Email3 = contacto.Email3,
+                FechaNacimiento = contacto.FechaNacimiento,
+                OtrosIntereses = contacto.OtrosIntereses,
+                EsPrincipal = contacto.EsPrincipal,
+                Cargo = contacto.Cargo,
+                CompraNet = contacto.CompraNet,
+                Cupo = contacto.Cupo
+            };
+        }
     }
 }

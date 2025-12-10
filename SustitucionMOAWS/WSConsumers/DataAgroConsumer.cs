@@ -306,5 +306,12 @@ namespace SustitucionMOAWS.WSConsumers
             var respuesta = service.CartaDePresentacion(oParam, nuevosCampos, nuevosAcopios);
             return respuesta;
         }
+
+        public DataAgroServices.RespuestaArchivoDto ListarInformeComercial(DataAgroServices.ParamInformeComercial oParam, int? comercialId, DataAgroServices.NuevoProduccion[] nuevosCampos,
+            DataAgroServices.NuevoAcopio[] nuevosAcopios, DataAgroServices.ContactoComercial contactoComercial, string direccion, string codigoPostal, int? localidadId)
+        {
+            var informe = service.InformeComercial(oParam, comercialId, nuevosCampos, nuevosAcopios, contactoComercial, direccion, codigoPostal, localidadId);
+            return informe;
+        }
     }
 }
