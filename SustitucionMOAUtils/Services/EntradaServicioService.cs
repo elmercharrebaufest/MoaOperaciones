@@ -1585,7 +1585,12 @@ namespace SustitucionMOAUtils.Services
 
                 if (!string.IsNullOrEmpty(esItem.CertificationAmount))
                 {
-                    aprobacion.Monto_a_certificar = esItem.Quantity.ToNullableDecimal() * esItem.ItemGrossPrice.ToNullableDecimal();
+                    aprobacion.Monto_a_certificar = Math.Round(
+                        esItem.Quantity.ToNullableDecimal().GetValueOrDefault() *
+                        esItem.ItemGrossPrice.ToNullableDecimal().GetValueOrDefault(),
+                        2,
+                        MidpointRounding.AwayFromZero
+                    );
                     monto_total = monto_total + (aprobacion.Monto_a_certificar ?? 0);
                 }
 
