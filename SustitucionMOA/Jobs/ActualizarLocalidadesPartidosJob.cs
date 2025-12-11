@@ -42,11 +42,12 @@ namespace SustitucionMOA.Jobs
                 Log.Debug("Inicia job ActualizarLocalidades");
 
                 _Habilitado = true;
-                var localidades = dataAgroService.ListarLocalidades();
 
-                SincronizarLocalidades(localidades);
                 var partidos = dataAgroService.ListarPartidos();
                 SincronizarPartidos(partidos);
+
+                var localidades = dataAgroService.ListarLocalidades();
+                SincronizarLocalidades(localidades);
             }
             catch(Exception e)
             {
