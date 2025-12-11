@@ -28,12 +28,10 @@ namespace SustitucionMOA.Controllers
     public class CrearContratoController : BaseController
     {
         protected readonly IRepositorio repositorio;
-        readonly IDataAgroApiService dataAgroApiService;
         private readonly IDataAgroService dataAgroService;
 
-        public CrearContratoController(IDataAgroApiService dataAgroApiService, IRepositorio repositorio, IDataAgroService dataAgroService)
+        public CrearContratoController(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
-            this.dataAgroApiService = dataAgroApiService;
             this.repositorio = repositorio;
             this.dataAgroService = dataAgroService;
         }
@@ -61,9 +59,9 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ObteneDatosContrato(int tiponegocio)
         {
-            string BolsaAutomatica = dataAgroApiService.ConfiguracionBolsaAutomatica();
+            var bolsaAutomatica = dataAgroService.ConfiguracionBolsaAutomatica();
             string DatosContrato = dataAgroService.InicializarContrato(tiponegocio);
-            return JsonCustom(new { DatosContrato, BolsaAutomatica });
+            return JsonCustom(new { DatosContrato, bolsaAutomatica });
         }
 
         public ActionResult ObtenerDatosCompraNet(int? idProveedorDataAgro)
@@ -131,6 +129,7 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom(result);
         }
+
         public ActionResult ValidarDirecto()
         {
             var proveedor = ObtenerProveedor();
@@ -144,6 +143,7 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom(result);
         }
+
         public ActionResult BuscarProveedoresConCorredor(string filtro)
         {
             filtro = filtro.IsNullOrWhiteSpace() ? "" : filtro;
@@ -220,23 +220,25 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom(result);
         }
+
         public ActionResult GetContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId,
             int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId,
             bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, bool? sustentableTercero, string contratoCorredor)
         {
             var proveedor = ObtenerProveedor();
 
-            string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor, sustentableTercero, contratoCorredor);
+            string result = ObtenerContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor, sustentableTercero, contratoCorredor);
 
             return JsonCustom(result);
         }
+
         public ActionResult ExportContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId,
            int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId,
            bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, bool? sustentableTercero, string contratoCorredor)
         {
             var proveedor = ObtenerProveedor();
 
-            string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor, sustentableTercero, contratoCorredor);
+            string result = ObtenerContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor, sustentableTercero, contratoCorredor);
             System.Web.Script.Serialization.JavaScriptSerializer ser = new System.Web.Script.Serialization.JavaScriptSerializer();
             var result2 = (Dictionary<string, object>)ser.DeserializeObject(result);
             var list = ser.Deserialize<List<BasicoContrato>>(ser.Serialize(result2["Data"]));
@@ -253,7 +255,7 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(excel);
         }
 
-        private string obteberContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId, int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId, bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, Proveedor proveedor, bool? sustentableTercero, string contratoCorredor)
+        private string ObtenerContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId, int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId, bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, Proveedor proveedor, bool? sustentableTercero, string contratoCorredor)
         {
             var filtros = new List<Kendo.DynamicLinq.Filter>();
 
@@ -296,7 +298,7 @@ namespace SustitucionMOA.Controllers
                 }
             };
 
-            return dataAgroApiService.GetContratos(request);
+            return dataAgroService.GetContratos(request);
         }
 
         private void AgregarFiltroFecha(List<Kendo.DynamicLinq.Filter> filtros, string field, string fecha, string operador)
@@ -380,7 +382,9 @@ namespace SustitucionMOA.Controllers
                 return JsonCustom(new { info = errores });
             }
 
-            BasicoContrato acuerdo = dataAgroApiService.TraerContratoCompleto(ncontratoAcuerdo, "acuerdo");
+            //BasicoContrato acuerdo = dataAgroApiService.TraerContratoCompleto(ncontratoAcuerdo, "acuerdo");
+            var acuerdo = dataAgroService.TraerContratoCompleto(ncontratoAcuerdo, "acuerdo");
+
             if (acuerdo.ContratoId == 0)
             {
                 errores.Add(string.Concat("El Acuerdo seleccionado no es valido."));
@@ -410,7 +414,7 @@ namespace SustitucionMOA.Controllers
                 var materiales = dataAgroService.BuscarMateriales();
 
                 var centros = dataAgroService.BuscarCentros();
-                
+
                 var campanias = dataAgroService.BuscarCampanias();
 
                 var validations = GetValidatorContratos(materiales, centros, campanias);
@@ -464,20 +468,20 @@ namespace SustitucionMOA.Controllers
 
                     }
 
-                    validacionContratoFatal(contratos, acuerdo, resultValidation);
+                    ValidacionContratoFatal(contratos, acuerdo, resultValidation);
                     if (!resultValidation.IsValid)
                     {
                         return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);
                     }
                     else
                     {
-                        List<GrabarContratoResult> resultados = dataAgroService.CrearContratoMasivo(contratos);
+                        List<SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto> resultados = dataAgroService.CrearContratoMasivo(contratos);
 
                         foreach (var item in resultados)
                         {
                             if (item.HayError)
                             {
-                                var tipo = item.ListaErrores.Any(a => a.Source == "Fatal") ? ExcelValidationErrorType.Fatal : ExcelValidationErrorType.Error;
+                                var tipo = item.Errores.Any(a => a.Source == "Fatal") ? ExcelValidationErrorType.Fatal : ExcelValidationErrorType.Error;
                                 //item.ContratoId estoy usando ese campo para devolver el numero de row
                                 resultValidation.RowsResult[item.ContratoId ?? 0].ItemsResult.Add(new ExcelValidatorItemResult { Errors = item.Errores.Select(a => a.Message).ToList(), Item = new ExcelValidatorItem { ErrorType = tipo, Name = "", Options = null, Position = 1, Required = true, Type = ExcelValidationColumnType.String } });
                             }
@@ -503,7 +507,7 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(new { data = SuccessMsg.ArchivoSubidoOK });
         }
 
-        private void validacionContratoFatal(List<BasicoContrato> contratos, BasicoContrato acuerdo, ExcelValidatorResult resultValidation)
+        private void ValidacionContratoFatal(List<BasicoContrato> contratos, BasicoContrato acuerdo, ExcelValidatorResult resultValidation)
         {
             int i = 0;
             foreach (var item in contratos)

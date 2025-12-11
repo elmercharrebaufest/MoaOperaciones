@@ -381,7 +381,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
     getOrdenCompraFiltro(ocIngresada: string) {
         this.ordenCompraFiltro = ocIngresada;
-        this.getListarPO();
+        //this.getListarPO();
     }
 
     toggleRow(rowData: any): void {

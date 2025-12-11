@@ -5,6 +5,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Helpers;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.PesificacionGuadarWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
@@ -19,15 +20,16 @@ namespace SustitucionMOAUtils.Services
 {
     public class PesificacionService : IPesificacionService
     {
-        readonly FeriadoService _feriadoService = new FeriadoService();
+        readonly FeriadoService _feriadoService;
         readonly IListarPesificacionesConsumer pesificacionesConsumer;
         readonly IRepositorio repositorio;
         readonly string HORA_CORTE_PESIFICACIONES_CODE = "HoraCortePesificaciones";
 
-        public PesificacionService(IListarPesificacionesConsumer pesificacionesConsumer, IRepositorio repositorio)
+        public PesificacionService(IListarPesificacionesConsumer pesificacionesConsumer, IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.pesificacionesConsumer = pesificacionesConsumer;
             this.repositorio = repositorio;
+            this._feriadoService = new FeriadoService(dataAgroService);
         }
 
         public Fecha GetFechaPesificacion(string formatoFecha)

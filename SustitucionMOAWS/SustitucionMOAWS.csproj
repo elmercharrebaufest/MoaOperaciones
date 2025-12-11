@@ -1040,26 +1040,23 @@
     <None Include="Service References\DataAgroAuthWebServiceMOA\SustitucionMOAWS.DataAgroAuthWebServiceMOA.TokenDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\DataAgroServices\DataAgroServices.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\DataAgroServices\DataAgroServices1.wsdl" />
+    <None Include="Service References\DataAgroServices\DataAgroServices1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataAgroServices\DataAgroServices3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataAgroServices\DataAgroServices4.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\DataAgroServices\DataAgroServices5.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\DataAgroServices\DataAgroServices51.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DataAgroServices\DataAgroServices52.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DataAgroServices\DataAgroServices53.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DataAgroServices\DataAgroServices54.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DataAgroServices\DataAgroServices55.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\DataAgroServices\DataAgroServices56.xsd">
+    <None Include="Service References\DataAgroServices\DataAgroServices6.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\DataAgroServices\SustitucionMOAWS.DataAgroServices.ResultadoSap.datasource">

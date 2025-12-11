@@ -163,17 +163,20 @@ namespace SustitucionMOAUtils.Services
 
             if (!string.IsNullOrEmpty(parametros.vendedor))
             {
-                DateTime dateInit = (fechaHasta.Year - fechaInicio.Year) * 12 + fechaHasta.Month - fechaInicio.Month > 24
-                    && !string.IsNullOrEmpty(parametros.vendedor)
-                    ? fechaHasta.AddYears(-2)
-                    : fechaInicio;
+                if (!string.IsNullOrEmpty(parametros.fechaInicio) || !string.IsNullOrEmpty(parametros.fechaHasta))
+                {
+                    DateTime dateInit = (fechaHasta.Year - fechaInicio.Year) * 12 + fechaHasta.Month - fechaInicio.Month > 24
+                        && !string.IsNullOrEmpty(parametros.vendedor)
+                        ? fechaHasta.AddYears(-2)
+                        : fechaInicio;
 
-                DateTime dateEnd = fechaHasta;
+                    DateTime dateEnd = fechaHasta;
 
 
-                ocFiltradas = ocFiltradas
-                    .Where(oc => Convert.ToDateTime(oc.Fecha) >= dateInit && Convert.ToDateTime(oc.Fecha) <= dateEnd)
-                    .ToList();
+                    ocFiltradas = ocFiltradas
+                        .Where(oc => Convert.ToDateTime(oc.Fecha) >= dateInit && Convert.ToDateTime(oc.Fecha) <= dateEnd)
+                        .ToList();
+                }
             }
 
             List<DetalleOrdenDeCompraDto> ordenesCompraDto = ocFiltradas.Select(x => new DetalleOrdenDeCompraDto

@@ -366,7 +366,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
 
     getOrdenCompraFiltro(ocIngresada: string) {
         this.ordenCompraFiltro = ocIngresada;
-        this.getListarPO();
+        //this.getListarPO();
     }
 
     isMoaIntern(usuario) {

@@ -389,7 +389,11 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
         this.expandedPositionRow = false;
         this.saveConfigurationFilterDates();
-        this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+        if (this.ordenCompraId && this.ordenCompraId.trim() !== '') {
+            this.getListarPO(this.proveedor, this.ordenCompraId, '', '');
+        } else {
+            this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+        }
         this.tabla.first = 0;
     }
 
@@ -646,7 +650,11 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         this.numeroLineaSelected.clear();
         this.recalculando = true;
         this.disabledFilter = true;
-        this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+        if (this.ordenCompraId && this.ordenCompraId.trim() !== '') {
+            this.getListarPO(this.proveedor, this.ordenCompraId, '', '');
+        } else {
+            this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+        }
     }
 
     searchElement() {
@@ -1319,6 +1327,10 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
     handlePageEvent(e: any) {
         this.pageSize = e.rows;
         this.pageIndex = e.page + 1;
-        this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+        if (this.ordenCompraId && this.ordenCompraId.trim() !== '') {
+            this.getListarPO(this.proveedor, this.ordenCompraId, '', '');
+        } else {
+            this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+        }
     }
 }

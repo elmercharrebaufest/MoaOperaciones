@@ -9,15 +9,14 @@ using SustitucionMOAUtils.Logger;
 
 namespace SustitucionMOA.Jobs
 {
-
     public interface IActualizarLocalidadesPartidosJob : IHangfireJob
     {
         bool Habilitado();
     }
+
     public class ActualizarLocalidadesPartidosJob : IActualizarLocalidadesPartidosJob
     {
         protected readonly IRepositorio repositorio;
-        protected readonly IDataAgroApiService dataAgroApiService;
         private readonly IDataAgroService dataAgroService;
 
         private bool _Habilitado = false;
@@ -26,10 +25,9 @@ namespace SustitucionMOA.Jobs
             return _Habilitado;
         }
 
-        public ActualizarLocalidadesPartidosJob(IRepositorio repositorio, IDataAgroApiService dataAgroApiService, IDataAgroService dataAgroService)
+        public ActualizarLocalidadesPartidosJob(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
-            this.dataAgroApiService = dataAgroApiService;
             this.dataAgroService = dataAgroService;
         }
 
@@ -42,11 +40,9 @@ namespace SustitucionMOA.Jobs
                     return;
 
                 _Habilitado = true;
-                //var localidades = dataAgroApiService.ListarLocalidades();
                 var localidades = dataAgroService.ListarLocalidades();
 
                 SincronizarLocalidades(localidades);
-                //var partidos = dataAgroApiService.ListarPartidos();
                 var partidos = dataAgroService.ListarPartidos();
                 SincronizarPartidos(partidos);
             }
@@ -57,14 +53,14 @@ namespace SustitucionMOA.Jobs
         }
 
 
-        private void SincronizarLocalidades(
-            List<ModelDto.LocalidadDto> localidadesDataAgro)
+        private void SincronizarLocalidades(List<ModelDto.LocalidadDto> localidadesDataAgro)
         {          
             var listaLocalidades = repositorio.ListarTodos<Localidad>().ToList();
             foreach (var localidad in localidadesDataAgro)
             {
                 var localidadGuardada = listaLocalidades.FirstOrDefault(x => x.CodLocalidad == localidad.LocalidadId);
-                try {
+                try
+                {
                     if (localidadGuardada == null)
                     {
                         Localidad nuevaLocalidad = new Localidad();
@@ -80,15 +76,15 @@ namespace SustitucionMOA.Jobs
                         localidadGuardada.ProvinciaId = localidad.ProvinciaId;
                         localidadGuardada.PartidoId = Convert.ToInt32(localidad.PartidoId);
                     }
-                }catch(Exception ex)
+                }
+                catch(Exception ex)
                 {
                     Log.Error(ex);
                 }
-                
             }
-
             repositorio.GuardarCambios();
         }
+
         private void SincronizarPartidos(List<ModelDto.PartidoDto> partidosDA)
         {
             var partidosGuardados = repositorio.ListarTodos<Partido>();
@@ -96,7 +92,7 @@ namespace SustitucionMOA.Jobs
             {
                 var partidoGuardado = partidosGuardados.FirstOrDefault(p => p.Id == partidoDA.Id);
 
-                if(partidoGuardado == null)
+                if (partidoGuardado == null)
                 {
                     var partidoNuevo = new Partido
                     {
