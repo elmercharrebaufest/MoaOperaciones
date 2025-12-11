@@ -34,7 +34,6 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
         protected readonly IAltaEmpresaService AltaEmpresaService;
-        private readonly string DataAgroURL;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
         private static readonly string EMAIL_TEMPLATE_AUDITORIA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoAuditoria.html");
@@ -44,7 +43,6 @@ namespace SustitucionMOAUtils.Services
         {
             this.repositorio = repositorio;
             this.dataAgroService = dataAgroService;
-            this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
         }
         public byte[] GenerarInformeComercial(ParamInformeComercial informeComercial, string mailUsuario, int proveedorId)
         {

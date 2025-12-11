@@ -39,6 +39,8 @@ namespace SustitucionMOA.Jobs
                 if (habilitacion == null  || !habilitacion.Habilitado)
                     return;
 
+                Log.Debug("Inicia job ActualizarLocalidades");
+
                 _Habilitado = true;
                 var localidades = dataAgroService.ListarLocalidades();
 
@@ -49,6 +51,7 @@ namespace SustitucionMOA.Jobs
             catch(Exception e)
             {
                 Log.Error(e);
+                throw;
             }
         }
 

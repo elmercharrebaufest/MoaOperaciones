@@ -25,7 +25,6 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
-        private readonly string DataAgroURL;
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
 
 
@@ -33,7 +32,6 @@ namespace SustitucionMOAUtils.Services
         {
             this.repositorio = repositorio;
             this.dataAgroService = dataAgroService;
-            this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
         }
         public Resultado GrabarNuevoProveedorNoGranos(string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, string CondicionDePago
             , string ServicioPrestado, string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual, string SolicitanteInterno, string usuarioMail,
