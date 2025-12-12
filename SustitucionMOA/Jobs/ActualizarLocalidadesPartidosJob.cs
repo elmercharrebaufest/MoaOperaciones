@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ModelDto =  SustitucionMOAModel.Dto;
+using ModelDto = SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Helpers;
 
 namespace SustitucionMOA.Jobs
 {
@@ -36,7 +37,7 @@ namespace SustitucionMOA.Jobs
             try
             {
                 var habilitacion = repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ActualizarLocalidades");
-                if (habilitacion == null  || !habilitacion.Habilitado)
+                if (habilitacion == null || !habilitacion.Habilitado)
                     return;
 
                 Log.Debug("Inicia job ActualizarLocalidades");
@@ -49,7 +50,7 @@ namespace SustitucionMOA.Jobs
                 var localidades = dataAgroService.ListarLocalidades();
                 SincronizarLocalidades(localidades);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.Error(e);
                 throw;
@@ -58,10 +59,12 @@ namespace SustitucionMOA.Jobs
 
 
         private void SincronizarLocalidades(List<ModelDto.LocalidadDto> localidadesDataAgro)
-        {          
+        {
+            ModelDto.LocalidadDto localidadTemp;
             var listaLocalidades = repositorio.ListarTodos<Localidad>().ToList();
             foreach (var localidad in localidadesDataAgro)
             {
+                localidadTemp = localidad;
                 var localidadGuardada = listaLocalidades.FirstOrDefault(x => x.CodLocalidad == localidad.LocalidadId);
                 try
                 {
@@ -81,9 +84,9 @@ namespace SustitucionMOA.Jobs
                         localidadGuardada.PartidoId = Convert.ToInt32(localidad.PartidoId);
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    Log.Error(ex);
+                    Log.Error($"Error sincronizando la Localidad {localidadTemp.ToJson()}", ex);
                 }
             }
             repositorio.GuardarCambios();
