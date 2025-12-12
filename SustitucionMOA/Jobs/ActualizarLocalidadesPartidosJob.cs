@@ -1,64 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ModelDto =  SustitucionMOAModel.Dto;
+using ModelDto = SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Helpers;
 
 namespace SustitucionMOA.Jobs
 {
-
     public interface IActualizarLocalidadesPartidosJob : IHangfireJob
     {
         bool Habilitado();
     }
+
     public class ActualizarLocalidadesPartidosJob : IActualizarLocalidadesPartidosJob
     {
         protected readonly IRepositorio repositorio;
-        protected readonly IDataAgroApiService dataAgroApiService;
+        private readonly IDataAgroService dataAgroService;
 
         private bool _Habilitado = false;
         public bool Habilitado()
         {
             return _Habilitado;
         }
-        public ActualizarLocalidadesPartidosJob(IRepositorio repositorio, IDataAgroApiService dataAgroApiService)
+
+        public ActualizarLocalidadesPartidosJob(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
-            this.dataAgroApiService = dataAgroApiService;
+            this.dataAgroService = dataAgroService;
         }
+
         public void Execute()
         {
             try
             {
                 var habilitacion = repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ActualizarLocalidades");
-                if (habilitacion == null  || !habilitacion.Habilitado)
+                if (habilitacion == null || !habilitacion.Habilitado)
                     return;
 
-                _Habilitado = true;
-                var localidades = dataAgroApiService.ListarLocalidades();
+                Log.Debug("Inicia job ActualizarLocalidades");
 
-                SincronizarLocalidades(localidades);
-                var partidos = dataAgroApiService.ListarPartidos();
+                _Habilitado = true;
+
+                var partidos = dataAgroService.ListarPartidos();
                 SincronizarPartidos(partidos);
+
+                var localidades = dataAgroService.ListarLocalidades();
+                SincronizarLocalidades(localidades);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.Error(e);
+                throw;
             }
         }
 
 
-        private void SincronizarLocalidades(
-            List<ModelDto.LocalidadDto> localidadesDataAgro)
-        {          
+        private void SincronizarLocalidades(List<ModelDto.LocalidadDto> localidadesDataAgro)
+        {
+            ModelDto.LocalidadDto localidadTemp;
             var listaLocalidades = repositorio.ListarTodos<Localidad>().ToList();
             foreach (var localidad in localidadesDataAgro)
             {
+                localidadTemp = localidad;
                 var localidadGuardada = listaLocalidades.FirstOrDefault(x => x.CodLocalidad == localidad.LocalidadId);
-                try {
+                try
+                {
                     if (localidadGuardada == null)
                     {
                         Localidad nuevaLocalidad = new Localidad();
@@ -74,15 +83,15 @@ namespace SustitucionMOA.Jobs
                         localidadGuardada.ProvinciaId = localidad.ProvinciaId;
                         localidadGuardada.PartidoId = Convert.ToInt32(localidad.PartidoId);
                     }
-                }catch(Exception ex)
-                {
-                    Log.Error(ex);
                 }
-                
+                catch (Exception ex)
+                {
+                    Log.Error($"Error sincronizando la Localidad {localidadTemp.ToJson()}", ex);
+                }
             }
-
             repositorio.GuardarCambios();
         }
+
         private void SincronizarPartidos(List<ModelDto.PartidoDto> partidosDA)
         {
             var partidosGuardados = repositorio.ListarTodos<Partido>();
@@ -90,7 +99,7 @@ namespace SustitucionMOA.Jobs
             {
                 var partidoGuardado = partidosGuardados.FirstOrDefault(p => p.Id == partidoDA.Id);
 
-                if(partidoGuardado == null)
+                if (partidoGuardado == null)
                 {
                     var partidoNuevo = new Partido
                     {

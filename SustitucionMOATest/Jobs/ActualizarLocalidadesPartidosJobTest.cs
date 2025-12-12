@@ -16,9 +16,8 @@ namespace SustitucionMOATest.Jobs
     [TestFixture]
     public class ActualizarLocalidadesPartidosJobTest
     {
-
         private Mock<IRepositorio> repositorio;
-        private Mock<IDataAgroApiService> dataAgroApiService;
+        private Mock<IDataAgroService> dataAgroService;
 
         private IActualizarLocalidadesPartidosJob actualizarLocalidadesPartidos;
 
@@ -40,12 +39,12 @@ namespace SustitucionMOATest.Jobs
         public void Setup()
         {
             repositorio = new Mock<IRepositorio>();
-            dataAgroApiService = new Mock<IDataAgroApiService>();
+            dataAgroService = new Mock<IDataAgroService>();
             habilitacionJob = new HabilitacionJob { Nombre = NombreHabilitacion };
 
             actualizarLocalidadesPartidos = new ActualizarLocalidadesPartidosJob(
                 repositorio.Object,
-                dataAgroApiService.Object
+                dataAgroService.Object
                 );
 
             localidadDA1 = new LocalidadDto { LocalidadId = 1, CodLocalidad = "1", PartidoId = 1, ProvinciaId = 1 };
@@ -55,7 +54,6 @@ namespace SustitucionMOATest.Jobs
             partidoDA1 = new PartidoDto { Id = 1, ProvinciaId = 1, Descripcion="Partido DA 1"};
             partidoDA2 = new PartidoDto { Id = 2, ProvinciaId = 2, Descripcion = "Partido DA 1" };
             partidoGuardado = new Partido { Id = partidoDA1.Id };
-
         }
 
         [Test]
@@ -197,14 +195,14 @@ namespace SustitucionMOATest.Jobs
 
         private void SetLocalidadesRespuestaDA(List<LocalidadDto> localidadesDA)
         {
-            dataAgroApiService.Setup(das => das.ListarLocalidades()).Returns(
+            dataAgroService.Setup(das => das.ListarLocalidades()).Returns(
                 localidadesDA
                 );
         }
 
         private void SetPartidosRespuestaDA(List<PartidoDto> partidosDA)
         {
-            dataAgroApiService.Setup(das => das.ListarPartidos()).Returns(
+            dataAgroService.Setup(das => das.ListarPartidos()).Returns(
                 partidosDA
                 );
         }

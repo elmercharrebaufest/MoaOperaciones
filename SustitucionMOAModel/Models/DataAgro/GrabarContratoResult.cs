@@ -225,7 +225,7 @@ namespace SustitucionMOAModel.Models.DataAgro
             this.mstrLargeDescription = "";
             this.mblnTranslate = false;
             this.mstrFormat = strFormat;
-            this.marrArgs = ((IEnumerable<object>)args).ToList<object>();
+            this.marrArgs = args.ToList<object>();
         }
 
         public ErrorMessage(int intErrorCode, string strMessage)
@@ -270,9 +270,42 @@ namespace SustitucionMOAModel.Models.DataAgro
         public ErrorMessage(int intNroLinea, string strCampo, string strSource, string strMessage)
           : this(strMessage, strSource)
         {
-            this.mstrSource = string.Format("#root|{0}|{1}|{2}", (object)strSource, (object)intNroLinea.ToString(), (object)strCampo);
+            this.mstrSource = string.Format("#root|{0}|{1}|{2}", strSource, intNroLinea.ToString(), strCampo);
         }
 
+
+    }
+
+
+    [DataContract]
+    public class GrabarContratoResultDto
+    {
+        [DataMember]
+        public int? ContratoId { get; set; }
+        [DataMember]
+        public List<string> ListaCupos { get; set; } = new List<string>();
+
+        [DataMember]
+        public List<ErrorMessageDtos> Errores { get; set; } = new List<ErrorMessageDtos>();
+
+
+        [DataMember]
+        public bool HayError
+        {
+            get { return Errores.Count != 0; }
+        }
+
+        public int? FijacionDePrecioContratoId { get; set; }
+    }
+
+    [DataContract]
+    public class ErrorMessageDtos
+    {
+        [DataMember]
+
+        public string Message { get; set; }
+        [DataMember]
+        public string Source { get; set; }
 
     }
 }

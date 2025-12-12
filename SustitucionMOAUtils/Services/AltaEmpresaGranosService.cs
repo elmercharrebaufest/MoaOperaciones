@@ -8,25 +8,24 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.CredentialService;
 //using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Web;
-using System.Threading.Tasks;
-using System.IO.Compression;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Email;
 using System.Text.RegularExpressions;
-using System.Globalization;
+using System.Web;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -35,7 +34,6 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
         protected readonly IAltaEmpresaService AltaEmpresaService;
-        private readonly string DataAgroURL;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
         private static readonly string EMAIL_TEMPLATE_AUDITORIA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoAuditoria.html");
@@ -45,68 +43,17 @@ namespace SustitucionMOAUtils.Services
         {
             this.repositorio = repositorio;
             this.dataAgroService = dataAgroService;
-            this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
         }
         public byte[] GenerarInformeComercial(ParamInformeComercial informeComercial, string mailUsuario, int proveedorId)
         {
             try
             {
-                var urlInformeComercial = string.Concat(DataAgroURL, "/InformeComercial/Listar");
-                var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
-
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
-
-                var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
-
-                //ValidarEstadoSolicitud(proveedor);
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler
+                var respuestaArchivo = this.dataAgroService.ListarInformeComercial(informeComercial);
+                if (respuestaArchivo.Errores != null && respuestaArchivo.Errores.Any())
                 {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
-                string downloadKey = "";
-
-                var content = JsonConvert.SerializeObject(informeComercial); //myDetails is my class object.
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(urlInformeComercial, byteContent);
-
-                    task.Wait();
-
-                    var response = task.Result;
-
-                    var stringContent = response.Content.ReadAsStringAsync();
-
-                    dynamic jsonResult = JObject.Parse(stringContent.Result);
-
-                    if (bool.Parse(jsonResult.HayErrores.ToString()))
-                    {
-                        throw new InfoCustomException(jsonResult.Errores[0].Message);
-                    }
-
-                    downloadKey = jsonResult.DownloadKey;
-
-                    byte[] InformeComercialPDF;
-                    urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
-                    using (WebClient clienteDescarga = new WebClient())
-                    {
-                        clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
-
-                        InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
-                    }
-
-                    return InformeComercialPDF;
-
+                    throw new InfoCustomException(respuestaArchivo.Errores.FirstOrDefault() ?? "Error desconocido al generar el informe comercial.");
                 }
+                return respuestaArchivo.Contenido;
             }
             catch (InfoCustomException)
             {
@@ -126,8 +73,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var urlCartaPresentacion = string.Concat(DataAgroURL, "/CartaDePresentacion/Generar");
-                var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
 
                 var proveedor = repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(proveedorId);
                 var infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
@@ -135,95 +80,52 @@ namespace SustitucionMOAUtils.Services
                 cartadePresentacion.vendedorCuit = proveedor.CUIT;
                 cartadePresentacion.vendedorRazonSocial = proveedor.RazonSocial;
                 cartadePresentacion.vendedorActividad = infoProveedor.ProveedorClasificacion;
-
-                //ValidarEstadoSolicitud(proveedor);
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
-                string downloadKey = "";
-
                 var content = JsonConvert.SerializeObject(cartadePresentacion);
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                using (var client = new HttpClient(httpClientHandler, false))
+                SustitucionMOAWS.DataAgroServices.RptCartaDePresentacionInfo oParam = new SustitucionMOAWS.DataAgroServices.RptCartaDePresentacionInfo
                 {
-                    var task = client.PostAsync(urlCartaPresentacion, byteContent);
-
-                    task.Wait();
-
-                    var response = task.Result;
-
-                    var stringContent = response.Content.ReadAsStringAsync();
-
-                    dynamic jsonResult = JObject.Parse(stringContent.Result);
-
-                    if (bool.Parse(jsonResult.HayErrores.ToString()))
-                    {
-                        throw new InfoCustomException(jsonResult.Errores[0].Message);
-                    }
-
-                    downloadKey = jsonResult.DownloadKey;
-
-                    urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
-
-                    byte[] InformeComercialPDF;
-
-                    using (WebClient clienteDescarga = new WebClient())
-                    {
-                        clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
-                        InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
-                    };
-
-                    return InformeComercialPDF;
-
-                }
-            }
-            catch (InfoCustomException)
-            {
-                throw;
-            }
-            catch (ValidationCustomException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
-
-        public async Task<string> ObtenerMaterialesDataAgro()
-        {
-            try
-            {
-                var urlBusquedaMateriales = string.Concat(DataAgroURL, "/Material/Buscar");
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
+                    corredorCuit = cartadePresentacion.corredorCuit ?? "",
+                    corredorRazonSocial = cartadePresentacion.corredorRazonSocial ?? "",
+                    corredorBolsa = cartadePresentacion.corredorBolsa ?? "",
+                    corredorNroRegistro = cartadePresentacion.corredorNroRegistro ?? "",
+                    vendedorCuit = cartadePresentacion.vendedorCuit,
+                    vendedorRazonSocial = cartadePresentacion.vendedorRazonSocial,
+                    vendedorDomicilioFiscal = cartadePresentacion.vendedorDomicilioFiscal,
+                    vendedorActividad = cartadePresentacion.vendedorActividad,
+                    vendedorAntiguedadEnActividad = cartadePresentacion.vendedorAntiguedadEnActividad,
+                    vendedorMailContacto = cartadePresentacion.vendedorMailContacto,
+                    vendedorTelefonoContacto = cartadePresentacion.vendedorTelefonoContacto,
+                    vendedorDomicilioReal = cartadePresentacion.vendedorDomicilioReal,
+                    vendedorCosecha = cartadePresentacion.vendedorCosecha,
+                    vendedorAntecedentesComerciales = cartadePresentacion.vendedorAntecedentesComerciales,
+                    CapAlmacenaje = new List<SustitucionMOAWS.DataAgroServices.CartaDePresentacionAcopiadores>().ToArray(),
+                    CapProduccion = new List<SustitucionMOAWS.DataAgroServices.CartaDePresentacionAcopiadores>().ToArray()
                 };
-
-                using (var client = new HttpClient(httpClientHandler, false))
+                List<SustitucionMOAWS.DataAgroServices.NuevoProduccion> nuevoProduccions = cartadePresentacion.NuevosCampos.Select(a => new SustitucionMOAWS.DataAgroServices.NuevoProduccion
                 {
-                    var task = await client.PostAsync(urlBusquedaMateriales, null).ConfigureAwait(false);
+                    ArrendaPropia = a.ArrendaPropia,
+                    Hectareas = (int)a.Hectareas,
+                    Toneladas = (int)a.Toneladas,
+                    LocalidadId = a.LocalidadId,
+                    MaterialId = a.MaterialId,
+                }).ToList();
 
-                    var stringContent = task.Content.ReadAsStringAsync();
+                List<SustitucionMOAWS.DataAgroServices.NuevoAcopio> nuevoAcopios = cartadePresentacion.NuevosAcopios.Select(a => new SustitucionMOAWS.DataAgroServices.NuevoAcopio
+                {
+                    ArrendaPropia = a.ArrendaPropia,
+                    Toneladas = (int)a.Toneladas,
+                    LocalidadId = a.LocalidadID,
+                }).ToList();
 
-                    return stringContent.Result;
+                var result = dataAgroService.CartaDePresentacion(oParam, nuevoProduccions.ToArray(), nuevoAcopios.ToArray());
+
+                if (result.Errores.Any())
+                {
+                    throw new InfoCustomException(result.Errores[0]);
                 }
+                return result.Contenido;
+
+
             }
             catch (InfoCustomException)
             {
@@ -487,7 +389,7 @@ namespace SustitucionMOAUtils.Services
                 if (proveedor.CorrespondeEstadoPrevio())
                 {
                     var estadoPrevioAActual = proveedor.EstadoPrevioAActual();
-                    estadoAprobacion = estadoPrevioAActual != null ? (EstadoAprobacion)estadoPrevioAActual :estadoAprobacion;
+                    estadoAprobacion = estadoPrevioAActual != null ? (EstadoAprobacion)estadoPrevioAActual : estadoAprobacion;
                 }
 
                 proveedor.EstadoAprobacion = estadoAprobacion;
@@ -553,7 +455,7 @@ namespace SustitucionMOAUtils.Services
 
                 EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
 
@@ -699,7 +601,7 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
             if (usuario == null) throw new InfoCustomException(string.Format(InfoMsg.ElementoNoExiste, "Usuario", mailUsuario));
 
-            if (repositorio.Existe<Proveedor>(p=>p.CUIT == cuit && p.Mail == mailVendedor)) 
+            if (repositorio.Existe<Proveedor>(p => p.CUIT == cuit && p.Mail == mailVendedor))
                 throw new InfoCustomException("El mail ya tiene registrado esta CUIT");
 
             if (cuit == null || cuit == "") throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
@@ -889,47 +791,6 @@ namespace SustitucionMOAUtils.Services
 
             return altaEmpresa;
         }
-
-        public async Task<string> ObtenerCampañasDataAgroAsync()
-        {
-            try
-            {
-                var urlBusquedaMateriales = string.Concat(DataAgroURL, "/Campana/Buscar");
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = await client.PostAsync(urlBusquedaMateriales, null).ConfigureAwait(false);
-
-                    var stringContent = task.Content.ReadAsStringAsync();
-
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-
-                    return scapedJson;
-                }
-            }
-            catch (InfoCustomException)
-            {
-                throw;
-            }
-            catch (ValidationCustomException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
-
         public SustitucionMOAModel.Entities.Proveedor ObtenerRazonSocialProveedor(int proveedorId)
         {
             var proveedor = repositorio.Obtener<SustitucionMOAModel.Entities.Proveedor>(proveedorId);
@@ -985,7 +846,8 @@ namespace SustitucionMOAUtils.Services
             if (!ValidarArchivosSubidos(proveedor, infoProveedor))
             {
                 return ErrorMsg.ErrorCompleteCampo;
-            };
+            }
+            ;
 
             if (proveedor.HistorialAprobaciones == null)
             {
@@ -1042,11 +904,11 @@ namespace SustitucionMOAUtils.Services
                     return match.Groups[1].Value + domainName;
                 }
             }
-            catch (RegexMatchTimeoutException e)
+            catch (RegexMatchTimeoutException)
             {
                 return false;
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 return false;
             }
