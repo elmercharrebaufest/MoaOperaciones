@@ -1,12 +1,12 @@
-﻿using System;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Helpers;
+using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ModelDto = SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
-using SustitucionMOARepositorio;
-using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Helpers;
 
 namespace SustitucionMOA.Jobs
 {
@@ -89,7 +89,28 @@ namespace SustitucionMOA.Jobs
                     Log.Error($"Error sincronizando la Localidad {localidadTemp.ToJson()}", ex);
                 }
             }
-            repositorio.GuardarCambios();
+            try
+            {
+                repositorio.GuardarCambios();
+            }
+            catch (System.Data.Entity.Infrastructure.DbUpdateException ex)
+            {
+                var sqlEx = ex.InnerException?.InnerException as System.Data.SqlClient.SqlException;
+                if (sqlEx != null)
+                {
+                    Log.Error($"Error SQL al guardar localidades: {sqlEx.Message}", sqlEx);
+                }
+                else
+                {
+                    Log.Error("Error al guardar localidades", ex);
+                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error general al guardar localidades", ex);
+                throw;
+            }
         }
 
         private void SincronizarPartidos(List<ModelDto.PartidoDto> partidosDA)

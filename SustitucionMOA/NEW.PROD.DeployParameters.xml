@@ -14,7 +14,6 @@
   <setParameter name="Script_legajo_impositivo Config" value="C:\Script\Copy_legajo_impositivo.bat" />
 
   <setParameter name="DataAgroURL Config" value="https://www.dataagro.com.ar/" />
-  <setParameter name="DataAgroURL Config" value="https://www.dataagro.com.ar/" />
 
   <setParameter name="EsLocal Config" value="false" />
 
