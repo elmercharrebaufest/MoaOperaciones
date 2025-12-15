@@ -92,7 +92,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 				return JsonCamelCase(new TrackingResponseDto
 				{
 					Resultado = false,
-					Mensaje = $"Error al obtener los datos: {ex.Message}"
+					Mensaje = $"Error al obtener la informacion requerido con los datos ingresados. Comuniquese con el administrador del sistema."
 				});
 			}
 		}
@@ -150,7 +150,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 				return JsonCamelCase(new EstadoEtapasResponseDto
 				{
 					Resultado = false,
-					Mensaje = $"Error al obtener los datos: {ex.Message}"
+					Mensaje = $"Error al obtener la informacion requerido con los datos ingresados. Comuniquese con el administrador del sistema."
 				});
 			}
 		}
