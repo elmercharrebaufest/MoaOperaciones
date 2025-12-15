@@ -24,7 +24,6 @@ namespace SustitucionMOAUtils.Services
         {
             this.consumer = consumer;
             this.repositorio = repositorio;
-
         }
 
         public ReporteContratoViewModel GetContratosReporte(
@@ -44,20 +43,15 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("El rango de fecha no puede ser mayor a 240 días.");
             }
 
-            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(us => us.Mail == mailUsuario);
-
-            if (usuario == null)
-            {
-                throw new ValidationCustomException("El usuario no existe. Reinicie su sesión.");
-            }
+            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(us => us.Mail == mailUsuario)
+                ?? throw new ValidationCustomException("El usuario no existe. Reinicie su sesión.");
 
             var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
 
             if (!usuario.TienePermiso(PermisoEnum.SeleccionarVendedor))
             {
-                proveedorDB = usuario.ObtenerProveedorAsignado();
+                proveedorDB = usuario.ObtenerProveedorAsignado() ?? throw new ValidationCustomException($"El usuario {mailUsuario} no tiene configurado correctamente el proveedor asignado");
             }
-
 
             var request = new ReporteContratoWSMOARequest()
             {
