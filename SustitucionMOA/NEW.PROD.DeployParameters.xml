@@ -14,7 +14,6 @@
   <setParameter name="Script_legajo_impositivo Config" value="C:\Script\Copy_legajo_impositivo.bat" />
 
   <setParameter name="DataAgroURL Config" value="https://www.dataagro.com.ar/" />
-  <setParameter name="DataAgroURL Config" value="https://www.dataagro.com.ar/" />
 
   <setParameter name="EsLocal Config" value="false" />
 
@@ -140,8 +139,8 @@
 
   <setParameter name="BAPI_PO_CHANGEPortType Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_CHANGE&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
-  <setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="http://gvicdataagro02.molinosagro.ad/services/AuthService.svc" />
-  <setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="http://gvicdataagro02.molinosagro.ad/services/DataAgroServices.svc" />
+  <setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="http://www.dataagro.com.ar/services/AuthService.svc" />
+  <setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="http://www.dataagro.com.ar/services/DataAgroServices.svc" />
 
   <setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
 

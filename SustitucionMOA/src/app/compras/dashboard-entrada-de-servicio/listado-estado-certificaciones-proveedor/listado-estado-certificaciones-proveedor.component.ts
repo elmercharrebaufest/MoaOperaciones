@@ -325,35 +325,42 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     //     return false;
     // }
 
-    obtenerESSap(proveedor, documentoNumero): void {
-        this.service
-            .getByProveedorAsync(
-                this.filtroFechaDesde,
-                this.filtroFechaHasta,
-                proveedor,
-                documentoNumero,
-                this.columnaOrden,
-                this.ordenAscendente,
-                this.pageIndex,
-                this.pageSize,
-                false,
-                this.ordenCompraFiltro)
-            .subscribe(
-                (result: { error: any, data: any }) => {
-                    this.recalculandoAprobadas = false;
-                    if (result.error != null) {
-                        this.floatMsgService.setErrorMsg(result.error);
-                        return;
-                    }
-                    if (result.data.length > 0) {
-                        this.tablaPOSap = result.data;
-                    }
-                    this.tabla.first = 0;
-
-                }, error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                    this.recalculandoAprobadas = false;
-                })
+    obtenerESSap(proveedor, documentoNumero): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.service
+                .getByProveedorAsync(
+                    this.filtroFechaDesde,
+                    this.filtroFechaHasta,
+                    proveedor,
+                    documentoNumero,
+                    this.columnaOrden,
+                    this.ordenAscendente,
+                    this.pageIndex,
+                    this.pageSize,
+                    false,
+                    this.ordenCompraFiltro)
+                .subscribe(
+                    (result: { error: any, data: any }) => {
+                        this.recalculandoAprobadas = false;
+                        if (result.error != null) {
+                            this.floatMsgService.setErrorMsg(result.error);
+                            resolve(); // Resolve anyway to avoid hanging
+                            return;
+                        }
+                        if (result.data.length > 0) {
+                            this.tablaPOSap = result.data;
+                        } else {
+                            // Ensure table is cleared if no data
+                            this.tablaPOSap = [];
+                        }
+                        this.tabla.first = 0;
+                        resolve();
+                    }, error => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                        this.recalculandoAprobadas = false;
+                        reject(error);
+                    })
+        });
     }
 
     onFiltroFechaDesdeChanged(fechaDesde: string) {
@@ -377,7 +384,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     async onBuscar() {
         this.recalculandoAprobadas = true;
         await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
-        this.obtenerESSap(this.proveedor, this.documentoNumero);
+        await this.obtenerESSap(this.proveedor, this.documentoNumero);
+        this.filtrarPorEstado({ value: this.estadoCertificacion });
     }
 
     agregarTipoMonedaEnDetalle(certificaciones: any[]): void {
