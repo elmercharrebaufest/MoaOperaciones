@@ -108,17 +108,9 @@
 }
 
 .info-icon {
-  margin-bottom: 1rem;
-
-  svg {
-    width: 80px;
-    height: 80px;
-
-    @media (max-width: 767px) {
-      width: 60px;
-      height: 60px;
-    }
-  }
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
 }
 
 .error-title {
