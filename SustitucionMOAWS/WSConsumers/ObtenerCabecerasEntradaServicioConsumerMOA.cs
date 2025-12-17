@@ -188,7 +188,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 var cabe = new EntradaServicioCabeceraDto();
                 DateTime fechaCreacion;
-                DateTime.TryParseExact(cabecera.CREATED_ON, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCreacion);
+                DateTime.TryParseExact(cabecera.CREATED_ON, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCreacion);
 
                 cabe.EntradaServicio = cabecera.SHEET_NO;
                 cabe.FechaCreacionDateTime = fechaCreacion;
