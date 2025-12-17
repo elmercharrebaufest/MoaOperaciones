@@ -168,6 +168,14 @@ export class TrackingComponent implements OnInit {
     return allStagesCompleted;
   });
 
+  shouldShowEstimatedTime = computed(() => {
+    const stage = this.stageStateService.currentStage();
+    if (!stage) return false;
+    
+    const totalMinutes = Number(stage.tiempoEstimado);
+    return totalMinutes > 0;
+  });
+
   constructor(
     private router: Router,
     public stageStateService: StageStateService,

@@ -96,9 +96,11 @@
                     </div>
                   </div>
                   
-                  <div class="stage-description">
-                    <p class="estimated-time">Tiempo estimado: aprox. {{ stage.estimatedTime() }}</p>
-                  </div>
+                  @if (shouldShowEstimatedTime()) {
+                    <div class="stage-description">
+                      <p class="estimated-time">Tiempo estimado: aprox. {{ stage.estimatedTime() }}</p>
+                    </div>
+                  }
                 </div>
 
                 <app-progress-stepper
