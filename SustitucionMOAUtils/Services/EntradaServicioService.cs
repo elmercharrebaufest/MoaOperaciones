@@ -927,11 +927,12 @@ namespace SustitucionMOAUtils.Services
 
             var correoUsuario = usuario.Mail.ToLower();
             var fechaHasta = DateTime.Now;
+            var fechaHastaOut = DateTime.TryParseExact(parametros.FechaFin, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaHasta);
 
             var debeFiltrarPorFecha =
                 string.IsNullOrEmpty(parametros.OrdenCompra) &&
                 !string.IsNullOrEmpty(parametros.FechaFin) &&
-                DateTime.TryParseExact(parametros.FechaFin, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaHasta);
+                fechaHastaOut;
 
             entradasServicioCabeceraSap = entradasServicioCabeceraSap
                 .Where(x =>
