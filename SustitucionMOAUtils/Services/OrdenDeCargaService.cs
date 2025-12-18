@@ -36,6 +36,8 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly string _usuarioAutomaticoSAP = ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"];
         private readonly string _transporteNoExiste = "El transporte no existe";
+        private readonly string _codigoAceiteSojaNeutralizado = "98855";
+        private readonly string _codigoAceiteMetiladoSoja = "99098";
 
         protected readonly IEmailFasService emailFasService;
         protected readonly IFacturaAnticipadaService facturaAnticipadaService;
@@ -91,6 +93,7 @@ namespace SustitucionMOAUtils.Services
                 LlenarOrdenDeCargaFleteMOA(ordenReq, contratoSAP);
 
                 OrdenDeCarga nuevaOrden = null;
+                var ordenesAgregadas = new List<OrdenDeCarga>();
                 foreach (var unidadTransporte in crearOrdenDeCargaRequest.UnidadesTransporte)
                 {
                     var ordenPuedeEnviarseDirectoSap = KilosAlcanzanParaConfirmarOrden(kilosDisponibles);
@@ -104,6 +107,7 @@ namespace SustitucionMOAUtils.Services
                     var crearPedido = VerificarOrden(nuevaOrden, nuevaOrden.Cliente, false);
 
                     repositorio.Agregar(nuevaOrden);
+                    ordenesAgregadas.Add(nuevaOrden);
 
                     var pedidoTieneKgDisponiblesEnFacturaAnticipada = true;
 
@@ -164,12 +168,13 @@ namespace SustitucionMOAUtils.Services
 
                     kilosDisponibles -= kilosPorOrden;
                 }
+                NotificarAutorizacionDeNomina(ordenesAgregadas);
                 var resultado = new Resultado { IdEntidad = nuevaOrden.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
                 return resultado;
             }
-            catch (ValidationCustomException vcex)
+            catch (ValidationCustomException)
             {
-                throw vcex;
+                throw;
             }
             catch (Exception ex)
             {
@@ -2958,6 +2963,33 @@ namespace SustitucionMOAUtils.Services
             }
             var recorridosScato = scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(orden.NumeroEntrega);
             return recorridosScato != null && recorridosScato.Any();
+        }
+
+        private void NotificarAutorizacionDeNomina(List<OrdenDeCarga> ordenesAgregadas)
+        {
+            try
+            {
+                if (!ordenesAgregadas?.Any() ?? false)
+                {
+                    return;
+                }
+
+                if (DebeNotificarAutorizacionDeNomina(ordenesAgregadas[0]))
+                {
+                    var ordenesANotificar = ordenesAgregadas.Where(o => o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
+                    emailFasService.EnviarMailAutorizacionDeNomina(ordenesANotificar);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error al notificar autorización de nómina", ex);
+            }
+        }
+
+        private bool DebeNotificarAutorizacionDeNomina(OrdenDeCarga orden)
+        {
+            return orden.Estado == EstadoOrdenDeCarga.EntregaGenerada &&
+                (orden.Producto.CodigoSap == _codigoAceiteSojaNeutralizado || orden.Producto.CodigoSap == _codigoAceiteMetiladoSoja);
         }
     }
 }
