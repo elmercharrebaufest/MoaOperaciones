@@ -25,8 +25,8 @@ export class TutorialService {
       title: "Datos del vehículo en seguimiento",
       description: "Acá se muestra la patente ingresada y la información correspondiente a ese camión.",
       stepNumber: 1,
-      totalSteps: 4,
-      targetElement: ".shipment-card-tutorial-target",
+      totalSteps:  4,
+      targetElement:  ".shipment-card-tutorial-target",
       position: "bottom",
     },
     {
@@ -35,7 +35,7 @@ export class TutorialService {
       stepNumber: 2,
       totalSteps: 4,
       targetElement: ".actualizar-button",
-      position: "bottom",
+      position:  "bottom",
     },
     {
       title: "Segui el avance",
@@ -43,11 +43,11 @@ export class TutorialService {
         "Arriba vas a ver en qué etapa estás. Podés desplegar para conocer las próximas etapas y ver cuáles ya se completaron.",
       stepNumber: 3,
       totalSteps: 4,
-      targetElement: ".current-stage-info",
+      targetElement: ".stage-section",
       position: "bottom",
     },
     {
-      title: "Información y documentación",
+      title:  "Información y documentación",
       description: "Desde este menú podés consultar la información general de la carga y descargar documentación.",
       stepNumber: 4,
       totalSteps: 4,
@@ -65,7 +65,7 @@ export class TutorialService {
 
   startTutorial(): void {
     this.showWelcomeModal.set(false)
-    this.showTutorial.set(true)
+    this.showTutorial. set(true)
     this.currentStep.set(0)
   }
 
