@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.AltaEmpresa;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
@@ -16,7 +17,7 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IAltaEmpresaService
     {
         List<ProveedorAltaDto> GetEmpresas(List<int> IdTiposProveedor, string fechaInicio, string fechaFin);
-        string VolverProveedorCanalDeAltas(string CUIT);
+        string VolverProveedorCanalDeAltas(string CUIT, string mailProveedor);
 
         string SetEstadoAprobacion(int proveedorId, EstadoAprobacion estado, string observacion, string usuarioMail, string observacionParaElProveedor, string estadoSIPER, bool enviarMail,
                                           string razonSocial, string codigoCliente);
@@ -33,7 +34,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         string AgregarObservacion(int proveedorId, string observacion, string usuarioMail);
 
-        Resultado VerificarExistenciaEmpresa(string cuit);
+        ExistenciaEmpresaResponse VerificarExistenciaEmpresa(string cuit);
 
         int ModificarEstadoProveedor(int proveedorId, string nuevoEstado, string emailUsuario);
     }

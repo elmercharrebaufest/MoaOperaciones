@@ -1578,17 +1578,27 @@
 
 <p-confirmDialog #dialogoExisteCuit key="verificarExistenciaCuit" header="Verificar existencia de CUIT"
     icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer *ngIf="empresasVerificadas && empresasVerificadas.length > 1">
+        <p-dropdown
+            [options]="empresasVerificadas"
+            [(ngModel)]="empresaVerificadaSeleccionada"
+            optionLabel="Mail"
+            placeholder="Seleccione un mail.">
+        </p-dropdown>
+    </p-footer>
     <p-footer>
-        <button type="button" pButton label="Volver al canal de altas" class="ui-button-success botonModal"
-            (click)="moverAlCanalDeAltas();"></button>
+        <button type="button" pButton label="Volver al canal de altas" class="ui-button-success botonModal" style="margin-top: 10px;"
+            (click)="moverAlCanalDeAltas();" [disabled]="!puedeVolverAlCanalDeAltas()">
+        </button>
     </p-footer>
     <p-footer>
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
-            (click)="dialogoExisteCuit.accept()"></button>
+            (click)="dialogoExisteCuit.accept()">
+        </button>
     </p-footer>
 </p-confirmDialog>
 
-<p-confirmDialog #dialogoMoverAlCanalDeAltas key="moveToAtlasChannel" header="Volver al canal de altas"
+<p-confirmDialog #dialogoMoverAlCanalDeAltas key="moveToAtlasChannel" header="Volver al canal de altas" style="margin-top: 10px;"
     icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
     <p-footer>
         <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"

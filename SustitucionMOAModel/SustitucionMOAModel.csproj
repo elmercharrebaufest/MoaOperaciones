@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dto\AlmacenDto.cs" />
+    <Compile Include="Dto\AltaEmpresa\ExistenciaEmpresaResponse.cs" />
     <Compile Include="Dto\ArchivoBoleto\ActualizarArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\CrearReqArchivoBoletoDto.cs" />
