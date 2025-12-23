@@ -1,12 +1,12 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { TrackingService } from '../external/tracking.service';
+import { ApiService } from '../external/api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private trackingService = inject(TrackingService);
+  private apiService = inject(ApiService);
   private isAuthenticated = signal(false);
   private captchaVerified = signal(false);
 
@@ -17,15 +17,15 @@ export class AuthService {
   }
 
   login() {
-    const hasData = this.trackingService.trackingData() !== null;
-    const needsCaptcha = environment.production || environment.isQA;
+    const hasData = this.apiService.trackingData() !== null;
+    const needsCaptcha = environment.production;
     if (hasData && (this.captchaVerified() || !needsCaptcha)) {
       this.isAuthenticated.set(true);
     }
   }
 
   logout() {
-    this.trackingService.clearTrackingData();
+    this.apiService.clearTrackingData();
     this.isAuthenticated.set(false);
 
     if (!environment.production && !environment.isQA) {
@@ -48,7 +48,7 @@ export class AuthService {
   }
 
   isFullyAuthenticated(): boolean {
-    const hasData = this.trackingService.trackingData() !== null;
+    const hasData = this.apiService.trackingData() !== null;
     const needsCaptcha = environment.production || environment.isQA;
     const captchaOk = this.captchaVerified() || !needsCaptcha;
     return this.isAuthenticated() && hasData && captchaOk;

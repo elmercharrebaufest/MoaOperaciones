@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs/operators';
 import { ContainerComponent } from '../../../shared/container/container';
 import { TrackingData } from '../../../models/tracking-data.model';
-import { FilesService } from '../../../infrastructure/services/external/files.service';
+import { ApiService } from '../../../infrastructure/services/external/api.service';
 
 interface Document {
   title: string;
@@ -23,7 +23,7 @@ interface Document {
 export class InformationDocumentosComponent implements OnInit {
   @Input({ required: true }) data!: TrackingData;
   
-  private filesService = inject(FilesService);
+  private apiService = inject(ApiService);
   
   isLoading = signal<boolean>(false);
 
@@ -62,7 +62,7 @@ export class InformationDocumentosComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      const files = this.filesService.filesData();
+      const files = this.apiService.filesData();
       this.updateDocumentAvailability(files);
     });
   }
@@ -71,7 +71,7 @@ export class InformationDocumentosComponent implements OnInit {
     if (this.data?.ctg && this.data?.camion?.patente) {
       this.isLoading.set(true);
 
-      this.filesService.getFiles(this.data.ctg, this.data.camion.patente)
+      this.apiService.getFiles(this.data.ctg, this.data.camion.patente)
         .pipe(
           finalize(() => this.isLoading.set(false))
         )
@@ -91,7 +91,7 @@ export class InformationDocumentosComponent implements OnInit {
   private updateDocumentAvailability(files: any[]): void {
     this.documents.forEach(doc => {
       if (doc.fileKeyword) {
-        const file = this.filesService.findFileByName(doc.fileKeyword);
+        const file = this.apiService.findFileByName(doc.fileKeyword);
         doc.available = !!file;
       }
     });
@@ -103,9 +103,9 @@ export class InformationDocumentosComponent implements OnInit {
     }
 
     if (document.fileKeyword) {
-      const file = this.filesService.findFileByName(document.fileKeyword);
+      const file = this.apiService.findFileByName(document.fileKeyword);
       if (file) {
-        this.filesService.downloadFile(file);
+        this.apiService.downloadFile(file);
         return;
       }
     }
