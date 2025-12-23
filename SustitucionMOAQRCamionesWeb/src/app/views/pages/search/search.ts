@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RecaptchaModule, RecaptchaComponent } from "ng-recaptcha-2";
 import { environment } from '../../../../environments/environment';
-import { TrackingService } from '../../../infrastructure/services/external/tracking.service';
+import { ApiService } from '../../../infrastructure/services/external/api.service';
 import { AuthService } from '../../../infrastructure/services/auth/auth.service';
 import { CookieService } from '../../../infrastructure/services/internal/cookie.service';
 
@@ -20,7 +20,7 @@ export class SearchComponent {
   patente = signal('');
   isLoading = signal(false);
   captchaOk: string | null = null;
-  
+
   ctgError = signal(false);
   patenteError = signal(false);
 
@@ -32,7 +32,7 @@ export class SearchComponent {
 
   constructor(
     private router: Router,
-    private trackingService: TrackingService,
+    private apiService: ApiService,
     private authService: AuthService,
     private cookieService: CookieService
   ) {
@@ -51,7 +51,7 @@ export class SearchComponent {
   onCtgChange(value: string) {
     const hasInvalidChars = /[^0-9]/.test(value);
     this.ctgError.set(hasInvalidChars);
-    
+
     const sanitized = value.replace(/[^0-9]/g, '');
     this.ctg.set(sanitized);
   }
@@ -59,7 +59,7 @@ export class SearchComponent {
   onPatenteChange(value: string) {
     const hasInvalidChars = /[^a-zA-Z0-9]/.test(value);
     this.patenteError.set(hasInvalidChars);
-    
+
     const sanitized = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
     this.patente.set(sanitized);
   }
@@ -81,11 +81,11 @@ export class SearchComponent {
 
     this.isLoading.set(true);
 
-    this.trackingService.getTrackingData(this.ctg(), this.patente(), this.captchaOk || undefined)
+    this.apiService.getTrackingData(this.ctg(), this.patente(), this.captchaOk || undefined)
       .subscribe({
         next: (response) => {
           this.isLoading.set(false);
-          
+
           if (response.resultado && response.data) {
             this.cookieService.setSessionCookie('ctg', this.ctg(), 5);
             this.cookieService.setSessionCookie('patente', this.patente(), 5);
@@ -108,10 +108,10 @@ export class SearchComponent {
         error: (error) => {
           this.isLoading.set(false);
           this.authService.logout();
-          
+
           const errorMessage = error.error?.mensaje || error.message || 'Error de conexión';
           console.error('Error fetching tracking data:', error);
-          
+
           this.router.navigate(['/search-error'], {
             queryParams: { mensaje: errorMessage }
           });
