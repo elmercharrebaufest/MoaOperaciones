@@ -16,8 +16,7 @@ import { TutorialTooltipComponent } from "../../components/tutorial-tooltip/tuto
 import { formatDate } from "../../../shared/helpers/date.helper"
 import { returnStatusUppercase, returnStatusClass } from "../../../shared/helpers/status.helper"
 import { StageStateService } from "../../../infrastructure/services/internal/stage-state.service"
-import { TrackingService } from "../../../infrastructure/services/external/tracking.service"
-import { EstadoEtapasService } from "../../../infrastructure/services/external/estado-etapas.service"
+import { ApiService } from "../../../infrastructure/services/external/api.service"
 import { TutorialService } from "../../../infrastructure/services/internal/tutorial.service"
 import { CookieService } from "../../../infrastructure/services/internal/cookie.service"
 
@@ -42,7 +41,7 @@ import { CookieService } from "../../../infrastructure/services/internal/cookie.
   styleUrls: ["./tracking.scss"],
 })
 export class TrackingComponent implements OnInit {
-  cargoData = computed(() => this.trackingService.trackingData())
+  cargoData = computed(() => this.apiService.trackingData())
 
   isExpanded = signal(false)
   isUpdating = signal(false)
@@ -59,7 +58,7 @@ export class TrackingComponent implements OnInit {
     const data = this.cargoData();
     const stage = this.stageStateService.currentStage();
     const index = this.selectedIndex();
-    
+
     if (data && stage) {
       return {
         index,
@@ -98,7 +97,7 @@ export class TrackingComponent implements OnInit {
   filaTag = computed(() => {
     const data = this.cargoData();
     const stage = this.stageStateService.currentStage();
-    
+
     if (!data || !stage || stage.estado !== 'en-proceso') {
       return null;
     }
@@ -171,7 +170,7 @@ export class TrackingComponent implements OnInit {
   shouldShowEstimatedTime = computed(() => {
     const stage = this.stageStateService.currentStage();
     if (!stage) return false;
-    
+
     const totalMinutes = Number(stage.tiempoEstimado);
     return totalMinutes > 0;
   });
@@ -179,14 +178,13 @@ export class TrackingComponent implements OnInit {
   constructor(
     private router: Router,
     public stageStateService: StageStateService,
-    private trackingService: TrackingService,
-    private estadoEtapasService: EstadoEtapasService,
+    private apiService: ApiService,
     public tutorialService: TutorialService,
     private cookieService: CookieService
   ) {
     effect(() => {
-      const data = this.trackingService.trackingData();
-      
+      const data = this.apiService.trackingData();
+
       if (data && data.etapas && data.etapas.length > 0) {
         this.stageStateService.updateStages(data.etapas, data.datosAdicionales?.rechazado ?? false);
       }
@@ -211,11 +209,11 @@ export class TrackingComponent implements OnInit {
     if (ctg && patente) {
       this.isRestoringSession.set(true);
 
-      this.trackingService.getTrackingData(ctg, patente, undefined)
+      this.apiService.getTrackingData(ctg, patente, undefined)
         .subscribe({
           next: (response) => {
             this.isRestoringSession.set(false);
-            
+
             if (response.resultado && response.data) {
               this.initializeData();
               this.tutorialService.initializeTutorial();
@@ -255,13 +253,13 @@ export class TrackingComponent implements OnInit {
 
     this.isUpdating.set(true);
 
-    this.estadoEtapasService.getEstadoEtapas(data.ctg, data.camion.patente)
+    this.apiService.getEstadoEtapas(data.ctg, data.camion.patente)
       .subscribe({
         next: (response) => {
           this.isUpdating.set(false);
-          
+
           if (response.resultado && response.data) {
-            this.trackingService.updateFromEstadoEtapas(response.data);
+            this.apiService.updateFromEstadoEtapas(response.data);
           } else {
             console.warn('No se pudieron actualizar los datos:', response.mensaje);
           }
@@ -275,8 +273,8 @@ export class TrackingComponent implements OnInit {
   }
 
   consultarOtraCTG() {
-    this.trackingService.clearTrackingData();
-    this.estadoEtapasService.clearEstadoEtapas();
+    this.apiService.clearTrackingData();
+    this.apiService.clearEstadoEtapas();
     this.cookieService.deleteCookie('ctg');
     this.cookieService.deleteCookie('patente');
     this.router.navigate(['/search']);

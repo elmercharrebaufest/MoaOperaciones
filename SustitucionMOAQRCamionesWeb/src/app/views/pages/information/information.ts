@@ -3,7 +3,7 @@ import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InformationCargaComponent } from '../../components/information-carga/information-carga';
 import { InformationDocumentosComponent } from '../../components/information-documentos/information-documentos';
-import { TrackingService } from '../../../infrastructure/services/external/tracking.service';
+import { ApiService } from '../../../infrastructure/services/external/api.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -19,13 +19,13 @@ import { environment } from '../../../../environments/environment';
 })
 export class InformationComponent implements OnInit, OnDestroy {
   detailType = signal<'carga' | 'documentos'>('carga');
-  cargoData = computed(() => this.trackingService.trackingData());
+  cargoData = computed(() => this.apiService.trackingData());
 
   constructor(
     private route: ActivatedRoute,
     private location: Location,
     private router: Router,
-    private trackingService: TrackingService
+    private apiService: ApiService
   ) {}
 
   ngOnInit() {

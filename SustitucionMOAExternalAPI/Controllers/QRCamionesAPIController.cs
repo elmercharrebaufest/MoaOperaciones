@@ -44,7 +44,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 
 		[HttpGet]
 		[Route("search")]
-		// [Authorize(Roles = "API QR CAMIONES")]
+		[Authorize(Roles = "API QR CAMIONES")]
 		public IHttpActionResult Search([FromUri] TrackingRequestDto request)
 		{
 			try
@@ -99,7 +99,7 @@ namespace SustitucionMOAExternalAPI.Controllers
 
 		[HttpGet]
 		[Route("estadoEtapas")]
-		// [Authorize(Roles = "API QR CAMIONES")]
+		[Authorize(Roles = "API QR CAMIONES")]
 		public IHttpActionResult EstadoEtapas([FromUri] TrackingRequestDto request)
 		{
 			try

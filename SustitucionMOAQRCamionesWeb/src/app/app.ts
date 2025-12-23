@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { Router, RouterOutlet } from '@angular/router';
 
 import { AuthService } from './infrastructure/services/auth/auth.service';
-import { DataService } from './infrastructure/services/data.service';
 import { I18nService } from './infrastructure/services/i18n.service';
 import { LoadingService } from './infrastructure/services/loading.service';
 import { MATERIAL } from './shared/material';
@@ -23,7 +22,6 @@ import { MATERIAL } from './shared/material';
 export class App {
   protected readonly title = signal('QR Camiones');
   public readonly authService = inject(AuthService);
-  public readonly dataService = inject(DataService);
   public readonly i18n = inject(I18nService);
   public readonly loadingService = inject(LoadingService);
   private readonly router = inject(Router);
@@ -37,9 +35,6 @@ export class App {
   logout(): void {
     // Resetear autenticación
     this.authService.logout();
-    
-    // Resetear todos los datos de la aplicación
-    this.dataService.resetData();
     
     // Resetear estado de loading
     this.loadingService.hideLoading();
