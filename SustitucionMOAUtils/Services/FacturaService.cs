@@ -154,7 +154,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
-                    certificacionesRegistradas.AddRange(RegistrarCertificacion(grupo.Items, usuario, proveedorId, archivos, cuit, codigoProveedor));
+                    certificacionesRegistradas.AddRange(RegistrarCertificacion(grupo.Items, usuario, proveedorId, new List<HttpPostedFileBase> { archivo }, cuit, codigoProveedor));
                 }
             }
 
