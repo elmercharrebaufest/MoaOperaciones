@@ -6359,9 +6359,17 @@ namespace SustitucionMOAUtils.Services
                         };
                         if (!esMateriales && adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.Adicional == true)
                         {
-                            var NroOrdenDeCompraAdicional = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;
-                            var ordenesDeCompraAnteriores = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == NroOrdenDeCompraAdicional);
-                            ordenesDeCompraAnteriores.ForEach(a => a.AdmiteCertificacionesParciales = adjudicacionDto.AdmiteCertificacionesParciales);
+                            var nroOrdenDeCompraAdicional = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;
+                            var adjudicacionesOCPrimaria = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOrdenDeCompraAdicional);
+                            foreach(var adjudicacionOCPrimaria in adjudicacionesOCPrimaria)
+                            {
+                                // Si se ingresó que admite certificaciones parciales pero la OC anterior es de una SOLP con Trabajo ya hecho, no debe actualizarle este campo (con TH no se puede certificar parcialmente)
+                                if (!adjudicacionDto.AdmiteCertificacionesParciales ||
+                                    adjudicacionOCPrimaria.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.First().SolpPosicion.Solp.TrabajoYaHecho != true)
+                                {
+                                    adjudicacionOCPrimaria.AdmiteCertificacionesParciales = adjudicacionDto.AdmiteCertificacionesParciales;
+                                }
+                            }
                         }
                         repositorio.Agregar(adjudicacion);
                         repositorio.GuardarCambios();

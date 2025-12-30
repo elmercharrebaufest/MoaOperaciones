@@ -465,7 +465,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        result.data.forEach(x => { x.Posiciones.forEach(p => p.AdmiteCertificacionesParciales = x.AdmiteCertificacionesParciales) });
                         this.tablaPO = result.data;
                         this.obtenerSolicitantes(result.data);
                         this.cargarArrayProcesosSpinners(this.tablaPO);
@@ -473,7 +472,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
                         //this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
-
                     }
                     if (this.expandedPositionRow) {
                         this.filtrarTablas();
