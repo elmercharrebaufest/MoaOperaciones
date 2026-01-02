@@ -1,216 +1,307 @@
+/* ============================================
+   RESET & BASICS
+   ============================================ */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+    background-color: white;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* ============================================
+   MAIN LAYOUT CONTAINER
+   ============================================ */
+
 body > div.container.unified_container {
-    background: url(https://webopdevstorage.blob.core.windows.net/root/fondo.png) center center no-repeat fixed;
-    background-size: cover;
     width: 100%;
+    min-height: 100vh;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: white;
 }
 
-body > div.container.unified_container > div > div {
-  width: 100%;
-  padding-right: 0px;
-}
+    /* ============================================
+   IMAGE SECTION
+   ============================================ */
 
-div.row {
+    body > div.container.unified_container::before {
+        content: '';
+        display: block;
+        background-image: url(https://b2cmoagro.blob.core.windows.net/moaoperaciones/fondo.jpg);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover !important;
+        width: 100%;
+        flex-shrink: 0 !important;
+        /* MOBILE DEFAULT (< 768px) */
+        height: 200px;
+    }
+
+    /* ============================================
+   FORM SECTION WRAPPERS
+   ============================================ */
+
+    body > div.container.unified_container > div.row {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+        body > div.container.unified_container > div.row > div[class*="col-"] {
+            width: 100%;
+            height: 100%;
+            margin: 0 !important;
+            padding: 0;
+            float: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+.panel.panel-default.login {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
     background: transparent;
-}
-
-img {
-  max-width: 100%;
-  background: white;
-  width: 210px;
-  height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .panel-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 15px;
-    font-size: 14px;
+    width: 100%;
+    max-width: 450px;
+    padding: 1.5rem;
+    background: white;
 }
 
-body > div.container.unified_container > div > div > div > div {
-  height: auto;
-  overflow: auto;
-  min-height: 100vh;
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================ */
+
+/* TABLET (768px - 1365px) */
+@media (min-width: 768px) and (max-width: 1365px) {
+    body > div.container.unified_container::before {
+        height: 300px;
+    }
+
+    .panel-body {
+        padding: 2.5rem 2rem;
+    }
+}
+
+/* DESKTOP (>= 1366px) */
+@media (min-width: 1366px) {
+    body > div.container.unified_container {
+        flex-direction: row;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+        body > div.container.unified_container::before {
+            width: 65%;
+            height: 100vh;
+        }
+
+        body > div.container.unified_container > div.row {
+            width: 35%;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            body > div.container.unified_container > div.row > div[class*="col-"] {
+                height: 100%;
+                justify-content: center;
+            }
+
+    .panel-body {
+        padding: 3rem 2rem;
+        max-width: 500px;
+        justify-content: center;
+        margin: auto;
+    }
+}
+
+/* ============================================
+   INTERNAL COMPONENT STYLES
+   ============================================ */
+
+/* Logo */
+img.companyLogo {
+    width: 180px;
+    height: auto;
+    display: block;
+    margin: 0 auto 2rem auto;
+}
+
+@media (min-width: 1366px) {
+    img.companyLogo {
+        width: 220px;
+    }
+}
+
+div.divider, div > #forgotPassword, #background_branding_container, #background_branding_container > img {
+    display: none !important;
 }
 
 div#api {
-  background: white;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  padding: 15px;
+    width: 100%;
 }
 
 .intro {
-    margin: 30px;
-    text-align: center;
-    font-size: 12px;
-    width: 267px;
-    color: #5e645f;
-}
-
-.login {
-    margin-bottom: 0px !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    -webkit-box-shadow: none !important;
-}
-
-#next {
-    border-radius: 2px;
-    border: none;
-    background-color: #009688;
-    color: white;
-    margin: 10px 0px 0px 30px;
-    width: 135px;
-    height: 36px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-#next:hover {
-    background-color: #008e80;
-}
-
-label,
-div.divider,
-div.password-label{
-  display: none !important;
-}
-
-input#logonIdentifier {
-  border-radius: 5px;
+    text-align: center !important;
+    width: 100%;
+    display: block;
+    margin-bottom: 1.5rem;
+    color: #1a1a1a;
+    font-weight: 500;
 }
 
 .entry-item {
-  display: flex;
-  flex-direction: column;
-  margin: 15px 0;
+    margin-bottom: 1.25rem;
+    width: 100%;
+}
+
+label {
+    display: block !important;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+input[type="email"], input[type="password"], input[type="text"] {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1px solid #d1d5db !important;
+    border-radius: 4px !important;
+    height: auto !important;
+    background-color: white;
+}
+
+input:focus {
+    outline: none;
+    border-color: #003087 !important;
+    box-shadow: 0 0 0 3px rgba(0, 48, 135, 0.1);
+}
+
+/* Remember Me */
+#api > div > div.entry > div.rememberMe, div.rememberMe {
+    display: flex !important;
+    align-items: center !important;
+    margin: 1rem 0 !important;
+    gap: 0.5rem !important;
+}
+
+input#rememberMe {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+}
+
+div.rememberMe label {
+    margin: 0 !important;
+    cursor: pointer;
+}
+
+/* Buttons */
+.buttons {
+    margin-top: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Login Button */
+#next {
+    width: 100%;
+    padding: 1rem;
+    background-color: #00843D !important;
+    color: white !important;
+    border: none;
+    border-radius: 4px !important;
+    font-weight: 500;
+    cursor: pointer;
+    text-transform: none !important;
+}
+
+    #next:hover {
+        background-color: #0a6640 !important;
+    }
+
+/* Forgot Password */
+.buttons > a {
+    display: block;
+    width: 100%;
+    padding: 0.875rem;
+    background: white !important;
+    color: #333 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 4px !important;
+    text-align: center;
+    text-decoration: none !important;
+}
+
+    .buttons > a:hover {
+        border-color: #061C81 !important;
+        color: #061C81 !important;
+    }
+
+/* Create Account */
+.create {
+    margin-top: 1.5rem;
+    text-align: center;
+    width: 100%;
 }
 
 a#createAccount {
-    background: #959595 !important;
-    text-align: center;
-    padding-top: 8px !important;
+    color: #061C81 !important;
+    text-decoration: none !important;
+    font-weight: 500;
 }
 
-a#createAccount,
-#emailVerificationControl_but_send_code {
-  background: #337ab7;
-  color: white;
-  border-radius: 2px;
-  padding: 5px;
-  width: 145px;
-  height: 36px;
-  margin: 10px 0;
-  text-decoration: none;
-  text-transform: uppercase;
-  border: none;
-  font-size: 14px;
-}
+    a#createAccount:hover {
+        text-decoration: underline !important;
+    }
 
-button#email_ver_but_send {
-  border-radius: 5px;
-}
-
-body > div.container.self_asserted_container > div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100%;
-  height: 100% !important;
-  background-color: rgba(255, 255, 255, 1);
-}
-
-body > div.container.self_asserted_container {
-  background: url(https://webopdevstorage.blob.core.windows.net/root/login.jpg)
-    center center no-repeat fixed;
-  background-size: cover;
-  width: 100%;
-}
-
-body > div.container.unified_container > div {
-  display: flex;
-  justify-content: left;
-  align-items: center;
-}
-
-#background_branding_container {
-  background: url(https://webopdevstorage.blob.core.windows.net/root/login.jpg);
-}
-
-#background_branding_container > img {
-  display: none !important;
-}
-
-#api > div > div.intro > h2 {
-  font-size: 20px !important;
-}
-
-body > div.container.unified_container > div > div > div > div {
-  color: #172f8f;
-}
-
-#attributeList > ul {
-  list-style: none !important;
-}
-
-#email {
-  margin: 10px 0;
-}
-
-input {
-    width: 100%;
-    border-radius: 0px;
-    border: none;
-    color: black;
-    font-size: 16px;
-    border-bottom: #00000061 1px solid;
-}
-
-#api > div > div.entry > div.rememberMe {
-  display: flex;
-}
-
-#rememberMe {
-  width: 10%;
-}
-
-#api > div > div.divider > h2 {
-  display: none;
-}
-
-#api > div > div.create {
-  margin-top: 15px;
-}
-
-#attributeList > ul {
-  padding: 0 !important;
-}
-
-#emailVerificationControl > ul {
-  padding-left: 0;
-}
-
-label,
-input {
-  margin-bottom: 5px;
-}
-
-li {
-  margin-bottom: 10px;
-}
-
-#localAccountForm > div.entry > div.buttons,
-#localAccountForm > div.create {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    margin-bottom: 50px;
-}
-
+/* Error Messages */
 .error {
-  color: #dd441e;
+    color: #dc2626;
+    margin-top: 0.25rem;
+}
+
+/* ============================================
+   GLOBAL FONT SIZE UNIFICATION
+   ============================================ */
+body,
+label,
+input,
+button,
+a,
+p,
+span,
+div.error,
+.create,
+#next,
+.buttons > a,
+.intro {
+    font-size: 1.5rem !important;
 }

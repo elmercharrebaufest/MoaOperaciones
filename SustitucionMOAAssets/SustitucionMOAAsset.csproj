@@ -88,10 +88,13 @@
     <Content Include="Azure\cambioPass.css" />
     <Content Include="Azure\cambioPass.html" />
     <Content Include="Azure\cambioPass.js" />
+    <Content Include="Azure\fondo.jpg" />
     <Content Include="Azure\fondo.png" />
     <Content Include="Azure\iniciodesesion.css" />
     <Content Include="Azure\iniciodesesion.html" />
     <Content Include="Azure\iniciodesesion.js" />
+    <Content Include="Azure\iniciodesesion_comprobantes_del_transporte_icon.svg" />
+    <Content Include="Azure\iniciodesesion_seguimiento_en_planta_icon.svg" />
     <Content Include="Azure\jquery.maskedinput.js" />
     <Content Include="Azure\login.jpg" />
     <Content Include="Azure\loginSmall.jpg" />
