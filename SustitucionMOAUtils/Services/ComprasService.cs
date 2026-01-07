@@ -1430,6 +1430,12 @@ namespace SustitucionMOAUtils.Services
                 solpDevuelta.CodigoProveedorSap = usuario.ObtenerCodigoProveedor();
             }
 
+            if (solp.OrganizacionDeCompra_Id == OrganizacionDeCompraIds.ComprasRRHH)
+            {
+                var ordenesCompraSap = comprasServiceSap.ObtenerOrdenesCompraSapParaSolpPosicion(solpDevuelta.Posiciones);
+                solpDevuelta.OrdenesDeCompraGeneradas = ordenesCompraSap.Select(x => new OrdenDeCompraSolpDto { NumeroOrdenDeCompra = x.Cabecera.OrdenDeCompra }).ToList();
+            }
+
             return solpDevuelta;
         }
 

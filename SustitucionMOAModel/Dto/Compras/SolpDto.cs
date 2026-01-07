@@ -145,6 +145,8 @@ namespace SustitucionMOAModel.Dto
 
         public string Racional_Garantias { get; set; }
 
+        public List<OrdenDeCompraSolpDto> OrdenesDeCompraGeneradas { get; set; } = new List<OrdenDeCompraSolpDto>();
+
 
         public SolpDto() { }
         public SolpDto(Solp entity)
