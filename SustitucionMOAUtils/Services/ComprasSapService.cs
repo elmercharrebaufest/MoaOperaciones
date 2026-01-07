@@ -1368,9 +1368,9 @@ namespace SustitucionMOAUtils.Services
         }
 
         //Obtener contrato es lo que consultamos cuando vamos a crear una posicion desde contrato marco
-        public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro)
+        public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro, string codigoProveedor)
         {
-            var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato, centro);
+            var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato, centro, codigoProveedor);
             return result.ContratosSolp;
         }
 
