@@ -120,7 +120,7 @@ export class AltaEmpresaService extends BaseService {
     public volverProveedorCanalDeAltas(cuit: string, mailProveedor: string): Observable<any> {
         let params: HttpParams = new HttpParams()
             .append('cuit', cuit)
-            .append('mailProveedor', mailProveedor);
+            .append('mailProveedor', encodeURIComponent(mailProveedor));
 
         return this.http
             .get('/api/AltaEmpresa/VolverProveedorCanalDeAltas', { params: params, headers: this.headers })
