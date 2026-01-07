@@ -355,6 +355,7 @@ namespace SustitucionMOAUtils.Services
                     THAjustePolinomica = solp.THAjustePolinomica,
                     THProveedorDirecto = solp.THProveedorDirecto,
                     THServicioPermanente = solp.THServicioPermanente,
+                    THAcuerdoMarco = solp.THAcuerdoMarco,
                     AdmiteCertificacionesParciales = solp.AdmiteCertificacionesParciales,
                 };
 
@@ -392,6 +393,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.THAjustePolinomica = solp.THAjustePolinomica;
                 solpEntity.THProveedorDirecto = solp.THProveedorDirecto;
                 solpEntity.THServicioPermanente = solp.THServicioPermanente;
+                solpEntity.THAcuerdoMarco = solp.THAcuerdoMarco;
                 solpEntity.Pliego.NombreObra = solp.NombreDeObra;
                 solpEntity.Racional_CondicionesDeEntrega = solp.Racional_CondicionesDeEntrega;
                 solpEntity.Racional_CondicionesDePago = solp.Racional_CondicionesDePago;
@@ -2570,7 +2572,7 @@ namespace SustitucionMOAUtils.Services
 
                         if (!string.IsNullOrEmpty(posicion.NumeroContratoMarco)) //Contrato Marco
                         {
-                            var datosContratoMarco = comprasServiceSap.ObtenerContratoMarco(posicion.NumeroContratoMarco, posicion.CentroLogistico);
+                            var datosContratoMarco = comprasServiceSap.ObtenerContratoMarco(posicion.NumeroContratoMarco, posicion.CentroLogistico, null);
                             posicionEntity.NumeroContratoSuperior = posicion.NumeroContratoMarco;
                             posicionEntity.NumeroPosicionContratoSuperior = posicion.PosicionContratoMarco;
                             posicionEntity.ProveedorFijo = posicion.ProveedorFijo;
