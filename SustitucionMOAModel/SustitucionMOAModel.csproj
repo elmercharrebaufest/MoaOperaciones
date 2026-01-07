@@ -81,6 +81,7 @@
     <Compile Include="Dto\Compras\CertificacionDto.cs" />
     <Compile Include="Dto\Compras\Factura\EstadoCertificacion.cs" />
     <Compile Include="Dto\Compras\Factura\GrupoCertificaciones.cs" />
+    <Compile Include="Dto\Compras\OrdenDeCompraSolpDto.cs" />
     <Compile Include="Dto\Compras\OrganizacionDeCompraDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaRevisionTecnicaDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaSolpPosicionDto.cs" />
