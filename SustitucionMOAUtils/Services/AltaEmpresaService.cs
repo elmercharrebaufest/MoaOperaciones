@@ -149,7 +149,7 @@ namespace SustitucionMOAUtils.Services
             return proveedorDtos;
         }
 
-        public string VolverProveedorCanalDeAltas(string CUIT, string mailProveedor)
+        public string VolverProveedorCanalDeAltas(string CUIT, string mailProveedor, string mailUsuario)
         {
             var proveedores = repositorio.Listar<Proveedor>(x =>
                 x.CUIT == CUIT &&
@@ -164,7 +164,23 @@ namespace SustitucionMOAUtils.Services
                 return $"Se encontraron múltiples proveedores con CUIT {CUIT} y mail {mailProveedor}. Por favor, contacte a Soporte.";
             }
 
-            proveedores[0].EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
+            var proveedor = proveedores[0];
+
+            proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            var historialAprobacion = new ProveedorHistorialAprobacion
+            {
+                EstadoAprobacion = proveedor.EstadoAprobacion,
+                Observacion = "El proveedor ha sido vuelto al canal de altas",
+                Usuario = usuario,
+                Proveedor = proveedor,
+                Fecha = DateTime.Now
+            };
+            repositorio.Agregar(historialAprobacion);
+            proveedor.HistorialAprobaciones.Add(historialAprobacion);
+
             repositorio.GuardarCambios();
             return "El proveedor ha sido exitosamente vuelto al canal de altas.";
         }
@@ -805,12 +821,7 @@ namespace SustitucionMOAUtils.Services
 
         public int ModificarEstadoProveedor(int proveedorId, string nuevoEstado, string emailUsuario)
         {
-            var proveedor = this.repositorio.Obtener<Proveedor>(proveedorId);
-
-            if (proveedor == null)
-            {
-                throw new ValidationCustomException("No se encontró el proveedor en el sistema.");
-            }
+            var proveedor = this.repositorio.Obtener<Proveedor>(proveedorId) ?? throw new ValidationCustomException("No se encontró el proveedor en el sistema.");
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == emailUsuario);
             if (!usuario.TienePermiso(PermisoEnum.ModificarEstadoProveedor))
@@ -823,7 +834,7 @@ namespace SustitucionMOAUtils.Services
             var historialAprobacion = new ProveedorHistorialAprobacion
             {
                 EstadoAprobacion = nuevoEstadoEnum,
-                Observacion = "Se modifico manualmente el estado",
+                Observacion = "Se modificó manualmente el estado",
                 Usuario = usuario,
                 Proveedor = proveedor,
                 Fecha = DateTime.Now

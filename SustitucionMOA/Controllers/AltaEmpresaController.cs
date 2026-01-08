@@ -57,8 +57,9 @@ namespace SustitucionMOA.Controllers
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
         public ActionResult VolverProveedorCanalDeAltas(string CUIT, string mailProveedor)
         {
-            var decodedMail = HttpUtility.UrlDecode(mailProveedor);
-            var resultado = altaEmpresaService.VolverProveedorCanalDeAltas(CUIT, decodedMail);
+            var decodedMailProveedor = HttpUtility.UrlDecode(mailProveedor);
+            var mailUsuario = SessionPersister.Mail;
+            var resultado = altaEmpresaService.VolverProveedorCanalDeAltas(CUIT, decodedMailProveedor, mailUsuario);
             return JsonCustom(new { data = resultado });
         }
 
