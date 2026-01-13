@@ -260,12 +260,16 @@ namespace SustitucionMOAUtils.Services
 
         protected DateTime CalcularFechaVencimiento(DateTime fechaOrigen)
         {
+            var feriados = feriadoService.ObtenerFeriados();
+            return CalcularFechaVencimiento(fechaOrigen, feriados);
+        }
+
+        protected DateTime CalcularFechaVencimiento(DateTime fechaOrigen, List<DateTime> feriados)
+        {
             var dayOfWeek = fechaOrigen.DayOfWeek;
             var cantidadDiasDeMargen = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? 4 : 2;
 
             var fechaFinal = fechaOrigen.AddDays(cantidadDiasDeMargen);
-
-            var feriados = feriadoService.ObtenerFeriados();
 
             foreach (var fechaFeriado in feriados)
             {

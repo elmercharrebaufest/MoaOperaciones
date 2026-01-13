@@ -266,17 +266,24 @@ namespace SustitucionMOAUtils.Services
 
             var tresDiasAtras = DateTime.Today.AddDays(-3);
 
+            var ordenesVencidas = new List<SustitucionMOAModel.Entities.OrdenResiduos>();
+
             var ordenes =
                 repositorioResiduos.Listar<SustitucionMOAModel.Entities.OrdenResiduos>(o => o.EstadoId == (int)EstadoOrdenResiduosEnum.OrdenGenerada
                 && DbFunctions.TruncateTime(o.FechaCreacion) <= tresDiasAtras);
 
             foreach (var orden in ordenes)
             {
-                orden.EstadoId = (int)EstadoOrdenResiduosEnum.OrdenVencida;
+                var camionEstaEnPlanta = OrdenEstaActivaEnScato((int)orden.Id);
+                if (!camionEstaEnPlanta)
+                {
+                    orden.EstadoId = (int)EstadoOrdenResiduosEnum.OrdenVencida;
+                    ordenesVencidas.Add(orden);
+                }
             }
             repositorioResiduos.GuardarCambios();
 
-            emailResiduosService.EnviarMailOrdenesVencidas(ordenes);
+            emailResiduosService.EnviarMailOrdenesVencidas(ordenesVencidas);
         }
 
         public IList<DestinoScato> ObtenerDestinosMercaderia(string cuit)
