@@ -796,8 +796,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
         if (this.model.trabajoHecho == true && this.model.thAcuerdoMarco == true) {
             textos.push("Trabajo Realizado con acuerdo marco");
-            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, rutinario que queda bajo las condiciones de un Acuerdo Marco (AM). ");
-            textos.push("Esta solp nueva permitirá gestionar una OC puntual contra una Acuerdo Marco.");
+            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, rutinario que queda bajo las condiciones de un Acuerdo Marco (AM).");
         }
 
         if (this.model.conPresupuesto == true) {
