@@ -152,12 +152,6 @@
   <wsdl:message name="IServicioRepositorio_ObtenerRegistroJobEjecucionPorProceso_OutputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerRegistroJobEjecucionPorProcesoResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerTrackingData_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerTrackingData" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerTrackingData_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerTrackingDataResponse" />
-  </wsdl:message>
   <wsdl:message name="IServicioRepositorio_EstaDemoradoPorTasaAdeudada_InputMessage">
     <wsdl:part name="parameters" element="tns:EstaDemoradoPorTasaAdeudada" />
   </wsdl:message>
@@ -175,6 +169,18 @@
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_TieneExcepcionDePagoDeTasaMunicipal_OutputMessage">
     <wsdl:part name="parameters" element="tns:TieneExcepcionDePagoDeTasaMunicipalResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerTrackingData_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerTrackingData" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerTrackingData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerTrackingDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerDatosTicketPesada_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDatosTicketPesada" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerDatosTicketPesada_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDatosTicketPesadaResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerGruposBarreraEnUso_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerGruposBarreraEnUso" />
@@ -6399,10 +6405,6 @@
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorProceso" message="tns:IServicioRepositorio_ObtenerRegistroJobEjecucionPorProceso_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorProcesoResponse" message="tns:IServicioRepositorio_ObtenerRegistroJobEjecucionPorProceso_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerTrackingData">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTrackingData" message="tns:IServicioRepositorio_ObtenerTrackingData_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTrackingDataResponse" message="tns:IServicioRepositorio_ObtenerTrackingData_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="EstaDemoradoPorTasaAdeudada">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/EstaDemoradoPorTasaAdeudada" message="tns:IServicioRepositorio_EstaDemoradoPorTasaAdeudada_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/EstaDemoradoPorTasaAdeudadaResponse" message="tns:IServicioRepositorio_EstaDemoradoPorTasaAdeudada_OutputMessage" />
@@ -6414,6 +6416,14 @@
     <wsdl:operation name="TieneExcepcionDePagoDeTasaMunicipal">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDePagoDeTasaMunicipal" message="tns:IServicioRepositorio_TieneExcepcionDePagoDeTasaMunicipal_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDePagoDeTasaMunicipalResponse" message="tns:IServicioRepositorio_TieneExcepcionDePagoDeTasaMunicipal_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerTrackingData">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTrackingData" message="tns:IServicioRepositorio_ObtenerTrackingData_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTrackingDataResponse" message="tns:IServicioRepositorio_ObtenerTrackingData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDatosTicketPesada">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDatosTicketPesada" message="tns:IServicioRepositorio_ObtenerDatosTicketPesada_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDatosTicketPesadaResponse" message="tns:IServicioRepositorio_ObtenerDatosTicketPesada_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ObtenerGruposBarreraEnUso">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerGruposBarreraEnUso" message="tns:IServicioRepositorio_ObtenerGruposBarreraEnUso_InputMessage" />

@@ -175,6 +175,35 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ExceptuadosTicketMunicipalDto" nillable="true" type="tns:ExceptuadosTicketMunicipalDto" />
+  <xs:complexType name="ArrayOfTicketPesadaDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TicketPesadaDto" nillable="true" type="tns:TicketPesadaDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTicketPesadaDto" nillable="true" type="tns:ArrayOfTicketPesadaDto" />
+  <xs:complexType name="TicketPesadaDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BrutoOrigen" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="BrutoPlanta" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="CTG" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ChoferNombreApellido" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FechaHoraEgreso" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaHoraIngreso" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Intermediario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IntermediarioCUIT" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Material" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NetoOrigen" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="NetoPlanta" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Procedencia" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TaraOrigen" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="TaraPlanta" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="TitularCPCUIT" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TransportistaCUIT" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TicketPesadaDto" nillable="true" type="tns:TicketPesadaDto" />
   <xs:complexType name="ArrayOfLogDispositivoDto">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="LogDispositivoDto" nillable="true" type="tns:LogDispositivoDto" />
@@ -556,6 +585,7 @@
       <xs:element minOccurs="0" name="ControlBalanza" type="xs:boolean" />
       <xs:element minOccurs="0" name="DatosProximaActividad" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DocumentoInternoSap" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Documentos" nillable="true" type="tns:ArrayOfDocumentoPorRecorridoDto" />
       <xs:element minOccurs="0" name="EnvioMuestraAuditoria" type="xs:boolean" />
       <xs:element minOccurs="0" name="EnvioMuestraInase" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsSustentable" type="xs:boolean" />
@@ -651,7 +681,6 @@
       <xs:element minOccurs="0" name="CodigoPostal" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CodigoSAP" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CodigoSAPEspecial" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="ContingenciaAfipCpe" type="xs:boolean" />
       <xs:element minOccurs="0" name="Cuit" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DescargaCartaPortePorCtg" type="xs:boolean" />
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
@@ -726,6 +755,22 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ChoferDto" nillable="true" type="tns:ChoferDto" />
+  <xs:complexType name="ArrayOfDocumentoPorRecorridoDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DocumentoPorRecorridoDto" nillable="true" type="tns:DocumentoPorRecorridoDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDocumentoPorRecorridoDto" nillable="true" type="tns:ArrayOfDocumentoPorRecorridoDto" />
+  <xs:complexType name="DocumentoPorRecorridoDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Extension" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FechaDeGuardado" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Path" nillable="true" type="xs:string" />
+      <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Tipo" type="q16:TipoImpresion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DocumentoPorRecorridoDto" nillable="true" type="tns:DocumentoPorRecorridoDto" />
   <xs:complexType name="EstablecimientoDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="Anulado" type="xs:boolean" />
@@ -801,7 +846,7 @@
       <xs:element minOccurs="0" name="AlmacenOrigenDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="AlmacenOrigenId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="CamaraDesc" nillable="true" type="xs:string" />
-      <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Clase" nillable="true" type="q16:ClaseBin" />
+      <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Clase" nillable="true" type="q17:ClaseBin" />
       <xs:element minOccurs="0" name="CodigoEspecie" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="CodigoGranoPadre" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="CodigoONCCA" nillable="true" type="xs:string" />
@@ -850,7 +895,7 @@
       <xs:element minOccurs="0" name="FechaCreacion" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaModificacion" nillable="true" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element xmlns:q17="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="MaterialesId" nillable="true" type="q17:ArrayOfint" />
+      <xs:element xmlns:q18="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="MaterialesId" nillable="true" type="q18:ArrayOfint" />
       <xs:element minOccurs="0" name="ModificadoPor" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Motivo" nillable="true" type="xs:string" />
     </xs:sequence>
@@ -860,7 +905,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="CodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
-      <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EsParaUva" type="q18:TipoUva" />
+      <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EsParaUva" type="q19:TipoUva" />
       <xs:element minOccurs="0" name="Id" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="NoRechazaEnCalado" type="xs:boolean" />
       <xs:element minOccurs="0" name="PesoEsperado" nillable="true" type="xs:int" />
@@ -881,7 +926,7 @@
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="Localidad" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="LocalidadId" nillable="true" type="xs:int" />
-      <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="MedioDePago" type="q19:MedioDePago" />
+      <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="MedioDePago" type="q20:MedioDePago" />
       <xs:element minOccurs="0" name="Provincia" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProvinciaId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="RazonSocial" nillable="true" type="xs:string" />
@@ -905,7 +950,7 @@
       <xs:element minOccurs="0" name="PesoTaraOrigen" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Primero" type="xs:boolean" />
       <xs:element minOccurs="0" name="Sucural" nillable="true" type="xs:string" />
-      <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q20:TipoVehiculo" />
+      <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q21:TipoVehiculo" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="VehiculoDto" nillable="true" type="tns:VehiculoDto" />
@@ -918,7 +963,7 @@
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="FechaActivacion" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q21:TipoDeWorkflow" />
+      <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q22:TipoDeWorkflow" />
       <xs:element minOccurs="0" name="TiposComercialesAsociados" nillable="true" type="tns:ArrayOfTipoComercialDto" />
     </xs:sequence>
   </xs:complexType>
@@ -961,11 +1006,11 @@
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="MaterialDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
-      <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Motivo" type="q22:MotivoExcepcionAlControl" />
+      <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Motivo" type="q23:MotivoExcepcionAlControl" />
       <xs:element minOccurs="0" name="ProveedorDestinoId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="ProveedorId" type="xs:int" />
       <xs:element minOccurs="0" name="RazonSocial" nillable="true" type="xs:string" />
-      <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDestino" type="q23:TipoDestino" />
+      <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDestino" type="q24:TipoDestino" />
       <xs:element minOccurs="0" name="TipoDestinoNombre" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Usuario" nillable="true" type="xs:string" />
     </xs:sequence>
@@ -1159,17 +1204,17 @@
           <xs:element minOccurs="0" name="EstadoCallePreBalanza" type="xs:boolean" />
           <xs:element minOccurs="0" name="EstadoCallePreHidraulica" type="xs:boolean" />
           <xs:element minOccurs="0" name="HidraulicaDescripcion" nillable="true" type="xs:string" />
-          <xs:element xmlns:q24="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Hidraulicas" nillable="true" type="q24:ArrayOfint" />
+          <xs:element xmlns:q25="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Hidraulicas" nillable="true" type="q25:ArrayOfint" />
           <xs:element minOccurs="0" name="Id" type="xs:int" />
           <xs:element minOccurs="0" name="MaterialDescripcion" nillable="true" type="xs:string" />
           <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
           <xs:element minOccurs="0" name="Maximo" nillable="true" type="xs:decimal" />
           <xs:element minOccurs="0" name="Minimo" nillable="true" type="xs:decimal" />
           <xs:element minOccurs="0" name="Motivo" nillable="true" type="xs:string" />
-          <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCallePreHidraulica" type="q25:TipoCalle" />
-          <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCallePrebalanza" type="q26:TipoCalle" />
+          <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCallePreHidraulica" type="q26:TipoCalle" />
+          <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCallePrebalanza" type="q27:TipoCalle" />
           <xs:element minOccurs="0" name="TipoVariedadDescripcion" nillable="true" type="xs:string" />
-          <xs:element xmlns:q27="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="TipoVariedades" nillable="true" type="q27:ArrayOfint" />
+          <xs:element xmlns:q28="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="TipoVariedades" nillable="true" type="q28:ArrayOfint" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1279,7 +1324,7 @@
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Rechazado" type="xs:boolean" />
       <xs:element minOccurs="0" name="RecorridoId" nillable="true" type="xs:int" />
-      <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCalle" type="q28:TipoCalle" />
+      <xs:element xmlns:q29="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCalle" type="q29:TipoCalle" />
       <xs:element minOccurs="0" name="UltimoDeLaFila" type="xs:boolean" />
     </xs:sequence>
   </xs:complexType>
@@ -1326,7 +1371,7 @@
       <xs:element minOccurs="0" name="CaladoId" type="xs:int" />
       <xs:element minOccurs="0" name="Calidad" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Calle" nillable="true" type="xs:string" />
-      <xs:element xmlns:q29="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="CaracteristicasDeCalidad" nillable="true" type="q29:ArrayOfKeyValueOfstringstring" />
+      <xs:element xmlns:q30="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="CaracteristicasDeCalidad" nillable="true" type="q30:ArrayOfKeyValueOfstringstring" />
       <xs:element minOccurs="0" name="CaracteristicasNoCorrenspodenEspecial" type="xs:boolean" />
       <xs:element minOccurs="0" name="Centro" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CentroCodigoSap" nillable="true" type="xs:string" />
@@ -1334,7 +1379,7 @@
       <xs:element minOccurs="0" name="ChoferDNI" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ChoferNombre" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
-      <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/Microsoft.ApplicationServer.StoreManagement.Query" minOccurs="0" name="Condicion" type="q30:InstanceCondition" />
+      <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/Microsoft.ApplicationServer.StoreManagement.Query" minOccurs="0" name="Condicion" type="q31:InstanceCondition" />
       <xs:element minOccurs="0" name="Cuit" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DatosProximaActividad" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DiferenciaPesoNeto" nillable="true" type="xs:string" />
@@ -1352,7 +1397,7 @@
       <xs:element minOccurs="0" name="EsSemillaSoja" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsSustentable" type="xs:boolean" />
       <xs:element minOccurs="0" name="EstaDemorado" type="xs:boolean" />
-      <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/Microsoft.ApplicationServer.StoreManagement.Query" minOccurs="0" name="Estado" type="q31:InstanceStatus" />
+      <xs:element xmlns:q32="http://schemas.datacontract.org/2004/07/Microsoft.ApplicationServer.StoreManagement.Query" minOccurs="0" name="Estado" type="q32:InstanceStatus" />
       <xs:element minOccurs="0" name="FechaCalado" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaCreacion" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaUltimaModificacion" nillable="true" type="xs:dateTime" />
@@ -1390,9 +1435,9 @@
       <xs:element minOccurs="0" name="TieneInsectosVivos" type="xs:boolean" />
       <xs:element minOccurs="0" name="TipoComercial" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
-      <xs:element xmlns:q32="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoDeIngreso" nillable="true" type="q32:TipoDocumentoIngreso" />
-      <xs:element xmlns:q33="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoOrdenCargaNoGranos" nillable="true" type="q33:TipoOrdenCargaNoGranos" />
-      <xs:element xmlns:q34="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" nillable="true" type="q34:TipoVehiculo" />
+      <xs:element xmlns:q33="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoDeIngreso" nillable="true" type="q33:TipoDocumentoIngreso" />
+      <xs:element xmlns:q34="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoOrdenCargaNoGranos" nillable="true" type="q34:TipoOrdenCargaNoGranos" />
+      <xs:element xmlns:q35="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" nillable="true" type="q35:TipoVehiculo" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="VehiculoDemorado" type="xs:boolean" />
@@ -1516,7 +1561,7 @@
       <xs:element minOccurs="0" name="DocumentoInternoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="EstaPagadoPorMetodoDigital" type="xs:boolean" />
       <xs:element minOccurs="0" name="Material" nillable="true" type="tns:MaterialDto" />
-      <xs:element xmlns:q35="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="MedioDePago" type="q35:MedioDePago" />
+      <xs:element xmlns:q36="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="MedioDePago" type="q36:MedioDePago" />
       <xs:element minOccurs="0" name="Monto" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NombreTransportista" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumeroDocumentoIngreso" nillable="true" type="xs:string" />
@@ -1524,8 +1569,8 @@
       <xs:element minOccurs="0" name="PagoConMercadoPago" type="xs:boolean" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="RecorridoId" type="xs:int" />
-      <xs:element xmlns:q36="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q36:TipoDocumentoIngreso" />
-      <xs:element xmlns:q37="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q37:TipoVehiculo" />
+      <xs:element xmlns:q37="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q37:TipoDocumentoIngreso" />
+      <xs:element xmlns:q38="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q38:TipoVehiculo" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ImpresionReciboMunicipalRecorridoDto" nillable="true" type="tns:ImpresionReciboMunicipalRecorridoDto" />
@@ -1555,7 +1600,7 @@
       <xs:element minOccurs="0" name="NumeroDeDocumento" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="OffsetX" type="xs:int" />
       <xs:element minOccurs="0" name="OffsetY" type="xs:int" />
-      <xs:element xmlns:q38="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q38:TipoDocumentoIngreso" />
+      <xs:element xmlns:q39="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q39:TipoDocumentoIngreso" />
       <xs:element minOccurs="0" name="Width" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
@@ -1583,7 +1628,7 @@
   <xs:complexType name="LoteAuditoriaListaDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="CamaraDesc" nillable="true" type="xs:string" />
-      <xs:element xmlns:q39="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q39:CamaraFormatoDeArchivo" />
+      <xs:element xmlns:q40="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q40:CamaraFormatoDeArchivo" />
       <xs:element minOccurs="0" name="CamaraId" type="xs:int" />
       <xs:element minOccurs="0" name="CentroDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CentroId" type="xs:int" />
@@ -1679,7 +1724,7 @@
   <xs:complexType name="InfoPatenteDeCalleDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="CaladoId" nillable="true" type="xs:int" />
-      <xs:element xmlns:q40="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CalidadCamion" type="q40:TipoCalidad" />
+      <xs:element xmlns:q41="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CalidadCamion" type="q41:TipoCalidad" />
       <xs:element minOccurs="0" name="CalleId" type="xs:int" />
       <xs:element minOccurs="0" name="CalleNoGrano" type="xs:boolean" />
       <xs:element minOccurs="0" name="CargaDeCupoId" nillable="true" type="xs:int" />
@@ -1701,10 +1746,10 @@
       <xs:element minOccurs="0" name="Rechazado" type="xs:boolean" />
       <xs:element minOccurs="0" name="RecorridoId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Tarjeta" nillable="true" type="xs:string" />
-      <xs:element xmlns:q41="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCalidad" type="q41:TipoCalidad" />
-      <xs:element xmlns:q42="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCalle" type="q42:TipoCalle" />
-      <xs:element xmlns:q43="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" nillable="true" type="q43:TipoDocumentoIngreso" />
-      <xs:element xmlns:q44="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" nillable="true" type="q44:TipoVehiculo" />
+      <xs:element xmlns:q42="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCalidad" type="q42:TipoCalidad" />
+      <xs:element xmlns:q43="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCalle" type="q43:TipoCalle" />
+      <xs:element xmlns:q44="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" nillable="true" type="q44:TipoDocumentoIngreso" />
+      <xs:element xmlns:q45="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" nillable="true" type="q45:TipoVehiculo" />
       <xs:element minOccurs="0" name="WorkflowDefinicionId" nillable="true" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
@@ -1713,7 +1758,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="FechaModificacion" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Motivo" nillable="true" type="xs:string" />
-      <xs:element xmlns:q45="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoPinchazo" type="q45:TipoPinchazo" />
+      <xs:element xmlns:q46="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoPinchazo" type="q46:TipoPinchazo" />
       <xs:element minOccurs="0" name="Usuario" nillable="true" type="tns:UsuarioDto" />
     </xs:sequence>
   </xs:complexType>
@@ -1772,10 +1817,10 @@
   <xs:complexType name="PermisoDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="ActividadWorkflow" nillable="true" type="xs:string" />
-      <xs:element xmlns:q46="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" minOccurs="0" name="Codigo" nillable="true" type="q46:PermisosScato" />
+      <xs:element xmlns:q47="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" minOccurs="0" name="Codigo" nillable="true" type="q47:PermisosScato" />
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element xmlns:q47="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoPermiso" type="q47:TipoPermiso" />
+      <xs:element xmlns:q48="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoPermiso" type="q48:TipoPermiso" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="PermisoDto" nillable="true" type="tns:PermisoDto" />
@@ -1880,10 +1925,10 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="CentroId" type="xs:int" />
       <xs:element minOccurs="0" name="Dto" nillable="true" type="tns:CartaPorteDto" />
-      <xs:element xmlns:q48="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoCtg" type="q48:EstadoTransmisionASap" />
-      <xs:element xmlns:q49="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoCtgDefinitivo" type="q49:EstadoTransmisionASap" />
+      <xs:element xmlns:q49="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoCtg" type="q49:EstadoTransmisionASap" />
+      <xs:element xmlns:q50="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoCtgDefinitivo" type="q50:EstadoTransmisionASap" />
       <xs:element minOccurs="0" name="OrdenDeDescargaFason" nillable="true" type="tns:OrdenDeDescargaFasonDto" />
-      <xs:element xmlns:q50="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q50:TipoDocumentoIngreso" />
+      <xs:element xmlns:q51="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q51:TipoDocumentoIngreso" />
       <xs:element minOccurs="0" name="Vehiculo" nillable="true" type="tns:VehiculoDto" />
       <xs:element minOccurs="0" name="WorkflowId" type="ser:guid" />
     </xs:sequence>
@@ -2007,7 +2052,7 @@
       <xs:element minOccurs="0" name="NumeroOperativo" nillable="true" type="xs:long" />
       <xs:element minOccurs="0" name="NumeroPrecinto" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Observacion" nillable="true" type="xs:string" />
-      <xs:element xmlns:q51="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="OrigenVehiculo" type="q51:OrigenVehiculo" />
+      <xs:element xmlns:q52="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="OrigenVehiculo" type="q52:OrigenVehiculo" />
       <xs:element minOccurs="0" name="PagadorFlete" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PagadorFleteCuil" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PagadorFleteId" nillable="true" type="xs:int" />
@@ -2061,9 +2106,9 @@
       <xs:element minOccurs="0" name="TipoComercialCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoComercialSentido" nillable="true" type="xs:string" />
-      <xs:element xmlns:q52="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q52:TipoDeWorkflow" />
+      <xs:element xmlns:q53="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q53:TipoDeWorkflow" />
       <xs:element minOccurs="0" name="TipoVariedadCodigo" nillable="true" type="xs:string" />
-      <xs:element xmlns:q53="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q53:TipoVehiculo" />
+      <xs:element xmlns:q54="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q54:TipoVehiculo" />
       <xs:element minOccurs="0" name="TitularCartaPorte" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TitularCartaPorteCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TitularCartaPorteCuil" nillable="true" type="xs:string" />
@@ -2140,8 +2185,8 @@
       <xs:element minOccurs="0" name="TipoComercialCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoComercialSentido" nillable="true" type="xs:string" />
-      <xs:element xmlns:q54="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q54:TipoDeWorkflow" />
-      <xs:element xmlns:q55="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q55:TipoVehiculo" />
+      <xs:element xmlns:q55="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q55:TipoDeWorkflow" />
+      <xs:element xmlns:q56="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q56:TipoVehiculo" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaId" type="xs:int" />
     </xs:sequence>
@@ -2202,15 +2247,15 @@
       <xs:element minOccurs="0" name="EstaEnCero" type="xs:boolean" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="MaximoValorCereo" type="xs:int" />
-      <xs:element xmlns:q56="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Modalidad" type="q56:Modalidad" />
+      <xs:element xmlns:q57="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Modalidad" type="q57:Modalidad" />
       <xs:element minOccurs="0" name="Modelo" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NombreCorto" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NroSerie" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PuestoDeTrabajo" nillable="true" type="xs:string" />
-      <xs:element xmlns:q57="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAcceso" type="q57:TipoAcceso" />
-      <xs:element xmlns:q58="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoBalanza" type="q58:TipoBalanza" />
-      <xs:element xmlns:q59="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q59:TipoVehiculo" />
+      <xs:element xmlns:q58="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAcceso" type="q58:TipoAcceso" />
+      <xs:element xmlns:q59="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoBalanza" type="q59:TipoBalanza" />
+      <xs:element xmlns:q60="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q60:TipoVehiculo" />
       <xs:element minOccurs="0" name="ToleranciaExcedida" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="ToleranciaIndianapolis" type="xs:int" />
       <xs:element minOccurs="0" name="ToleranciaOrigen" nillable="true" type="xs:int" />
@@ -2751,16 +2796,16 @@
   <xs:complexType name="PanelPagoMunicipalDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="CuitInterviniente" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="FechaEmision" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaEmision" nillable="true" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaIngreso" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="Importe" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="NombreUsuario" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumeroDocumento" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumeroRecibo" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="PagoConsumido" type="xs:boolean" />
+      <xs:element minOccurs="0" name="PagoInformado" type="xs:boolean" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
-      <xs:element xmlns:q60="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q60:TipoVehiculo" />
+      <xs:element xmlns:q61="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q61:TipoVehiculo" />
       <xs:element minOccurs="0" name="WorkflowCodigo" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="WorkflowDescripcion" nillable="true" type="xs:string" />
     </xs:sequence>
@@ -2834,7 +2879,7 @@
       <xs:element minOccurs="0" name="TipoComercialDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoDomicilioDestino" nillable="true" type="xs:int" />
-      <xs:element xmlns:q61="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q61:TipoVehiculo" />
+      <xs:element xmlns:q62="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q62:TipoVehiculo" />
       <xs:element minOccurs="0" name="TipoYOrdenDestino" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaCuit" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaDesc" nillable="true" type="xs:string" />
@@ -2910,8 +2955,8 @@
       <xs:element minOccurs="0" name="RecorridoId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="RevierteRechazo" type="xs:boolean" />
       <xs:element minOccurs="0" name="Tarjeta" nillable="true" type="xs:string" />
-      <xs:element xmlns:q62="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q62:TipoDeWorkflow" />
-      <xs:element xmlns:q63="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q63:TipoVehiculo" />
+      <xs:element xmlns:q63="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q63:TipoDeWorkflow" />
+      <xs:element xmlns:q64="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q64:TipoVehiculo" />
       <xs:element minOccurs="0" name="WorkflowInstanceId" type="ser:guid" />
     </xs:sequence>
   </xs:complexType>
@@ -2960,7 +3005,7 @@
       <xs:element minOccurs="0" name="TipoComercialDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoDomicilioDestino" nillable="true" type="xs:int" />
-      <xs:element xmlns:q64="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q64:TipoVehiculo" />
+      <xs:element xmlns:q65="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q65:TipoVehiculo" />
       <xs:element minOccurs="0" name="TipoYOrdenDestino" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaCuit" nillable="true" type="xs:string" />
@@ -2979,8 +3024,8 @@
   <xs:complexType name="EstacionMeteorologicaDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
-      <xs:element xmlns:q65="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Detalle" nillable="true" type="q65:ArrayOfstring" />
-      <xs:element xmlns:q66="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Imagenes" nillable="true" type="q66:ArrayOfbase64Binary" />
+      <xs:element xmlns:q66="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Detalle" nillable="true" type="q66:ArrayOfstring" />
+      <xs:element xmlns:q67="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Imagenes" nillable="true" type="q67:ArrayOfbase64Binary" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="EstacionMeteorologicaDto" nillable="true" type="tns:EstacionMeteorologicaDto" />
@@ -3011,8 +3056,8 @@
       <xs:element minOccurs="0" name="Automatizado" type="xs:boolean" />
       <xs:element minOccurs="0" name="CentroId" type="xs:int" />
       <xs:element minOccurs="0" name="CodigoDispositivo" nillable="true" type="xs:string" />
-      <xs:element xmlns:q67="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="DispositivosSupervisor" nillable="true" type="q67:ArrayOfstring" />
-      <xs:element xmlns:q68="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Entrada" nillable="true" type="q68:ArrayOfstring" />
+      <xs:element xmlns:q68="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="DispositivosSupervisor" nillable="true" type="q68:ArrayOfstring" />
+      <xs:element xmlns:q69="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Entrada" nillable="true" type="q69:ArrayOfstring" />
       <xs:element minOccurs="0" name="EsTarjetaSupervisor" type="xs:boolean" />
       <xs:element minOccurs="0" name="Firmware" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MensajeAlerta" nillable="true" type="xs:string" />
@@ -3027,9 +3072,9 @@
       <xs:element minOccurs="0" name="PuestoDeTrabajoPidePantente" type="xs:boolean" />
       <xs:element minOccurs="0" name="Rechazado" type="xs:boolean" />
       <xs:element minOccurs="0" name="ReconocimientoExitoso" type="xs:boolean" />
-      <xs:element xmlns:q69="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Salida" nillable="true" type="q69:ArrayOfstring" />
+      <xs:element xmlns:q70="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Salida" nillable="true" type="q70:ArrayOfstring" />
       <xs:element minOccurs="0" name="TarjetaValida" type="xs:boolean" />
-      <xs:element xmlns:q70="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAlerta" type="q70:TipoAlerta" />
+      <xs:element xmlns:q71="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAlerta" type="q71:TipoAlerta" />
       <xs:element minOccurs="0" name="VideoCamaras" nillable="true" type="tns:ArrayOfVideoCamaraDto" />
     </xs:sequence>
   </xs:complexType>
@@ -3093,7 +3138,7 @@
       <xs:element minOccurs="0" name="TipoComercialDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoDomicilioDestino" nillable="true" type="xs:int" />
-      <xs:element xmlns:q71="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q71:TipoVehiculo" />
+      <xs:element xmlns:q72="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q72:TipoVehiculo" />
       <xs:element minOccurs="0" name="TipoYOrdenDestino" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaId" type="xs:int" />
@@ -3111,7 +3156,7 @@
       <xs:element minOccurs="0" name="MaterialDescripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
       <xs:element minOccurs="0" name="PatenteAcoplado" nillable="true" type="xs:string" />
-      <xs:element xmlns:q72="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoOrden" type="q72:TipoOrdenCargaNoGranos" />
+      <xs:element xmlns:q73="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoOrden" type="q73:TipoOrdenCargaNoGranos" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="OrdenNoGranosCargaDeCupoDto" nillable="true" type="tns:OrdenNoGranosCargaDeCupoDto" />
@@ -3359,7 +3404,7 @@
       <xs:element minOccurs="0" name="CamionesPendientes" type="xs:int" />
       <xs:element minOccurs="0" name="ErrorCacheoAfipCPE" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="FechaUltimaEjecucion" nillable="true" type="xs:dateTime" />
-      <xs:element xmlns:q73="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Consultas" minOccurs="0" name="MonitorCPECacheadaListado" nillable="true" type="q73:ListaPaginadaOfMonitorCPECacheadaListadoDtoT7DPfI5_P" />
+      <xs:element xmlns:q74="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Consultas" minOccurs="0" name="MonitorCPECacheadaListado" nillable="true" type="q74:ListaPaginadaOfMonitorCPECacheadaListadoDtoT7DPfI5_P" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="MonitorCPECacheadaResultadoDto" nillable="true" type="tns:MonitorCPECacheadaResultadoDto" />
@@ -3488,7 +3533,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="CaracteristicaDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CaracteristicaId" type="xs:int" />
-      <xs:element xmlns:q74="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="CaracteristicasDeCalidadId" nillable="true" type="q74:ArrayOfint" />
+      <xs:element xmlns:q75="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="CaracteristicasDeCalidadId" nillable="true" type="q75:ArrayOfint" />
       <xs:element minOccurs="0" name="EntregadorDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="EntregadorId" type="xs:int" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
@@ -3562,7 +3607,7 @@
   <xs:element name="ArrayOfBalanzaPuertoDto" nillable="true" type="tns:ArrayOfBalanzaPuertoDto" />
   <xs:complexType name="CargaFiltroDto">
     <xs:sequence>
-      <xs:element xmlns:q75="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Consultas" minOccurs="0" name="Balanzada" nillable="true" type="q75:ListaPaginadaOfBalanzadaDtoT7DPfI5_P" />
+      <xs:element xmlns:q76="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Consultas" minOccurs="0" name="Balanzada" nillable="true" type="q76:ListaPaginadaOfBalanzadaDtoT7DPfI5_P" />
       <xs:element minOccurs="0" name="BalanzadaFaltante" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="BodegaDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DestinoDesc" nillable="true" type="xs:string" />
@@ -3833,7 +3878,7 @@
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DescripcionCorta" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element xmlns:q76="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Modalidad" type="q76:Modalidad" />
+      <xs:element xmlns:q77="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Modalidad" type="q77:Modalidad" />
       <xs:element minOccurs="0" name="PuestoDeTrabajo" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
@@ -3861,7 +3906,7 @@
       <xs:element minOccurs="0" name="NroTarjetaRfidNueva" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumeroDocumentoIngreso" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
-      <xs:element xmlns:q77="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q77:TipoDocumentoIngreso" />
+      <xs:element xmlns:q78="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q78:TipoDocumentoIngreso" />
       <xs:element minOccurs="0" name="UsuarioNombre" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
@@ -3879,7 +3924,7 @@
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="Monto" type="xs:decimal" />
       <xs:element minOccurs="0" name="Ordenanza" nillable="true" type="xs:string" />
-      <xs:element xmlns:q78="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" nillable="true" type="q78:TipoVehiculo" />
+      <xs:element xmlns:q79="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" nillable="true" type="q79:TipoVehiculo" />
       <xs:element minOccurs="0" name="TipoVehiculoId" nillable="true" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
@@ -3986,7 +4031,7 @@
       <xs:element minOccurs="0" name="NumeroDeTarjeta" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumeroDocumentoIngreso" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
-      <xs:element xmlns:q79="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q79:TipoDocumentoIngreso" />
+      <xs:element xmlns:q80="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q80:TipoDocumentoIngreso" />
       <xs:element minOccurs="0" name="TitularCartaPorte" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TitularCartaPorteId" type="xs:int" />
     </xs:sequence>
@@ -4103,8 +4148,8 @@
       <xs:element minOccurs="0" name="TipoComercialCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoComercialSentido" nillable="true" type="xs:string" />
-      <xs:element xmlns:q80="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q80:TipoDeWorkflow" />
-      <xs:element xmlns:q81="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q81:TipoVehiculo" />
+      <xs:element xmlns:q81="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q81:TipoDeWorkflow" />
+      <xs:element xmlns:q82="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q82:TipoVehiculo" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaCUIT" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaId" type="xs:int" />
@@ -4134,7 +4179,7 @@
       <xs:element minOccurs="0" name="CentroId" type="xs:int" />
       <xs:element minOccurs="0" name="FechaDesde" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaHasta" type="xs:dateTime" />
-      <xs:element xmlns:q82="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="HidraulicasId" nillable="true" type="q82:ArrayOfint" />
+      <xs:element xmlns:q83="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="HidraulicasId" nillable="true" type="q83:ArrayOfint" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="Material" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialPorCentroId" type="xs:int" />
@@ -4235,7 +4280,7 @@
       <xs:element minOccurs="0" name="CentroProvinciaDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialCodigoSAP" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialDescripcion" nillable="true" type="xs:string" />
-      <xs:element xmlns:q83="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q83:TipoDocumentoIngreso" />
+      <xs:element xmlns:q84="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q84:TipoDocumentoIngreso" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Formulario239RecorridoMaterialCentroDto" nillable="true" type="tns:Formulario239RecorridoMaterialCentroDto" />
@@ -4261,7 +4306,7 @@
       <xs:element minOccurs="0" name="Proveedor" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="RecorridoId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoVariedadCodigo" nillable="true" type="xs:string" />
-      <xs:element xmlns:q84="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q84:TipoVehiculo" />
+      <xs:element xmlns:q85="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q85:TipoVehiculo" />
       <xs:element minOccurs="0" name="Workflow" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="WorkflowDefinicionId" type="xs:int" />
     </xs:sequence>
@@ -4497,7 +4542,7 @@
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DescripcionCorta" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element xmlns:q85="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Modalidad" type="q85:Modalidad" />
+      <xs:element xmlns:q86="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Modalidad" type="q86:Modalidad" />
       <xs:element minOccurs="0" name="PuestoDeTrabajo" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
@@ -4523,7 +4568,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="CamaraDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CamaraEmail" nillable="true" type="xs:string" />
-      <xs:element xmlns:q86="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q86:CamaraFormatoDeArchivo" />
+      <xs:element xmlns:q87="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q87:CamaraFormatoDeArchivo" />
       <xs:element minOccurs="0" name="CamaraId" type="xs:int" />
       <xs:element minOccurs="0" name="CentroDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CentroId" type="xs:int" />
@@ -4549,7 +4594,7 @@
       <xs:element minOccurs="0" name="CPE" nillable="true" type="xs:boolean" />
       <xs:element minOccurs="0" name="CTG" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CamaraDesc" nillable="true" type="xs:string" />
-      <xs:element xmlns:q87="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q87:CamaraFormatoDeArchivo" />
+      <xs:element xmlns:q88="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q88:CamaraFormatoDeArchivo" />
       <xs:element minOccurs="0" name="CamaraId" type="xs:int" />
       <xs:element minOccurs="0" name="CantidadDeVagones" type="xs:int" />
       <xs:element minOccurs="0" name="CaracteristicasDeCalidad" nillable="true" type="tns:ArrayOfCaracteristicaDeCalidadDto" />
@@ -4573,7 +4618,7 @@
       <xs:element minOccurs="0" name="DestinatarioMail" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Direccion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Entregador" nillable="true" type="xs:string" />
-      <xs:element xmlns:q88="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoMuestra" type="q88:EstadoMuestra" />
+      <xs:element xmlns:q89="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoMuestra" type="q89:EstadoMuestra" />
       <xs:element minOccurs="0" name="FechaCartaPorte" nillable="true" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaDescarga" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaEmision" type="xs:dateTime" />
@@ -4606,8 +4651,8 @@
       <xs:element minOccurs="0" name="RtteComercialMail" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Sucursal" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="TieneAnalisisInterno" type="xs:boolean" />
-      <xs:element xmlns:q89="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" type="q89:TipoDocumentoIngreso" />
-      <xs:element xmlns:q90="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q90:TipoVehiculo" />
+      <xs:element xmlns:q90="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" type="q90:TipoDocumentoIngreso" />
+      <xs:element xmlns:q91="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q91:TipoVehiculo" />
       <xs:element minOccurs="0" name="TitularCartaPorte" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TitularCartaPorteCuil" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TitularCartaPorteId" type="xs:int" />
@@ -4626,7 +4671,7 @@
   <xs:element name="ArrayOfCaracteristicaDeCalidadDto" nillable="true" type="tns:ArrayOfCaracteristicaDeCalidadDto" />
   <xs:complexType name="CaracteristicaDeCalidadDto">
     <xs:sequence>
-      <xs:element xmlns:q91="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Analisis" type="q91:TipoAnalisis" />
+      <xs:element xmlns:q92="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Analisis" type="q92:TipoAnalisis" />
       <xs:element minOccurs="0" name="CaladoMaximo" type="xs:decimal" />
       <xs:element minOccurs="0" name="CaladoMinimo" type="xs:decimal" />
       <xs:element minOccurs="0" name="CaladoPorDefecto" nillable="true" type="xs:decimal" />
@@ -4636,9 +4681,9 @@
       <xs:element minOccurs="0" name="CodigoSAP" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DescripcionCorta" nillable="true" type="xs:string" />
-      <xs:element xmlns:q92="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="DescuentoEnPorcentaje" type="q92:FormulaDescuento" />
+      <xs:element xmlns:q93="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="DescuentoEnPorcentaje" type="q93:FormulaDescuento" />
       <xs:element minOccurs="0" name="DescuentosDto" nillable="true" type="tns:ArrayOfDescuentoDto" />
-      <xs:element xmlns:q93="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Dispositivo" type="q93:TipoDispositivo" />
+      <xs:element xmlns:q94="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Dispositivo" type="q94:TipoDispositivo" />
       <xs:element minOccurs="0" name="Ensayo" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="EnviaASap" type="xs:boolean" />
       <xs:element minOccurs="0" name="EsAutomatizable" type="xs:boolean" />
@@ -4656,8 +4701,8 @@
       <xs:element minOccurs="0" name="PrioridadEnCalado" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="SeEnviaACamara" type="xs:boolean" />
       <xs:element minOccurs="0" name="SiSuperaValorCamara" nillable="true" type="xs:decimal" />
-      <xs:element xmlns:q94="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="SituacionEnvioACamara" type="q94:EnvioACamara" />
-      <xs:element xmlns:q95="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCaracteristica" type="q95:CaracteristicasCalidad" />
+      <xs:element xmlns:q95="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="SituacionEnvioACamara" type="q95:EnvioACamara" />
+      <xs:element xmlns:q96="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCaracteristica" type="q96:CaracteristicasCalidad" />
       <xs:element minOccurs="0" name="ToleranciaSinAnalisis" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="ToleranciaSinMensaje" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="UnidadDeMedida" nillable="true" type="xs:string" />
@@ -4699,7 +4744,7 @@
       <xs:element minOccurs="0" name="CPE" nillable="true" type="xs:boolean" />
       <xs:element minOccurs="0" name="CTG" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CamaraDesc" nillable="true" type="xs:string" />
-      <xs:element xmlns:q96="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q96:CamaraFormatoDeArchivo" />
+      <xs:element xmlns:q97="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q97:CamaraFormatoDeArchivo" />
       <xs:element minOccurs="0" name="CamaraId" type="xs:int" />
       <xs:element minOccurs="0" name="CantidadDeVagones" type="xs:int" />
       <xs:element minOccurs="0" name="CaracteristicasDeCalidad" nillable="true" type="tns:ArrayOfCaracteristicaDeCalidadDto" />
@@ -4723,7 +4768,7 @@
       <xs:element minOccurs="0" name="DestinatarioMail" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Direccion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Entregador" nillable="true" type="xs:string" />
-      <xs:element xmlns:q97="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoMuestra" type="q97:EstadoMuestra" />
+      <xs:element xmlns:q98="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoMuestra" type="q98:EstadoMuestra" />
       <xs:element minOccurs="0" name="FechaCartaPorte" nillable="true" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaDescarga" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaEmision" type="xs:dateTime" />
@@ -4757,8 +4802,8 @@
       <xs:element minOccurs="0" name="RtteComercialMail" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Sucursal" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="TieneAnalisisInterno" type="xs:boolean" />
-      <xs:element xmlns:q98="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" type="q98:TipoDocumentoIngreso" />
-      <xs:element xmlns:q99="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q99:TipoVehiculo" />
+      <xs:element xmlns:q99="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" type="q99:TipoDocumentoIngreso" />
+      <xs:element xmlns:q100="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q100:TipoVehiculo" />
       <xs:element minOccurs="0" name="TitularCartaPorte" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TitularCartaPorteCuil" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TitularCartaPorteId" type="xs:int" />
@@ -4775,7 +4820,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="CamaraDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CamaraEmail" nillable="true" type="xs:string" />
-      <xs:element xmlns:q100="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q100:CamaraFormatoDeArchivo" />
+      <xs:element xmlns:q101="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q101:CamaraFormatoDeArchivo" />
       <xs:element minOccurs="0" name="CamaraId" type="xs:int" />
       <xs:element minOccurs="0" name="CentroDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CentroId" type="xs:int" />
@@ -4804,7 +4849,7 @@
       <xs:element minOccurs="0" name="NroCartaPorte" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PesoNeto" nillable="true" type="xs:int" />
-      <xs:element xmlns:q101="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q101:TipoDocumentoIngreso" />
+      <xs:element xmlns:q102="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q102:TipoDocumentoIngreso" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
@@ -4817,7 +4862,7 @@
       <xs:element minOccurs="0" name="FechaImpresion" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
-      <xs:element xmlns:q102="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoImpresion" type="q102:TipoImpresion" />
+      <xs:element xmlns:q103="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoImpresion" type="q103:TipoImpresion" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ImpresionDto" nillable="true" type="tns:ImpresionDto" />
@@ -4850,8 +4895,8 @@
   <xs:element name="SubZonaDto" nillable="true" type="tns:SubZonaDto" />
   <xs:complexType name="TransmisionSapAModificarDto">
     <xs:sequence>
-      <xs:element xmlns:q103="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Campos" nillable="true" type="q103:ArrayOfKeyValueOfstringstring" />
-      <xs:element xmlns:q104="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoTransmision" type="q104:EstadoTransmisionASap" />
+      <xs:element xmlns:q104="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Campos" nillable="true" type="q104:ArrayOfKeyValueOfstringstring" />
+      <xs:element xmlns:q105="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoTransmision" type="q105:EstadoTransmisionASap" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
@@ -4863,7 +4908,7 @@
       <xs:element minOccurs="0" name="CargaProcesador" type="xs:int" />
       <xs:element minOccurs="0" name="DiscoDisponible" type="xs:int" />
       <xs:element minOccurs="0" name="Error" nillable="true" type="xs:string" />
-      <xs:element xmlns:q105="http://schemas.datacontract.org/2004/07/System.Diagnostics" minOccurs="0" name="ListaEventLogs" nillable="true" type="q105:ArrayOfEventLogEntry" />
+      <xs:element xmlns:q106="http://schemas.datacontract.org/2004/07/System.Diagnostics" minOccurs="0" name="ListaEventLogs" nillable="true" type="q106:ArrayOfEventLogEntry" />
       <xs:element minOccurs="0" name="MemoriaDisponible" type="xs:int" />
       <xs:element minOccurs="0" name="ServidorNombre" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Sesiones" type="xs:int" />
@@ -4914,13 +4959,13 @@
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="MaterialDescripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
-      <xs:element xmlns:q106="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Movimiento" nillable="true" type="q106:TipoDeWorkflow" />
+      <xs:element xmlns:q107="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Movimiento" nillable="true" type="q107:TipoDeWorkflow" />
       <xs:element minOccurs="0" name="NombreUsuario" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Numero" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Observaciones" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProveedorDescripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProveedorId" nillable="true" type="xs:int" />
-      <xs:element xmlns:q107="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAjuste" nillable="true" type="q107:TipoStockBines" />
+      <xs:element xmlns:q108="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAjuste" nillable="true" type="q108:TipoStockBines" />
       <xs:element minOccurs="0" name="VinedoPropioDescripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="VinedoPropioId" nillable="true" type="xs:int" />
     </xs:sequence>
@@ -4948,13 +4993,13 @@
       <xs:element minOccurs="0" name="DescripcionCorta" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Direccion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Favicon" nillable="true" type="xs:base64Binary" />
-      <xs:element xmlns:q108="http://schemas.datacontract.org/2004/07/System.Web" minOccurs="0" name="FaviconFile" nillable="true" type="q108:HttpPostedFileBase" />
+      <xs:element xmlns:q109="http://schemas.datacontract.org/2004/07/System.Web" minOccurs="0" name="FaviconFile" nillable="true" type="q109:HttpPostedFileBase" />
       <xs:element minOccurs="0" name="FechaDeInicio" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="IngBrutosConvMultilateral" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Latitud" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Logo" nillable="true" type="xs:base64Binary" />
-      <xs:element xmlns:q109="http://schemas.datacontract.org/2004/07/System.Web" minOccurs="0" name="LogoFile" nillable="true" type="q109:HttpPostedFileBase" />
+      <xs:element xmlns:q110="http://schemas.datacontract.org/2004/07/System.Web" minOccurs="0" name="LogoFile" nillable="true" type="q110:HttpPostedFileBase" />
       <xs:element minOccurs="0" name="Longitud" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="RazonSocial" nillable="true" type="xs:string" />
     </xs:sequence>
@@ -5002,7 +5047,7 @@
       <xs:element minOccurs="0" name="MaterialDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Movimientos" nillable="true" type="tns:ArrayOfMovimientoDeTercerosDto" />
       <xs:element minOccurs="0" name="NumeroDeArchivo" nillable="true" type="xs:string" />
-      <xs:element xmlns:q110="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q110:TipoDeWorkflow" />
+      <xs:element xmlns:q111="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q111:TipoDeWorkflow" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArchivoDeMovimientosDto" nillable="true" type="tns:ArchivoDeMovimientosDto" />
@@ -5089,7 +5134,7 @@
       <xs:element minOccurs="0" name="NombreActividad" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NombreActividadDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Rango" type="xs:int" />
-      <xs:element xmlns:q111="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Sector" type="q111:SectorEnum" />
+      <xs:element xmlns:q112="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Sector" type="q112:SectorEnum" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="GraficoDePlantaDto" nillable="true" type="tns:GraficoDePlantaDto" />
@@ -5150,7 +5195,7 @@
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DescripcionCorta" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Email" nillable="true" type="xs:string" />
-      <xs:element xmlns:q112="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="FormatoDeArchivo" type="q112:CamaraFormatoDeArchivo" />
+      <xs:element xmlns:q113="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="FormatoDeArchivo" type="q113:CamaraFormatoDeArchivo" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
@@ -5178,8 +5223,8 @@
   <xs:element name="KmPorProveedorDto" nillable="true" type="tns:KmPorProveedorDto" />
   <xs:complexType name="GraficoCamionesHoraDto">
     <xs:sequence>
-      <xs:element xmlns:q113="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="CamionesActuales" nillable="true" type="q113:ArrayOfint" />
-      <xs:element xmlns:q114="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="CamionesHistorico" nillable="true" type="q114:ArrayOfint" />
+      <xs:element xmlns:q114="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="CamionesActuales" nillable="true" type="q114:ArrayOfint" />
+      <xs:element xmlns:q115="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="CamionesHistorico" nillable="true" type="q115:ArrayOfint" />
       <xs:element minOccurs="0" name="FechaVieja" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="MaterialDescripcion" nillable="true" type="xs:string" />
@@ -5215,7 +5260,7 @@
   <xs:element name="ToneladasPorDiaDto" nillable="true" type="tns:ToneladasPorDiaDto" />
   <xs:complexType name="GraficoCamionesDiaDto">
     <xs:sequence>
-      <xs:element xmlns:q115="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="CamionesDia" nillable="true" type="q115:ArrayOfint" />
+      <xs:element xmlns:q116="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="CamionesDia" nillable="true" type="q116:ArrayOfint" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="MaterialDescripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
@@ -5228,7 +5273,7 @@
       <xs:element minOccurs="0" name="Fecha" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaHoraDesde" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaHoraHasta" type="xs:dateTime" />
-      <xs:element xmlns:q116="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="HidraulicasCodes" nillable="true" type="q116:ArrayOfstring" />
+      <xs:element xmlns:q117="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="HidraulicasCodes" nillable="true" type="q117:ArrayOfstring" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="MaterialDescripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
@@ -5265,23 +5310,23 @@
       <xs:element minOccurs="0" name="PesoMaxIngreso" type="xs:int" />
       <xs:element minOccurs="0" name="PesoNetoMaxPlanta" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="PesoNetoMinimo" nillable="true" type="xs:int" />
-      <xs:element xmlns:q117="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q117:TipoVehiculo" />
+      <xs:element xmlns:q118="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q118:TipoVehiculo" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="PesoMaximoPorTipoVehiculoDto" nillable="true" type="tns:PesoMaximoPorTipoVehiculoDto" />
   <xs:complexType name="MailAvisoStockDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="CodigoDeEstablecimiento" nillable="true" type="xs:string" />
-      <xs:element xmlns:q118="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Corredores" nillable="true" type="q118:ArrayOfstring" />
+      <xs:element xmlns:q119="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Corredores" nillable="true" type="q119:ArrayOfstring" />
       <xs:element minOccurs="0" name="Cosecha" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Error" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element xmlns:q119="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Intermediarios" nillable="true" type="q119:ArrayOfstring" />
+      <xs:element xmlns:q120="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Intermediarios" nillable="true" type="q120:ArrayOfstring" />
       <xs:element minOccurs="0" name="Localidad" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NombreDeEstablecimiento" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Provincia" nillable="true" type="xs:string" />
-      <xs:element xmlns:q120="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="RazonesSociales" nillable="true" type="q120:ArrayOfstring" />
-      <xs:element xmlns:q121="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Remitentes" nillable="true" type="q121:ArrayOfstring" />
+      <xs:element xmlns:q121="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="RazonesSociales" nillable="true" type="q121:ArrayOfstring" />
+      <xs:element xmlns:q122="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Remitentes" nillable="true" type="q122:ArrayOfstring" />
       <xs:element minOccurs="0" name="SeEnviaMail" type="xs:boolean" />
       <xs:element minOccurs="0" name="StockDeclarado" type="xs:decimal" />
       <xs:element minOccurs="0" name="StockUtilizado" type="xs:decimal" />
@@ -5331,7 +5376,7 @@
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="MargenIzquierdo" type="xs:int" />
       <xs:element minOccurs="0" name="MargenSuperior" type="xs:int" />
-      <xs:element xmlns:q122="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Posicion" type="q122:Posicion" />
+      <xs:element xmlns:q123="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Posicion" type="q123:Posicion" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="FormatoDeImpresionDto" nillable="true" type="tns:FormatoDeImpresionDto" />
@@ -5343,7 +5388,7 @@
   <xs:element name="ArrayOfFormatoDeCampoDto" nillable="true" type="tns:ArrayOfFormatoDeCampoDto" />
   <xs:complexType name="FormatoDeCampoDto">
     <xs:sequence>
-      <xs:element xmlns:q123="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Alineacion" type="q123:Alineacion" />
+      <xs:element xmlns:q124="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Alineacion" type="q124:Alineacion" />
       <xs:element minOccurs="0" name="CampoDescripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CampoDireccion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CampoId" type="xs:int" />
@@ -5361,7 +5406,7 @@
       <xs:element minOccurs="0" name="Subrayado" type="xs:boolean" />
       <xs:element minOccurs="0" name="Tamaño" type="xs:int" />
       <xs:element minOccurs="0" name="Texto" nillable="true" type="xs:string" />
-      <xs:element xmlns:q124="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeCampo" type="q124:TipoDeCampo" />
+      <xs:element xmlns:q125="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeCampo" type="q125:TipoDeCampo" />
       <xs:element minOccurs="0" name="TituloOncca" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="_destroy" type="xs:boolean" />
     </xs:sequence>
@@ -5489,8 +5534,8 @@
       <xs:element minOccurs="0" name="RequiereAnexoInase" type="xs:boolean" />
       <xs:element minOccurs="0" name="TipoComercial" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
-      <xs:element xmlns:q125="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q125:TipoDeWorkflow" />
-      <xs:element xmlns:q126="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q126:TipoVehiculo" />
+      <xs:element xmlns:q126="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q126:TipoDeWorkflow" />
+      <xs:element xmlns:q127="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q127:TipoVehiculo" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaCuit" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaId" type="xs:int" />
@@ -5511,7 +5556,7 @@
       <xs:element minOccurs="0" name="PatenteCamion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercial" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
-      <xs:element xmlns:q127="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q127:TipoVehiculo" />
+      <xs:element xmlns:q128="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q128:TipoVehiculo" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaCuit" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaId" type="xs:int" />
@@ -5561,8 +5606,8 @@
       <xs:element minOccurs="0" name="TipoComercial" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
-      <xs:element xmlns:q128="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q128:TipoDeWorkflow" />
-      <xs:element xmlns:q129="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q129:TipoVehiculo" />
+      <xs:element xmlns:q129="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q129:TipoDeWorkflow" />
+      <xs:element xmlns:q130="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q130:TipoVehiculo" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaCuit" nillable="true" type="xs:string" />
@@ -5575,7 +5620,7 @@
       <xs:element minOccurs="0" name="CerrarVehiculo" type="xs:boolean" />
       <xs:element minOccurs="0" name="DescargaUnidadItemPedidos" nillable="true" type="tns:ArrayOfDescargaUnidadItemPedidoDto" />
       <xs:element minOccurs="0" name="DescargaUnidadItems" nillable="true" type="tns:ArrayOfDescargaUnidadItemDto" />
-      <xs:element xmlns:q130="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Estado" type="q130:EstadoDescargaUnidad" />
+      <xs:element xmlns:q131="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Estado" type="q131:EstadoDescargaUnidad" />
       <xs:element minOccurs="0" name="FechaCierre" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaInicio" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Imprimir" type="xs:boolean" />
@@ -5636,7 +5681,7 @@
       <xs:element minOccurs="0" name="Material" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
-      <xs:element xmlns:q131="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="ModalidadBalanza" type="q131:Modalidad" />
+      <xs:element xmlns:q132="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="ModalidadBalanza" type="q132:Modalidad" />
       <xs:element minOccurs="0" name="PesoBruto" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="PesoTara" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="Rechazado" type="xs:boolean" />
@@ -5674,7 +5719,7 @@
       <xs:element minOccurs="0" name="RecorridoId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoComercial" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
-      <xs:element xmlns:q132="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q132:TipoVehiculo" />
+      <xs:element xmlns:q133="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q133:TipoVehiculo" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaCuit" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaId" type="xs:int" />
@@ -5817,7 +5862,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="AlmacenOrigen" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="AlmacenOrigenSap" nillable="true" type="xs:string" />
-      <xs:element xmlns:q133="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Calidades" nillable="true" type="q133:ArrayOfKeyValueOfstringNullableOfdecimalU6ho3Bhd" />
+      <xs:element xmlns:q134="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Calidades" nillable="true" type="q134:ArrayOfKeyValueOfstringNullableOfdecimalU6ho3Bhd" />
       <xs:element minOccurs="0" name="Camara" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Centro" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CentroSap" nillable="true" type="xs:string" />
@@ -5958,16 +6003,16 @@
       <xs:element minOccurs="0" name="CorrespondeCaladoEnPlanta" type="xs:boolean" />
       <xs:element minOccurs="0" name="Error" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="FalloWF" type="xs:boolean" />
-      <xs:element xmlns:q134="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="HidraulicasId" nillable="true" type="q134:ArrayOfint" />
+      <xs:element xmlns:q135="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="HidraulicasId" nillable="true" type="q135:ArrayOfint" />
       <xs:element minOccurs="0" name="InstanceIds" nillable="true" type="xs:string" />
-      <xs:element xmlns:q135="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="InstanceIdsList" nillable="true" type="q135:ArrayOfguid" />
+      <xs:element xmlns:q136="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="InstanceIdsList" nillable="true" type="q136:ArrayOfguid" />
       <xs:element minOccurs="0" name="MaterialId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="PuntoDeCargaId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="SonSojaEPA" type="xs:boolean" />
       <xs:element minOccurs="0" name="SonSustentables" type="xs:boolean" />
       <xs:element minOccurs="0" name="SustentableMixto" type="xs:boolean" />
-      <xs:element xmlns:q136="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q136:TipoVehiculo" />
-      <xs:element xmlns:q137="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="patentesInvalidas" nillable="true" type="q137:ArrayOfstring" />
+      <xs:element xmlns:q137="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q137:TipoVehiculo" />
+      <xs:element xmlns:q138="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="patentesInvalidas" nillable="true" type="q138:ArrayOfstring" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="AsignacionDto" nillable="true" type="tns:AsignacionDto" />
@@ -5975,12 +6020,12 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="Calidad" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CalleId" nillable="true" type="xs:int" />
-      <xs:element xmlns:q138="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CantidadDeResultados" type="q138:CantidadDeResultados" />
+      <xs:element xmlns:q139="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CantidadDeResultados" type="q139:CantidadDeResultados" />
       <xs:element minOccurs="0" name="CentroId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="CodigoSapMolinos" nillable="true" type="xs:string" />
-      <xs:element xmlns:q139="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Columnas" nillable="true" type="q139:ArrayOfstring" />
-      <xs:element xmlns:q140="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Condicion" nillable="true" type="q140:EstadoWorkflow" />
-      <xs:element xmlns:q141="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Consultas" minOccurs="0" name="DirOrden" type="q141:DirOrden" />
+      <xs:element xmlns:q140="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Columnas" nillable="true" type="q140:ArrayOfstring" />
+      <xs:element xmlns:q141="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Condicion" nillable="true" type="q141:EstadoWorkflow" />
+      <xs:element xmlns:q142="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Consultas" minOccurs="0" name="DirOrden" type="q142:DirOrden" />
       <xs:element minOccurs="0" name="Entregador" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ExcluirRechazados" type="xs:boolean" />
       <xs:element minOccurs="0" name="MaterialDesc" nillable="true" type="xs:string" />
@@ -5997,16 +6042,16 @@
       <xs:element minOccurs="0" name="SoloNoAsignados" type="xs:boolean" />
       <xs:element minOccurs="0" name="SoloSinDescuentos" type="xs:boolean" />
       <xs:element minOccurs="0" name="TiempoMaxEntreActividades" nillable="true" type="xs:int" />
-      <xs:element xmlns:q142="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TieneEntregador" type="q142:FiltroEntregador" />
+      <xs:element xmlns:q143="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TieneEntregador" type="q143:FiltroEntregador" />
       <xs:element minOccurs="0" name="TipoComercial" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" nillable="true" type="xs:int" />
-      <xs:element xmlns:q143="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeProteina" type="q143:TipoDeProteina" />
-      <xs:element xmlns:q144="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeSoja" type="q144:TipoDeSoja" />
-      <xs:element xmlns:q145="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoDeIngreso" nillable="true" type="q145:TipoDocumentoIngreso" />
-      <xs:element xmlns:q146="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoEstado" type="q146:TipoEstado" />
-      <xs:element xmlns:q147="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoMaterial" type="q147:TipoMaterial" />
+      <xs:element xmlns:q144="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeProteina" type="q144:TipoDeProteina" />
+      <xs:element xmlns:q145="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeSoja" type="q145:TipoDeSoja" />
+      <xs:element xmlns:q146="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoDeIngreso" nillable="true" type="q146:TipoDocumentoIngreso" />
+      <xs:element xmlns:q147="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoEstado" type="q147:TipoEstado" />
+      <xs:element xmlns:q148="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoMaterial" type="q148:TipoMaterial" />
       <xs:element minOccurs="0" name="TipoVariedadId" nillable="true" type="xs:int" />
-      <xs:element xmlns:q148="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" nillable="true" type="q148:TipoVehiculo" />
+      <xs:element xmlns:q149="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" nillable="true" type="q149:TipoVehiculo" />
       <xs:element minOccurs="0" name="Workflow" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
@@ -6014,7 +6059,7 @@
   <xs:complexType name="DatosDeWorkflowsDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="Calidades" nillable="true" type="tns:ArrayOfCalidadMaterialDto" />
-      <xs:element xmlns:q149="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Consultas" minOccurs="0" name="Workflows" nillable="true" type="q149:ListaPaginadaOfInstanciaWorkflowDtoT7DPfI5_P" />
+      <xs:element xmlns:q150="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Consultas" minOccurs="0" name="Workflows" nillable="true" type="q150:ListaPaginadaOfInstanciaWorkflowDtoT7DPfI5_P" />
       <xs:element minOccurs="0" name="WorkflowsCentro" nillable="true" type="tns:ArrayOfWorkflowDto" />
     </xs:sequence>
   </xs:complexType>
@@ -6045,7 +6090,7 @@
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="RecorridoId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoComercial" nillable="true" type="xs:string" />
-      <xs:element xmlns:q150="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoPesada" type="q150:TipoPesada" />
+      <xs:element xmlns:q151="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoPesada" type="q151:TipoPesada" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ControlDeBalanzaDto" nillable="true" type="tns:ControlDeBalanzaDto" />
@@ -6066,8 +6111,8 @@
       <xs:element minOccurs="0" name="Observacion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Peso" type="xs:int" />
-      <xs:element xmlns:q151="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q151:TipoDocumentoIngreso" />
-      <xs:element xmlns:q152="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoPesada" type="q152:TipoPesada" />
+      <xs:element xmlns:q152="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q152:TipoDocumentoIngreso" />
+      <xs:element xmlns:q153="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoPesada" type="q153:TipoPesada" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ControlDeBalanzaPesadaDto" nillable="true" type="tns:ControlDeBalanzaPesadaDto" />
@@ -6110,12 +6155,12 @@
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="MaterialDescripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
-      <xs:element xmlns:q153="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Movimiento" nillable="true" type="q153:TipoDeWorkflow" />
+      <xs:element xmlns:q154="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Movimiento" nillable="true" type="q154:TipoDeWorkflow" />
       <xs:element minOccurs="0" name="Observaciones" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProveedorDescripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProveedorId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="Stock" type="xs:int" />
-      <xs:element xmlns:q154="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAjuste" type="q154:TipoStockBines" />
+      <xs:element xmlns:q155="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAjuste" type="q155:TipoStockBines" />
       <xs:element minOccurs="0" name="VinedoPropioDescripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="VinedoPropioId" nillable="true" type="xs:int" />
     </xs:sequence>
@@ -6156,9 +6201,9 @@
       <xs:element minOccurs="0" name="SinRecorrido" type="xs:boolean" />
       <xs:element minOccurs="0" name="TarjetaDeAcceso" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercial" nillable="true" type="xs:string" />
-      <xs:element xmlns:q155="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q155:TipoDeWorkflow" />
-      <xs:element xmlns:q156="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" type="q156:TipoDocumentoIngreso" />
-      <xs:element xmlns:q157="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q157:TipoVehiculo" />
+      <xs:element xmlns:q156="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q156:TipoDeWorkflow" />
+      <xs:element xmlns:q157="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" type="q157:TipoDocumentoIngreso" />
+      <xs:element xmlns:q158="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q158:TipoVehiculo" />
       <xs:element minOccurs="0" name="WorkflowDefinicionId" type="xs:int" />
       <xs:element minOccurs="0" name="WorkflowId" type="xs:int" />
     </xs:sequence>
@@ -6168,7 +6213,7 @@
     <xs:complexContent mixed="false">
       <xs:extension base="tns:ValidarProximaAccionDto">
         <xs:sequence>
-          <xs:element xmlns:q158="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Entrada" nillable="true" type="q158:ArrayOfstring" />
+          <xs:element xmlns:q159="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Entrada" nillable="true" type="q159:ArrayOfstring" />
           <xs:element minOccurs="0" name="VideoCamaras" nillable="true" type="tns:ArrayOfVideoCamaraDto" />
         </xs:sequence>
       </xs:extension>
@@ -6394,11 +6439,11 @@
       <xs:element minOccurs="0" name="RecorridoId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoComercial" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialCodigoSap" nillable="true" type="xs:string" />
-      <xs:element xmlns:q159="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoComercialEsParaUva" type="q159:TipoUva" />
+      <xs:element xmlns:q160="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoComercialEsParaUva" type="q160:TipoUva" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoComercialSentido" nillable="true" type="xs:string" />
-      <xs:element xmlns:q160="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCosecha" nillable="true" type="q160:TipoCosecha" />
-      <xs:element xmlns:q161="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q161:TipoDeWorkflow" />
+      <xs:element xmlns:q161="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoCosecha" nillable="true" type="q161:TipoCosecha" />
+      <xs:element xmlns:q162="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q162:TipoDeWorkflow" />
       <xs:element minOccurs="0" name="TipoVehiculoBodega" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoVehiculoBodegaId" type="xs:int" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
@@ -6498,7 +6543,7 @@
       <xs:element minOccurs="0" name="TipoComercialCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoComercialSentido" nillable="true" type="xs:string" />
-      <xs:element xmlns:q162="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q162:TipoDeWorkflow" />
+      <xs:element xmlns:q163="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q163:TipoDeWorkflow" />
       <xs:element minOccurs="0" name="TipoVehiculoBodega" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoVehiculoBodegaId" type="xs:int" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
@@ -6551,7 +6596,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="Apellido" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Firma" nillable="true" type="xs:string" />
-      <xs:element xmlns:q163="http://schemas.datacontract.org/2004/07/System.Web" minOccurs="0" name="FirmaFile" nillable="true" type="q163:HttpPostedFileBase" />
+      <xs:element xmlns:q164="http://schemas.datacontract.org/2004/07/System.Web" minOccurs="0" name="FirmaFile" nillable="true" type="q164:HttpPostedFileBase" />
       <xs:element minOccurs="0" name="FirmaImagen" nillable="true" type="xs:base64Binary" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="Matricula" nillable="true" type="xs:string" />
@@ -6724,7 +6769,7 @@
       <xs:element minOccurs="0" name="Direccion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Entregador" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="EsPreLote" nillable="true" type="xs:boolean" />
-      <xs:element xmlns:q164="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoMuestra" type="q164:EstadoMuestra" />
+      <xs:element xmlns:q165="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoMuestra" type="q165:EstadoMuestra" />
       <xs:element minOccurs="0" name="FechaCartaPorte" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaDescarga" nillable="true" type="xs:dateTime" />
       <xs:element minOccurs="0" name="GeneroMicroMuestras" type="xs:boolean" />
@@ -6767,8 +6812,8 @@
       <xs:element minOccurs="0" name="RtteComercialVentaSecundariaCuit" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Sucursal" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="TieneAnalisisInterno" type="xs:boolean" />
-      <xs:element xmlns:q165="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" type="q165:TipoDocumentoIngreso" />
-      <xs:element xmlns:q166="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q166:TipoVehiculo" />
+      <xs:element xmlns:q166="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" type="q166:TipoDocumentoIngreso" />
+      <xs:element xmlns:q167="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q167:TipoVehiculo" />
       <xs:element minOccurs="0" name="TitularCartaPorte" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TitularCartaPorteCuil" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TitularCartaPorteId" nillable="true" type="xs:int" />
@@ -6795,7 +6840,7 @@
       <xs:element minOccurs="0" name="CentroOrigenDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CentroOrigenId" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DescripcionCorta" nillable="true" type="xs:string" />
-      <xs:element xmlns:q167="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="FuncionSAP" type="q167:FuncionSAP" />
+      <xs:element xmlns:q168="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="FuncionSAP" type="q168:FuncionSAP" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="MaterialCodigoSAP" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialDesc" nillable="true" type="xs:string" />
@@ -6808,16 +6853,16 @@
   <xs:complexType name="FiltroPanelDeTransaccionesSapDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="CentroId" nillable="true" type="xs:int" />
-      <xs:element xmlns:q168="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoTransmisionASap" nillable="true" type="q168:EstadoTransmisionASap" />
-      <xs:element xmlns:q169="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoTransmisionCTG" nillable="true" type="q169:EstadoTransmisionCTG" />
+      <xs:element xmlns:q169="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoTransmisionASap" nillable="true" type="q169:EstadoTransmisionASap" />
+      <xs:element xmlns:q170="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoTransmisionCTG" nillable="true" type="q170:EstadoTransmisionCTG" />
       <xs:element minOccurs="0" name="FechaDesde" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaHasta" type="xs:dateTime" />
       <xs:element minOccurs="0" name="HoraDesde" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="HoraHasta" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumeroDocumentoIngreso" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
-      <xs:element xmlns:q170="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeServicio" type="q170:TipoDeServicio" />
-      <xs:element xmlns:q171="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" nillable="true" type="q171:TipoDocumentoIngreso" />
+      <xs:element xmlns:q171="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeServicio" type="q171:TipoDeServicio" />
+      <xs:element xmlns:q172="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" nillable="true" type="q172:TipoDocumentoIngreso" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="FiltroPanelDeTransaccionesSapDto" nillable="true" type="tns:FiltroPanelDeTransaccionesSapDto" />
@@ -6829,15 +6874,15 @@
   <xs:element name="ArrayOfTransmisionASapDto" nillable="true" type="tns:ArrayOfTransmisionASapDto" />
   <xs:complexType name="TransmisionASapDto">
     <xs:sequence>
-      <xs:element xmlns:q172="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Estado" type="q172:EstadoTransmisionASap" />
+      <xs:element xmlns:q173="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Estado" type="q173:EstadoTransmisionASap" />
       <xs:element minOccurs="0" name="Fecha" type="xs:dateTime" />
-      <xs:element xmlns:q173="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="FuncionSap" type="q173:FuncionSAP" />
+      <xs:element xmlns:q174="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="FuncionSap" type="q174:FuncionSAP" />
       <xs:element minOccurs="0" name="Id" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="InstanciaWorkflow" type="ser:guid" />
       <xs:element minOccurs="0" name="MensajeError" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumeroDocumento" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
-      <xs:element xmlns:q174="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q174:TipoDocumentoIngreso" />
+      <xs:element xmlns:q175="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q175:TipoDocumentoIngreso" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="TransmisionASapDto" nillable="true" type="tns:TransmisionASapDto" />
@@ -6942,15 +6987,15 @@
   <xs:element name="ArrayOfTransmisionBajaCtgDefinitivaDto" nillable="true" type="tns:ArrayOfTransmisionBajaCtgDefinitivaDto" />
   <xs:complexType name="TransmisionBajaCtgDefinitivaDto">
     <xs:sequence>
-      <xs:element xmlns:q175="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoCtg" type="q175:EstadoTransmisionASap" />
-      <xs:element xmlns:q176="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoCtgDefinitivo" type="q176:EstadoTransmisionASap" />
+      <xs:element xmlns:q176="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoCtg" type="q176:EstadoTransmisionASap" />
+      <xs:element xmlns:q177="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoCtgDefinitivo" type="q177:EstadoTransmisionASap" />
       <xs:element minOccurs="0" name="Fecha" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Id" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="InstanciaWorkflow" type="ser:guid" />
       <xs:element minOccurs="0" name="MensajeError" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumeroDocumento" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
-      <xs:element xmlns:q177="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q177:TipoDocumentoIngreso" />
+      <xs:element xmlns:q178="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q178:TipoDocumentoIngreso" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="TransmisionBajaCtgDefinitivaDto" nillable="true" type="tns:TransmisionBajaCtgDefinitivaDto" />
@@ -6963,7 +7008,7 @@
   <xs:complexType name="EnvioUrenportDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="Error" nillable="true" type="xs:string" />
-      <xs:element xmlns:q178="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Estado" type="q178:EstadoTransmisionASap" />
+      <xs:element xmlns:q179="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Estado" type="q179:EstadoTransmisionASap" />
       <xs:element minOccurs="0" name="Fecha" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="NumeroDocumentoIngreso" nillable="true" type="xs:string" />
@@ -6976,7 +7021,7 @@
   <xs:element name="EnvioUrenportDto" nillable="true" type="tns:EnvioUrenportDto" />
   <xs:complexType name="FiltroPanelDeTransaccionesVisecDto">
     <xs:sequence>
-      <xs:element xmlns:q179="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoTransmisionAVisec" nillable="true" type="q179:EstadoTransmisionAVisec" />
+      <xs:element xmlns:q180="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="EstadoTransmisionAVisec" nillable="true" type="q180:EstadoTransmisionAVisec" />
       <xs:element minOccurs="0" name="FechaDesde" nillable="true" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaHasta" nillable="true" type="xs:dateTime" />
       <xs:element minOccurs="0" name="NumeroDocumento" nillable="true" type="xs:string" />
@@ -6999,7 +7044,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="CaracteristicaDeCalidadDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CaracteristicaDeCalidadId" type="xs:int" />
-      <xs:element xmlns:q180="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="CaracteristicasDeCalidadId" nillable="true" type="q180:ArrayOfint" />
+      <xs:element xmlns:q181="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="CaracteristicasDeCalidadId" nillable="true" type="q181:ArrayOfint" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="MaterialDescripcion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
@@ -7036,7 +7081,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="CamaraDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CamaraEmail" nillable="true" type="xs:string" />
-      <xs:element xmlns:q181="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q181:CamaraFormatoDeArchivo" />
+      <xs:element xmlns:q182="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q182:CamaraFormatoDeArchivo" />
       <xs:element minOccurs="0" name="CamaraId" type="xs:int" />
       <xs:element minOccurs="0" name="EmitirListado" type="xs:boolean" />
       <xs:element minOccurs="0" name="EnviarArchivoAutomaticamente" type="xs:boolean" />
@@ -7072,7 +7117,7 @@
       <xs:element minOccurs="0" name="Leido" type="xs:boolean" />
       <xs:element minOccurs="0" name="Mensaje" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PuestoId" nillable="true" type="xs:int" />
-      <xs:element xmlns:q182="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAlerta" type="q182:TipoAlerta" />
+      <xs:element xmlns:q183="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAlerta" type="q183:TipoAlerta" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="NotificacionDto" nillable="true" type="tns:NotificacionDto" />
@@ -7171,7 +7216,7 @@
   <xs:element name="ConversionCaracteristicaDto" nillable="true" type="tns:ConversionCaracteristicaDto" />
   <xs:complexType name="RomaneoDto">
     <xs:sequence>
-      <xs:element xmlns:q183="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Estado" type="q183:EstadoRomaneo" />
+      <xs:element xmlns:q184="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Estado" type="q184:EstadoRomaneo" />
       <xs:element minOccurs="0" name="FechaCierre" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FechaInicio" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Imprimir" type="xs:boolean" />
@@ -7210,7 +7255,7 @@
       <xs:element minOccurs="0" name="Material" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
-      <xs:element xmlns:q184="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="ModalidadBalanza" type="q184:Modalidad" />
+      <xs:element xmlns:q185="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="ModalidadBalanza" type="q185:Modalidad" />
       <xs:element minOccurs="0" name="PesoBruto" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="PesoTara" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="Rechazado" type="xs:boolean" />
@@ -7264,8 +7309,8 @@
       <xs:element minOccurs="0" name="TipoComercialCodigoSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TipoComercialId" type="xs:int" />
       <xs:element minOccurs="0" name="TipoComercialSentido" nillable="true" type="xs:string" />
-      <xs:element xmlns:q185="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q185:TipoDeWorkflow" />
-      <xs:element xmlns:q186="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q186:TipoVehiculo" />
+      <xs:element xmlns:q186="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDeWorkflow" type="q186:TipoDeWorkflow" />
+      <xs:element xmlns:q187="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q187:TipoVehiculo" />
       <xs:element minOccurs="0" name="Transportista" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaId" type="xs:int" />
     </xs:sequence>
@@ -7288,7 +7333,7 @@
       <xs:element minOccurs="0" name="Material" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumeroDocumentoIngreso" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Rango" nillable="true" type="xs:string" />
-      <xs:element xmlns:q187="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q187:TipoDocumentoIngreso" />
+      <xs:element xmlns:q188="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumentoIngreso" type="q188:TipoDocumentoIngreso" />
       <xs:element minOccurs="0" name="Usuario" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ValorNuevo" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="ValorOriginal" nillable="true" type="xs:decimal" />
@@ -7544,7 +7589,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="CamaraDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CamaraEmail" nillable="true" type="xs:string" />
-      <xs:element xmlns:q188="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q188:CamaraFormatoDeArchivo" />
+      <xs:element xmlns:q189="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q189:CamaraFormatoDeArchivo" />
       <xs:element minOccurs="0" name="CamaraId" type="xs:int" />
       <xs:element minOccurs="0" name="EmitirListado" type="xs:boolean" />
       <xs:element minOccurs="0" name="EnviarArchivoAutomaticamente" type="xs:boolean" />
@@ -7577,7 +7622,7 @@
   <xs:complexType name="LoteBiotecnologiaListaDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="CamaraDesc" nillable="true" type="xs:string" />
-      <xs:element xmlns:q189="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q189:CamaraFormatoDeArchivo" />
+      <xs:element xmlns:q190="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="CamaraFormatoDeArchivo" type="q190:CamaraFormatoDeArchivo" />
       <xs:element minOccurs="0" name="CamaraId" type="xs:int" />
       <xs:element minOccurs="0" name="CentroDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CentroId" type="xs:int" />
@@ -7912,7 +7957,7 @@
       <xs:element minOccurs="0" name="NDeCasillero" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumeroDocumento" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
-      <xs:element xmlns:q190="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" nillable="true" type="q190:TipoDocumentoIngreso" />
+      <xs:element xmlns:q191="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" nillable="true" type="q191:TipoDocumentoIngreso" />
       <xs:element minOccurs="0" name="TipoDocumentoIngreso" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
@@ -7968,7 +8013,7 @@
       <xs:element minOccurs="0" name="NDeCasillero" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NumeroDocumento" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Patente" nillable="true" type="xs:string" />
-      <xs:element xmlns:q191="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" nillable="true" type="q191:TipoDocumentoIngreso" />
+      <xs:element xmlns:q192="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDocumento" nillable="true" type="q192:TipoDocumentoIngreso" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ConsultaCasilleroMuestraDto" nillable="true" type="tns:ConsultaCasilleroMuestraDto" />
@@ -8040,10 +8085,10 @@
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="MaterialDesc" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
-      <xs:element xmlns:q192="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Motivo" type="q192:MotivoExcepcionAlControl" />
+      <xs:element xmlns:q193="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Motivo" type="q193:MotivoExcepcionAlControl" />
       <xs:element minOccurs="0" name="ProveedorDestinoId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="RazonSocial" nillable="true" type="xs:string" />
-      <xs:element xmlns:q193="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDestino" type="q193:TipoDestino" />
+      <xs:element xmlns:q194="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoDestino" type="q194:TipoDestino" />
       <xs:element minOccurs="0" name="TipoDestinoNombre" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TransportistaId" type="xs:int" />
       <xs:element minOccurs="0" name="Usuario" nillable="true" type="xs:string" />
@@ -8118,7 +8163,7 @@
       <xs:element minOccurs="0" name="DatosProximaActividad" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
       <xs:element minOccurs="0" name="TipoVariedadCodigo" nillable="true" type="xs:string" />
-      <xs:element xmlns:q194="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q194:TipoVehiculo" />
+      <xs:element xmlns:q195="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoVehiculo" type="q195:TipoVehiculo" />
       <xs:element minOccurs="0" name="WorkflowCodigo" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="WorkflowDefinicionId" type="xs:int" />
       <xs:element minOccurs="0" name="WorkflowId" type="xs:int" />

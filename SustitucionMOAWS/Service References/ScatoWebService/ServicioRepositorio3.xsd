@@ -199,6 +199,43 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="EstadoHidraulica" nillable="true" type="tns:EstadoHidraulica" />
+  <xs:simpleType name="TipoImpresion">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AsignacionDeRuta" />
+      <xs:enumeration value="CertificadoDeAnalisis" />
+      <xs:enumeration value="CertificadoDeCartaPorte" />
+      <xs:enumeration value="ConstanciaDeEntregaLaser" />
+      <xs:enumeration value="DeclaracionFosfina" />
+      <xs:enumeration value="DocumentoDeEntrada" />
+      <xs:enumeration value="Formulario239" />
+      <xs:enumeration value="IdentificacionEnvioLoteACamara" />
+      <xs:enumeration value="IdentificacionMicromuestra" />
+      <xs:enumeration value="IdentificacionMuestraCalado" />
+      <xs:enumeration value="TicketPesada" />
+      <xs:enumeration value="SolicitudDeAnalisis" />
+      <xs:enumeration value="ImpresionGenerica" />
+      <xs:enumeration value="ResumenDeRecepcion" />
+      <xs:enumeration value="InformeDeRecepcion" />
+      <xs:enumeration value="ReciboMunicipal" />
+      <xs:enumeration value="ControlDeCarga" />
+      <xs:enumeration value="IdentificacionMuestraAuditoria" />
+      <xs:enumeration value="EtiquetaAuditoria" />
+      <xs:enumeration value="EtiquetaIntacta" />
+      <xs:enumeration value="TicketPesadaBodega" />
+      <xs:enumeration value="TicketPesadaAduana" />
+      <xs:enumeration value="EtiquetaRubrosAnalizar" />
+      <xs:enumeration value="ReciboMunicipalImportacion" />
+      <xs:enumeration value="AsigRecorrCtrolCalid" />
+      <xs:enumeration value="CartaPorteUrenport" />
+      <xs:enumeration value="GaritaSalida" />
+      <xs:enumeration value="ResumenHojaDeRuta" />
+      <xs:enumeration value="EtiquetaAuditoriaCamara" />
+      <xs:enumeration value="CartaDePorteElectronica" />
+      <xs:enumeration value="EtiquetaMuestraInase" />
+      <xs:enumeration value="CartaPorteElectronicaDerivadoGranario" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="TipoImpresion" nillable="true" type="tns:TipoImpresion" />
   <xs:simpleType name="ClaseBin">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Bines" />
@@ -373,43 +410,6 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="EstadoMuestra" nillable="true" type="tns:EstadoMuestra" />
-  <xs:simpleType name="TipoImpresion">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="AsignacionDeRuta" />
-      <xs:enumeration value="CertificadoDeAnalisis" />
-      <xs:enumeration value="CertificadoDeCartaPorte" />
-      <xs:enumeration value="ConstanciaDeEntregaLaser" />
-      <xs:enumeration value="DeclaracionFosfina" />
-      <xs:enumeration value="DocumentoDeEntrada" />
-      <xs:enumeration value="Formulario239" />
-      <xs:enumeration value="IdentificacionEnvioLoteACamara" />
-      <xs:enumeration value="IdentificacionMicromuestra" />
-      <xs:enumeration value="IdentificacionMuestraCalado" />
-      <xs:enumeration value="TicketPesada" />
-      <xs:enumeration value="SolicitudDeAnalisis" />
-      <xs:enumeration value="ImpresionGenerica" />
-      <xs:enumeration value="ResumenDeRecepcion" />
-      <xs:enumeration value="InformeDeRecepcion" />
-      <xs:enumeration value="ReciboMunicipal" />
-      <xs:enumeration value="ControlDeCarga" />
-      <xs:enumeration value="IdentificacionMuestraAuditoria" />
-      <xs:enumeration value="EtiquetaAuditoria" />
-      <xs:enumeration value="EtiquetaIntacta" />
-      <xs:enumeration value="TicketPesadaBodega" />
-      <xs:enumeration value="TicketPesadaAduana" />
-      <xs:enumeration value="EtiquetaRubrosAnalizar" />
-      <xs:enumeration value="ReciboMunicipalImportacion" />
-      <xs:enumeration value="AsigRecorrCtrolCalid" />
-      <xs:enumeration value="CartaPorteUrenport" />
-      <xs:enumeration value="GaritaSalida" />
-      <xs:enumeration value="ResumenHojaDeRuta" />
-      <xs:enumeration value="EtiquetaAuditoriaCamara" />
-      <xs:enumeration value="CartaDePorteElectronica" />
-      <xs:enumeration value="EtiquetaMuestraInase" />
-      <xs:enumeration value="CartaPorteElectronicaDerivadoGranario" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="TipoImpresion" nillable="true" type="tns:TipoImpresion" />
   <xs:simpleType name="TipoStockBines">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Centro" />

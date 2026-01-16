@@ -178,7 +178,7 @@
           <xs:element minOccurs="0" name="ErroresOExcepcionesConsultaTasaMunicipal" type="xs:boolean" />
           <xs:element minOccurs="0" name="FastPassValido" type="xs:boolean" />
           <xs:element minOccurs="0" name="FastPassWorkflowDefinicionId" type="xs:int" />
-          <xs:element minOccurs="0" name="IdExcepcionPagoMunicipal" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="IdExcepcionPagoMunicipal" type="xs:int" />
           <xs:element minOccurs="0" name="IdPagoMunicipal" nillable="true" type="xs:int" />
           <xs:element minOccurs="0" name="MensajeTasaMunicipal" nillable="true" type="xs:string" />
           <xs:element minOccurs="0" name="MotivoExcepcionTasaMunicipal" nillable="true" type="xs:string" />
@@ -278,6 +278,8 @@
       <xs:extension base="tns:Resultado">
         <xs:sequence>
           <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="Cpe" nillable="true" type="q16:CartaPorteDto" />
+          <xs:element minOccurs="0" name="Duplicados" nillable="true" type="tns:ArrayOfMaterialDuplicadoCPE" />
+          <xs:element minOccurs="0" name="Pdf" nillable="true" type="xs:base64Binary" />
           <xs:element minOccurs="0" name="PdfImage" nillable="true" type="xs:base64Binary" />
           <xs:element minOccurs="0" name="PdfImageSustentable" nillable="true" type="xs:base64Binary" />
           <xs:element minOccurs="0" name="RutaImagen" nillable="true" type="xs:string" />
@@ -286,6 +288,20 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="ResultadoCartaPorteElectronica" nillable="true" type="tns:ResultadoCartaPorteElectronica" />
+  <xs:complexType name="ArrayOfMaterialDuplicadoCPE">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MaterialDuplicadoCPE" nillable="true" type="tns:MaterialDuplicadoCPE" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMaterialDuplicadoCPE" nillable="true" type="tns:ArrayOfMaterialDuplicadoCPE" />
+  <xs:complexType name="MaterialDuplicadoCPE">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CTG" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MaterialDescripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MaterialDuplicadoCPE" nillable="true" type="tns:MaterialDuplicadoCPE" />
   <xs:complexType name="ResultadoFas">
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Resultado">

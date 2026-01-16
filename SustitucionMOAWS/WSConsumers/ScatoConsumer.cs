@@ -186,9 +186,9 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 return new RecorridoDto();
 
-				//var recorridoDto = service.ObtenerRecorridoNoRechazadoPorIdInsumos(ordenId.ToString());
-    //            Log.Info($"ScatoConsumer.ObtenerRecorridoOrdenResiduos. Id orden: {ordenId}. Respuesta Scato: {recorridoDto.ToJson()}");
-    //            return recorridoDto;
+                //var recorridoDto = service.ObtenerRecorridoNoRechazadoPorIdInsumos(ordenId.ToString());
+                //            Log.Info($"ScatoConsumer.ObtenerRecorridoOrdenResiduos. Id orden: {ordenId}. Respuesta Scato: {recorridoDto.ToJson()}");
+                //            return recorridoDto;
             }
             catch (Exception ex)
             {
@@ -197,7 +197,7 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-		public TrackingDataQRCamiones ObtenerTrackingDataQRCamiones(string numeroCTG, string patente)
+        public TrackingDataQRCamiones ObtenerTrackingDataQRCamiones(string numeroCTG, string patente)
         {
             try
             {
@@ -214,7 +214,25 @@ namespace SustitucionMOAWS.WSConsumers
             }
             catch (Exception ex)
             {
-				Log.Error(ex, $"Error en ScatoConsumer para ObtenerTrackingDataQRCamiones: {numeroCTG}, Patente: {patente}.");
+                Log.Error(ex, $"Error en ScatoConsumer para ObtenerTrackingDataQRCamiones: {numeroCTG}, Patente: {patente}.");
+                throw ex;
+            }
+        }
+
+        public SustitucionMOAWS.ScatoWebService.TicketPesadaDto[] ObtenerDatosTicketPesada(DateTime fechaInicio, DateTime fechaEgreso, string cuitProveedor, string cuitTransportista, string ctg, string patente,string cuitIntermediarioFlete, bool esAdmin)
+        {
+            try
+            {
+                var tickets = service.ObtenerDatosTicketPesada(fechaInicio, fechaEgreso, cuitProveedor, cuitTransportista, ctg, patente, cuitIntermediarioFlete, esAdmin);
+                Log.Info(string.Format("ScatoConsumer.ObtenerDatosTicketPesada. fechaInicio: {0}, fechaEgreso: {1}, " +
+                "cuitProveedor: {2}, cuitTransportista: {3}, ctg: {4}, patente: {5}, cuitIntermediarioFlete: {6}",
+                fechaInicio, fechaEgreso, cuitProveedor, cuitTransportista, ctg, patente, cuitIntermediarioFlete));
+                return tickets;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error en ScatoConsumer para ObtenerDatosTicketPesada: fechaInicio: {fechaInicio}, fechaEgreso: {fechaEgreso}," +
+                    $"cuitProveedor:{cuitProveedor}, cuitTransportista: {cuitTransportista}, ctg: {ctg}, patente: {patente}, cuitIntermediarioFlete: {cuitIntermediarioFlete}.");
                 throw ex;
             }
         }

@@ -165,6 +165,7 @@
     <Compile Include="Dto\Scato\DestinoScato.cs" />
     <Compile Include="Dto\SolicitantesSolpedDto.cs" />
     <Compile Include="Dto\SustentableRenspaExisteDto.cs" />
+    <Compile Include="Dto\TicketPesadaDto.cs" />
     <Compile Include="Dto\TipoNormativaDto.cs" />
     <Compile Include="Dto\UnidadMedidaSapDto.cs" />
     <Compile Include="Dto\UsuarioReasignacionDto.cs" />
@@ -406,6 +407,7 @@
     <Compile Include="ModelAttributes\ExcelColumnOrderAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelColumnNameAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelIgnoreAttribute.cs" />
+    <Compile Include="Models\ConsultaListadoTicketPesada.cs" />
     <Compile Include="Models\ConsultaTicketPesadaNoGranos.cs" />
     <Compile Include="Models\DataAgro\ResultadoDataAgro.cs" />
     <Compile Include="Models\EcheqRequestModel.cs" />

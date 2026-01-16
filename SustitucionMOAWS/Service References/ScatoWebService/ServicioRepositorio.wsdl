@@ -193,15 +193,6 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ObtenerTrackingData">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTrackingData" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="EstaDemoradoPorTasaAdeudada">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/EstaDemoradoPorTasaAdeudada" style="document" />
       <wsdl:input>
@@ -222,6 +213,24 @@
     </wsdl:operation>
     <wsdl:operation name="TieneExcepcionDePagoDeTasaMunicipal">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDePagoDeTasaMunicipal" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerTrackingData">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTrackingData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDatosTicketPesada">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDatosTicketPesada" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
