@@ -221,6 +221,8 @@ namespace SustitucionMOAWS.WSConsumers
                         FechaCreacion = SAPFormatter.GetDateTime(item.CREATED_ON),
                         Tipo = response.PO_ITEMS.Select(x => x.ITEM_CAT).FirstOrDefault() == "0" ? "Materiales" : "Servicio",
                         //TipoDocCompras = item.DOC_TYPE,
+                        OrganizacionDeComprasCodigo = item.PURCH_ORG,
+                        GrupoDeComprasCodigo = item.PUR_GROUP
                     },
                     Mensaje = resultado
                 });

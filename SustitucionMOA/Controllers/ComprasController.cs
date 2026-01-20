@@ -4,7 +4,6 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Helpers;
@@ -14,7 +13,6 @@ using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.Entity;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -64,7 +62,7 @@ namespace SustitucionMOA.Controllers
             {
                 result.Solp.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Solp.Id.Value));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 result.Solp.Pdf = string.Empty;
             }
@@ -707,7 +705,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public JsonResult ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor)
         {
-            return JsonCustom(comprasSapService.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor));
+            return JsonCustom(comprasSapService.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor, SessionPersister.Mail));
         }
 
         [HttpGet]

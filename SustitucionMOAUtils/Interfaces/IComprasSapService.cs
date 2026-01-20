@@ -52,7 +52,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         IEnumerable<PosicionSolpSAP> ObtenerPosiciones(IEnumerable<string> numerosSolp);
 
-        List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor);
+        List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor, string usuarioActual);
 
         List<TablaSapDto> ObtenerTablaSap(string tabla);
 
