@@ -6392,6 +6392,7 @@ namespace SustitucionMOAUtils.Services
                         else
                         {
                             repositorio.Remover(adjudicacion);
+                            EnviarMailErrorOCAutomaticaSap(adjudicacion, respuestaGuardarSOLP.Errores);
                         }
 
                         repositorio.GuardarCambios();
@@ -9607,6 +9608,66 @@ namespace SustitucionMOAUtils.Services
                 };
                 var resultado = GrabarAdjudicacion(adjudicacion, solp.UsuarioCreacion_Id.Value);
             }
+        }
+
+        private void EnviarMailErrorOCAutomaticaSap(Adjudicacion adjudicacion, List<string> errores)
+        {
+            try
+            {
+                var asunto = $"Error en generacion OC automatica - Adjudicacion ID: {adjudicacion.Id}. ";
+                var enviarA = new List<string>();
+                var destinatarioErrores = ConfigurationManager.AppSettings["EmailEnvioErrores"];
+                var msjError = string.Join(", ", errores);
+
+                Usuario usuario = null;
+
+                if (adjudicacion?.UsuarioCreador_Id != null)
+                {
+                    usuario = repositorio.Obtener<Usuario>(x => x.Id == adjudicacion.UsuarioCreador_Id);
+                }
+
+                bool esAmbienteQA = ConfigurationManager.AppSettings["EmailAsuntoPrefijo"] == "[QA]";
+
+                if (usuario == null || esAmbienteQA)
+                {
+                    enviarA.Add(destinatarioErrores);
+                }
+                if (usuario != null && !esAmbienteQA)
+                {
+                    enviarA.Add(usuario.Mail);
+                    enviarA.Add(destinatarioErrores);
+                }
+
+                Logger.Log.Info($"Enviando mail a {enviarA.ToJson()}");
+
+                emailService.EnviarMail(enviarA, asunto, "", null, CuerpoEnviarMailErrorOCAutomaticaSap(adjudicacion, msjError));
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"EnviarMailErrorOCAutomaticaSap - Adjudicacion Id:{adjudicacion?.Id}");
+                Logger.Log.Error(e);
+            }
+        }
+
+        private AlternateView CuerpoEnviarMailErrorOCAutomaticaSap(Adjudicacion adjudicacion, string mensaje)
+        {
+            var filePath = httpContextService.ObtenerPathLogoMail();
+
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+            string htmlBody = "";
+            htmlBody += $"Hubo un error de SAP al intentar generar la OC automatica. <br />";
+            htmlBody += $"Motivo: {mensaje}  <br />";
+            htmlBody += $" <br/><br/> ";
+
+            htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
+                  "<br/><br/>Saludos Cordiales<br/>" +
+                  "Molinos Agro S.A. <br/><br/> " +
+                   @"<img width='15%' src='cid:" + res.ContentId + @"'/>";
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
         }
     }
 }
