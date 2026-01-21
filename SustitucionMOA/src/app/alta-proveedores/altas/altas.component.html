@@ -1609,20 +1609,26 @@
                 style="width: 100%; margin-top: 10px; background-color: white;">
                 <thead class="thead-light">
                     <tr>
-                        <th style="width: 60%">Mail</th>
+                        <th style="width: 5%"></th>
+                        <th style="width: 55%">Mail</th>
                         <th style="width: 40%">Código Proveedor</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let empresa of empresasVerificadas" (click)="empresaVerificadaSeleccionada = empresa"
-                        [style.background-color]="empresa === empresaVerificadaSeleccionada ? '#cce5ff' : 'white'"
-                        style="cursor: pointer;">
+                    <tr *ngFor="let empresa of empresasVerificadas"
+                        [style.background-color]="empresa === empresaVerificadaSeleccionada ? '#cce5ff' : 'white'">
+                        <td style="text-align: center; vertical-align: middle;">
+                            <input type="checkbox" style="cursor: pointer;"
+                                [checked]="empresa === empresaVerificadaSeleccionada"
+                                (change)="empresaVerificadaSeleccionada = empresa">
+                        </td>
                         <td>{{empresa.Mail}}</td>
                         <td>{{empresa.Codigo}}</td>
                     </tr>
                 </tbody>
             </table>
-            <div style="margin-top: 5px; font-style: italic; font-size: 0.9em; color: gray;">
+            <div *ngIf="!empresaVerificadaSeleccionada"
+                style="margin-top: 5px; font-style: italic; font-size: 0.9em; color: gray;">
                 * Seleccione una empresa para continuar.
             </div>
         </div>
