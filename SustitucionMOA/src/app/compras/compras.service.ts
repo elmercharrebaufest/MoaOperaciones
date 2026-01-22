@@ -380,6 +380,7 @@ export class ComprasService extends BaseService {
             THServicioPermanente: solp.thServicioPermanente,
             THAjustePolinomica: solp.thAjustePolinomica,
             THProveedorDirecto: solp.thProveedorDirecto,
+            THAcuerdoMarco: solp.thAcuerdoMarco,
             EnvioCircularA: solp.envioCircularA,
             CodigoProveedorSap: solp.codigoProveedorSap,
             Posiciones: null,

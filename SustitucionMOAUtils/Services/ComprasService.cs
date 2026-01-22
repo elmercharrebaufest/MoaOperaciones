@@ -1386,6 +1386,7 @@ namespace SustitucionMOAUtils.Services
                 THAjustePolinomica = solp.THAjustePolinomica,
                 THProveedorDirecto = solp.THProveedorDirecto,
                 THServicioPermanente = solp.THServicioPermanente,
+                THAcuerdoMarco = solp.THAcuerdoMarco,
                 TienePeticionDeOferta = solp.Posiciones.Any(p => p.Peticiones.Any()),
                 TieneModificaciones = solp.TieneModificaciones,
                 TieneRevisionTecnicaFinalizada = solp.Posiciones.Any(p => p.Peticiones != null && p.Peticiones.Any(po => po.PeticionDeOferta.RevisionTecnica != null && po.PeticionDeOferta.RevisionTecnica.Finalizada)),
