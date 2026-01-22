@@ -6391,8 +6391,8 @@ namespace SustitucionMOAUtils.Services
                         }
                         else
                         {
-                            repositorio.Remover(adjudicacion);
                             EnviarMailErrorOCAutomaticaSap(adjudicacion, respuestaGuardarSOLP.Errores);
+                            repositorio.Remover(adjudicacion);
                         }
 
                         repositorio.GuardarCambios();
@@ -9626,18 +9626,13 @@ namespace SustitucionMOAUtils.Services
                     usuario = repositorio.Obtener<Usuario>(x => x.Id == adjudicacion.UsuarioCreador_Id);
                 }
 
-                bool esAmbienteQA = ConfigurationManager.AppSettings["EmailAsuntoPrefijo"] == "[QA]";
-
-                if (usuario == null || esAmbienteQA)
-                {
-                    enviarA.Add(destinatarioErrores);
-                }
-                if (usuario != null && !esAmbienteQA)
+                if (usuario == null)
                 {
                     enviarA.Add(usuario.Mail);
-                    enviarA.Add(destinatarioErrores);
                 }
-
+                
+                enviarA.Add(destinatarioErrores);
+           
                 Logger.Log.Info($"Enviando mail a {enviarA.ToJson()}");
 
                 emailService.EnviarMail(enviarA, asunto, "", null, CuerpoEnviarMailErrorOCAutomaticaSap(adjudicacion, msjError));
@@ -9652,14 +9647,18 @@ namespace SustitucionMOAUtils.Services
         private AlternateView CuerpoEnviarMailErrorOCAutomaticaSap(Adjudicacion adjudicacion, string mensaje)
         {
             var filePath = httpContextService.ObtenerPathLogoMail();
-
+            
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
+
+            string adjudicacionJson = JsonConvert.SerializeObject(adjudicacion, Formatting.Indented);
+
             string htmlBody = "";
             htmlBody += $"Hubo un error de SAP al intentar generar la OC automatica. <br />";
             htmlBody += $"Motivo: {mensaje}  <br />";
             htmlBody += $" <br/><br/> ";
-
+            htmlBody += $"Data Adjudicacion: {adjudicacionJson}";
+            htmlBody += $" <br/><br/> ";
             htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
                   "<br/><br/>Saludos Cordiales<br/>" +
                   "Molinos Agro S.A. <br/><br/> " +
