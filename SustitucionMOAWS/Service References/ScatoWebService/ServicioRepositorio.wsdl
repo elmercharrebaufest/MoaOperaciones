@@ -4,6 +4,267 @@
   <wsdl:types />
   <wsdl:binding name="BasicHttpBinding_IServicioRepositorio" type="i0:IServicioRepositorio">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ObtenerHuellaDigitalPorFiltro">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHuellaDigitalPorFiltro" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExistePagoRealizadoPorListaMaterial">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ExistePagoRealizadoPorListaMaterial" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerIdPagoDigitalPorInstanceId">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerIdPagoDigitalPorInstanceId" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerUltimaFechaDePagoTasaMunicipal">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUltimaFechaDePagoTasaMunicipal" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPatenteAcopladoOrdenesNoGranos">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerPatenteAcopladoOrdenesNoGranos" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerWorkflowPorTitularCartaPorte">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerWorkflowPorTitularCartaPorte" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DebeImprimirReciboMunicipal">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/DebeImprimirReciboMunicipal" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExistePagoReciboMunicipal">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ExistePagoReciboMunicipal" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LogPagaTicketMunicipal">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/LogPagaTicketMunicipal" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerPagosDigitalesPorInstanceId">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerPagosDigitalesPorInstanceId" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerTipoVariedadRecorridoAnterior">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTipoVariedadRecorridoAnterior" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerTipodVehiculoPorPesoBruto">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTipodVehiculoPorPesoBruto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarCPEFiltradasPorFechaDeCacheado">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarCPEFiltradasPorFechaDeCacheado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EsUltimaActividadEnControlRecorrido">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/EsUltimaActividadEnControlRecorrido" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarRENSPAPorProveedorYTerm">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarRENSPAPorProveedorYTerm" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarVisecTransmisionPorEstado">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarVisecTransmisionPorEstado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TieneContingenciaPorTipo">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/TieneContingenciaPorTipo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerTipoVariedadPorCodigo">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTipoVariedadPorCodigo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerMonitoreoServicioExternoPorJob">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMonitoreoServicioExternoPorJob" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarMonitoreoServicioExterno">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarMonitoreoServicioExterno" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerRegistroJobEjecucionPorProceso">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRegistroJobEjecucionPorProceso" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EstaDemoradoPorTasaAdeudada">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/EstaDemoradoPorTasaAdeudada" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerExcepcionDeTicketMunicipal">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerExcepcionDeTicketMunicipal" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TieneExcepcionDePagoDeTasaMunicipal">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/TieneExcepcionDePagoDeTasaMunicipal" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerTrackingData">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTrackingData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDatosTicketPesada">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDatosTicketPesada" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerGruposBarreraEnUso">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerGruposBarreraEnUso" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerLogDispositivos">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerLogDispositivos" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarPaginadoLoteInase">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoLoteInase" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="ListarMuestrasPorLoteInase">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarMuestrasPorLoteInase" style="document" />
       <wsdl:input>
@@ -985,8 +1246,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ContarClientes">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ContarClientes" style="document" />
+    <wsdl:operation name="ExisteOrdenCargarFasonDemorado">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ExisteOrdenCargarFasonDemorado" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -994,8 +1255,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ObtenerNuevoNumeroDeOrdenFason">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNuevoNumeroDeOrdenFason" style="document" />
+    <wsdl:operation name="ContarClientes">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ContarClientes" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -1039,6 +1300,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="ObtenerNuevoNumeroDeOrdenFason">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNuevoNumeroDeOrdenFason" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="ValidarCuitNestleOrdenCargaInterna">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestleOrdenCargaInterna" style="document" />
       <wsdl:input>
@@ -1066,15 +1336,6 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ObtenerRecorridoNoRechazadoPorIdInsumos">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoNoRechazadoPorIdInsumos" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="ListarHuellaDigital">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarHuellaDigital" style="document" />
       <wsdl:input>
@@ -1095,6 +1356,60 @@
     </wsdl:operation>
     <wsdl:operation name="ListarHuellaDigitalHistorico">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarHuellaDigitalHistorico" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerHuellaDigitalPorAtributo">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHuellaDigitalPorAtributo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerHuellaDigitalPorRecorrido">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHuellaDigitalPorRecorrido" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarHuellaDigitalSinPaginacion">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarHuellaDigitalSinPaginacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarAutorizacionCamionPorInhabilitacion">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarAutorizacionCamionPorInhabilitacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarAutorizacionChoferPorInhabilitacion">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarAutorizacionChoferPorInhabilitacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerTarjetaPorCargaDeCupo">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTarjetaPorCargaDeCupo" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -2227,8 +2542,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ObtenerGruposBarreraEnUso">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerGruposBarreraEnUso" style="document" />
+    <wsdl:operation name="ObtenerUltimaFotoPorTarjeta">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUltimaFotoPorTarjeta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -2236,17 +2551,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ObtenerLogDispositivos">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerLogDispositivos" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ListarPaginadoLoteInase">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoLoteInase" style="document" />
+    <wsdl:operation name="ObtenerFotoPorQuiebreDeBarrera">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotoPorQuiebreDeBarrera" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -2947,6 +3253,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="ObtenerOtroRecorridoDelChoferDemorado">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerOtroRecorridoDelChoferDemorado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="CupoConsumido">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/CupoConsumido" style="document" />
       <wsdl:input>
@@ -3370,8 +3685,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ListarAutorizacionCamionPorInhabilitacion">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarAutorizacionCamionPorInhabilitacion" style="document" />
+    <wsdl:operation name="ListarCalidadesPorMaterialyCentro">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarCalidadesPorMaterialyCentro" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3379,17 +3694,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ListarAutorizacionChoferPorInhabilitacion">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarAutorizacionChoferPorInhabilitacion" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerTarjetaPorCargaDeCupo">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTarjetaPorCargaDeCupo" style="document" />
+    <wsdl:operation name="ObtenerHojaDeRutaYerbatera">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHojaDeRutaYerbatera" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4531,8 +4837,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ObtenerUltimaFotoPorTarjeta">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUltimaFotoPorTarjeta" style="document" />
+    <wsdl:operation name="ListarPaginadoFormatosDeImpresion">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoFormatosDeImpresion" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4540,8 +4846,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ObtenerFotoPorQuiebreDeBarrera">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotoPorQuiebreDeBarrera" style="document" />
+    <wsdl:operation name="ListarFormatosDeImpresion">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarFormatosDeImpresion" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -5683,24 +5989,6 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="ListarCalidadesPorMaterialyCentro">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarCalidadesPorMaterialyCentro" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerHojaDeRutaYerbatera">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHojaDeRutaYerbatera" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="ObtenerHojaDeRutaPorNumero">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHojaDeRutaPorNumero" style="document" />
       <wsdl:input>
@@ -6135,6 +6423,24 @@
     </wsdl:operation>
     <wsdl:operation name="ListarEnvioUrenport">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarEnvioUrenport" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarTransmisionesAVisec">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarTransmisionesAVisec" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerTransmisionAVisec">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTransmisionAVisec" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -6828,24 +7134,6 @@
     </wsdl:operation>
     <wsdl:operation name="ListarPaginadoImpresoras">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoImpresoras" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ListarPaginadoFormatosDeImpresion">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoFormatosDeImpresion" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ListarFormatosDeImpresion">
-      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarFormatosDeImpresion" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

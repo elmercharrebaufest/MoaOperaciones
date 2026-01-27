@@ -22,6 +22,8 @@ import { BehaviorSubject } from 'rxjs';
 import { DropdownOption } from '../../common/view-child/dropdown/dropdown.component';
 import { finalize, take } from 'rxjs/operators';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ApiResponse } from '../../common/models/response';
+import { EmpresaExistenciaVerificada } from '../../modelos/alta-empresa/existencia-empresa-response';
 declare var $: any;
 
 
@@ -110,6 +112,9 @@ export class AltasComponent extends BaseComponent implements OnInit {
     puedeModificarEstado = this.isAuthorized('MODIFICAR ESTADO PROVEEDOR')
 
     nuevoEstadoProveedor;
+
+    empresasVerificadas: EmpresaExistenciaVerificada[] = [];
+    empresaVerificadaSeleccionada?: EmpresaExistenciaVerificada;
 
     ngOnInit(): void {
         this.navService.setSeccionList([]);
@@ -1056,8 +1061,10 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     verificarExistenciaEmpresa() {
         this.mensajeComponent.setMsgsEmpty();
+        this.empresasVerificadas = [];
+        this.empresaVerificadaSeleccionada = undefined;
         if (!this.revisarCUITFormatoValido(this.cuitIngresado)) {
-            this.mensajeComponent.setErrorMsg("Debe ingresar un cuit valido.");
+            this.mensajeComponent.setErrorMsg("Debe ingresar un CUIT válido.");
             return;
         }
         let msjModal = "";
@@ -1066,21 +1073,21 @@ export class AltasComponent extends BaseComponent implements OnInit {
             .subscribe(
                 (result) => {
                     this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        if (result.data.error != undefined) {
-                            msjModal = result.data.error;
-                        } else
-                            msjModal = result.data.Mensaje;
+                    let data = this.manejarErroresApiResponse(result);
+                    if (data) {
+                        if (data.Error) {
+                            msjModal = data.Error;
+                        }
+                        else {
+                            msjModal = data.Mensaje;
+                            this.empresasVerificadas = data.EmpresasExistentes;
+                            if (this.empresasVerificadas.length == 1) {
+                                this.empresaVerificadaSeleccionada = this.empresasVerificadas[0];
+                            }
+                        }
                         this.abrirModalVerificarExisteCuit(msjModal);
                     }
-                }
-                ,
+                },
                 (error) => {
                     this.spinnerModal.hideIt();
                     this.mensajeError = error.message;
@@ -1097,12 +1104,17 @@ export class AltasComponent extends BaseComponent implements OnInit {
         });
     }
 
+    puedeVolverAlCanalDeAltas(): boolean {
+        return !!this.empresasVerificadas && this.empresasVerificadas.length > 0 && !!this.empresaVerificadaSeleccionada;
+    }
+
     moverAlCanalDeAltas() {
         this.dialogoExisteCuit.accept();
         this.mensajeComponent.setMsgsEmpty();
         let msjModal = "";
         this.spinnerComponent.showIt();
-         this.altaEmpresaService.volverProveedorCanalDeAltas(this.cuitIngresado)
+        const mailProveedor = this.empresaVerificadaSeleccionada ? this.empresaVerificadaSeleccionada.Mail : "";
+        this.altaEmpresaService.volverProveedorCanalDeAltas(this.cuitIngresado, mailProveedor)
             .subscribe(
                 (result) => {
                     this.spinnerComponent.hideIt();
@@ -1156,5 +1168,21 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 }
             }
             );
+    }
+
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | undefined {
+        this.mensajeComponent.setMsgsEmpty();
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return undefined;
+        }
+        if (response.error) {
+            this.mensajeComponent.setErrorMsg(response.error);
+            return undefined;
+        }
+        if (response.info) {
+            this.mensajeComponent.setInfoMsg(response.info);
+        }
+        return response.data;
     }
 }

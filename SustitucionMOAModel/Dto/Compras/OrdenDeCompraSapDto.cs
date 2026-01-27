@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SustitucionMOAModel.Entities;
+using System;
 using System.Collections.Generic;
-using SustitucionMOAModel.Entities;
 
 
 namespace SustitucionMOAModel.Dto
@@ -37,6 +37,7 @@ namespace SustitucionMOAModel.Dto
         public string OrganizacionDeComprasCodigo { get; set; }
         public string MailProveedor { get; set; }
         public decimal SaldoDisponible { get; set; }
+        public string GrupoDeComprasCodigo { get; set; }
 
         //        <COMP_CODE>MOA</COMP_CODE>// fijo
         //        <DOC_TYPE>ZPE1</DOC_TYPE>//tipo de documento

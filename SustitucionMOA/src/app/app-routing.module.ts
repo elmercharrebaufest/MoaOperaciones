@@ -111,8 +111,7 @@ const appRoutes: Routes = [
             { path: "archivos-boleto", loadChildren: "./archivo-boleto/archivo-boleto.module#ArchivoBoletoModule" },
             { path: "mis-novedades", loadChildren:"./listado-novedades/listado-novedades.module#ListadoNovedadesModule" },
             { path: "log-viewer", loadChildren: "./log-viewer/log-viewer.module#LogViewerModule" },
-
-
+            { path: "consulta-ticket-pesada", loadChildren: "./consulta-ticket-pesada/consulta-ticket-pesada.module#ConsultaTicketPesadaModule" },
         ],
     },
     { path: "**", component: HomeComponent },

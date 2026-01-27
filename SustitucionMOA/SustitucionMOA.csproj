@@ -691,6 +691,7 @@
     <Content Include="Template\CertificacionesPendientesDeAprobacion-Posicion.html" />
     <Content Include="Template\EnvioCamposSustentablesUcropit.html" />
     <Content Include="Template\NotificacionEsPendientesDeAprobacion.html" />
+    <Content Include="Template\NotificacionOrdenesAutorizacionNomina.html" />
     <Content Include="Template\NotificacionOrdenesDeCarga.html" />
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />

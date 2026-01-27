@@ -11,6 +11,7 @@ import { SubPosicionViewModel } from './steps/posicion/tab-subposicion/sub-posic
 import { setupJornadaLaboralDias } from "./solp.utils";
 import { EnumEnvioCircularA } from "../enum-envio-circular";
 import { VisitaObraDto } from "../../modelos/infoVisitasDeObraDto";
+import { OrdenDeCompraSolp } from "../../modelos/compras/ordenDeCompraSolp";
 import { OrganizacionDeCompra } from "../../modelos/compras/organizacionDeCompra";
 
 export class Solp extends CommonResponse {
@@ -23,7 +24,7 @@ export class Solp extends CommonResponse {
     public Adjuntos?: { Id: number, Nombre: string }[];
     public EsPliegoMultiple: boolean = false;
     public Pliego_Id?: number;
-    public MultipleFinalizado :boolean;
+    public MultipleFinalizado: boolean;
 
     //paso 1
     public nombreDePedido: string;
@@ -93,6 +94,7 @@ export class Solp extends CommonResponse {
     public thServicioPermanente: boolean;
     public thAjustePolinomica: boolean;
     public thProveedorDirecto: boolean;
+    public thAcuerdoMarco: boolean;
     public admiteCertificacionesParciales: boolean = false;
 
     //inicio Cabecera == paso 5
@@ -121,6 +123,7 @@ export class Solp extends CommonResponse {
     racional_Garantias: string = "";
     racional_TextoDeCabecera: string = "";
 
+    ordenesDeCompraGeneradas: OrdenDeCompraSolp[] = [];
 
 
     public get ultimaPosicion(): SolpPosicion {
@@ -309,6 +312,7 @@ export class Solp extends CommonResponse {
             this.thAjustePolinomica = solp.THAjustePolinomica;
             this.thProveedorDirecto = solp.THProveedorDirecto;
             this.thServicioPermanente = solp.THServicioPermanente;
+            this.thAcuerdoMarco = solp.THAcuerdoMarco;
 
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';
@@ -329,6 +333,8 @@ export class Solp extends CommonResponse {
             this.racional_CondicionesDePago = solp.racional_CondicionesDePago;
             this.racional_Garantias = solp.racional_Garantias;
             this.racional_TextoDeCabecera = solp.racional_TextoDeCabecera;
+
+            this.ordenesDeCompraGeneradas = solp.OrdenesDeCompraGeneradas;
 
             if (solp.Posiciones && solp.Posiciones.length > 0) {
                 let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
@@ -559,6 +565,12 @@ export class Solp extends CommonResponse {
         return null
     }
 
+    esSolpDeCompras(): boolean {
+        if (!!this.organizacionDeCompra && this.organizacionDeCompra.Id == "4010") {
+            return true;
+        }
+        return false;
+    }
 }
 
 export class ValorTotalPorMoneda {

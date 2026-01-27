@@ -14,6 +14,7 @@ import { Rol } from '../../common/models/rol';
 import { ModificarDatosComponent } from '../modificar-datos/modificar-datos.component';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Calendar } from 'primeng/calendar';
+import { BasicResponse } from '../../common/models/response';
 
 @Component({
     selector: 'app-usuario-list',
@@ -61,6 +62,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     }
 
     data: any;
+    mailsUsuariosAprobadores: string[] = [];
     orderedByColumn: string = "id";
     orderDirection: number = 1;
     itemsPerPage = 20;
@@ -119,6 +121,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         //this.navService.setSeccionList([new Seccion('/usuario/list', 'usuario', 'Listado Usuarios'), new Seccion('/usuario/alta', 'usuario', 'Alta Usuario')]);
         this.getUsuario();
         this.getRolesOptions();
+        this.getMailsUsuariosAprobadores();
 
         this.formularioUsuario = this.fb.group({
             usuarioSap: ['', [Validators.required]],
@@ -145,11 +148,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.tienePermisoEditarSuplente = this.securityService.tienePermiso("EDITAR SUPLENTE");
     }
 
-
-    // closeCalendar() {
-    //     this.calendar.overlayVisible = false;
-    // }
-
     getRolesOptions() {
         try {
             this.subscriptionDropDowns = this.service.getRoles().subscribe(
@@ -173,20 +171,24 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
         }
     }
+
     abrirModalAuditoriaUsuario(id: number){
         this.service.setUsuarioCargarAuditoria(id);
     }
+
     abrirModalModificarDatos(usuario){
         const id:number = usuario.Id;
         this.usuarioModificacionSel = usuario.Mail;
         this.service.setUsuarioModificarDatos(id);
     }
+
     cerrarModalModificarDatos(event){
         if(event){
             let modal = document.getElementById('cerrarModalUsuario');
             modal.click();
         }
     }
+
     getUsuario() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -216,8 +218,21 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
-
         return false; //<-- Prevent Refresh
+    }
+
+    getMailsUsuariosAprobadores() {
+        this.subscription = this.service.getMailsUsuariosAprobadores().subscribe(
+            (response) => {
+                let mailsAprobadores = this.manejarErroresApiResponse(response);
+                if (mailsAprobadores) {
+                    this.mailsUsuariosAprobadores = mailsAprobadores;
+                }
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error);
+            }
+        );
     }
 
     isVisible() {
@@ -261,7 +276,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
-
         return false; //<-- Prevent Refresh
     }
 
@@ -293,7 +307,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
-
         return false; //<-- Prevent Refresh
     }
 
@@ -325,7 +338,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
-
         return false; //<-- Prevent Refresh
     }
 
@@ -547,7 +559,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         );
-
         return false; //<-- Prevent Refresh
     }
     
@@ -608,13 +619,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.validationError = false;
     }
 
-    // cleanReasignarInput() {
-    //     this.formularioUsuario.controls['fechaReasignar1'].setValue(null);
-    //     this.formularioUsuario.controls['fechaReasignar1'].markAsPristine();
-    //     this.formularioUsuario.controls['fechaReasignar1'].markAsUntouched();
-    //     this.formularioUsuario.controls['fechaReasignar1'].updateValueAndValidity();
-    // }
-
     onCalendarChange(event: Event): void { 
         if (this.beInfo) {
             return;
@@ -650,7 +654,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     get suplenteControl(): FormControl {
         return this.formularioUsuario.controls['suplente'].value as FormControl;
     }
-    
 
     onCalendarioAceptar() {
         // this.closeCalendar();
@@ -658,39 +661,40 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.validationError = false;
     }
 
-    filteredList: any[] = [];
+    suplentesFiltrados: string[] = [];
     suplenteEsValido: boolean = false;
 
     onInputSuplente() {
         var inputValue = this.formularioUsuario.controls['suplente'].value || '';
         if (inputValue.length > 3) {
-            this.filteredList = this.data.filter(item => item.Mail.toLowerCase().includes(inputValue));
-            if (this.filteredList[0].Mail === inputValue) {
-                this.filteredList = [];
+            this.suplentesFiltrados = this.mailsUsuariosAprobadores.filter(x => x.toLowerCase().includes(inputValue));
+            if (this.suplentesFiltrados[0] === inputValue) {
+                this.suplentesFiltrados = [];
                 this.isCheckboxDisabled = false;
             }
-        } else {
-            this.filteredList = [];
+        }
+        else {
+            this.suplentesFiltrados = [];
             this.esExterno = false;
             this.externoCheckbox.nativeElement.checked = false;
         }
         this.isCheckboxDisabled = inputValue.trim() === '';
-    }    
-
-    seleccionarSuplente(item: any) {
-        this.formularioUsuario.controls['suplente'].setValue(item.Mail);
+    }
+    
+    seleccionarSuplente(item: string) {
+        this.formularioUsuario.controls['suplente'].setValue(item);
         this.formularioUsuario.controls['suplente'].markAsTouched();
         this.formularioUsuario.controls['suplente'].markAsDirty();
-        this.filteredList = [];
+        this.suplentesFiltrados = [];
 
         this.isCheckboxDisabled = false;
     }
 
     validarEmailSuplente() {
         const inputValue = this.formularioUsuario.controls['suplente'].value;
-        const valid = this.data.some(item => item.Mail === inputValue);
+        const esSuplenteValido = this.mailsUsuariosAprobadores.some(item => item === inputValue);
 
-        if (!valid && inputValue.length > 0) {
+        if (!esSuplenteValido && inputValue.length > 0) {
             this.formularioUsuario.controls['suplente'].setErrors({ invalidEmail: true });
             this.suplenteEsValido = false;
             this.isCheckboxDisabled = true;
@@ -720,5 +724,20 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.usuarioModificacionSel = usuario.Mail;
         const id: number = usuario.Id;
         this.service.setUsuarioVerVendedores(id);
+    }
+
+    manejarErroresApiResponse<T>(response: BasicResponse<T>): T | undefined {
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return undefined;
+        }
+        if (response.error) {
+            this.mensajeComponent.setErrorMsg(response.error);
+            return undefined;
+        }
+        if (response.info) {
+            this.mensajeComponent.setInfoMsg(response.info);
+        }
+        return response as T;
     }
 }

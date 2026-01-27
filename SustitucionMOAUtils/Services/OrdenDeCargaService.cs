@@ -36,6 +36,8 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly string _usuarioAutomaticoSAP = ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"];
         private readonly string _transporteNoExiste = "El transporte no existe";
+        private readonly string _codigoAceiteSojaNeutralizado = "98855";
+        private readonly string _codigoAceiteMetiladoSoja = "99098";
 
         protected readonly IEmailFasService emailFasService;
         protected readonly IFacturaAnticipadaService facturaAnticipadaService;
@@ -91,6 +93,7 @@ namespace SustitucionMOAUtils.Services
                 LlenarOrdenDeCargaFleteMOA(ordenReq, contratoSAP);
 
                 OrdenDeCarga nuevaOrden = null;
+                var ordenesAgregadas = new List<OrdenDeCarga>();
                 foreach (var unidadTransporte in crearOrdenDeCargaRequest.UnidadesTransporte)
                 {
                     var ordenPuedeEnviarseDirectoSap = KilosAlcanzanParaConfirmarOrden(kilosDisponibles);
@@ -104,6 +107,7 @@ namespace SustitucionMOAUtils.Services
                     var crearPedido = VerificarOrden(nuevaOrden, nuevaOrden.Cliente, false);
 
                     repositorio.Agregar(nuevaOrden);
+                    ordenesAgregadas.Add(nuevaOrden);
 
                     var pedidoTieneKgDisponiblesEnFacturaAnticipada = true;
 
@@ -164,12 +168,13 @@ namespace SustitucionMOAUtils.Services
 
                     kilosDisponibles -= kilosPorOrden;
                 }
+                NotificarAutorizacionDeNomina(ordenesAgregadas);
                 var resultado = new Resultado { IdEntidad = nuevaOrden.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
                 return resultado;
             }
-            catch (ValidationCustomException vcex)
+            catch (ValidationCustomException)
             {
-                throw vcex;
+                throw;
             }
             catch (Exception ex)
             {
@@ -569,45 +574,56 @@ namespace SustitucionMOAUtils.Services
 
         public List<OrdenDeCarga> VerificarVencimientoOrdenDeCarga()
         {
+            var ordenesVencidas = new List<OrdenDeCarga>();
             var dayOfWeek = DateTime.Now.DayOfWeek;
+            if (dayOfWeek == DayOfWeek.Saturday || dayOfWeek == DayOfWeek.Sunday)
+            {
+                return ordenesVencidas;
+            }
+
             var feriados = feriadoService.ObtenerFeriados();
             var fechaActual = DateTime.Now.Date;
-            foreach (var diasFeriados in feriados)
+
+            if (feriados.Any(f => f.Date == fechaActual))
             {
-                if (diasFeriados.Date == fechaActual)
-                {
-                    return null;
-                }
+                return ordenesVencidas;
             }
 
-            if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaSapJob").Habilitado == false)
-                return null;
-
-            if ((dayOfWeek == DayOfWeek.Saturday || dayOfWeek == DayOfWeek.Sunday))
+            if (!repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaSapJob").Habilitado)
             {
-                return null;
+                return ordenesVencidas;
             }
 
-            int Usuario_Id = repositorio.Obtener<Usuario>(a => a.Mail == "moaoperaciones@molinosagro.com.ar").Id;
+            var usuarioId = repositorio.Obtener<Usuario>(a => a.Mail == "moaoperaciones@molinosagro.com.ar").Id;
 
             var ordenes = repositorio.Listar<OrdenDeCarga>(o => o.FechaVencimiento < fechaActual && (o.Estado == EstadoOrdenDeCarga.EntregaGenerada || o.Estado == EstadoOrdenDeCarga.Vencida));
             foreach (var orden in ordenes)
             {
                 if (orden.Estado == EstadoOrdenDeCarga.EntregaGenerada)
                 {
-                    orden.Estado = EstadoOrdenDeCarga.Vencida;
-                    orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
+                    var camionEstaEnPlanta = CamionEstaEnPlanta(orden);
+
+                    if (!camionEstaEnPlanta)
                     {
-                        Antes = EstadoOrdenDeCarga.EntregaGenerada.ToFriendlyString(),
-                        Despues = EstadoOrdenDeCarga.Vencida.ToFriendlyString(),
-                        FechaCambio = DateTime.Now,
-                        NombreColumnaCambio = "Estado",
-                        Usuario_Id = Usuario_Id
-                    });
+                        orden.Estado = EstadoOrdenDeCarga.Vencida;
+                        orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
+                        {
+                            Antes = EstadoOrdenDeCarga.EntregaGenerada.ToFriendlyString(),
+                            Despues = EstadoOrdenDeCarga.Vencida.ToFriendlyString(),
+                            FechaCambio = DateTime.Now,
+                            NombreColumnaCambio = "Estado",
+                            Usuario_Id = usuarioId
+                        });
+                        ordenesVencidas.Add(orden);
+                    }
+                }
+                else
+                {
+                    ordenesVencidas.Add(orden);
                 }
             }
             repositorio.GuardarCambios();
-            emailFasService.EnviarMailVencieronOrdenesDeCarga(ordenes);
+            emailFasService.EnviarMailVencieronOrdenesDeCarga(ordenesVencidas);
 
             return ordenes;
         }
@@ -625,6 +641,14 @@ namespace SustitucionMOAUtils.Services
 
             emailFasService.EnviarMailOrdenDeCargaVencida(orden);
 
+            orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
+            {
+                Antes = orden.Estado.ToFriendlyString(),
+                Despues = EstadoOrdenDeCarga.AnuladaPorVencimiento.ToFriendlyString(),
+                FechaCambio = DateTime.Now,
+                NombreColumnaCambio = "Estado",
+                Usuario_Id = usuario.Id
+            });
             orden.Estado = EstadoOrdenDeCarga.AnuladaPorVencimiento;
             repositorio.GuardarCambios();
 
@@ -2958,6 +2982,33 @@ namespace SustitucionMOAUtils.Services
             }
             var recorridosScato = scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(orden.NumeroEntrega);
             return recorridosScato != null && recorridosScato.Any();
+        }
+
+        private void NotificarAutorizacionDeNomina(List<OrdenDeCarga> ordenesAgregadas)
+        {
+            try
+            {
+                if (!ordenesAgregadas?.Any() ?? false)
+                {
+                    return;
+                }
+
+                if (DebeNotificarAutorizacionDeNomina(ordenesAgregadas[0]))
+                {
+                    var ordenesANotificar = ordenesAgregadas.Where(o => o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
+                    emailFasService.EnviarMailAutorizacionDeNomina(ordenesANotificar);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error al notificar autorización de nómina", ex);
+            }
+        }
+
+        private bool DebeNotificarAutorizacionDeNomina(OrdenDeCarga orden)
+        {
+            return orden.Estado == EstadoOrdenDeCarga.EntregaGenerada &&
+                (orden.Producto.CodigoSap == _codigoAceiteSojaNeutralizado || orden.Producto.CodigoSap == _codigoAceiteMetiladoSoja);
         }
     }
 }

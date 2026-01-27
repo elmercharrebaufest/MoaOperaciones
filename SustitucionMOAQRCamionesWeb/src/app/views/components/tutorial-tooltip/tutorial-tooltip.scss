@@ -1,0 +1,104 @@
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 9998;
+}
+
+.tutorial-tooltip {
+  position: fixed;
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  max-width: 360px;
+  width: calc(100% - 2rem);
+  animation: fadeIn 0.3s ease-out;
+  
+  &[data-position="bottom"] {
+    .tooltip-arrow {
+      top: -8px;
+      transform: translateX(-50%) rotate(45deg);
+    }
+  }
+  
+  &[data-position="top"] {
+    .tooltip-arrow {
+      bottom: -8px;
+      transform: translateX(-50%) rotate(45deg);
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.tooltip-content {
+  padding: 1.5rem;
+}
+
+.tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.tooltip-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  flex: 1;
+}
+
+.tooltip-step {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tooltip-description {
+  font-size: 0.875rem;
+  color: #4b5563;
+  line-height: 1.5;
+  margin: 0 0 1.5rem 0;
+}
+
+.btn-next {
+  background-color: #00843D;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  
+  &:hover {
+    background-color: #006b32;
+  }
+}
+
+.tooltip-arrow {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  z-index: -1;
+}

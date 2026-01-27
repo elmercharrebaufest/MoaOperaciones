@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ContratoMarco, ContratoMarcoPosicion, ObtenerContratoMarco } from './contrato-marco.model';
 import { ObtenerContratoMarcoService } from './obtener-contrato-marco.service';
+import { Solp } from '../../../solp';
 
 @Component({
   selector: 'app-obtener-contrato-marco',
@@ -11,12 +12,15 @@ import { ObtenerContratoMarcoService } from './obtener-contrato-marco.service';
 export class ObtenerContratoMarcoComponent implements OnInit {
   defaultCentroEntrega: any;
 
+  @Input('model')
+  protected model: Solp;
+
   @Input()
   set centroEntrega(value: Array<any>) {
     this.centrosEntrega = value.filter(x => x.FiltroComprador == true);
   }
 
-  @Input() 
+  @Input()
   set contratoMarco(value: ContratoMarco) {
     this.contratoMarcoModel = value;
     this.fillPosicionesAsOptions();
@@ -30,11 +34,30 @@ export class ObtenerContratoMarcoComponent implements OnInit {
 
   public visible: boolean;
   public centrosEntrega: Array<any>;
-  public contratoMarcoModel: ContratoMarco  = null;
+  public contratoMarcoModel: ContratoMarco = null;
   public posicionesAsOptions: Array<any> = [];
   public formGroup: FormGroup
   muestroSpinner: boolean = false;
   primerBusqueda: boolean = true;
+
+  @Input()
+  set ListaContratos(value: ContratoMarco[]) {
+    if (value && value.length > 0) {
+      this.numerosContratoOptions = value.map(contrato => {
+        return { label: this.eliminarCerosIniciales(contrato.numeroDocumentoCompras), value: contrato.numeroDocumentoCompras };
+      });
+      // Eliminar duplicados si es necesario
+      this.numerosContratoOptions = this.numerosContratoOptions.filter((thing, index, self) =>
+        index === self.findIndex((t) => (
+          t.value === thing.value
+        ))
+      );
+    } else {
+      this.numerosContratoOptions = [];
+    }
+  }
+
+  numerosContratoOptions: any[] = [];
 
   constructor(private obtenerContratoMarcoService: ObtenerContratoMarcoService,
     private formBuilder: FormBuilder) {
@@ -43,19 +66,33 @@ export class ObtenerContratoMarcoComponent implements OnInit {
       this.onClear();
     });
   }
-  
+
   ngOnInit() {
     this.formGroup = this.formBuilder.group({
       centroEntrega: new FormControl('', Validators.required),
       numeroContrato: new FormControl('', Validators.required)
     });
-    
+
     this.defaultCentroEntrega = this.centrosEntrega.find(centro => centro.Codigo === "1029");
+
+    if (this.model && this.model.codigoProveedorSap) {
+      this.muestroSpinner = true;
+      const payload = {
+        centro: this.defaultCentroEntrega ? this.defaultCentroEntrega.Codigo : '',
+        numeroContrato: '',
+        codigoProveedor: this.model.codigoProveedorSap
+      } as ObtenerContratoMarco;
+
+      this.obtenerContratoMarcoEmitter.next(payload);
+
+      this.muestroSpinner = false;
+      this.primerBusqueda = false;
+    }
   }
 
   showInputError(fieldName: string): boolean {
     if (this.formGroup && this.formGroup.controls) {
-        return (this.formGroup.controls[fieldName].invalid || (this.formGroup.controls[fieldName].errors && this.formGroup.controls[fieldName].errors.required));
+      return (this.formGroup.controls[fieldName].invalid || (this.formGroup.controls[fieldName].errors && this.formGroup.controls[fieldName].errors.required));
     }
     return false;
   }
@@ -64,7 +101,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     this.posicionesAsOptions = [];
     if (this.contratoMarcoModel) {
       this.posicionesAsOptions = this.contratoMarcoModel.posiciones.map(pos => {
-        return { 
+        return {
           numeroPosicion: pos.numeroPosicionDocumentoCompras,
           textoMaterialOServicio: pos.textoMaterialOServicio,
           fullTextoMaterialOServicio: `${pos.numeroPosicionDocumentoCompras} - ${pos.textoMaterialOServicio}`
@@ -78,7 +115,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
       this.contratoMarcoModel.posiciones
         .filter(pos => pos.numeroPosicionDocumentoCompras == event.numeroPosicion)
         .forEach(pos => pos.selected = true);
-      }
+    }
   }
 
   onClickSelectPosicion(posicion: ContratoMarcoPosicion) {
@@ -111,28 +148,28 @@ export class ObtenerContratoMarcoComponent implements OnInit {
         posicion.allSubPosicionesSelected = false;
       }
     }
-  }  
+  }
 
-  onSearchContrato(){
+  onSearchContrato() {
     try {
       if (this.centroEntregaValue && this.numeroContratoValue) {
         this.muestroSpinner = true;
-  
+
         const payload = {
-          centro: this.centroEntregaValue, 
+          centro: this.centroEntregaValue,
           numeroContrato: this.numeroContratoValue
         } as ObtenerContratoMarco;
-  
+
         this.contratoMarcoModel = null;
         this.obtenerContratoMarcoEmitter.next(payload);
-  
+
         this.muestroSpinner = false;
         this.primerBusqueda = false;
-  
+
       } else {
         this.muestroSpinner = false;
       }
-  
+
     } catch (error) {
       this.muestroSpinner = false;
     }
@@ -152,7 +189,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     this.primerBusqueda = true;
     this.defaultCentroEntrega = this.centrosEntrega.find(centro => centro.Codigo === "1029");
   }
-  
+
   onAgregarPosiciones() {
     this.agregarPosicionesContratoMarcoEmitter.next(this.contratoMarcoModel);
   }
@@ -166,15 +203,15 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     return centro;
   }
   get numeroContratoValue() {
-      return this.formGroup.get('numeroContrato').value;
+    return this.formGroup.get('numeroContrato').value;
   }
 
   get canAddItems() {
-      let posicionesSeleccionadas = new Array<ContratoMarcoPosicion>();
-      if (this.contratoMarcoModel != null) {
-        posicionesSeleccionadas = this.contratoMarcoModel.posiciones.filter(p => p.selected);
-      }
-      return posicionesSeleccionadas.length > 0;
+    let posicionesSeleccionadas = new Array<ContratoMarcoPosicion>();
+    if (this.contratoMarcoModel != null) {
+      posicionesSeleccionadas = this.contratoMarcoModel.posiciones.filter(p => p.selected);
+    }
+    return posicionesSeleccionadas.length > 0;
   }
 
   eliminarCerosIniciales(numero: string | number): string {

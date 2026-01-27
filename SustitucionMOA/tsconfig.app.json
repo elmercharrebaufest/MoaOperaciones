@@ -41,7 +41,8 @@
     "src/app/log-viewer/log-viewer.module.ts",
     "src/app/log-viewer/log-viewer.module.ts",
     "src/app/apikey/apikey.module.ts",
-    "src/app/faq/faq.module.ts"
+    "src/app/faq/faq.module.ts",
+    "src/app/consulta-ticket-pesada/consulta-ticket-pesada.module.ts"
 
   ],
   "include": [

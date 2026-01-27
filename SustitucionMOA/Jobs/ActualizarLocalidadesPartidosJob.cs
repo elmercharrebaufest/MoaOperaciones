@@ -62,26 +62,26 @@ namespace SustitucionMOA.Jobs
         {
             ModelDto.LocalidadDto localidadTemp;
             var listaLocalidades = repositorio.ListarTodos<Localidad>().ToList();
-            foreach (var localidad in localidadesDataAgro)
+            foreach (var localidadDA in localidadesDataAgro.Where(x => x.PartidoId.HasValue))
             {
-                localidadTemp = localidad;
-                var localidadGuardada = listaLocalidades.FirstOrDefault(x => x.CodLocalidad == localidad.LocalidadId);
+                localidadTemp = localidadDA;
+                var localidadGuardada = listaLocalidades.FirstOrDefault(x => x.CodLocalidad == localidadDA.LocalidadId);
                 try
                 {
                     if (localidadGuardada == null)
                     {
                         Localidad nuevaLocalidad = new Localidad();
-                        nuevaLocalidad.Nombre = localidad.Nombre;
-                        nuevaLocalidad.ProvinciaId = localidad.ProvinciaId;
-                        nuevaLocalidad.CodLocalidad = localidad.LocalidadId;
-                        nuevaLocalidad.PartidoId = Convert.ToInt32(localidad.PartidoId);
+                        nuevaLocalidad.Nombre = localidadDA.Nombre;
+                        nuevaLocalidad.ProvinciaId = localidadDA.ProvinciaId;
+                        nuevaLocalidad.CodLocalidad = localidadDA.LocalidadId;
+                        nuevaLocalidad.PartidoId = Convert.ToInt32(localidadDA.PartidoId);
                         repositorio.Agregar(nuevaLocalidad);
                     }
                     else
                     {
-                        localidadGuardada.Nombre = localidad.Nombre;
-                        localidadGuardada.ProvinciaId = localidad.ProvinciaId;
-                        localidadGuardada.PartidoId = Convert.ToInt32(localidad.PartidoId);
+                        localidadGuardada.Nombre = localidadDA.Nombre;
+                        localidadGuardada.ProvinciaId = localidadDA.ProvinciaId;
+                        localidadGuardada.PartidoId = Convert.ToInt32(localidadDA.PartidoId);
                     }
                 }
                 catch (Exception ex)

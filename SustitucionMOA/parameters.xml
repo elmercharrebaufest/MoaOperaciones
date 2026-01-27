@@ -278,6 +278,12 @@
 							match="/configuration/appSettings/add[@key='EmailKgsMenos15TNFasTo']
                            /@value" />
 	</parameter>
+
+	<parameter name="EmailAutorizacionNominaTo Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAutorizacionNominaTo']
+                           /@value" />
+	</parameter>
 	
 	<parameter name="EmailConsultaInternaCC Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"

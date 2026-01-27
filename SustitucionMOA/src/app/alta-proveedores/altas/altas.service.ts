@@ -6,6 +6,8 @@ import { CommonResponse } from '../../common/models/common-response';
 import { throwError as observableThrowError } from 'rxjs';
 import { timeoutWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { ExistenciaEmpresaResponse } from '../../modelos/alta-empresa/existencia-empresa-response';
+import { ApiResponse } from '../../common/models/response';
 @Injectable()
 export class AltaEmpresaService extends BaseService {
 
@@ -106,18 +108,19 @@ export class AltaEmpresaService extends BaseService {
             .get("/api/usuario/eliminarCuitNoHabilitado", { params: params, headers: this.headers });
     }
 
-    public verificarExistenciaEmpresa(cuit: string): Observable<any> {
+    public verificarExistenciaEmpresa(cuit: string): Observable<ApiResponse<ExistenciaEmpresaResponse>> {
         let params: HttpParams = new HttpParams()
         .append('cuit', cuit.toString())
 
         return this.http
-            .get('/api/AltaEmpresa/VerificarExistenciaEmpresa', { params: params, headers: this.headers })
+            .get<ApiResponse<ExistenciaEmpresaResponse>>('/api/AltaEmpresa/VerificarExistenciaEmpresa', { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
-    public volverProveedorCanalDeAltas(cuit: string): Observable<any> {
+    public volverProveedorCanalDeAltas(cuit: string, mailProveedor: string): Observable<any> {
         let params: HttpParams = new HttpParams()
-        .append('cuit', cuit.toString())
+            .append('cuit', cuit)
+            .append('mailProveedor', encodeURIComponent(mailProveedor));
 
         return this.http
             .get('/api/AltaEmpresa/VolverProveedorCanalDeAltas', { params: params, headers: this.headers })

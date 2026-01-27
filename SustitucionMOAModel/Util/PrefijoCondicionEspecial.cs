@@ -54,6 +54,11 @@ namespace SustitucionMOAModel.Util
         private const string PD = "PD-";
 
         /// <summary>
+        /// Trabajo ya hecho y Acuerdo Marco. Sin Adicional ni Urgencia
+        /// </summary>
+        private const string AM = "AM-";
+
+        /// <summary>
         /// Con presupuesto
         /// </summary>
         private const string CPD = "CPD-";
@@ -84,6 +89,7 @@ namespace SustitucionMOAModel.Util
             SP,
             AJ,
             PD,
+            AM,
             CPD,
             CPOR,
             CPU,
@@ -156,6 +162,11 @@ namespace SustitucionMOAModel.Util
                 if (solp.THProveedorDirecto == true && solp.Adicional != true && solp.Urgencia != true)
                 {
                     prefijo = PD;
+                }
+
+                if (solp.THAcuerdoMarco == true && solp.Adicional != true && solp.Urgencia != true)
+                {
+                    prefijo = AM;
                 }
             }
             else

@@ -1184,6 +1184,12 @@ namespace SustitucionMOAUtils.Services
             return usuariosCompras.ToList();
         }
 
+        public List<string> GetMailsUsuariosAprobadores()
+        {
+            var permisosAprobadores = new List<string> { "ABM SOLP" };
+            return repositorio.GetMailsUsuariosConPermisos(permisosAprobadores);
+        }
+
         private void ValidarReferenciaCircularSuplentes(string mailUsuario, string mailSuplente, DateTime fechaDesde, DateTime fechaHasta, List<string> usuariosYaEvaluados = null)
         {
             if (string.IsNullOrEmpty(mailSuplente))

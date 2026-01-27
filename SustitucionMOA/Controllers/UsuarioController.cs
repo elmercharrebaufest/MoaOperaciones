@@ -727,11 +727,19 @@ namespace SustitucionMOA.Controllers
             _usuarioService.GuardarConfiguracionUsuario(mailUsuario, valor, (TipoConfiguracionUsuario)tipo);
             return JsonCustom(true);
         }
+
         [HttpGet]
         public ActionResult ObtenerConfiguracionUsuario(TipoConfiguracionUsuario tipo)
         {
             var mailUsuario = SessionPersister.Mail;
             return JsonCustom(_usuarioService.ObtenerConfiguracion(mailUsuario, tipo));
+        }
+
+        [HttpGet]
+        public ActionResult GetUsuariosAprobadores()
+        {
+            var mailsUsuariosAprobadores = _usuarioService.GetMailsUsuariosAprobadores();
+            return ContentCustom(mailsUsuariosAprobadores);
         }
     }
 }

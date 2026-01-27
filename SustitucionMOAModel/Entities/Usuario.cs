@@ -58,11 +58,11 @@ namespace SustitucionMOAModel.Entities
             Proveedor proveedor = null;
             try
             {
-                proveedor = Proveedores.Where(p => p.CUIT == CUITRegistro && TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault();
+                proveedor = Proveedores.FirstOrDefault(p => p.CUIT == CUITRegistro && TipoUsuario.Id == p.TipoProveedor.Id);
             }
             catch (Exception)
             {
-                proveedor = Proveedores.Where(p => p.CUIT == CUITRegistro).FirstOrDefault();
+                proveedor = Proveedores.FirstOrDefault(p => p.CUIT == CUITRegistro);
             }
 
             if (proveedor == null)
@@ -76,13 +76,13 @@ namespace SustitucionMOAModel.Entities
 
         public Proveedor ObtenerCorredor()
         {
-            return Proveedores.Where(p => p.CUIT == this.CUITRegistro && p.TipoProveedor.Id == (int)TipoUsuarioEnum.Corredor).FirstOrDefault();
+            return Proveedores.FirstOrDefault(p => p.CUIT == this.CUITRegistro && p.TipoProveedor.Id == (int)TipoUsuarioEnum.Corredor);
         }
         public Proveedor ObtenerProveedorAsignado()
         {
             try
             {
-                return Proveedores.Where(p => p.CUIT == CUITRegistro && TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault();
+                return Proveedores.FirstOrDefault(p => p.CUIT == CUITRegistro && TipoUsuario.Id == p.TipoProveedor.Id);
             }
             catch
             {
@@ -93,29 +93,29 @@ namespace SustitucionMOAModel.Entities
         public Proveedor ObtenerProveedorPorId(int proveedorId)
         {
             if (proveedorId > 0)
-                return Proveedores.Where(p => p.Id == proveedorId).FirstOrDefault();
+                return Proveedores.FirstOrDefault(p => p.Id == proveedorId);
             else
                 return Proveedores.FirstOrDefault();
         }
         public Proveedor ObtenerProveedorPorCodigo(string codigoProveedor)
         {
-            return Proveedores.Where(p => p.CodigoProveedor == codigoProveedor).FirstOrDefault();
+            return Proveedores.FirstOrDefault(p => p.CodigoProveedor == codigoProveedor);
         }
 
         public Proveedor ObtenerProveedorPorCUIT(string CUIT)
         {
-            return Proveedores.Where(p => p.CUIT == CUIT).FirstOrDefault();
+            return Proveedores.FirstOrDefault(p => p.CUIT == CUIT);
         }
 
         public bool TieneProveedor(string codigoProveedor)
         {
             //Los administradores pueden elegir impersonarse como cualquier proveedor
-            if (Roles.Where(r => r.Codigo == "ADM").Any())
+            if (Roles.Any(r => r.Codigo == "ADM"))
             {
                 return true;
             }
 
-            return Proveedores.Where(p => p.CodigoProveedor == codigoProveedor).Any();
+            return Proveedores.Any(p => p.CodigoProveedor == codigoProveedor);
         }
 
         public virtual string ObtenerRazonSocial()
