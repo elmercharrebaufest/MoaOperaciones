@@ -11,6 +11,7 @@ import { Seccion } from '../common/models/seccion';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpStatusCodes } from '../common/models/httpStatusCodes';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
+import * as XLSX from 'xlsx';
 declare var $: any;
 
 @Component({
@@ -22,8 +23,8 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
   @ViewChild(MensajeComponent)
   protected mensajeComponent: MensajeComponent;
 
-  fechaIngreso: Date = new Date();
-  fechaEgreso: Date = new Date();
+  fechaIngreso: string = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()).toLocaleDateString('en-GB');
+  fechaEgreso: string = new Date().toLocaleDateString('en-GB');
   filtroPatente: string = "";
   filtroCtg: string = "";
   filtroCuitProveedor: string = "";
@@ -53,8 +54,6 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
   }
 
   ngAfterViewInit() {
-    this.setFiltrosDefault();
-
     $('.form_datetime_fechaIngreso').datetimepicker({
       format: 'dd/mm/yyyy',
       language: 'es',
@@ -68,8 +67,11 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
       pickTime: false,
       minView: 2,
       maxView: 4,
-      useCurrent: false
-    }).data('datetimepicker').setDate(this.fechaIngreso);
+      defaultDate: 0
+    }).on('changeDate', (e) => {
+      this.fechaIngreso = $('#noCursor_fechaIngreso').val() as string;
+    });
+
 
     $('.form_datetime_fechaEgreso').datetimepicker({
       format: 'dd/mm/yyyy',
@@ -84,17 +86,14 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
       pickTime: false,
       minView: 2,
       maxView: 4,
-      useCurrent: false
-    }).data('datetimepicker').setDate(this.fechaEgreso);
+      defaultDate: 0
+    }).on('changeDate', (e) => {
+      this.fechaEgreso = $('#noCursor_fechaEgreso').val() as string;
+    });
   }
 
   setTabs() {
     this.setMenuSeccionTab("consulta-ticket-pesada", "Ticket Pesada");
-  }
-
-  setFiltrosDefault() {
-    this.fechaIngreso = new Date(new Date().setMonth(new Date().getMonth() - 1));
-    this.fechaEgreso = new Date();
   }
 
   formatDate(date: Date): string {
@@ -154,18 +153,18 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
 
   getDatosTicketPesada() {
     this.mensajeComponent.setMsgsEmpty();
-    this.fechaIngreso = this.parseFecha($("#dtp_input_fechaIngreso").val() as string) || new Date();
-    this.fechaEgreso = this.parseFecha($("#dtp_input_fechaEgreso").val() as string) || new Date();
-
+    const fechaInicio = this.parseFecha(this.fechaIngreso) || new Date();
+    const fechaEgreso = this.parseFecha(this.fechaEgreso) || new Date();
+      
     // Validar que el periodo no sea mayor a 1 año
-    const unAnoEnMilisegundos = 365 * 24 * 60 * 60 * 1000;
-    const diferenciaTiempo = this.fechaEgreso.getTime() - this.fechaIngreso.getTime();
-    
-    if (diferenciaTiempo > unAnoEnMilisegundos) {
-      this.mensajeComponent.setErrorMsg("No se puede obtener información de más de 1 año. Por favor, seleccione un rango de fechas menor.");
-      return;
-    }
-
+     const unAnoEnMilisegundos = 365 * 24 * 60 * 60 * 1000;
+     const diferenciaTiempo = fechaEgreso.getTime() - fechaInicio.getTime();
+     
+     if (diferenciaTiempo > unAnoEnMilisegundos) {
+       this.mensajeComponent.setErrorMsg("No se puede obtener información de más de 1 año. Por favor, seleccione un rango de fechas menor.");
+       return;
+     }
+ 
     if (!this.esAdmin) {
       this.filtroCuitTransportista = this.formatearCuit(this.cuitSesion);
       this.filtroCuitIntermediarioFlete = this.formatearCuit(this.cuitSesion);
@@ -194,7 +193,7 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
 
     this.unsubscribe();
     try {
-      this.subscription = this.ticketPesadaService.ListarDatosTicketPesada(this.fechaIngreso, this.fechaEgreso, this.filtroCuitProveedor, this.filtroCuitTransportista, this.filtroCtg, this.filtroPatente, this.filtroCuitIntermediarioFlete, this.esAdmin).subscribe(
+      this.subscription = this.ticketPesadaService.ListarDatosTicketPesada(fechaInicio, fechaEgreso, this.filtroCuitProveedor, this.filtroCuitTransportista, this.filtroCtg, this.filtroPatente, this.filtroCuitIntermediarioFlete, this.esAdmin).subscribe(
         (result) => {
           this.spinnerComponent.hideIt();
           if (result.logout == true) {
@@ -240,7 +239,7 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
       return;
     }
 
-    const headers = ['CTG', 'Bruto Origen', 'Tara Origen', 'Neto Origen', 'Bruto Planta', 'Tara Planta', 'Neto Planta', 'Ingreso', 'Egreso', 'Procedencia', 'Intermediario', 'CUIT Intermediario', 'Transportista', 'CUIT Transportista', 'Patente', 'Chofer', 'Cuit Tit. CP','Material'];
+    const headers = ['CTG', 'Bruto Origen', 'Tara Origen', 'Neto Origen', 'Bruto Planta', 'Tara Planta', 'Neto Planta', 'Ingreso', 'Egreso', 'Procedencia', 'Intermediario', 'CUIT Intermediario', 'Transportista', 'CUIT Transportista', 'Patente', 'Chofer', 'Cuit Tit. CP', 'Material'];
     const rows = this.tickets.map(t => [
       t.CTG,
       t.BrutoOrigen,
@@ -262,20 +261,14 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
       t.Material
     ]);
 
-    let csv = headers.join(',') + '\n';
-    rows.forEach(row => {
-      csv += row.map(cell => `"${cell || ''}"`).join(',') + '\n';
-    });
+    // Crear libro de trabajo y hoja de cálculo
+    const worksheetData = [headers, ...rows];
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Tickets Pesada');
 
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `TicketsPesada_${new Date().toISOString().slice(0, 10)}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Generar archivo XLSX y descargarlo
+    XLSX.writeFile(workbook, `TicketsPesada_${new Date().toISOString().slice(0, 10)}.xlsx`);
   }
 
 }

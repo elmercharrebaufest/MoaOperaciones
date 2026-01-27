@@ -27,24 +27,25 @@
           <title-caps>Refinar resultados</title-caps>
         </div>
 
-        <div class="col-xs-12 col-sm-6 col-md-15">
+					
+					  <div class="col-xs-12 col-sm-6 col-md-15">
           <p>Fecha Desde</p>
           <div class="styled-select input-group date form_datetime_fechaIngreso" data-provide="datepicker" data-date=""
             data-date-format="dd/MM/yyyy" data-link-field="dtp_input_fechaIngreso">
-            <input type="text" [value]="fechaIngreso | date:'dd/MM/yyyy'" id="noCursor_fechaIngreso" />
+            <input type="text" value="{{fechaIngreso}}" id="noCursor_fechaIngreso" />
             <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
           </div>
-          <input type="hidden" #dtp_input_fechaIngreso id="dtp_input_fechaIngreso" [value]="fechaIngreso | date:'dd/MM/yyyy'" />
+          <input type="hidden" #dtp_input_fechaIngreso id="dtp_input_fechaIngreso" value="{{fechaIngreso}}" />
         </div>
 
         <div class="col-xs-12 col-sm-6 col-md-15">
           <p>Fecha Hasta</p>
           <div class="styled-select input-group date form_datetime_fechaEgreso" data-provide="datepicker" data-date=""
             data-date-format="dd/MM/yyyy" data-link-field="dtp_input_fechaEgreso">
-            <input type="text" [value]="fechaEgreso | date:'dd/MM/yyyy'" id="noCursor_fechaEgreso" />
+            <input type="text" value="{{fechaEgreso }}" id="noCursor_fechaEgreso" />
             <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
           </div>
-          <input type="hidden" #dtp_input_fechaEgreso id="dtp_input_fechaEgreso" [value]="fechaEgreso | date:'dd/MM/yyyy'" />
+          <input type="hidden" #dtp_input_fechaEgreso id="dtp_input_fechaEgreso" value="{{fechaEgreso}} " />
         </div>
 
         <div id="cuitProveedor" *ngIf="esAdmin" class="col-xs-12  col-sm-6 col-md-15">
