@@ -118,9 +118,8 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
         //Sacamos lo de la lista de campaña, ya que ahora son independientes
         this.subscription = this.service.obtenerMateriales().subscribe(
             (result) => {
-                let obj = JSON.parse(result);
                 // this.listaCampanias = new Array();
-                obj.Datos.forEach((element: { MaterialId: number; Descripcion: string; CampaniaActual: string; CampaniaIdActual: number; }) => {
+                result.Datos.forEach((element: { MaterialId: number; Descripcion: string; CampaniaActual: string; CampaniaIdActual: number; }) => {
                     let mat = new Material();
                     mat.Id = element.MaterialId;
                     mat.Descripcion = element.Descripcion;

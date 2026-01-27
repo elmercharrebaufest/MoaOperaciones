@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using HttpPostAttribute = System.Web.Mvc.HttpPostAttribute;
 
@@ -130,8 +129,8 @@ namespace SustitucionMOA.Controllers
             cartaPresentacionJson = cartaPresentacionJson.Replace("nia", "ña");
             var cartaPresentacion = JsonConvert.DeserializeObject<RptCartaDePresentacionInfo>(cartaPresentacionJson);
 
-            cartaPresentacion.corredorCuit = corredor.CUIT;
-            cartaPresentacion.corredorRazonSocial = corredor.RazonSocial;
+            cartaPresentacion.corredorCuit = corredor?.CUIT;
+            cartaPresentacion.corredorRazonSocial = corredor?.RazonSocial;
 
             if (cartaPresentacion.vendedorActividad == "Productor")
             {
@@ -188,16 +187,15 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(altaEmpresaService.GetLocalidad(localidadId));
         }
 
-        public async Task<ActionResult> GetMateriales()
+        public ActionResult GetMateriales()
         {
-            return JsonCustom(await altaEmpresaService.ObtenerMaterialesDataAgro());
+            return JsonCustom(new { Datos = dataAgroService.BuscarMateriales() });
         }
-        public async Task<ActionResult> GetCampanias()
+
+        public ActionResult GetCampanias()
         {
             string CampanaMin = ConfigurationManager.AppSettings["CampanaMin"].ToString();
-            var datosjson = await altaEmpresaService.ObtenerCampañasDataAgroAsync();
-            var listCamp = JsonConvert.DeserializeObject<List<CampaniaDto>>(datosjson);
-
+            var listCamp = dataAgroService.BuscarCampanias();
             var idCamp = listCamp.Where(a => a.Descripcion == CampanaMin).Single().CampaniaId;
             listCamp = listCamp.Where(a => a.CampaniaId >= idCamp).ToList();
             return JsonCustom(listCamp);

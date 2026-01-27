@@ -16,6 +16,7 @@ namespace SustitucionMOAUtils.Services.Email
 
         private static readonly string TEMPLATE_NOTIFICACION_ORDENES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesDeCarga.html");
         private static readonly string TEMPLATE_NOTIFICACION_SOLICITUD_EDICION_ORDEN = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoEdicionOrdenDeCarga.html");
+        private static readonly string TEMPLATE_NOTIFICACION_AUTORIZACION_NOMINA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesAutorizacionNomina.html");
 
         private static readonly string DireccionMailAlimentacionAnimal = ConfigurationManager.AppSettings["EmailToComercialesAlimAnimal"];
         private static readonly string DireccionMailAuditoriaOrdenesVencidas = ConfigurationManager.AppSettings["EmailToAuditoriaOrdenesVencidas"];
@@ -26,6 +27,7 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionToAltaTempranaCuitFas = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasTo"];
         private static readonly string DireccionCCAltaTempranaCuitFas = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasCC"];
         private static readonly string DireccionToKgsMenos15TNFas = ConfigurationManager.AppSettings["EmailKgsMenos15TNFasTo"];
+        private static readonly string DireccionToAutorizacionNomina = ConfigurationManager.AppSettings["EmailAutorizacionNominaTo"];
 
         private readonly IEmailService emailService;
 
@@ -313,8 +315,27 @@ namespace SustitucionMOAUtils.Services.Email
             emailService.EnviarMail(emailSenderData);
         }
 
+        public void EnviarMailAutorizacionDeNomina(IEnumerable<OrdenDeCarga> ordenes)
+        {
+            if (!ordenes?.Any() ?? false)
+            {
+                return;
+            }
 
-        private StringBuilder GenerarTablaOrdenesANotificar(IEnumerable<OrdenDeCarga> ordenes)
+            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_AUTORIZACION_NOMINA);
+            var tablaOrdenes = GenerarTablaOrdenesAutorizacionDeNomina(ordenes);
+            var cuerpo = string.Format(cuerpoTemplate, tablaOrdenes);
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionToAutorizacionNomina }),
+                Asunto = "Nómina de carga por cuenta de Molinos Agro SA",
+                Cuerpo = cuerpo
+            };
+            emailService.EnviarMail(emailSenderData);
+        }
+
+        private static StringBuilder GenerarTablaOrdenesANotificar(IEnumerable<OrdenDeCarga> ordenes)
         {
             var ordenesStrBuilder = new StringBuilder();
             foreach (var orden in ordenes)
@@ -331,6 +352,24 @@ namespace SustitucionMOAUtils.Services.Email
                     $"<td>{orden.NumeroEntrega}</td>" +
                     $"<td>{orden.FechaCarga}</td>" +
                     $"<td>{orden.FechaVencimiento}</td>" +
+                    $"</tr>");
+            }
+            return ordenesStrBuilder;
+        }
+
+        private static StringBuilder GenerarTablaOrdenesAutorizacionDeNomina(IEnumerable<OrdenDeCarga> ordenes)
+        {
+            var ordenesStrBuilder = new StringBuilder();
+            foreach (var orden in ordenes)
+            {
+                ordenesStrBuilder.Append($"<tr>" +
+                    $"<td>{ orden.Producto.Nombre }</td>" +
+                    $"<td>{ orden.Cliente.RazonSocial } ({ orden.CUITCliente })</td>" +
+                    $"<td>{ orden.ChasisAcoplado }</td>" +
+                    $"<td>{ orden.PatenteAcoplado }</td>" +
+                    $"<td>{ orden.NombreChofer } ({ orden.CUITChofer })</td>" +
+                    $"<td>{ orden.RazonSocialTransporte } ({ orden.CUITTransporte })</td>" +
+                    $"<td>{ orden.DestinoMercaderia }</td>" +
                     $"</tr>");
             }
             return ordenesStrBuilder;

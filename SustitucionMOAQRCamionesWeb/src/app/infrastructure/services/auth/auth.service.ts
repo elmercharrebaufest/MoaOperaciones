@@ -1,34 +1,36 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { TrackingService } from '../external/tracking.service';
+import { ApiService } from '../external/api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private trackingService = inject(TrackingService);
+  private apiService = inject(ApiService);
   private isAuthenticated = signal(false);
   private captchaVerified = signal(false);
 
-  constructor() {
-    if (!environment.production) {
-      this.trackingService.loadMockData();
-      this.isAuthenticated.set(true);
+  constructor() { 
+    if (!environment.production && !environment.isQA) {
       this.captchaVerified.set(true);
     }
   }
 
   login() {
-    const hasData = this.trackingService.trackingData() !== null;
-    if (hasData && (this.captchaVerified() || !environment.production)) {
+    const hasData = this.apiService.trackingData() !== null;
+    const needsCaptcha = environment.production;
+    if (hasData && (this.captchaVerified() || !needsCaptcha)) {
       this.isAuthenticated.set(true);
     }
   }
 
   logout() {
-    if (environment.production) {
-      this.trackingService.trackingData.set(null);
-      this.isAuthenticated.set(false);
+    this.apiService.clearTrackingData();
+    this.isAuthenticated.set(false);
+
+    if (!environment.production && !environment.isQA) {
+      this.captchaVerified.set(true);
+    } else {
       this.captchaVerified.set(false);
     }
   }
@@ -46,8 +48,9 @@ export class AuthService {
   }
 
   isFullyAuthenticated(): boolean {
-    const hasData = this.trackingService.trackingData() !== null;
-    const captchaOk = this.captchaVerified() || !environment.production;
+    const hasData = this.apiService.trackingData() !== null;
+    const needsCaptcha = environment.production || environment.isQA;
+    const captchaOk = this.captchaVerified() || !needsCaptcha;
     return this.isAuthenticated() && hasData && captchaOk;
   }
 

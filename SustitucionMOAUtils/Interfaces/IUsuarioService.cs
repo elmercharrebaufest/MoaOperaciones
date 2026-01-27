@@ -56,5 +56,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<UsuarioComprasDto> ListarUsuarioCompras();
         void GuardarSuplente(int idUsuario, string suplente, string fechaDesde, string fechaHasta, bool esExterno);
         List<ProveedorARelacionar> GetProveedoresARelacionar(string cuit, string mailUsuario);
+        List<string> GetMailsUsuariosAprobadores();
     }
 }

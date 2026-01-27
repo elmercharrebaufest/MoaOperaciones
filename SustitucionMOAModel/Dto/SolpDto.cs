@@ -60,6 +60,7 @@ namespace SustitucionMOAModel.Dto
         public UsuarioComprasDto UsuarioCompras { get; set; }
         public int? TipoSolpSap { get; set; }
         public bool PosicionesEstado { get; set; }
+        public bool? THAcuerdoMarco { get; set; }
 
         public Guid? EmailLinkToken { get; set; }
         public int ItemPorPagina { get; set; }
@@ -121,6 +122,7 @@ namespace SustitucionMOAModel.Dto
             this.RevisadoPor = entity.Pliego.RevisadoPor;
             this.UsuarioCompras = new UsuarioComprasDto(entity.UsuarioCompras);
             this.TipoSolpSap = entity.TipoSolpSap;
+            this.THAcuerdoMarco = entity.THAcuerdoMarco;
         }
     }
 

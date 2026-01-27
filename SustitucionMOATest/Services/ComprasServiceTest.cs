@@ -11,12 +11,10 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
-using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
-using SustitucionMOAUtils.Services.Email;
 using SustitucionMOAUtils.Services.Email.Dto;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
@@ -2329,6 +2327,7 @@ namespace SustitucionMOATest.Services
             string fechaDesde = "2023-01-01";
             string fechaHasta = null;
             string codigoProveedor = "PROV123";
+            string usuarioActual = "";
 
             reporteOrdenDeCompraConsumerMOAMock.Setup(x => x.Request(nroOC, fechaDesde, codigoProveedor))
                 .Returns(new List<OrdenDeCompraSAPDto>
@@ -2341,8 +2340,10 @@ namespace SustitucionMOATest.Services
                     }
                 }
                 });
+            usuarioServiceMock.Setup(s => s.GetUsuario(It.IsAny<string>()))
+                     .Returns(new UsuarioDto { Id = 1, Permisos = new List<string>() });
 
-            var result = targetSap.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor);
+            var result = targetSap.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor, usuarioActual);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);
@@ -2683,7 +2684,7 @@ namespace SustitucionMOATest.Services
             };
 
             repositorioComprasMock.Setup(y => y.ObtenerConsultaEscalar(It.IsAny<ComparadorOfertasConsulta>())).Returns(peticionDeOferta);
-            
+
             var cotizacionLocal = CotizacionToClone();
             repositorioComprasMock
                 .Setup(y => y.Listar(
@@ -2702,11 +2703,11 @@ namespace SustitucionMOATest.Services
                     DirOrden.Asc,
                     null))
                 .Returns(new List<PeticionDeOfertaVisualizacionPrecio> { new PeticionDeOfertaVisualizacionPrecio { Id = 1 } });
-            
+
             repositorioComprasMock
                 .Setup(y => y.Obtener<TablaSap>(It.IsAny<int>()))
                 .Returns(new TablaSap { Id = 1 });
-            
+
             repositorioComprasMock
                 .Setup(y => y.Listar(
                     It.IsAny<Expression<Func<Adjudicacion, bool>>>(),

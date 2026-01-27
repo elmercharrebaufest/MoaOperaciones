@@ -105,6 +105,14 @@ export class UsuarioService extends BaseService {
             .get('/api/usuario/getUsuarios', { headers: this.headers });
     }
 
+    getMailsUsuariosAprobadores(): Observable<BasicResponse<string[]>> {
+        return this.http
+            .get<BasicResponse<string[]>>(
+                '/api/usuario/GetUsuariosAprobadores',
+                { headers: this.headers }
+            );
+    }
+
     public getVendedores(): Observable<any> {
         return this.http
             .get('/api/usuario/getVendedores', { headers: this.headers });

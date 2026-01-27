@@ -71,7 +71,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
-    
+
     readonly CodigoGrupoComprasRHComercial: string = "018";
     readonly CodigoOrganizCompra2029Estrategicas: string = "2029";
     esUsuarioRRHH: boolean = this.isAuthorized(Permiso.ComprasRRHH);
@@ -1159,9 +1159,17 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.obtenerContratoMarcoService.show(true);
     }
 
+    public listaContratosMarco: ContratoMarco[] = [];
+
     public obtenerContratoMarco(args: ObtenerContratoMarco) {
-        this.service.obtenerContratoMarco(args.centro, args.numeroContrato).subscribe((response: any) => {
+        this.service.obtenerContratoMarco(args.centro, args.numeroContrato, args.codigoProveedor).subscribe((response: any) => {
             if (response.data && response.data.length) {
+                // Si viene codigoProveedor, asumimos que es una búsqueda para llenar la lista
+                if (args.codigoProveedor) {
+                    this.listaContratosMarco = response.data.map(d => new ContratoMarco(d));
+                    return;
+                }
+
                 this.contratoMarco = new ContratoMarco(response.data[0]);
 
                 if ((this.esTipoMaterial && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length == 0 || pos.subPosiciones == null))
@@ -1169,6 +1177,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     //this.contratoMarco = null;
                 } else {
                     this.contratoMarco = null;
+                }
+            } else {
+                // Limpiar si no hay datos
+                if (args.codigoProveedor) {
+                    this.listaContratosMarco = [];
                 }
             }
             this.listarContratosAsociados()
@@ -1447,7 +1460,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             let grupoArticulo = this.combos.GrupoArticulo.find(x => x.Id == posArchivo.GrupoArticuloId);
             let tipoImputacion = this.tipoImputacion.find(x => x.Id == posArchivo.TipoImputacionId);
 
-            
+
             this.model.posicionActual.indice = posArchivo.Indice;
             this.model.posicionActual.numeroPosicion = i + 1;
             this.model.posicionActual.posicionCheck = false;
@@ -1544,8 +1557,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             if (this.model.posicionActual.tipoPosicion.Codigo === "MATERIALES") {
                 this.model.posicionActual.unidadesAlternativas = this.combos.Unidades;
                 if (posArchivo.MaterialCatalogado) {
-                    this.model.posicionActual.codigoServicio = posArchivo.MaterialCatalogado;                    
-                    this.autocompleteServiciosSolp.push({ Codigo: posArchivo.MaterialCatalogado.Codigo, CuentaMayor: posArchivo.CuentaMayor } as any);                    
+                    this.model.posicionActual.codigoServicio = posArchivo.MaterialCatalogado;
+                    this.autocompleteServiciosSolp.push({ Codigo: posArchivo.MaterialCatalogado.Codigo, CuentaMayor: posArchivo.CuentaMayor } as any);
                     this.servicioSeleccionado(this.model.posicionActual);
                 } else {
                     this.model.posicionActual.codigoServicio = null;

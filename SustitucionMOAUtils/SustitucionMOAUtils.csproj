@@ -286,7 +286,6 @@
     <Compile Include="Interfaces\IConsultaService.cs" />
     <Compile Include="Interfaces\IAzureService.cs" />
     <Compile Include="Interfaces\ICampoSustentableService.cs" />
-    <Compile Include="Interfaces\IDataAgroApiService.cs" />
     <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteService.cs" />
     <Compile Include="Interfaces\IEmailFasService.cs" />
@@ -320,6 +319,7 @@
     <Compile Include="Interfaces\IUbicacionGeograficaService.cs" />
     <Compile Include="Interfaces\IUsuarioService.cs" />
     <Compile Include="Interfaces\IVendedorService.cs" />
+    <Compile Include="Interfaces\QRCamiones\IQRCamionesAPIService.cs" />
     <Compile Include="Interfaces\Validadores\IValidadorPesificacion.cs" />
     <Compile Include="Interfaces\Wrappers\IFileWrapper.cs" />
     <Compile Include="Interfaces\Wrappers\IExcelExportWrapper.cs" />
@@ -370,7 +370,6 @@
     <Compile Include="Services\ConsultaService.cs" />
     <Compile Include="Services\AzureService.cs" />
     <Compile Include="Services\CampoSustentableService.cs" />
-    <Compile Include="Services\DataAgroApiService.cs" />
     <Compile Include="Services\EcheqService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\Email\EmailFasService.cs" />
@@ -403,6 +402,7 @@
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\PesificacionService.cs" />
     <Compile Include="Services\PliegoMultipleService.cs" />
+    <Compile Include="Services\QRCamiones\QRCamionesAPIService.cs" />
     <Compile Include="Services\RegistroInfoService.cs" />
     <Compile Include="Services\ReporteContratoService.cs" />
     <Compile Include="Services\ReporteESService.cs" />

@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://qabaufest.moaoperaciones.com.ar/externalApi/external/Api/',
+  isQA: true,
+  apiUrl: 'http://qabaufest.moaoperaciones.com.ar/externalApi',
   apiKey: 'prueba',
-  recaptchaSiteKey: 'YOUR_PRODUCTION_RECAPTCHA_SITE_KEY'
+  recaptchaSiteKey: '6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide'
 };

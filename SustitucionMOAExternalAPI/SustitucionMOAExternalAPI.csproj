@@ -213,7 +213,7 @@
     <Compile Include="Controllers\InformarViajeOrdenesDeCargaFasController.cs" />
     <Compile Include="Controllers\InformarViajeOrdenesDeCargaFasonController.cs" />
     <Compile Include="Controllers\LiberacionOCController.cs" />
-    <Compile Include="Controllers\LogQrController.cs" />
+    <Compile Include="Controllers\QRCamionesAPIController.cs" />
     <Compile Include="Controllers\ObtenerOrdenesDeCargaController.cs" />
     <Compile Include="Controllers\CpOtrosPuertosController.cs" />
     <Compile Include="Controllers\AccesoQrController.cs" />
@@ -285,7 +285,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\LogQr\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

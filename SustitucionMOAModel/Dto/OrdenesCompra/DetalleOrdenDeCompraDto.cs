@@ -31,7 +31,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string Cuit { get; set; }
         public string SubjToR { get; set; }
 
-        public bool AdmiteCertificacionesParciales { get; set; } = true;
+        //public bool AdmiteCertificacionesParciales { get; set; } = true;
 
         /// <summary>
         /// Monto Total with added separators as requested - MMSN-491

@@ -5,12 +5,11 @@ export interface TrackingData {
   ctg: string;
   fechaHoraIngreso: Date;
   titularCartaPorte: string;
-  remitenteComercial: string;
+  remitenteComercialProd: string;
   remitenteComercialVtaPrim: string;
   entregador: string;
   transportista: string; 
   material: string;
-  rechazado: boolean;
   camion: { 
     patente: string; 
     patenteAcoplado: string; 

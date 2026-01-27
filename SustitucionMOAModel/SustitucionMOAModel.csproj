@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dto\AlmacenDto.cs" />
+    <Compile Include="Dto\AltaEmpresa\ExistenciaEmpresaResponse.cs" />
     <Compile Include="Dto\ArchivoBoleto\ActualizarArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\CrearReqArchivoBoletoDto.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Dto\Compras\CertificacionDto.cs" />
     <Compile Include="Dto\Compras\Factura\EstadoCertificacion.cs" />
     <Compile Include="Dto\Compras\Factura\GrupoCertificaciones.cs" />
+    <Compile Include="Dto\Compras\OrdenDeCompraSolpDto.cs" />
     <Compile Include="Dto\Compras\OrganizacionDeCompraDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaRevisionTecnicaDto.cs" />
     <Compile Include="Dto\Compras\PeticionDeOfertaSolpPosicionDto.cs" />
@@ -163,6 +165,7 @@
     <Compile Include="Dto\Scato\DestinoScato.cs" />
     <Compile Include="Dto\SolicitantesSolpedDto.cs" />
     <Compile Include="Dto\SustentableRenspaExisteDto.cs" />
+    <Compile Include="Dto\TicketPesadaDto.cs" />
     <Compile Include="Dto\TipoNormativaDto.cs" />
     <Compile Include="Dto\UnidadMedidaSapDto.cs" />
     <Compile Include="Dto\UsuarioReasignacionDto.cs" />
@@ -405,6 +408,7 @@
     <Compile Include="ModelAttributes\ExcelColumnNameAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelIgnoreAttribute.cs" />
     <Compile Include="Models\ConsultaTicketPesadaNoGranos.cs" />
+    <Compile Include="Models\DataAgro\ResultadoDataAgro.cs" />
     <Compile Include="Models\EcheqRequestModel.cs" />
     <Compile Include="Entities\Configuracion.cs" />
     <Compile Include="Entities\HabilitacionJob.cs" />
@@ -534,6 +538,7 @@
     <Compile Include="Dto\ProveedorDto.cs" />
     <Compile Include="Dto\RolDropdownDto.cs" />
     <Compile Include="Dto\UsuarioDto.cs" />
+    <Compile Include="Dto\QRCamiones\QRCamionesAPIDto.cs" />
     <Compile Include="Entities\Archivo.cs" />
     <Compile Include="Entities\Contacto.cs" />
     <Compile Include="Entities\Localidad.cs" />
@@ -551,6 +556,7 @@
     <Compile Include="Entities\Usuario.cs" />
     <Compile Include="Entities\UsuarioGranos.cs" />
     <Compile Include="Entities\UsuarioNoGranos.cs" />
+    <Compile Include="Entities\QRCamionesConfiguracion.cs" />
     <Compile Include="Enums\FileKeys.cs" />
     <Compile Include="Models\CamaraImageResponse.cs" />
     <Compile Include="Models\DataAgro\ContactoComercial.cs" />

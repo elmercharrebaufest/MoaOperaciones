@@ -355,6 +355,7 @@ namespace SustitucionMOAUtils.Services
                     THAjustePolinomica = solp.THAjustePolinomica,
                     THProveedorDirecto = solp.THProveedorDirecto,
                     THServicioPermanente = solp.THServicioPermanente,
+                    THAcuerdoMarco = solp.THAcuerdoMarco,
                     AdmiteCertificacionesParciales = solp.AdmiteCertificacionesParciales,
                 };
 
@@ -392,6 +393,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.THAjustePolinomica = solp.THAjustePolinomica;
                 solpEntity.THProveedorDirecto = solp.THProveedorDirecto;
                 solpEntity.THServicioPermanente = solp.THServicioPermanente;
+                solpEntity.THAcuerdoMarco = solp.THAcuerdoMarco;
                 solpEntity.Pliego.NombreObra = solp.NombreDeObra;
                 solpEntity.Racional_CondicionesDeEntrega = solp.Racional_CondicionesDeEntrega;
                 solpEntity.Racional_CondicionesDePago = solp.Racional_CondicionesDePago;
@@ -1384,6 +1386,7 @@ namespace SustitucionMOAUtils.Services
                 THAjustePolinomica = solp.THAjustePolinomica,
                 THProveedorDirecto = solp.THProveedorDirecto,
                 THServicioPermanente = solp.THServicioPermanente,
+                THAcuerdoMarco = solp.THAcuerdoMarco,
                 TienePeticionDeOferta = solp.Posiciones.Any(p => p.Peticiones.Any()),
                 TieneModificaciones = solp.TieneModificaciones,
                 TieneRevisionTecnicaFinalizada = solp.Posiciones.Any(p => p.Peticiones != null && p.Peticiones.Any(po => po.PeticionDeOferta.RevisionTecnica != null && po.PeticionDeOferta.RevisionTecnica.Finalizada)),
@@ -1428,6 +1431,12 @@ namespace SustitucionMOAUtils.Services
                 var usuario = repositorio.Obtener<Usuario>(solpDevuelta.ProveedorAsignado_Id);
                 solpDevuelta.ProveedorAsignado = usuario.ObtenerRazonSocial();
                 solpDevuelta.CodigoProveedorSap = usuario.ObtenerCodigoProveedor();
+            }
+
+            if (solp.OrganizacionDeCompra_Id == OrganizacionDeCompraIds.ComprasRRHH)
+            {
+                var ordenesCompraSap = comprasServiceSap.ObtenerOrdenesCompraSapParaSolpPosicion(solpDevuelta.Posiciones);
+                solpDevuelta.OrdenesDeCompraGeneradas = ordenesCompraSap.Select(x => new OrdenDeCompraSolpDto { NumeroOrdenDeCompra = x.Cabecera.OrdenDeCompra }).ToList();
             }
 
             return solpDevuelta;
@@ -2564,7 +2573,7 @@ namespace SustitucionMOAUtils.Services
 
                         if (!string.IsNullOrEmpty(posicion.NumeroContratoMarco)) //Contrato Marco
                         {
-                            var datosContratoMarco = comprasServiceSap.ObtenerContratoMarco(posicion.NumeroContratoMarco, posicion.CentroLogistico);
+                            var datosContratoMarco = comprasServiceSap.ObtenerContratoMarco(posicion.NumeroContratoMarco, posicion.CentroLogistico, null);
                             posicionEntity.NumeroContratoSuperior = posicion.NumeroContratoMarco;
                             posicionEntity.NumeroPosicionContratoSuperior = posicion.PosicionContratoMarco;
                             posicionEntity.ProveedorFijo = posicion.ProveedorFijo;
@@ -6359,9 +6368,17 @@ namespace SustitucionMOAUtils.Services
                         };
                         if (!esMateriales && adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.Adicional == true)
                         {
-                            var NroOrdenDeCompraAdicional = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;
-                            var ordenesDeCompraAnteriores = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == NroOrdenDeCompraAdicional);
-                            ordenesDeCompraAnteriores.ForEach(a => a.AdmiteCertificacionesParciales = adjudicacionDto.AdmiteCertificacionesParciales);
+                            var nroOrdenDeCompraAdicional = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;
+                            var adjudicacionesOCPrimaria = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOrdenDeCompraAdicional);
+                            foreach(var adjudicacionOCPrimaria in adjudicacionesOCPrimaria)
+                            {
+                                // Si se ingresó que admite certificaciones parciales pero la OC anterior es de una SOLP con Trabajo ya hecho, no debe actualizarle este campo (con TH no se puede certificar parcialmente)
+                                if (!adjudicacionDto.AdmiteCertificacionesParciales ||
+                                    adjudicacionOCPrimaria.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.First().SolpPosicion.Solp.TrabajoYaHecho != true)
+                                {
+                                    adjudicacionOCPrimaria.AdmiteCertificacionesParciales = adjudicacionDto.AdmiteCertificacionesParciales;
+                                }
+                            }
                         }
                         repositorio.Agregar(adjudicacion);
                         repositorio.GuardarCambios();
@@ -6374,6 +6391,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         else
                         {
+                            EnviarMailErrorOCAutomaticaSap(adjudicacion, respuestaGuardarSOLP.Errores);
                             repositorio.Remover(adjudicacion);
                         }
 
@@ -9590,6 +9608,65 @@ namespace SustitucionMOAUtils.Services
                 };
                 var resultado = GrabarAdjudicacion(adjudicacion, solp.UsuarioCreacion_Id.Value);
             }
+        }
+
+        private void EnviarMailErrorOCAutomaticaSap(Adjudicacion adjudicacion, List<string> errores)
+        {
+            try
+            {
+                var asunto = $"Error en generacion OC automatica - Adjudicacion ID: {adjudicacion.Id}. ";
+                var enviarA = new List<string>();
+                var destinatarioErrores = ConfigurationManager.AppSettings["EmailEnvioErrores"];
+                var msjError = string.Join(", ", errores);
+
+                Usuario usuario = null;
+
+                if (adjudicacion?.UsuarioCreador_Id != null)
+                {
+                    usuario = repositorio.Obtener<Usuario>(x => x.Id == adjudicacion.UsuarioCreador_Id);
+                }
+
+                if (usuario == null)
+                {
+                    enviarA.Add(usuario.Mail);
+                }
+                
+                enviarA.Add(destinatarioErrores);
+           
+                Logger.Log.Info($"Enviando mail a {enviarA.ToJson()}");
+
+                emailService.EnviarMail(enviarA, asunto, "", null, CuerpoEnviarMailErrorOCAutomaticaSap(adjudicacion, msjError));
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"EnviarMailErrorOCAutomaticaSap - Adjudicacion Id:{adjudicacion?.Id}");
+                Logger.Log.Error(e);
+            }
+        }
+
+        private AlternateView CuerpoEnviarMailErrorOCAutomaticaSap(Adjudicacion adjudicacion, string mensaje)
+        {
+            var filePath = httpContextService.ObtenerPathLogoMail();
+            
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+
+            string adjudicacionJson = JsonConvert.SerializeObject(adjudicacion, Formatting.Indented);
+
+            string htmlBody = "";
+            htmlBody += $"Hubo un error de SAP al intentar generar la OC automatica. <br />";
+            htmlBody += $"Motivo: {mensaje}  <br />";
+            htmlBody += $" <br/><br/> ";
+            htmlBody += $"Data Adjudicacion: {adjudicacionJson}";
+            htmlBody += $" <br/><br/> ";
+            htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
+                  "<br/><br/>Saludos Cordiales<br/>" +
+                  "Molinos Agro S.A. <br/><br/> " +
+                   @"<img width='15%' src='cid:" + res.ContentId + @"'/>";
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
         }
     }
 }

@@ -2,7 +2,6 @@
 using iTextSharp.text.pdf;
 using NetTopologySuite.Geometries;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SharpKml.Base;
 using SharpKml.Engine;
 using SustitucionMOAAssets;
@@ -18,7 +17,6 @@ using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.GoogleDrive.Interfaces;
 using SustitucionMOAWS.GoogleDrive.Models;
 using System;
@@ -28,9 +26,6 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -41,7 +36,6 @@ namespace SustitucionMOAUtils.Services
     public class CampoSustentableService : ICampoSustentableService
     {
         private readonly IRepositorioCampoSustentable repositorio;
-        private readonly string DataAgroURL;
         private readonly IExcelExportWrapper excelExport;
         private readonly IDataAgroService dataAgroService;
         private readonly ICampoSustentableGoogleDrive campoSustentableGoogleDrive;
@@ -56,7 +50,6 @@ namespace SustitucionMOAUtils.Services
             )
         {
             this.repositorio = repositorio;
-            this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
             this.excelExport = excelExport;
             this.dataAgroService = dataAgroService;
             this.campoSustentableGoogleDrive = campoSustentableGoogleDrive;
@@ -1006,54 +999,35 @@ namespace SustitucionMOAUtils.Services
 
         private byte[] GenerarPDFDeclaracion(DeclaracionCampoSustentableDto datos)
         {
-            var urlReporteCampo = string.Concat(DataAgroURL, "/CamposSustentables/Generar");
-            var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
 
-            string userName = DataAgroWSCredential.getUserName();
-            string password = DataAgroWSCredential.getPassword();
-            string dominio = DataAgroWSCredential.getDominio();
-
-            var httpClientHandler = new HttpClientHandler
-            {
-                Credentials = new NetworkCredential(userName, password, dominio),
-            };
             var content = JsonConvert.SerializeObject(datos);
-
             Log.Info($"CampoSustentableService, GenerarPDFDeclaracion, {content}");
 
-            var buffer = Encoding.UTF8.GetBytes(content);
-            var byteContent = new ByteArrayContent(buffer);
-            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            using (var client = new HttpClient(httpClientHandler, false))
+            var dto = new SustitucionMOAWS.DataAgroServices.DeclaracionCampoSustentable
             {
-                var task = client.PostAsync(urlReporteCampo, byteContent);
-
-                task.Wait();
-
-                var response = task.Result;
-
-                var stringContent = response.Content.ReadAsStringAsync();
-
-                dynamic jsonResult = JObject.Parse(stringContent.Result);
-
-                if (bool.Parse(jsonResult.HayErrores.ToString()))
+                RazonSocial = datos.RazonSocial,
+                Campos = datos.Campos?.Select(x => new SustitucionMOAWS.DataAgroServices.CamposSustentableReporte
                 {
-                    throw new InfoCustomException(jsonResult.Errores[0].Message);
-                }
-
-                string downloadKey = jsonResult.DownloadKey;
-                byte[] InformeComercialPDF;
-                urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
-                using (WebClient clienteDescarga = new WebClient())
-                {
-                    clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
-
-                    InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
-                }
-
-                return InformeComercialPDF;
+                    Nombre = x.Nombre,
+                    Coordenadas = x.Coordenadas,
+                    HectareasSoja = x.HectareasSoja,
+                    HectareasTotales = x.HectareasTotales,
+                    Localidad = x.Localidad,
+                    Pais = x.Pais,
+                    Partido = x.Partido,
+                    Provincia = x.Provincia
+                }).ToArray(),
+                CantidadParteSoja = datos.CantidadParteSoja,
+                Cosecha = datos.Cosecha,
+                CUIT = datos.CUIT,
+                Fecha = datos.Fecha
+            };
+            var RespuestaArchivoDto = dataAgroService.CamposSustentables(dto);
+            if (RespuestaArchivoDto.Errores.Any())
+            {
+                throw new InfoCustomException(RespuestaArchivoDto.Errores[0]);
             }
+            return RespuestaArchivoDto.Contenido;
         }
 
         private void ValidarCampo(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)

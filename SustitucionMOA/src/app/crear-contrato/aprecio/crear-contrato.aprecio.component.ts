@@ -130,7 +130,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         if (term.length > 2) {
             this.unsubscribe();
             this.subscription = this.service.buscarProveedoresConCorredor(term).subscribe(
-                (result:any) => {
+                (result: any) => {
                     var resultlist = JSON.parse(result);
 
                     this.proveedores = resultlist.map(prov => {
@@ -162,7 +162,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         if (term.length > 2) {
             this.unsubscribe();
             this.subscription = this.service.searchLocalidad(term).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.localidades = result;
                 },
                 error => {
@@ -308,7 +308,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         try {
             this.unsubscribe();
             this.subscription = this.service.grabarContratoAPrecio(this.contrato).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.blockUI.stop();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -483,25 +483,6 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
         }
     }
-    //changePizarra() {
-    //    this.contrato.Precio = 0;
-    //    this.contrato.MonedaId = null;
-    //    if (this.contrato.Pizarra == true) {
-    //        this.contrato.FechaDesde = new Date(parseInt(this.datosPizarra.DesdeEntrega.substr(6)));
-    //        this.contrato.FechaHasta = this.ObtenerFechaHasta(this.contrato.FechaDesde);
-    //        this.fechaInicio = this.contrato.FechaDesde.toLocaleDateString('en-GB');
-    //        this.fechaFin = this.contrato.FechaHasta.toLocaleDateString('en-GB');
-    //        var entregaHasta = new Date(parseInt(this.datosPizarra.HastaEntrega.substr(6)));
-
-    //        $('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
-    //        $('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
-
-    //        $('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
-    //        $('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
-    //    } else {
-
-    //    }
-    //}
 
     disablePrecio(): boolean {
         return this.contrato.Pizarra == true;
@@ -523,19 +504,11 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                         this.contrato.Precio = null;
                     } else {
                         this.contrato.Precio = item.Precio;
-                        this.contrato.FechaDesde = new Date(parseInt(item.DesdeEntrega.substr(6)));
+                        this.contrato.FechaDesde = new Date(item.DesdeEntrega);
                         this.contrato.FechaHasta = this.ObtenerFechaHasta(this.contrato.FechaDesde);
                         this.fechaInicio = this.contrato.FechaDesde.toLocaleDateString('en-GB');
                         this.fechaFin = this.contrato.FechaHasta.toLocaleDateString('en-GB');
-                        var entregaHasta = new Date(parseInt(item.HastaEntrega.substr(6)));
-
-                        //$('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
-                        //$('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
-
-                        //$('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
-                        //$('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
                     }
-
                 }
             }
         } else {
@@ -558,7 +531,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.MonedaSustentableId = sustentables[0].MonedaId;
             this.contrato.Sustentable = true;
             this.ObservacionSustentableTercero = sustentables[0].Precio + " " + sustentables[0].MonedaId
-        } 
+        }
         return sustentables.length == 1 && this.isSoja();
     }
 
@@ -586,5 +559,5 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.Sustentable = false;
         }
     }
-       
+
 }

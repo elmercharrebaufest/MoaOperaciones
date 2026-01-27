@@ -1,0 +1,302 @@
+<div class="content-wraper">
+  <!--CONTENIDO-->
+  <section class="container-fluid clearfix">
+    <!--TITULO-->
+    <div class="row titleSection">
+      <div class="col-xs-12 col-sm-6 "><strong>Ticket Pesada</strong>
+      </div>
+      <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+        <div class="row">
+          <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+            <spinner-small></spinner-small>
+            <a href="#" (click)="exportarExcel(); $event.preventDefault()" style="text-decoration:none!important">
+              <div class="btnSection animate align-right">
+                Exportar <img src="Content/images/buttons/EXPORT.svg" />
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--End Title-->
+
+    <div class="row myRow mySearch">
+      <div class="col-xs-12 col-md-12 rounded shadow animate">
+        <div class="col-xs-12 col-md-12 search-header">
+          <title-caps>Refinar resultados</title-caps>
+        </div>
+
+					
+					  <div class="col-xs-12 col-sm-6 col-md-15">
+          <p>Fecha Desde</p>
+          <div class="styled-select input-group date form_datetime_fechaIngreso" data-provide="datepicker" data-date=""
+            data-date-format="dd/MM/yyyy" data-link-field="dtp_input_fechaIngreso">
+            <input type="text" value="{{fechaIngreso}}" id="noCursor_fechaIngreso" />
+            <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+          </div>
+          <input type="hidden" #dtp_input_fechaIngreso id="dtp_input_fechaIngreso" value="{{fechaIngreso}}" />
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-15">
+          <p>Fecha Hasta</p>
+          <div class="styled-select input-group date form_datetime_fechaEgreso" data-provide="datepicker" data-date=""
+            data-date-format="dd/MM/yyyy" data-link-field="dtp_input_fechaEgreso">
+            <input type="text" value="{{fechaEgreso }}" id="noCursor_fechaEgreso" />
+            <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+          </div>
+          <input type="hidden" #dtp_input_fechaEgreso id="dtp_input_fechaEgreso" value="{{fechaEgreso}} " />
+        </div>
+
+        <div id="cuitProveedor" *ngIf="esAdmin" class="col-xs-12  col-sm-6 col-md-15">
+          <p>Cuit Titular CP:</p>
+          <div class="styled-select ">
+            <input type="search" class="" placeholder="XX-XXXXXXXX-X" [value]="filtroCuitProveedor"
+              (input)="filtroCuitProveedor = $event.target.value" mask="00-00000000-0"
+       aria-controls="tableModal">
+          </div>
+        </div>
+
+        <div id="patente" class="col-xs-12  col-sm-6 col-md-15">
+          <p>Por Patente:</p>
+          <div class="styled-select ">
+            <input type="search" class="" placeholder="" [value]="filtroPatente"
+              (input)="filtroPatente = $event.target.value" aria-controls="tableModal">
+          </div>
+        </div>
+
+
+        <div id="ctg" class="col-xs-12  col-sm-6 col-md-15">
+          <p>CTG:</p>
+          <div class="styled-select ">
+            <input type="search" class="" placeholder="" [value]="filtroCtg" (input)="filtroCtg = $event.target.value"
+              aria-controls="tableModal">
+          </div>
+        </div>
+
+        <div id="cuitIntermediarioFlete" *ngIf="esAdmin" class="col-xs-12  col-sm-6 col-md-15">
+          <p>CUIT Intermediario Flete:</p>
+          <div class="styled-select ">
+            <input type="search" class="" placeholder="XX-XXXXXXXX-X" [value]="filtroCuitIntermediarioFlete"
+             mask="00-00000000-0" (input)="filtroCuitIntermediarioFlete = $event.target.value" aria-controls="tableModal">
+          </div>
+        </div>
+
+        <div id="cuitTransportista" *ngIf="esAdmin" class="col-xs-12  col-sm-6 col-md-15">
+          <p>CUIT Transportista:</p>
+          <div class="styled-select ">
+            <input type="search" class="" placeholder="XX-XXXXXXXX-X" [value]="filtroCuitTransportista"
+             mask="00-00000000-0" (input)="filtroCuitTransportista = $event.target.value" aria-controls="tableModal">
+          </div>
+        </div>
+
+        <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="getDatosTicketPesada()"
+          style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; margin-top: 40px !important;">
+          Buscar
+        </button>
+
+      </div>
+    </div>
+
+    <div class="row myRow">
+      <div class="clearfix myTables">
+
+        <mensaje></mensaje>
+        <spinner></spinner>
+
+        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate "
+          cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+          <thead>
+            <tr role="row">
+              <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('CTG')">
+                CTG
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CTG' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CTG' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+
+              <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('BrutoPlanta')">
+                Pesada Bruto
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'BrutoPlanta' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'BrutoPlanta' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+
+              <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('TaraPlanta')">
+                Pesada Tara
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'TaraPlanta' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'TaraPlanta' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+
+              <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('NetoPlanta')">
+                Pesada Neto
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'NetoPlanta' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'NetoPlanta' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+
+              <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('FechaHoraIngreso')">
+                Ingreso
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaHoraIngreso' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaHoraIngreso' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+
+              <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('FechaHoraEgreso')">
+                Egreso
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaHoraEgreso' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaHoraEgreso' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+
+              <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Procedencia')">
+                Procedencia
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Procedencia' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Procedencia' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+
+              <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Intermediario')">
+                Intermediario
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Intermediario' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Intermediario' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+
+              <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Transportista')">
+                Transportista
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Transportista' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Transportista' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+
+              <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Patente')">
+                Patente
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Patente' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Patente' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+
+              <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('ChoferNombreApellido')">
+                Chofer
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'ChoferNombreApellido' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'ChoferNombreApellido' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+
+              <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Material')">
+                Material
+                <div>
+                  <span>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Material' && orderDirection > 0 }"></i>
+                    <i
+                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Material' && orderDirection < 0 }"></i>
+                  </span>
+                </div>
+              </th>
+
+            </tr>
+
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let ticket of tickets | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
+              role="row" [class.odd]="!odd">
+
+              <td>{{ticket.CTG}}</td>
+              <td>{{ticket.BrutoPlanta}}</td>
+              <td>{{ticket.TaraPlanta}}</td>
+              <td>{{ticket.NetoPlanta}}</td>
+              <td>{{ticket.FechaHoraIngreso | date: 'dd-MM-yyyy HH:mm'}}</td>
+              <td>{{ticket.FechaHoraEgreso | date: 'dd-MM-yyyy HH:mm'}}</td>
+              <td>{{ticket.Procedencia}}</td>
+              <td>{{ticket.Intermediario}}</td>
+              <td>{{ticket.Transportista}}</td>
+              <td>{{ticket.Patente}}</td>
+              <td>{{ticket.ChoferNombreApellido}}</td>
+              <td>{{ticket.Material}}</td>
+
+            </tr>
+            <tr *ngIf="!tickets || tickets.length === 0">
+              <td colspan="12" style="text-align: center; padding: 20px;">No se encontraron datos para los filtros dados.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <pagination-template #pT="paginationApi" (pageChange)="p = $event">
+          <div class="dataTables_paginate paging_simple_numbers">
+            <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
+              [class.disabled]="pT.isFirstPage()"> Anterior </a>
+            <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+              <a class="paginate_button" (click)="pT.setCurrent(page.value)" *ngIf="pT.getCurrent() !== page.value">{{
+                page.label }}</a>
+              <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label
+                }}</a>
+            </span>
+            <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()">
+              Siguiente </a>
+          </div>
+        </pagination-template>
+      </div>
+    </div>
+
+
+  </section>
+</div>

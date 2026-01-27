@@ -430,7 +430,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
         this.expandedPositionRow = false;
         this.saveConfigurationFilterDates();
-        this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+        if (this.ordenCompraId && this.ordenCompraId.trim() !== '') {
+            this.getListarPO(this.proveedor, this.ordenCompraId, '', '');
+        } else {
+            this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+        }
         this.tabla.first = 0;
     }
 
@@ -461,7 +465,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        result.data.forEach(x => { x.Posiciones.forEach(p => p.AdmiteCertificacionesParciales = x.AdmiteCertificacionesParciales) });
                         this.tablaPO = result.data;
                         this.obtenerSolicitantes(result.data);
                         this.cargarArrayProcesosSpinners(this.tablaPO);
@@ -469,7 +472,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
                         //this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
-
                     }
                     if (this.expandedPositionRow) {
                         this.filtrarTablas();
@@ -506,8 +508,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     handlePageEvent(e: any) {
         this.pageSize = e.rows;
-        this.pageIndex = e.page + 1;        
-        this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+        this.pageIndex = e.page + 1;
+        if (this.ordenCompraId && this.ordenCompraId.trim() !== '') {
+            this.getListarPO(this.proveedor, this.ordenCompraId, '', '');
+        } else {
+            this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+        }
     }
 
     esPosicionCompleta(posicion): boolean {
@@ -623,7 +629,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.numeroLineaSelected.clear();
         this.recalculando = true;
         this.disabledFilter = true;
-        this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+        if (this.ordenCompraId && this.ordenCompraId.trim() !== '') {
+            this.getListarPO(this.proveedor, this.ordenCompraId, '', '');
+        } else {
+            this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
+        }
     }
 
     /**

@@ -40,7 +40,7 @@ namespace SustitucionMOAWS.Interfaces
 
     public interface IObtenerContratoSolpConsumerMOA
     {
-        ContratoSolpWSMOAResponse Request(string numeroContrato, string centro);
+        ContratoSolpWSMOAResponse Request(string numeroContrato, string centro, string codigoProveedor);
     }
 
     public interface IObtenerTipoCambioConsumerMOA

@@ -4,6 +4,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace SustitucionMOATest.Services
         private IPesificacionService target;
         private Mock<IListarPesificacionesConsumer> pesificacionConsumerMock;
         private Mock<IRepositorio> repositorioMock;
+        private Mock<IDataAgroService> dataAgroService;
 
 
         [SetUp]
@@ -24,7 +26,7 @@ namespace SustitucionMOATest.Services
         {
             pesificacionConsumerMock = new Mock<IListarPesificacionesConsumer>();
             repositorioMock = new Mock<IRepositorio>();
-            target = new PesificacionService(pesificacionConsumerMock.Object, repositorioMock.Object);
+            target = new PesificacionService(pesificacionConsumerMock.Object, repositorioMock.Object, dataAgroService.Object);
         }
 
         [Test()]

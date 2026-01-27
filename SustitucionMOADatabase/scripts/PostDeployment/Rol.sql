@@ -83,13 +83,14 @@ VALUES
     ('PARDIR',		        'PARCIAL DIRECTO',	    1, 3),
     ('PES',		            'PESIFICACIONES',	    1, 3),
     ('PROVG',		        'PROVEEDOR GENERAL CONSULTA', 1, 3),
-    ('PUERTO',		        'PUERTO',		        1, 2),
+    ('PUERTO',		        'PUERTO',		        1, 2),    
     ('REI',		            'RECLAMO IMPOSITIVO',	1, 3),
     ('RESIDUOS ADMIN',		'RESIDUOS ADMIN',	    1, 1),
     ('RESIDUOS',	        'RESIDUOS',	        1, 2),
     ('RYDA',		        'RYD ADMINISTRACION',	1, 2),
     ('RYDU',		        'RYD USUARIO',	        1, 2),
     ('SOLP',		        'SOLP',		            1, 1),
+    ('QR_CAMIONES',         'ACCESO API QR CAMIONES', 0, 2),
     ('TODOS',		        'TODOS',		        1, 1)
 
 INSERT INTO Rol

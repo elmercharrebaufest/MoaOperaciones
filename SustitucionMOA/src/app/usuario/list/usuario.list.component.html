@@ -225,11 +225,11 @@
                                     (blur)="validarEmailSuplente()" 
                                     autocomplete="off">
                             </div>
-                            <ul *ngIf="filteredList.length > 0" class="suggestion-list">
-                                <li *ngFor="let item of filteredList" class="suggestion-item" (click)="seleccionarSuplente(item)">{{ item.Mail }}</li>
+                            <ul *ngIf="suplentesFiltrados.length > 0" class="suggestion-list">
+                                <li *ngFor="let item of suplentesFiltrados" class="suggestion-item" (click)="seleccionarSuplente(item)">{{ item }}</li>
                             </ul>
                             <div *ngIf="shouldShowErrorSuplente()" class="error-message">
-                                El correo electrónico ingresado no es válido.
+                                Debe ingresar un correo electrónico válido que pertenezca a un usuario aprobador.
                             </div>
                         </div>
                         <div style="margin-top: 10px;">

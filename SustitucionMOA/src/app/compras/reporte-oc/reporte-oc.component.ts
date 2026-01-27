@@ -75,10 +75,11 @@ export class ReporteOcComponent extends ListBaseComponent {
 
         const permisos: string[] = JSON.parse(sessionStorage.getItem("permisos"));
         if (permisos) {
-            if (permisos.includes("ABM SOL")
+            if (permisos.includes("ABM SOLP")
                 || permisos.includes("VER TODAS SOLPS")
                 || permisos.includes("VER SOLPS COMPRADOR") 
                 || permisos.includes("VER COMO AUDITOR")
+                || permisos.includes("COMPRAS RRHH")
             ) {
                 this.usuarioInterno = true;
             }

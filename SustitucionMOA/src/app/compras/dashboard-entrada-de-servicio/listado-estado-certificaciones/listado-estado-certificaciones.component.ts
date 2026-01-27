@@ -381,7 +381,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
     getOrdenCompraFiltro(ocIngresada: string) {
         this.ordenCompraFiltro = ocIngresada;
-        this.getListarPO();
+        //this.getListarPO();
     }
 
     toggleRow(rowData: any): void {
@@ -942,7 +942,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         }
 
         await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
-        this.obtenerESSap(this.proveedor, this.documentoNumero);
+        await this.obtenerESSap(this.proveedor, this.documentoNumero);
+
+        // Refrescar la vista reaplicando el estado actual para visualizar los datos recién cargados
+        this.filtrarPorEstado({ value: this.estadoCertificacion });
     }
 
     /**

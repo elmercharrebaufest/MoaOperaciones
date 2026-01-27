@@ -234,7 +234,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                     this.blockUI.stop();
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    let obj2 = JSON.parse(result.BolsaAutomatica);
+                    let obj2 = JSON.parse(result.bolsaAutomatica);
                     this.bolsasAutomaticas = obj2.Data;
                     let obj = JSON.parse(result.DatosContrato);
                     this.datosContrato = obj;
@@ -429,12 +429,12 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                                     Id: element.Id,
                                     Precio: element.Precio,
                                     MonedaId: element.MonedaId,
-                                    DesdeVigencia: new Date(parseInt(element.DesdeVigencia.substr(6))),
-                                    HastaVigencia: new Date(parseInt(element.HastaVigencia.substr(6))),
+                                    DesdeVigencia: new Date(element.DesdeVigencia),
+                                    HastaVigencia: new Date(element.HastaVigencia),
                                     TipoNegocio: element.TipoNegocio,
                                     TipoNegocioId: element.TipoNegocioId,
-                                    HastaEntrega: new Date(parseInt(element.HastaEntrega.substr(6))),
-                                    DesdeEntrega: new Date(parseInt(element.DesdeEntrega.substr(6))),
+                                    HastaEntrega: new Date(element.HastaEntrega),
+                                    DesdeEntrega: new Date(element.DesdeEntrega),
                                 }
                                 this.sustentables.push(el);
                             }
@@ -529,7 +529,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                     //contrato.ClasificacionId = this.datosCompraNet.ComisionPorcentaje;
                     contrato.DestinoId = this.destinos[0].Id;
                     //contrato.MonedaId = this.monedas[0].Id;
-                    //contrato.MaterialId = this.materiales[0].Id;                   
+                    contrato.MaterialId = this.materiales[0].Id;                   
 
                     if (contrato.TipoNegocioId == 1 || contrato.TipoNegocioId == 2) {
                         this.validarProveedor(idProveedorDataAgro, contrato);
@@ -745,17 +745,17 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
         this.precioPorNegocioSeleccionado = precio[MaterialId - 1].filter(x => x.TipoNegocioId == TipoNegocioId && (!(x.Precio == 0 && x.MonedaId != "Pizarra") || x.TipoNegocioId == 1));
         for (var i = 0; i < this.precioPorNegocioSeleccionado.length; i++) {
             if (this.precioPorNegocioSeleccionado[i].DesdeEntrega != null && typeof this.precioPorNegocioSeleccionado[i].DesdeEntrega === 'string') {
-                this.precioPorNegocioSeleccionado[i].DesdeEntrega = new Date(parseInt(this.precioPorNegocioSeleccionado[i].DesdeEntrega.substr(6)))
+                this.precioPorNegocioSeleccionado[i].DesdeEntrega = new Date(this.precioPorNegocioSeleccionado[i].DesdeEntrega)
             }
             if (this.precioPorNegocioSeleccionado[i].HastaEntrega != null && typeof this.precioPorNegocioSeleccionado[i].HastaEntrega === 'string') {
-                this.precioPorNegocioSeleccionado[i].HastaEntrega = new Date(parseInt(this.precioPorNegocioSeleccionado[i].HastaEntrega.substr(6)))
+                this.precioPorNegocioSeleccionado[i].HastaEntrega = new Date(this.precioPorNegocioSeleccionado[i].HastaEntrega)
             }
 
             if (this.precioPorNegocioSeleccionado[i].DesdeFijacion != null && typeof this.precioPorNegocioSeleccionado[i].DesdeFijacion === 'string') {
-                this.precioPorNegocioSeleccionado[i].DesdeFijacion = new Date(parseInt(this.precioPorNegocioSeleccionado[i].DesdeFijacion.substr(6)))
+                this.precioPorNegocioSeleccionado[i].DesdeFijacion = new Date(this.precioPorNegocioSeleccionado[i].DesdeFijacion)
             }
             if (this.precioPorNegocioSeleccionado[i].HastaFijacion != null && typeof this.precioPorNegocioSeleccionado[i].HastaFijacion === 'string') {
-                this.precioPorNegocioSeleccionado[i].HastaFijacion = new Date(parseInt(this.precioPorNegocioSeleccionado[i].HastaFijacion.substr(6)))
+                this.precioPorNegocioSeleccionado[i].HastaFijacion = new Date(this.precioPorNegocioSeleccionado[i].HastaFijacion)
             }
         }
         document.getElementById("openModalPreciosModal").click();
@@ -919,13 +919,13 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                         } else {
                             contrato.ComercialId = obj.ComercialId;
                         }
-                        contrato.Fecha = new Date(parseInt(obj.Fecha.substr(6)));
-                        contrato.FechaOperacion = new Date(parseInt(obj.FechaOperacion.substr(6)));
+                        contrato.Fecha = new Date(obj.Fecha);
+                        contrato.FechaOperacion = new Date(obj.FechaOperacion);
 
                         if (contrato.TipoNegocioId == 2 || contrato.TipoNegocioId == 1 || contrato.TipoNegocioId == 3) {
                             //entregadesde hasta
-                            contrato.FechaDesde = new Date(parseInt(obj.FechaDesde.substr(6)));
-                            contrato.FechaHasta = new Date(parseInt(obj.FechaHasta.substr(6)));
+                            contrato.FechaDesde = new Date(obj.FechaDesde);
+                            contrato.FechaHasta = new Date(obj.FechaHasta);
                             this.fechaInicio = contrato.FechaDesde.toLocaleDateString('en-GB');
                             this.fechaFin = contrato.FechaHasta.toLocaleDateString('en-GB');
                             $("#noCursor").val(contrato.FechaDesde.toLocaleDateString("en-GB"));
@@ -933,8 +933,8 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                         }
                         if (contrato.TipoNegocioId == 1) {
                             //fijacion desde hasta
-                            contrato.DesdeFijacion = new Date(parseInt(obj.DesdeFijacion.substr(6)));
-                            contrato.HastaFijacion = new Date(parseInt(obj.HastaFijacion.substr(6)));
+                            contrato.DesdeFijacion = new Date(obj.DesdeFijacion);
+                            contrato.HastaFijacion = new Date(obj.HastaFijacion);
                             this.fechafInicio = contrato.DesdeFijacion.toLocaleDateString('en-GB');
                             this.fechafFin = contrato.HastaFijacion.toLocaleDateString('en-GB');
                             $("#noCursorf").val(contrato.DesdeFijacion.toLocaleDateString("en-GB"));

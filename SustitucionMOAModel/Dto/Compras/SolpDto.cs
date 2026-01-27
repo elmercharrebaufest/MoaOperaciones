@@ -112,6 +112,7 @@ namespace SustitucionMOAModel.Dto
         public bool? THProveedorDirecto { get; set; }
         public bool? THAjustePolinomica { get; set; }
         public bool? THServicioPermanente { get; set; }
+        public bool? THAcuerdoMarco { get; set; }
         public string TipoDeSolp { get; set; }
         public string UsuarioCreadorMail { get; set; }
         public string Periodo { get; set; }
@@ -144,6 +145,8 @@ namespace SustitucionMOAModel.Dto
         public string Racional_CondicionesDeEntrega { get; set; }
 
         public string Racional_Garantias { get; set; }
+
+        public List<OrdenDeCompraSolpDto> OrdenesDeCompraGeneradas { get; set; } = new List<OrdenDeCompraSolpDto>();
 
 
         public SolpDto() { }

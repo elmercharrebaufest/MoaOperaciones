@@ -163,17 +163,20 @@ namespace SustitucionMOAUtils.Services
 
             if (!string.IsNullOrEmpty(parametros.vendedor))
             {
-                DateTime dateInit = (fechaHasta.Year - fechaInicio.Year) * 12 + fechaHasta.Month - fechaInicio.Month > 24
-                    && !string.IsNullOrEmpty(parametros.vendedor)
-                    ? fechaHasta.AddYears(-2)
-                    : fechaInicio;
+                if (!string.IsNullOrEmpty(parametros.fechaInicio) || !string.IsNullOrEmpty(parametros.fechaHasta))
+                {
+                    DateTime dateInit = (fechaHasta.Year - fechaInicio.Year) * 12 + fechaHasta.Month - fechaInicio.Month > 24
+                        && !string.IsNullOrEmpty(parametros.vendedor)
+                        ? fechaHasta.AddYears(-2)
+                        : fechaInicio;
 
-                DateTime dateEnd = fechaHasta;
+                    DateTime dateEnd = fechaHasta;
 
 
-                ocFiltradas = ocFiltradas
-                    .Where(oc => Convert.ToDateTime(oc.Fecha) >= dateInit && Convert.ToDateTime(oc.Fecha) <= dateEnd)
-                    .ToList();
+                    ocFiltradas = ocFiltradas
+                        .Where(oc => Convert.ToDateTime(oc.Fecha) >= dateInit && Convert.ToDateTime(oc.Fecha) <= dateEnd)
+                        .ToList();
+                }
             }
 
             List<DetalleOrdenDeCompraDto> ordenesCompraDto = ocFiltradas.Select(x => new DetalleOrdenDeCompraDto
@@ -212,9 +215,11 @@ namespace SustitucionMOAUtils.Services
                 .Distinct()
                 .ToList();
 
-                List<SolicitantesSolpedDto> solicitantes = GetSolicitantes(numeroSolpList).GetAwaiter().GetResult(); ;
+                List<SolicitantesSolpedDto> solicitantes = GetSolicitantes(numeroSolpList).GetAwaiter().GetResult();
 
                 var solicitanteDiccionario = solicitantes.ToDictionary(s => s.NumeroSolp);
+
+                var adjudicaciones = repositorioEntradaServicio.Listar<Adjudicacion>(x => x.NumeroOrdenDeCompra == ordenCompra.NumeroOrdenDeCompra);
 
                 foreach (var posicion in detalleOrdenDeCompraDto.Posiciones)
                 {
@@ -222,10 +227,8 @@ namespace SustitucionMOAUtils.Services
                     {
                         posicion.Solicitante = solicitante.Solicitante.Aprobador;
                     }
+                    posicion.AdmiteCertificacionesParciales = adjudicaciones.FirstOrDefault(a => a.Posiciones.Any(ap => ap.Posicion.Solp.NroSolp == posicion.NumeroSolp))?.AdmiteCertificacionesParciales ?? true;
                 }
-
-                Adjudicacion adjudicacion = repositorioEntradaServicio.ObtenerUltimaAdjudicacionOC(ordenCompra.NumeroOrdenDeCompra);
-                detalleOrdenDeCompraDto.AdmiteCertificacionesParciales = adjudicacion?.AdmiteCertificacionesParciales ?? true;
 
                 List<Aprobaciones> aprobaciones = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_OC == ordenCompra.NumeroOrdenDeCompra && (x.Estado_certificacion == "Pendiente Aprobación" || x.Estado_certificacion == "Aprobada"));
                 foreach (Aprobaciones aprobacion in aprobaciones)

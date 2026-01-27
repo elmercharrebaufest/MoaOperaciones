@@ -365,6 +365,9 @@
                                     <!--data-toggle="tab">-->Fletes
                                 </a>
                             </div>
+                            <div *ngIf="(isAuthorized('CONSULTA TICKET PESADA') || isAuthorized('CONSULTA TICKET PESADA ADMIN')) && isNoGranosSelected()">
+                                <a (click)="goToSeccion('/consulta-ticket-pesada')" href="#">Ver Ticket Pesada</a>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -112,7 +112,7 @@ export class StepperActionsComponent implements OnInit {
             enviarSap: false,
             guardarPorPaso: true
         };
-        if (!this.esAuditor) {
+        if (!this.esAuditor && this.puedeGuardarSolp()) {
             this.guardarCambiosEmitter.next(params);
         }
     }
@@ -145,5 +145,12 @@ export class StepperActionsComponent implements OnInit {
 
     onPreview() {
         this.previewEmitter.next();
+    }
+
+    puedeGuardarSolp(): boolean {
+        if (this.solpActual.esSolpDeCompras() && this.solpActual.ordenesDeCompraGeneradas.length > 0) {
+            return false;
+        }
+        return true;
     }
 }
