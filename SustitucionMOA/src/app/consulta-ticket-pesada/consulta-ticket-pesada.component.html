@@ -27,8 +27,8 @@
           <title-caps>Refinar resultados</title-caps>
         </div>
 
-					
-					  <div class="col-xs-12 col-sm-6 col-md-15">
+
+        <div class="col-xs-12 col-sm-6 col-md-15">
           <p>Fecha Desde</p>
           <div class="styled-select input-group date form_datetime_fechaIngreso" data-provide="datepicker" data-date=""
             data-date-format="dd/MM/yyyy" data-link-field="dtp_input_fechaIngreso">
@@ -52,8 +52,7 @@
           <p>Cuit Titular CP:</p>
           <div class="styled-select ">
             <input type="search" class="" placeholder="XX-XXXXXXXX-X" [value]="filtroCuitProveedor"
-              (input)="filtroCuitProveedor = $event.target.value" mask="00-00000000-0"
-       aria-controls="tableModal">
+              (input)="filtroCuitProveedor = $event.target.value" mask="00-00000000-0" aria-controls="tableModal">
           </div>
         </div>
 
@@ -78,7 +77,8 @@
           <p>CUIT Intermediario Flete:</p>
           <div class="styled-select ">
             <input type="search" class="" placeholder="XX-XXXXXXXX-X" [value]="filtroCuitIntermediarioFlete"
-             mask="00-00000000-0" (input)="filtroCuitIntermediarioFlete = $event.target.value" aria-controls="tableModal">
+              mask="00-00000000-0" (input)="filtroCuitIntermediarioFlete = $event.target.value"
+              aria-controls="tableModal">
           </div>
         </div>
 
@@ -86,7 +86,7 @@
           <p>CUIT Transportista:</p>
           <div class="styled-select ">
             <input type="search" class="" placeholder="XX-XXXXXXXX-X" [value]="filtroCuitTransportista"
-             mask="00-00000000-0" (input)="filtroCuitTransportista = $event.target.value" aria-controls="tableModal">
+              mask="00-00000000-0" (input)="filtroCuitTransportista = $event.target.value" aria-controls="tableModal">
           </div>
         </div>
 
@@ -251,7 +251,8 @@
                   </span>
                 </div>
               </th>
-
+              <th tabindex="0" rowspan="1" colspan="1" style="">
+              </th>
             </tr>
 
           </thead>
@@ -272,10 +273,15 @@
               <td>{{ticket.Patente}}</td>
               <td>{{ticket.ChoferNombreApellido}}</td>
               <td>{{ticket.Material}}</td>
-
+              <td style="text-align: center;">
+                <a href="#" (click)="descargarPdf(ticket); $event.preventDefault()" title="Descargar Archivos">
+                  <i class="fa fa-file-pdf-o" style="font-size: 18px; color: #d9534f;"></i>
+                </a>
+              </td>
             </tr>
             <tr *ngIf="!tickets || tickets.length === 0">
-              <td colspan="12" style="text-align: center; padding: 20px;">No se encontraron datos para los filtros dados.</td>
+              <td colspan="12" style="text-align: center; padding: 20px;">No se encontraron datos para los filtros
+                dados.</td>
             </tr>
           </tbody>
         </table>

@@ -12,6 +12,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { HttpStatusCodes } from '../common/models/httpStatusCodes';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
 import * as XLSX from 'xlsx';
+import { finalize } from 'rxjs/operators';
+import { ArchivoDescarga } from '../common/models/archivoDescarga';
+import { ConsultaTicketPesadaSubproductos } from '../common/models/ticket-pesada/consulta-ticket-pesada';
 declare var $: any;
 
 @Component({
@@ -33,7 +36,10 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
   tickets: any[] = [];
   esAdmin: boolean = this.isAuthorized('CONSULTA TICKET PESADA ADMIN');
   cuitSesion: string = sessionStorage.getItem('cuit') || "";
-
+  buscandoDatos: boolean = false;
+  hayDatos: boolean = false;
+  data: Array<ArchivoDescarga> = [];
+  archivoZip: ArchivoDescarga = null;
   constructor(protected ticketPesadaService: TicketPesadaService, protected navService: NavService,
     protected sessionDataService: SessionDataService, protected securityService: SecurityService,
     protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -155,16 +161,16 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
     this.mensajeComponent.setMsgsEmpty();
     const fechaInicio = this.parseFecha(this.fechaIngreso) || new Date();
     const fechaEgreso = this.parseFecha(this.fechaEgreso) || new Date();
-      
+
     // Validar que el periodo no sea mayor a 1 año
-     const unAnoEnMilisegundos = 365 * 24 * 60 * 60 * 1000;
-     const diferenciaTiempo = fechaEgreso.getTime() - fechaInicio.getTime();
-     
-     if (diferenciaTiempo > unAnoEnMilisegundos) {
-       this.mensajeComponent.setErrorMsg("No se puede obtener información de más de 1 año. Por favor, seleccione un rango de fechas menor.");
-       return;
-     }
- 
+    const unAnoEnMilisegundos = 365 * 24 * 60 * 60 * 1000;
+    const diferenciaTiempo = fechaEgreso.getTime() - fechaInicio.getTime();
+
+    if (diferenciaTiempo > unAnoEnMilisegundos) {
+      this.mensajeComponent.setErrorMsg("No se puede obtener información de más de 1 año. Por favor, seleccione un rango de fechas menor.");
+      return;
+    }
+
     if (!this.esAdmin) {
       this.filtroCuitTransportista = this.formatearCuit(this.cuitSesion);
       this.filtroCuitIntermediarioFlete = this.formatearCuit(this.cuitSesion);
@@ -269,6 +275,91 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
 
     // Generar archivo XLSX y descargarlo
     XLSX.writeFile(workbook, `TicketsPesada_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  }
+
+  descargarPdf(ticket: any) {
+    const ticketPesada: ConsultaTicketPesadaSubproductos = new ConsultaTicketPesadaSubproductos();
+    const fechaInicio = this.parseFecha(ticket.FechaHoraIngreso) || new Date();
+    ticketPesada.FechaDesde = fechaInicio;
+    ticketPesada.FechaHasta = fechaInicio;
+    ticketPesada.PatenteCamion = ticket.Patente;
+
+    this.mensajeComponent.setMsgsEmpty();
+    this.spinnerComponent.showIt();
+    this.unsubscribe();
+    this.buscandoDatos = true;
+
+    this.subscription = this.ticketPesadaService
+      .ObtenerTicketPesadaSubproductos(ticketPesada)
+      .pipe(finalize(() => (this.buscandoDatos = false)))
+      .subscribe(
+        (result) => {
+          this.spinnerComponent.hideIt();
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (
+            result.error != undefined &&
+            result.error != ""
+          ) {
+            this.mensajeComponent.setErrorMsg(result.error);
+          } else if (result.info != undefined) {
+            this.mensajeComponent.setInfoMsg(result.info);
+          } else {
+            result.data.forEach((file) => {
+              try {
+                if (!file.Datos) {
+                  console.error('No hay datos para el archivo:', file.Nombre);
+                  return;
+                }
+
+                let byteArray: Uint8Array;
+
+                if (Array.isArray(file.Datos) || file.Datos instanceof Uint8Array || file.Datos instanceof ArrayBuffer) {
+                  byteArray = new Uint8Array(file.Datos);
+                } else if (typeof file.Datos === 'string') {
+                  const base64Data = file.Datos.replace(/\s/g, '');
+
+                  if (!/^[A-Za-z0-9+/]*={0,2}$/.test(base64Data)) {
+                    console.error('Formato base64 inválido para el archivo:', file.Nombre);
+                    this.mensajeComponent.setErrorMsg(`Error al decodificar el archivo ${file.Nombre}. Formato inválido.`);
+                    return;
+                  }
+
+                  const byteCharacters = atob(base64Data);
+                  const byteNumbers = new Array(byteCharacters.length);
+                  for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                  }
+                  byteArray = new Uint8Array(byteNumbers);
+                } else {
+                  console.error('Tipo de datos no soportado para el archivo:', file.Nombre, typeof file.Datos);
+                  this.mensajeComponent.setErrorMsg(`Tipo de datos no soportado para el archivo ${file.Nombre}.`);
+                  return;
+                }
+
+                const blob = new Blob([new Uint8Array(byteArray)], { type: 'application/octet-stream' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', file.Nombre);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+              } catch (error) {
+                console.error('Error al descargar el archivo:', file.Nombre, error);
+                this.mensajeComponent.setErrorMsg(`Error al descargar el archivo ${file.Nombre}: ${error.message}`);
+              }
+            });
+          }
+        },
+        (error) => {
+          this.spinnerComponent.hideIt();
+          this.mensajeComponent.setErrorMsg(error.message);
+          this.buscandoDatos = false;
+        }
+      );
   }
 
 }
