@@ -1162,29 +1162,39 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     public listaContratosMarco: ContratoMarco[] = [];
 
     public obtenerContratoMarco(args: ObtenerContratoMarco) {
+        console.log("args", args);
         this.service.obtenerContratoMarco(args.centro, args.numeroContrato, args.codigoProveedor).subscribe((response: any) => {
             if (response.data && response.data.length) {
-                // Si viene codigoProveedor, asumimos que es una búsqueda para llenar la lista
+                // Si viene codigoProveedor, actualizamos la lista para el dropdown
                 if (args.codigoProveedor) {
                     this.listaContratosMarco = response.data.map(d => new ContratoMarco(d));
-                    return;
                 }
 
-                this.contratoMarco = new ContratoMarco(response.data[0]);
-
-                if ((this.esTipoMaterial && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length == 0 || pos.subPosiciones == null))
-                    || (this.esTipoServicio && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length > 0))) {
-                    //this.contratoMarco = null;
-                } else {
+                // SI NO VIENE numeroContrato, NO debemos setear el contratoMarcoModel (para que no aparezca la tabla de abajo)
+                if (!args.numeroContrato) {
                     this.contratoMarco = null;
+                } else {
+                    this.contratoMarco = new ContratoMarco(response.data[0]);
+
+                    if (!((this.esTipoMaterial && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length == 0 || pos.subPosiciones == null))
+                        || (this.esTipoServicio && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length > 0)))) {
+                        this.contratoMarco = null;
+                    }
                 }
             } else {
                 // Limpiar si no hay datos
                 if (args.codigoProveedor) {
                     this.listaContratosMarco = [];
                 }
+                this.contratoMarco = null;
             }
-            this.listarContratosAsociados()
+            this.listarContratosAsociados();
+            this.obtenerContratoMarcoService.finishedBusqueda.next();
+        }, error => {
+            this.floatMsgService.setErrorMsg(error.message);
+            this.contratoMarco = null; // Stop spinner in child
+            this.listaContratosMarco = [];
+            this.obtenerContratoMarcoService.finishedBusqueda.next();
         });
     }
 
