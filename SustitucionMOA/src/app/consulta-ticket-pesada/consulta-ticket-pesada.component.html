@@ -251,8 +251,8 @@
                   </span>
                 </div>
               </th>
-              <th tabindex="0" rowspan="1" colspan="1" style="">
-              </th>
+             <!-- <th tabindex="0" rowspan="1" colspan="1" style="">
+              </th> -->
             </tr>
 
           </thead>
@@ -273,11 +273,11 @@
               <td>{{ticket.Patente}}</td>
               <td>{{ticket.ChoferNombreApellido}}</td>
               <td>{{ticket.Material}}</td>
-              <td style="text-align: center;">
+              <!--<td style="text-align: center;">
                 <a href="#" (click)="descargarPdf(ticket); $event.preventDefault()" title="Descargar Archivos">
                   <i class="fa fa-file-pdf-o" style="font-size: 18px; color: #d9534f;"></i>
                 </a>
-              </td>
+              </td> -->
             </tr>
             <tr *ngIf="!tickets || tickets.length === 0">
               <td colspan="12" style="text-align: center; padding: 20px;">No se encontraron datos para los filtros
