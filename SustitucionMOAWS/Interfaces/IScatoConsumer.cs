@@ -21,5 +21,6 @@ namespace SustitucionMOAWS.Interfaces
         RecorridoDto ObtenerRecorridoOrdenResiduos(int ordenId);
         TrackingDataQRCamiones ObtenerTrackingDataQRCamiones(string numeroCTG, string patente);
         SustitucionMOAWS.ScatoWebService.TicketPesadaDto[] ObtenerDatosTicketPesada(DateTime fechaInicio, DateTime fechaEgreso, string cuitProveedor, string cuitTransportista, string ctg, string patente, string cuitIntermediarioFlete, bool esAdmin);
+
     }
 }

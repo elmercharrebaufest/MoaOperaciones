@@ -90,7 +90,7 @@ VALUES
     ('RYDA',		        'RYD ADMINISTRACION',	1, 2),
     ('RYDU',		        'RYD USUARIO',	        1, 2),
     ('SOLP',		        'SOLP',		            1, 1),
-    ('QR_CAMIONES',         'ACCESO API QR CAMIONES', 0, 2),
+    ('QR_CAMIONES',         'ACCESO API QR CAMIONES', 1, 1),
     ('TODOS',		        'TODOS',		        1, 1)
 
 INSERT INTO Rol
