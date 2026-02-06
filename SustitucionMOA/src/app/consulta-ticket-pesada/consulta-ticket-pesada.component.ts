@@ -207,6 +207,8 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
       return;
     }
 
+    fechaEgreso.setHours(23, 59, 0, 0);
+
     this.spinnerComponent.showIt();
 
     this.unsubscribe();
