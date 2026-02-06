@@ -114,10 +114,9 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
       return null;
     }
 
-    // Intenta crear Date directo (ISO u objetos Date)
-    const direct = new Date(fecha);
-    if (!isNaN(direct.getTime())) {
-      return direct;
+    // Si es un objeto Date, devolverlo directamente
+    if (fecha instanceof Date && !isNaN(fecha.getTime())) {
+      return fecha;
     }
 
     // Maneja formato /Date(1765393448560)/
@@ -131,19 +130,32 @@ export class ConsultaTicketPesadaComponent extends ListBaseComponent implements 
         }
       }
 
-      // dd/MM/yyyy o dd/MM/yyyy HH:mm:ss
-      const parts = fecha.split(/[\/\s:]/);
-      if (parts.length >= 3) {
-        const day = parseInt(parts[0], 10);
-        const month = parseInt(parts[1], 10) - 1;
-        const year = parseInt(parts[2], 10);
-        const hours = parts.length > 3 ? parseInt(parts[3], 10) : 0;
-        const minutes = parts.length > 4 ? parseInt(parts[4], 10) : 0;
-        const seconds = parts.length > 5 ? parseInt(parts[5], 10) : 0;
-        const rebuilt = new Date(year, month, day, hours, minutes, seconds);
-        if (!isNaN(rebuilt.getTime())) {
-          return rebuilt;
+      // Intenta parsear formato dd/MM/yyyy o dd/MM/yyyy HH:mm:ss
+      // Soporta separadores /, -, y espacios
+      const datePattern = /(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/;
+      const dateMatch = datePattern.exec(fecha.trim());
+      
+      if (dateMatch) {
+        const day = parseInt(dateMatch[1], 10);
+        const month = parseInt(dateMatch[2], 10) - 1; // 0-indexed
+        const year = parseInt(dateMatch[3], 10);
+        const hours = dateMatch[4] ? parseInt(dateMatch[4], 10) : 0;
+        const minutes = dateMatch[5] ? parseInt(dateMatch[5], 10) : 0;
+        const seconds = dateMatch[6] ? parseInt(dateMatch[6], 10) : 0;
+        
+        // Validar valores para evitar fechas inválidas
+        if (day >= 1 && day <= 31 && month >= 0 && month <= 11 && year >= 1900) {
+          const rebuilt = new Date(year, month, day, hours, minutes, seconds);
+          if (!isNaN(rebuilt.getTime())) {
+            return rebuilt;
+          }
         }
+      }
+
+      // Último intento: crear Date directo (ISO u otros formatos)
+      const direct = new Date(fecha);
+      if (!isNaN(direct.getTime())) {
+        return direct;
       }
     }
 
