@@ -4208,7 +4208,7 @@ namespace SustitucionMOAUtils.Services
         private static void ObtenerLegajoAdjuntosPeticionOferta(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor, List<LegajoDto> legajo, PeticionDeOferta peticion)
         {
             //buscar archivos de la peticion ( menos lo de legajo cuando es un usuario proveedor)
-            foreach (var item in peticion.Archivos.Where(a => !esProveedor || (esProveedor && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
+            foreach (var item in peticion.Archivos.Where(a => !esProveedor || (esProveedor && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo))) // GSIAN: Uso correcto para no ver "PeticionDeOfertaLegajo"
             {
                 legajo.Add(new LegajoDto
                 {
@@ -4488,7 +4488,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     foreach (var item in circular.Archivos)
                     {
-                        if ((peticionDeOfertaUsuarios_Id != null && item.FileKey != FileKeys.PeticionDeOfertaLegajo) || peticionDeOfertaUsuarios_Id == null)
+                        if ((peticionDeOfertaUsuarios_Id != null && item.FileKey != FileKeys.PeticionDeOfertaLegajo) || peticionDeOfertaUsuarios_Id == null) // GSIAN: Revisar condiciones.
                         {
                             string fileName = Path.GetFileName(item.Ruta);
                             archivo.CreateEntryFromFile(item.Ruta, $"PO-{idPeticion}-" + fileName);
@@ -4525,7 +4525,8 @@ namespace SustitucionMOAUtils.Services
             // Agregar archivos de la petición de oferta al zip
             if (peticion.Archivos != null)
             {
-                foreach (var archivoSubido in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
+                //foreach (var archivoSubido in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
+                foreach (var archivoSubido in peticion.Archivos.Where(a => !esProveedor || (esProveedor && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo))) // GSIAN: Se modifican condiciones. Probar.
                 {
                     if (File.Exists(archivoSubido.Archivo.Ruta))
                     {
