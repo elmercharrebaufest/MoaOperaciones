@@ -77,8 +77,16 @@ namespace SustitucionMOAUtils.Services
                     // Flujo nuevo
                     if (resultado[0].IsValid)
                     {
-                        var ordenDeCompraValidationResult = resultadoAnalisis.Find(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name);
-                        var certificacionesRegistradasOC = repositorio.Listar<CertificacionRegistrada>(cr => cr.NRO_OC == ordenDeCompraValidationResult.Value);
+                        var ordenCompraValidation = resultadoAnalisis.FirstOrDefault(a => a.ValidataionType == typeof(OrdenCompraValidationCommand).Name);
+
+                        if (ordenCompraValidation == null || !ordenCompraValidation.IsValid)
+                        {
+                            var mensaje = ordenCompraValidation?.Message ?? "No se pudo validar la Orden de Compra.";
+                            results.Add(new ValidationResult(false, mensaje, "OCR", "", ""));
+                            continue;
+                        }
+
+                        var certificacionesRegistradasOC = repositorio.Listar<CertificacionRegistrada>(cr => cr.NRO_OC == ordenCompraValidation.Value);
                         resultado.ForEach(r => r.FileName = file.FileName);
 
                         if (resultado[0].Certificaciones?.Count > 0)
