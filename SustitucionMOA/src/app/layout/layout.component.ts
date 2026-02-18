@@ -306,7 +306,7 @@ export class LayoutComponent implements OnDestroy {
                             '2. La grilla muestra los detalles de las órdenes de compra filtradas.<br/>' +
                             '3. Las flechas en la primera columna te permiten expandir y ver más información sobre las posiciones de cada orden de compra.<br/>' +
                             '4. Al seleccionar uno o varios ítems, se activará el botón para certificar las entradas de servicios correspondientes.<br/>';
-                        this.textoTooltip2 = '';
+                        this.textoTooltip2 = 'Instructivo: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Manual de Usuario Autogestión Certificaciones.docx" target="_blank">click aqui</a>.';
                         break;
                     default:
                         this.textoTooltip = '';

@@ -618,7 +618,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         let fileKey: string = archivo.FileKey
         let proveedorId: number = this.empresaSeleccionada.Id;
         let urlApi: string = '/api/AltaEmpresaGranos/DescargarArchivo';
-        
+
         var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail + "&archivoId=" + archivoId.toString() + "&proveedorId=" + proveedorId.toString() + "&urlApi=" + urlApi.toString());
 
         var url = "/officetohtml/index.html?param=" + param;
@@ -1114,7 +1114,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         let msjModal = "";
         this.spinnerComponent.showIt();
         const mailProveedor = this.empresaVerificadaSeleccionada ? this.empresaVerificadaSeleccionada.Mail : "";
-        this.altaEmpresaService.volverProveedorCanalDeAltas(this.cuitIngresado, mailProveedor)
+        this.altaEmpresaService.volverProveedorCanalDeAltas(this.cuitIngresado, mailProveedor, this.empresaVerificadaSeleccionada.Codigo)
             .subscribe(
                 (result) => {
                     this.spinnerComponent.hideIt();
@@ -1141,12 +1141,12 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     }
 
-    abrirModalMoverAlCanalDeAltas(msjModal:string) {
+    abrirModalMoverAlCanalDeAltas(msjModal: string) {
         this.confirmationService.confirm({
             key: 'moveToAtlasChannel',
             message: msjModal,
             accept: () => {
-                
+
             }
         });
     }

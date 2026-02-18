@@ -149,11 +149,12 @@ namespace SustitucionMOAUtils.Services
             return proveedorDtos;
         }
 
-        public string VolverProveedorCanalDeAltas(string CUIT, string mailProveedor, string mailUsuario)
+        public string VolverProveedorCanalDeAltas(string CUIT, string mailProveedor, string mailUsuario, string codigoProveedor)
         {
             var proveedores = repositorio.Listar<Proveedor>(x =>
                 x.CUIT == CUIT &&
-                (string.IsNullOrEmpty(mailProveedor) || x.Mail == mailProveedor));
+                (string.IsNullOrEmpty(mailProveedor) || x.Mail == mailProveedor) &&
+                x.CodigoProveedor == codigoProveedor);
 
             if (proveedores.Count == 0)
             {

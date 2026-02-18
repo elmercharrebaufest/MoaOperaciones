@@ -13,9 +13,9 @@ export class AltaEmpresaService extends BaseService {
 
     public getEmpresas(idTipoProveedor, fechaInicio: string, fechaFin: string): Observable<any> {
         let params: HttpParams = new HttpParams()
-        .append('idTipoProveedor', idTipoProveedor.toString())
-        .append('fechaInicio', fechaInicio)
-        .append('fechaFin', fechaFin)
+            .append('idTipoProveedor', idTipoProveedor.toString())
+            .append('fechaInicio', fechaInicio)
+            .append('fechaFin', fechaFin)
 
         return this.http
             .get('/api/AltaEmpresa/getEmpresas', { params: params, headers: this.headers })
@@ -110,17 +110,18 @@ export class AltaEmpresaService extends BaseService {
 
     public verificarExistenciaEmpresa(cuit: string): Observable<ApiResponse<ExistenciaEmpresaResponse>> {
         let params: HttpParams = new HttpParams()
-        .append('cuit', cuit.toString())
+            .append('cuit', cuit.toString())
 
         return this.http
             .get<ApiResponse<ExistenciaEmpresaResponse>>('/api/AltaEmpresa/VerificarExistenciaEmpresa', { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
     }
 
-    public volverProveedorCanalDeAltas(cuit: string, mailProveedor: string): Observable<any> {
+    public volverProveedorCanalDeAltas(cuit: string, mailProveedor: string, codigoProvedor: string): Observable<any> {
         let params: HttpParams = new HttpParams()
             .append('cuit', cuit)
-            .append('mailProveedor', encodeURIComponent(mailProveedor));
+            .append('mailProveedor', encodeURIComponent(mailProveedor))
+            .append('codigoProveedor', codigoProvedor);
 
         return this.http
             .get('/api/AltaEmpresa/VolverProveedorCanalDeAltas', { params: params, headers: this.headers })

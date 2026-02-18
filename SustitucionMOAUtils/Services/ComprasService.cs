@@ -6374,8 +6374,8 @@ namespace SustitucionMOAUtils.Services
                             foreach(var adjudicacionOCPrimaria in adjudicacionesOCPrimaria)
                             {
                                 // Si se ingresó que admite certificaciones parciales pero la OC anterior es de una SOLP con Trabajo ya hecho, no debe actualizarle este campo (con TH no se puede certificar parcialmente)
-                                if (!adjudicacionDto.AdmiteCertificacionesParciales ||
-                                    adjudicacionOCPrimaria.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.First().SolpPosicion.Solp.TrabajoYaHecho != true)
+                                if (adjudicacionOCPrimaria.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.First().SolpPosicion.Solp.TrabajoYaHecho != true &&
+                                    adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.First().SolpPosicion.Solp.TrabajoYaHecho != true)
                                 {
                                     adjudicacionOCPrimaria.AdmiteCertificacionesParciales = adjudicacionDto.AdmiteCertificacionesParciales;
                                 }

@@ -416,11 +416,10 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ObtenerContratoMarco(string numeroContrato, string centro, string codigoProveedor)
         {
-
-            if (string.IsNullOrEmpty(numeroContrato)) return Json(new { info = "Número de contrato inválido" }, JsonRequestBehavior.AllowGet);
+            if (string.IsNullOrEmpty(numeroContrato) && string.IsNullOrEmpty(codigoProveedor))
+                return Json(new { info = "Número de contrato y proveedor inválido" }, JsonRequestBehavior.AllowGet);
 
             return JsonCustom(new { data = comprasSapService.ObtenerContratoMarco(numeroContrato, centro, codigoProveedor) });
-
         }
 
         [HttpGet]

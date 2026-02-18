@@ -11,8 +11,9 @@
       <section class="container-fluid">
         <form [formGroup]="formGroup">
           <div class="row myRow" style="padding-top: 2px;">
-            <div class="row" style="margin-bottom: 0.4em;">
-              <div class="col-xs-5 col-md-5 ui-fluid">
+            <!-- Row 1: Centro and Proveedor -->
+            <div class="row" style="margin-bottom: 0.8em;">
+              <div class="col-xs-6 col-md-6 ui-fluid">
                 <label class="m-label">
                   <b>Centro</b>
                 </label>
@@ -34,26 +35,55 @@
                 </div>
               </div>
 
-              <div class="col-xs-4 col-md-4 ui-fluid">
+              <div class="col-xs-6 col-md-6 ui-fluid"
+                *ngIf="model && model.proveedorAsignado_Id && model.proveedorAsignado.toString().trim() !== ''">
+                <label class="m-label">
+                  <b>Proveedor</b>
+                </label>
+                <p-autoComplete formControlName="codProveedor" [suggestions]="proveedoresFiltrados"
+                  (completeMethod)="filtrarProveedores($event)" (onSelect)="onSelectProveedor($event)"
+                  placeholder="Seleccione un proveedor" field="RazonSocial" [minLength]="3" [forceSelection]="true"
+                  appendTo="body">
+                  <ng-template let-proveedor pTemplate="item">
+                    <div class="ui-helper-clearfix">
+                      <div style="font-size:12px;margin:10px 10px 0 0">
+                        {{proveedor.Mail}}</div>
+                      <div style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">
+                        {{proveedor.CUIT}} - {{proveedor.RazonSocial}}</div>
+                    </div>
+                  </ng-template>
+                </p-autoComplete>
+              </div>
+            </div>
+
+            <!-- Row 2: Nro de Contrato and Buscar button -->
+            <div class="row" style="margin-bottom: 0.4em;">
+              <div class="col-xs-6 col-md-6 ui-fluid">
                 <label class="m-label">
                   <b>Nro de Contrato</b>
                 </label>
-                <p-dropdown [options]="numerosContratoOptions" formControlName="numeroContrato"
-                  placeholder="Seleccione contrato" [autoDisplayFirst]="false" appendTo="body">
+                <p-dropdown
+                  *ngIf="model && model.proveedorAsignado_Id && model.proveedorAsignado.toString().trim() !== ''"
+                  [options]="numerosContratoOptions" formControlName="numeroContrato"
+                  [placeholder]="(numerosContratoOptions && numerosContratoOptions.length) ? 'Seleccione contrato' : 'No existen contratos'"
+                  [autoDisplayFirst]="false" appendTo="body">
                 </p-dropdown>
+                <input *ngIf="!model || !model.proveedorAsignado_Id || model.proveedorAsignado.toString().trim() === ''"
+                  type="text" class="form-control" formControlName="numeroContrato"
+                  placeholder="Ingrese nro de contrato" style="padding: 6px 12px; height: 34px;">
                 <div *ngIf="showInputError('numeroContrato')">
                   <p class="text-danger">campo obligatorio</p>
                 </div>
               </div>
-              <div class="col-xs-3 col-md-3 ui-fluid" style="padding-top: 24px;">
+              <div class="col-xs-6 col-md-6 ui-fluid" style="padding-top: 24px;">
                 <button class="btn btn-primary btn-custom-primary" (click)="onSearchContrato()">BUSCAR</button>
               </div>
             </div>
-            <div *ngIf="!primerBusqueda && contratoMarcoModel == null">
+            <div *ngIf="!primerBusqueda && contratoMarcoModel == null && !muestroSpinner">
               <b>No se encontraron resultados</b>
             </div>
             <div *ngIf="contratoMarcoModel">
-              Fin periodo de validez: {{contratoMarcoModel?.finPeriodoValidez}}
+              Fin periodo de validez: {{contratoMarcoModel.finPeriodoValidez}}
             </div>
           </div>
         </form>
@@ -84,16 +114,17 @@
       </section>
 
       <section class="container-fluid">
-        <p-table [value]="contratoMarcoModel?.posiciones" [rows]="20" dataKey="numeroPosicionDocumentoCompras"
-          [scrollable]="true" class="table-contrato">
+        <p-table [value]="contratoMarcoModel ? contratoMarcoModel.posiciones : []" [rows]="20"
+          dataKey="numeroPosicionDocumentoCompras" [scrollable]="true" class="table-contrato">
 
           <ng-template pTemplate="body" let-posicion let-expanded="expanded" let-columns="columns"
             let-rowIndex="rowIndex">
             <tr
-              [ngClass]="{'vigente': contratoMarcoModel?.estaVigente, 'no-vigente': !contratoMarcoModel?.estaVigente}">
+              [ngClass]="{'vigente': (contratoMarcoModel && contratoMarcoModel.estaVigente), 'no-vigente': (contratoMarcoModel && !contratoMarcoModel.estaVigente)}">
               <td style="width: 30px;">
                 <p-checkbox name="all-subposiciones" [binary]="true" [(ngModel)]="posicion.allSubPosicionesSelected"
-                  (click)="onClickSelectAllSubPosiciones(posicion)" [disabled]="!contratoMarcoModel?.estaVigente">
+                  (click)="onClickSelectAllSubPosiciones(posicion)"
+                  [disabled]="contratoMarcoModel && !contratoMarcoModel.estaVigente">
                 </p-checkbox>
               </td>
               <td style="width: 90%;">
@@ -103,7 +134,8 @@
                   eliminarCerosIniciales(posicion.numeroMaterial) }}</span>
               </td>
               <td>
-                <a style="cursor: pointer;" [pRowToggler]="posicion" *ngIf="posicion?.subPosiciones.length">
+                <a style="cursor: pointer;" [pRowToggler]="posicion"
+                  *ngIf="posicion && posicion.subPosiciones && posicion.subPosiciones.length">
                   <b>
                     <i [ngClass]="expanded ? 'fa fa-chevron-down' : 'fa fa-chevron-up'"></i>
                   </b>
@@ -113,22 +145,23 @@
           </ng-template>
 
           <ng-template pTemplate="rowexpansion" let-posicion let-columns="col" let-rowIndex="rowIndex">
-            <div style="width: 620px;" *ngIf="posicion?.subPosiciones.length">
+            <div style="width: 620px;" *ngIf="posicion && posicion.subPosiciones && posicion.subPosiciones.length">
               <div style="margin-left: 32px !important">
-                <p-table #dt class="table-contrato" [value]="posicion?.subPosiciones" [rows]="20"
+                <p-table #dt class="table-contrato" [value]="posicion.subPosiciones" [rows]="20"
                   dataKey="numeroPosicionDocumentoCompras" [scrollable]="true">
                   <ng-template pTemplate="body" let-subPosiciones let-columns="columns" let-rowIndex="rowIndex">
                     <tr
-                      [ngClass]="{'vigente': contratoMarcoModel?.estaVigente, 'no-vigente': !contratoMarcoModel?.estaVigente}">
+                      [ngClass]="{'vigente': (contratoMarcoModel && contratoMarcoModel.estaVigente), 'no-vigente': (contratoMarcoModel && !contratoMarcoModel.estaVigente)}">
                       <td style="width: 30px;">
                         <p-checkbox name="subposiciones" binary="false" [(ngModel)]="subPosiciones.selected"
-                          (click)="onClickSelectSubPosicion(posicion)" [disabled]="!contratoMarcoModel?.estaVigente">
+                          (click)="onClickSelectSubPosicion(posicion)"
+                          [disabled]="contratoMarcoModel && !contratoMarcoModel.estaVigente">
                         </p-checkbox>
                       </td>
                       <td>
-                        {{subPosiciones?.textoBreve}} &nbsp;
-                        <span *ngIf="subPosiciones?.numeroServicio"><strong>Cod serv:</strong> {{
-                          eliminarCerosIniciales(subPosiciones?.numeroServicio) }}</span>
+                        {{subPosiciones ? subPosiciones.textoBreve : ''}} &nbsp;
+                        <span *ngIf="subPosiciones && subPosiciones.numeroServicio"><strong>Cod serv:</strong> {{
+                          eliminarCerosIniciales(subPosiciones.numeroServicio) }}</span>
                       </td>
                     </tr>
                   </ng-template>

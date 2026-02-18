@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ContratoMarco, ContratoMarcoPosicion, ObtenerContratoMarco } from './contrato-marco.model';
 import { ObtenerContratoMarcoService } from './obtener-contrato-marco.service';
+import { ComprasService } from '../../../../compras.service';
 import { Solp } from '../../../solp';
 
 @Component({
@@ -12,8 +13,17 @@ import { Solp } from '../../../solp';
 export class ObtenerContratoMarcoComponent implements OnInit {
   defaultCentroEntrega: any;
 
+  private _model: Solp;
   @Input('model')
-  protected model: Solp;
+  set model(value: Solp) {
+    this._model = value;
+    if (value) {
+      this.initializeProvider();
+    }
+  }
+  get model(): Solp {
+    return this._model;
+  }
 
   @Input()
   set centroEntrega(value: Array<any>) {
@@ -24,6 +34,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
   set contratoMarco(value: ContratoMarco) {
     this.contratoMarcoModel = value;
     this.fillPosicionesAsOptions();
+    this.muestroSpinner = false;
   };
 
   @Output()
@@ -55,38 +66,64 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     } else {
       this.numerosContratoOptions = [];
     }
+    this.muestroSpinner = false;
   }
 
   numerosContratoOptions: any[] = [];
+  proveedoresFiltrados: any[];
 
   constructor(private obtenerContratoMarcoService: ObtenerContratoMarcoService,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private comprasService: ComprasService) {
     this.obtenerContratoMarcoService.toogleOn.subscribe(value => {
       this.visible = value;
-      this.onClear();
+      if (value) {
+        this.onClear();
+        this.initializeProvider();
+      }
+    });
+
+    this.obtenerContratoMarcoService.finishedBusqueda.subscribe(() => {
+      this.muestroSpinner = false;
     });
   }
 
   ngOnInit() {
     this.formGroup = this.formBuilder.group({
       centroEntrega: new FormControl('', Validators.required),
-      numeroContrato: new FormControl('', Validators.required)
+      numeroContrato: new FormControl('', Validators.required),
+      codProveedor: new FormControl('')
     });
 
     this.defaultCentroEntrega = this.centrosEntrega.find(centro => centro.Codigo === "1029");
+    this.initializeProvider();
+  }
 
-    if (this.model && this.model.codigoProveedorSap) {
-      this.muestroSpinner = true;
-      const payload = {
-        centro: this.defaultCentroEntrega ? this.defaultCentroEntrega.Codigo : '',
-        numeroContrato: '',
-        codigoProveedor: this.model.codigoProveedorSap
-      } as ObtenerContratoMarco;
+  private initializeProvider() {
+    console.log(this.model);
+    if (this.model && this.formGroup) {
+      const codigoSap = this.model.codigoProveedorSap ? String(this.model.codigoProveedorSap).trim() : '';
+      const tieneProveedorAsignado = this.model.proveedorAsignado_Id || (this.model.proveedorAsignado && this.model.proveedorAsignado.length > 0);
 
-      this.obtenerContratoMarcoEmitter.next(payload);
+      if (codigoSap.length > 0 || tieneProveedorAsignado) {
+        this.formGroup.get('codProveedor').setValue({
+          Id: this.model.proveedorAsignado_Id,
+          RazonSocial: this.model.proveedorAsignado,
+          CodigoProveedorSap: codigoSap
+        });
 
-      this.muestroSpinner = false;
-      this.primerBusqueda = false;
+        if (codigoSap.length > 0) {
+          this.muestroSpinner = true;
+          const payload = {
+            centro: this.defaultCentroEntrega ? this.defaultCentroEntrega.Codigo : '',
+            numeroContrato: '',
+            codigoProveedor: codigoSap
+          } as ObtenerContratoMarco;
+
+          this.obtenerContratoMarcoEmitter.next(payload);
+          this.primerBusqueda = false;
+        }
+      }
     }
   }
 
@@ -155,15 +192,23 @@ export class ObtenerContratoMarcoComponent implements OnInit {
       if (this.centroEntregaValue && this.numeroContratoValue) {
         this.muestroSpinner = true;
 
+        let codProveedor = '';
+        if (this.codProveedorValue && this.codProveedorValue.CodigoProveedorSap) {
+          codProveedor = this.codProveedorValue.CodigoProveedorSap;
+        } else if (this.model && this.model.codigoProveedorSap && !this.codProveedorValue) {
+          // Si el campo está vacío, no mandamos el proveedor del modelo
+          codProveedor = '';
+        }
+
         const payload = {
           centro: this.centroEntregaValue,
-          numeroContrato: this.numeroContratoValue
+          numeroContrato: this.numeroContratoValue,
+          codigoProveedor: codProveedor
         } as ObtenerContratoMarco;
 
         this.contratoMarcoModel = null;
         this.obtenerContratoMarcoEmitter.next(payload);
 
-        this.muestroSpinner = false;
         this.primerBusqueda = false;
 
       } else {
@@ -175,9 +220,43 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     }
   }
 
+  filtrarProveedores(event) {
+    this.comprasService.listarProveedores(event.query).subscribe((result: any) => {
+      this.proveedoresFiltrados = result.data;
+    });
+  }
+
+  onSelectProveedor(event) {
+    if (event) {
+      this.muestroSpinner = true;
+      let codProveedor = '';
+      if (event && event.CodigoProveedorSap) {
+        codProveedor = event.CodigoProveedorSap;
+      }
+
+      const payload = {
+        centro: this.centroEntregaValue || (this.defaultCentroEntrega ? this.defaultCentroEntrega.Codigo : ''),
+        numeroContrato: '',
+        codigoProveedor: codProveedor
+      } as ObtenerContratoMarco;
+
+      this.contratoMarcoModel = null;
+      this.obtenerContratoMarcoEmitter.next(payload);
+
+      this.primerBusqueda = false;
+    }
+  }
+
   onClear() {
     this.setCentroEntrega('');
     this.setNumeroContrato('');
+
+    if (this.model && this.model.codigoProveedorSap) {
+      this.initializeProvider();
+    } else {
+      this.formGroup.get('codProveedor').setValue('');
+    }
+
     this.contratoMarcoModel = null;
     this.posicionesAsOptions = [];
     this.primerBusqueda = true;
@@ -192,6 +271,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
 
   onAgregarPosiciones() {
     this.agregarPosicionesContratoMarcoEmitter.next(this.contratoMarcoModel);
+    this.onClose();
   }
 
   private setCentroEntrega(value: any) { this.formGroup.get('centroEntrega').setValue(value); }
@@ -204,6 +284,10 @@ export class ObtenerContratoMarcoComponent implements OnInit {
   }
   get numeroContratoValue() {
     return this.formGroup.get('numeroContrato').value;
+  }
+
+  get codProveedorValue() {
+    return this.formGroup.get('codProveedor').value;
   }
 
   get canAddItems() {
