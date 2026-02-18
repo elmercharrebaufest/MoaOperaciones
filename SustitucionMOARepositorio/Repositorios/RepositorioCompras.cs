@@ -110,13 +110,11 @@ namespace SustitucionMOARepositorio.Repositorios
                 .Where(adj =>
                     adj.FechaLiberacionSap.HasValue &&
                     nrosOcs.Contains(adj.NumeroOrdenDeCompra))
-                .Select(adj => new
-                {
-                    adj.NumeroOrdenDeCompra,
-                    adj.FechaLiberacionSap
-                })
-                .ToDictionary(adj => adj.NumeroOrdenDeCompra, adj => adj.FechaLiberacionSap.Value);
-
+                .GroupBy(adj => adj.NumeroOrdenDeCompra)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Max(x => x.FechaLiberacionSap.Value)
+                );
             return fechasLiberacionPorOc;
         }
     }
