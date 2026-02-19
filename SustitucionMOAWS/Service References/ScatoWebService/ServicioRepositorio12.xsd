@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos.ResultadoServicio" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos.ResultadoServicio" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd7" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd12" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" />
-  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" />
   <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" />
-  <xs:complexType name="ResultadoConsultarCategoriaVehiculo">
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd12" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" />
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd7" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" />
+  <xs:complexType name="ResultadoValidarVehiculoDetectado">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q1:Resultado">
         <xs:sequence>
+          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="LecturaPuestosDeTrabajo" nillable="true" type="q2:ArrayOfLecturaPuestoDeTrabajoDto" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResultadoValidarVehiculoDetectado" nillable="true" type="tns:ResultadoValidarVehiculoDetectado" />
+  <xs:complexType name="ResultadoConsultarCategoriaVehiculo">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q3="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q3:Resultado">
+        <xs:sequence>
           <xs:element minOccurs="0" name="EsAutomotor" type="xs:boolean" />
-          <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ImporteTasaMunicipal" nillable="true" type="q2:ArrayOfKeyValueOfdateTimedecimal" />
+          <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ImporteTasaMunicipal" nillable="true" type="q4:ArrayOfKeyValueOfdateTimedecimal" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -17,9 +27,9 @@
   <xs:element name="ResultadoConsultarCategoriaVehiculo" nillable="true" type="tns:ResultadoConsultarCategoriaVehiculo" />
   <xs:complexType name="ResultadoConsultarEstadoTransmisionVisec">
     <xs:complexContent mixed="false">
-      <xs:extension xmlns:q3="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q3:Resultado">
+      <xs:extension xmlns:q5="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q5:Resultado">
         <xs:sequence>
-          <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Estado" nillable="true" type="q4:EstadoTransmisionAVisec" />
+          <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="Estado" nillable="true" type="q6:EstadoTransmisionAVisec" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -27,7 +37,7 @@
   <xs:element name="ResultadoConsultarEstadoTransmisionVisec" nillable="true" type="tns:ResultadoConsultarEstadoTransmisionVisec" />
   <xs:complexType name="ResultadoConsultarPagoTasaMunicipal">
     <xs:complexContent mixed="false">
-      <xs:extension xmlns:q5="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q5:Resultado">
+      <xs:extension xmlns:q7="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q7:Resultado">
         <xs:sequence>
           <xs:element minOccurs="0" name="EjecutaWorkFlow" type="xs:boolean" />
           <xs:element minOccurs="0" name="EsPagoAbonado" type="xs:boolean" />
@@ -42,7 +52,7 @@
           <xs:element minOccurs="0" name="TieneConfiguracionDeBloqueoDeIngreso" type="xs:boolean" />
           <xs:element minOccurs="0" name="TieneDiferenciaDePago" type="xs:boolean" />
           <xs:element minOccurs="0" name="TieneExcepcion" type="xs:boolean" />
-          <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAlerta" type="q6:TipoAlerta" />
+          <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" minOccurs="0" name="TipoAlerta" type="q8:TipoAlerta" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -50,7 +60,7 @@
   <xs:element name="ResultadoConsultarPagoTasaMunicipal" nillable="true" type="tns:ResultadoConsultarPagoTasaMunicipal" />
   <xs:complexType name="ResultadoConsultarDataAgroVisec">
     <xs:complexContent mixed="false">
-      <xs:extension xmlns:q7="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q7:Resultado">
+      <xs:extension xmlns:q9="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q9:Resultado">
         <xs:sequence>
           <xs:element minOccurs="0" name="CodigoVariedad" nillable="true" type="xs:string" />
         </xs:sequence>
@@ -60,9 +70,9 @@
   <xs:element name="ResultadoConsultarDataAgroVisec" nillable="true" type="tns:ResultadoConsultarDataAgroVisec" />
   <xs:complexType name="ResultadoVisecDistribuirStock">
     <xs:complexContent mixed="false">
-      <xs:extension xmlns:q8="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q8:Resultado">
+      <xs:extension xmlns:q10="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q10:Resultado">
         <xs:sequence>
-          <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Data" nillable="true" type="q9:ArrayOfKeyValueOfstringint" />
+          <xs:element xmlns:q11="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Data" nillable="true" type="q11:ArrayOfKeyValueOfstringint" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -70,10 +80,10 @@
   <xs:element name="ResultadoVisecDistribuirStock" nillable="true" type="tns:ResultadoVisecDistribuirStock" />
   <xs:complexType name="ResultadoOrdenFas">
     <xs:complexContent mixed="false">
-      <xs:extension xmlns:q10="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q10:Resultado">
+      <xs:extension xmlns:q12="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q12:Resultado">
         <xs:sequence>
-          <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="ControlRecorrido" nillable="true" type="q11:ControlRecorridoDto" />
-          <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="Dto" nillable="true" type="q12:OrdenCargaFasDto" />
+          <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="ControlRecorrido" nillable="true" type="q13:ControlRecorridoDto" />
+          <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="Dto" nillable="true" type="q14:OrdenCargaFasDto" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -81,7 +91,7 @@
   <xs:element name="ResultadoOrdenFas" nillable="true" type="tns:ResultadoOrdenFas" />
   <xs:complexType name="ResultadoConsultarTicketsNoGranos">
     <xs:complexContent mixed="false">
-      <xs:extension xmlns:q13="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q13:Resultado">
+      <xs:extension xmlns:q15="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q15:Resultado">
         <xs:sequence>
           <xs:element minOccurs="0" name="TicketsNoGranos" nillable="true" type="tns:ArrayOfResultadoTicketsNoGranos" />
         </xs:sequence>
@@ -106,10 +116,10 @@
   <xs:element name="ResultadoTicketsNoGranos" nillable="true" type="tns:ResultadoTicketsNoGranos" />
   <xs:complexType name="ResultadoOrdenFason">
     <xs:complexContent mixed="false">
-      <xs:extension xmlns:q14="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q14:Resultado">
+      <xs:extension xmlns:q16="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" base="q16:Resultado">
         <xs:sequence>
-          <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="ControlRecorrido" nillable="true" type="q15:ControlRecorridoDto" />
-          <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="Dto" nillable="true" type="q16:OrdenCargaInternaFasonDto" />
+          <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="ControlRecorrido" nillable="true" type="q17:ControlRecorridoDto" />
+          <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" minOccurs="0" name="Dto" nillable="true" type="q18:OrdenCargaInternaFasonDto" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
