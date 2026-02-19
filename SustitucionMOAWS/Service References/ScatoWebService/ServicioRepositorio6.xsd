@@ -92,6 +92,7 @@
         <xs:element minOccurs="0" name="codigoSapTitularCartaPorte" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="codigoSapRemitenteComercial" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="codigoEstablecimiento" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="codigoSapRemitenteComercialVentaSecundaria" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -1358,6 +1359,8 @@
         <xs:element minOccurs="0" name="esEpa" type="xs:boolean" />
         <xs:element minOccurs="0" name="esEUDR" type="xs:boolean" />
         <xs:element minOccurs="0" name="esSustentable" type="xs:boolean" />
+        <xs:element minOccurs="0" name="remitenteComercialCuit" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="remitenteComercialVentaSecundariaCuit" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

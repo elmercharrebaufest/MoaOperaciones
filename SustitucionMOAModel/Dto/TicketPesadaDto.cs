@@ -12,8 +12,8 @@ namespace SustitucionMOAModel.Dto
         public string ChoferNombreApellido { get; set; }
         public DateTime? FechaHoraEgreso { get; set; }
         public DateTime? FechaHoraIngreso { get; set; }
-        public string Intermediario { get; set; }
-        public string IntermediarioCUIT { get; set; }
+        public string IntermediarioFlete { get; set; }
+        public string IntermediarioFleteCUIT { get; set; }
         public string Material { get; set; }
         public string Patente { get; set; }
         public int? BrutoOrigen { get; set; }

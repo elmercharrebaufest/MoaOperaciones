@@ -368,6 +368,25 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="TipoAlerta" nillable="true" type="tns:TipoAlerta" />
+  <xs:simpleType name="TipoIngresoPorPuesto">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="IngresoPorLectura">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="IngresoPorPatente">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="TipoIngresoPorPuesto" nillable="true" type="tns:TipoIngresoPorPuesto" />
   <xs:simpleType name="FormulaDescuento">
     <xs:restriction base="xs:string">
       <xs:enumeration value="DeTabla" />
