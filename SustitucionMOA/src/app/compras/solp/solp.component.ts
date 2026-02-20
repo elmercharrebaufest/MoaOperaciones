@@ -1875,12 +1875,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 return `Falta completar campo Usuario compras`;
             }
 
-            if (this.solpActual.thAcuerdoMarco == true) {
-                if (!this.validarContratoMarco()) {
-                    return "No todas las posiciones tienen acuerdo marco";
-                }
-            }
-
             if (!this.validarCondicionesDeAcuerdoMarco()) {
                 return "No todas las posiciones tienen acuerdo marco";
             }

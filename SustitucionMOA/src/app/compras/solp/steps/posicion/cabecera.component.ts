@@ -71,7 +71,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
-
+    
     readonly CodigoGrupoComprasRHComercial: string = "018";
     readonly CodigoOrganizCompra2029Estrategicas: string = "2029";
     esUsuarioRRHH: boolean = this.isAuthorized(Permiso.ComprasRRHH);
@@ -1159,42 +1159,19 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.obtenerContratoMarcoService.show(true);
     }
 
-    public listaContratosMarco: ContratoMarco[] = [];
-
     public obtenerContratoMarco(args: ObtenerContratoMarco) {
-        console.log("args", args);
-        this.service.obtenerContratoMarco(args.centro, args.numeroContrato, args.codigoProveedor).subscribe((response: any) => {
+        this.service.obtenerContratoMarco(args.centro, args.numeroContrato).subscribe((response: any) => {
             if (response.data && response.data.length) {
-                // Si viene codigoProveedor, actualizamos la lista para el dropdown
-                if (args.codigoProveedor) {
-                    this.listaContratosMarco = response.data.map(d => new ContratoMarco(d));
-                }
+                this.contratoMarco = new ContratoMarco(response.data[0]);
 
-                // SI NO VIENE numeroContrato, NO debemos setear el contratoMarcoModel (para que no aparezca la tabla de abajo)
-                if (!args.numeroContrato) {
-                    this.contratoMarco = null;
+                if ((this.esTipoMaterial && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length == 0 || pos.subPosiciones == null))
+                    || (this.esTipoServicio && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length > 0))) {
+                    //this.contratoMarco = null;
                 } else {
-                    this.contratoMarco = new ContratoMarco(response.data[0]);
-
-                    if (!((this.esTipoMaterial && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length == 0 || pos.subPosiciones == null))
-                        || (this.esTipoServicio && this.contratoMarco.posiciones.every(pos => pos.subPosiciones.length > 0)))) {
-                        this.contratoMarco = null;
-                    }
+                    this.contratoMarco = null;
                 }
-            } else {
-                // Limpiar si no hay datos
-                if (args.codigoProveedor) {
-                    this.listaContratosMarco = [];
-                }
-                this.contratoMarco = null;
             }
-            this.listarContratosAsociados();
-            this.obtenerContratoMarcoService.finishedBusqueda.next();
-        }, error => {
-            this.floatMsgService.setErrorMsg(error.message);
-            this.contratoMarco = null; // Stop spinner in child
-            this.listaContratosMarco = [];
-            this.obtenerContratoMarcoService.finishedBusqueda.next();
+            this.listarContratosAsociados()
         });
     }
 
@@ -1470,7 +1447,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             let grupoArticulo = this.combos.GrupoArticulo.find(x => x.Id == posArchivo.GrupoArticuloId);
             let tipoImputacion = this.tipoImputacion.find(x => x.Id == posArchivo.TipoImputacionId);
 
-
+            
             this.model.posicionActual.indice = posArchivo.Indice;
             this.model.posicionActual.numeroPosicion = i + 1;
             this.model.posicionActual.posicionCheck = false;
@@ -1567,8 +1544,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             if (this.model.posicionActual.tipoPosicion.Codigo === "MATERIALES") {
                 this.model.posicionActual.unidadesAlternativas = this.combos.Unidades;
                 if (posArchivo.MaterialCatalogado) {
-                    this.model.posicionActual.codigoServicio = posArchivo.MaterialCatalogado;
-                    this.autocompleteServiciosSolp.push({ Codigo: posArchivo.MaterialCatalogado.Codigo, CuentaMayor: posArchivo.CuentaMayor } as any);
+                    this.model.posicionActual.codigoServicio = posArchivo.MaterialCatalogado;                    
+                    this.autocompleteServiciosSolp.push({ Codigo: posArchivo.MaterialCatalogado.Codigo, CuentaMayor: posArchivo.CuentaMayor } as any);                    
                     this.servicioSeleccionado(this.model.posicionActual);
                 } else {
                     this.model.posicionActual.codigoServicio = null;

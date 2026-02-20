@@ -295,7 +295,7 @@ export class ComprasService extends BaseService {
         return this.http
             .post('/api/EntradaServicio/CrearEntradaServicio', payload, { headers: this.headers });
     }
-
+    
     public AdjuntarArchivosCertificacion(archivos: File[]): Observable<any> {
 
         var payload = new FormData();
@@ -380,7 +380,6 @@ export class ComprasService extends BaseService {
             THServicioPermanente: solp.thServicioPermanente,
             THAjustePolinomica: solp.thAjustePolinomica,
             THProveedorDirecto: solp.thProveedorDirecto,
-            THAcuerdoMarco: solp.thAcuerdoMarco,
             EnvioCircularA: solp.envioCircularA,
             CodigoProveedorSap: solp.codigoProveedorSap,
             Posiciones: null,
@@ -659,14 +658,10 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/EnviarEmail', payload, { headers: this.headersPost });
     }
 
-    obtenerContratoMarco(centro: string, numeroContrato: string, codigoProveedor: string = null): Observable<any> {
+    obtenerContratoMarco(centro: string, numeroContrato: string): Observable<any> {
         let params: HttpParams = new HttpParams()
             .append('numeroContrato', numeroContrato)
             .append('centro', centro);
-
-        if (codigoProveedor) {
-            params = params.append('codigoProveedor', codigoProveedor);
-        }
 
         return this.http
             .get("/api/compras/ObtenerContratoMarco", { params: params })
@@ -1706,7 +1701,7 @@ export class ComprasService extends BaseService {
             .post('/api/compras/DesvincularSolpDePOMultipleServicio', payload, { headers: this.headers })
             .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
-
+    
     obtenerPeticionesDeOfertaParaDesvincularMaterial(solpPosicionId: number): Observable<ApiResponse<PeticionDeOfertaDesvincularDto[]>> {
         let params: HttpParams = new HttpParams()
             .append('solpPosicionId', solpPosicionId.toString());

@@ -43,7 +43,6 @@ namespace SustitucionMOAModel.Entities
         public bool? THProveedorDirecto { get; set; }
         public bool? THAjustePolinomica { get; set; }
         public bool? THServicioPermanente { get; set; }
-        public bool? THAcuerdoMarco { get; set; }
         public bool? TieneModificaciones { get; set; }
         public EnviarCircularEnum? EnvioCircularA { get; set; }
 
