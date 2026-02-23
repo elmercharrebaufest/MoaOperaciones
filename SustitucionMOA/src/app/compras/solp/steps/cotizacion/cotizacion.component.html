@@ -5,14 +5,12 @@
                 <div class="row myRow alinearTitulo" style="padding-top: 2px;">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         <label class="labelCompras" for="editorTexto"> Adjuntar Anexos</label>
-                        <label style="color: gray; font-size: 14px">&nbsp;&nbsp;(Visible para Comprador y
-                            Proveedor)</label>
-                        <p-fileUpload [styles]="{'margin-left':'-13px'}" name="fileUploadCotizaciones" auto="true"
-                            multiple="multiple" chooseLabel="Elegir archivo" [showUploadButton]=false
-                            [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandler($event)">
+                        <label style="color: gray; font-size: 14px">&nbsp;&nbsp;(Visible para Comprador y Proveedor)</label>
+                        <p-fileUpload [styles]="{'margin-left':'-13px'}" name="fileUploadCotizaciones" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
+                                      [showUploadButton]=false [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandler($event)">
                             <ng-template *ngIf="model.archivosCotizacionesNuevos.length == 0" pTemplate="toolbar">
                                 <div *ngIf="model.archivosCotizacionesNuevos.length == 0"
-                                    style="display: inline !important; font-family: Roboto Regular !important; color: #666666;">
+                                     style="display: inline !important; font-family: Roboto Regular !important; color: #666666;">
                                     Ningún archivo elegido
                                 </div>
                             </ng-template>
@@ -21,23 +19,21 @@
                         </p-fileUpload>
                     </div>
                     <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
-                        <p-panel
-                            *ngIf="model.archivosCotizacionesNuevos.length > 0 || model.archivosCotizaciones.length > 0"
-                            header="Anexos agregados" [toggleable]="true" [collapsed]="false">
+                        <p-panel *ngIf="model.archivosCotizacionesNuevos.length > 0 || model.archivosCotizaciones.length > 0" header="Anexos agregados" [toggleable]="true" [collapsed]="false">
                             <div class="row myRow">
-                                <div class="col-xs-12 col-md-9" *ngFor="let archivo of model.archivosCotizaciones">
+                                <div class="col-xs-12 col-md-9"
+                                     *ngFor="let archivo of model.archivosCotizaciones">
                                     <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
-                                        (click)="eliminarArchivo(false,archivo)" style="width: 26px;" />
+                                         (click)="eliminarArchivo(false,archivo)" style="width: 26px;" />
                                     <a class="link-archivo pointer" (click)="descargarArchivo(archivo)">
                                         {{archivo.nombreArchivo}}
                                     </a>
                                 </div>
                                 <div class="col-xs-12 col-md-9"
-                                    *ngFor="let archivo of model.archivosCotizacionesNuevos">
+                                     *ngFor="let archivo of model.archivosCotizacionesNuevos">
                                     <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
-                                        (click)="eliminarArchivo(true,archivo)" style="width: 26px;" />
-                                    <a class="link-archivo pointer" (click)="descargarArchivo(archivo)"
-                                        style="font-weight: lighter;">
+                                         (click)="eliminarArchivo(true,archivo)" style="width: 26px;" />
+                                    <a class="link-archivo pointer" (click)="descargarArchivo(archivo)" style="font-weight: lighter;">
                                         {{archivo.name}}
                                     </a>
                                 </div>
@@ -46,17 +42,15 @@
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         Observaciones
-                        <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion"
-                            (ngModelChange)="validarChecks()" name="observaciones" id="observaciones" cols="30" rows="5"
-                            placeholder="Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros"></textarea>
+                        <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion" (ngModelChange)="validarChecks()"
+                                  name="observaciones" id="observaciones" cols="30" rows="5" placeholder="Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros"></textarea>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         <div class="inline-flex">
                             <div class="col-flex">
-                                <span style="line-height: 2em; margin-right: 0.7em;"><strong>Jornada laboral *
-                                    </strong></span>
-                                <weekday-select id="jornadaLaboral" [class.errorDias]="mostrarValidacion('dias')"
-                                    formControlName="dias" [(model)]="model.jornadaLaboralDias"></weekday-select>
+                                <span style="line-height: 2em; margin-right: 0.7em;"><strong>Jornada laboral * </strong></span>
+                                <weekday-select id="jornadaLaboral" [class.errorDias]="mostrarValidacion('dias')" formControlName="dias"
+                                                [(model)]="model.jornadaLaboralDias"></weekday-select>
 
                                 <div *ngIf="mostrarValidacion('dias')">
                                     <p class="text-danger">Campo obligatorio</p>
@@ -66,9 +60,9 @@
                                 <div>
                                     Desde *
                                     <p-calendar formControlName="comienzoJornadaLaboral" name="hora1"
-                                        [style]="{'width': '45%'}" class="styled-select"
-                                        [(ngModel)]="model.comienzoJornadaLaboral" [locale]="locale" appendTo="body"
-                                        [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
+                                                [style]="{'width': '45%'}" class="styled-select"
+                                                [(ngModel)]="model.comienzoJornadaLaboral" [locale]="locale" appendTo="body" [showIcon]="true"
+                                                icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
 
                                     <div *ngIf="mostrarError('comienzoJornadaLaboral')">
                                         <p class="text-danger">Campo obligatorio</p>
@@ -77,9 +71,9 @@
                                 <div>
                                     Hasta *
                                     <p-calendar formControlName="terminoJornadaLaboral" name="hora2"
-                                        [style]="{'width': '45%'}" class="styled-select"
-                                        [(ngModel)]="model.terminoJornadaLaboral" [locale]="locale" appendTo="body"
-                                        [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
+                                                [style]="{'width': '45%'}" class="styled-select"
+                                                [(ngModel)]="model.terminoJornadaLaboral" [locale]="locale" appendTo="body" [showIcon]="true"
+                                                icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
 
                                     <div *ngIf="mostrarError('terminoJornadaLaboral')">
                                         <p class="text-danger">Campo obligatorio</p>
@@ -90,236 +84,257 @@
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <ng-container *ngIf="!model.EsPliegoMultiple">
+                        <ng-container *ngIf="!model.EsPliegoMultiple">
 
-                                    <div style="margin-top: 2em;">
-                                        <p-checkbox [ngModelOptions]="{standalone:true}"
+                            <div style="margin-top: 2em;">
+                                <p-checkbox [ngModelOptions]="{standalone:true}"
                                             name="seraUsadoEnPliegoMultiple"
-                                            [(ngModel)]="model.seraUsadoEnPliegoMultiple" label="Pliego múltiple"
-                                            formControlName="seraUsadoEnPliegoMultiple" binary="true"
+                                            [(ngModel)]="model.seraUsadoEnPliegoMultiple"
+                                            label="Pliego múltiple"
+                                            formControlName="seraUsadoEnPliegoMultiple"
+                                            binary="true"
                                             [disabled]="!puedeSeleccionarPliegoMultiple()"
                                             (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
-                                        </p-checkbox>
-                                    </div>
+                                </p-checkbox>
+                            </div>
 
-                                    <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 2em;">
-                                        <label class="labelCompras" for="checkbox"> Condiciones especiales</label>
-                                        <div>
-                                            <p-checkbox [ngModelOptions]="{standalone:true}" name="trabajoHecho"
+                            <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 2em;">
+                                <label class="labelCompras" for="checkbox"> Condiciones especiales</label>
+                                <div>
+                                    <p-checkbox [ngModelOptions]="{standalone:true}"
+                                                name="trabajoHecho"
                                                 [(ngModel)]="model.trabajoHecho"
                                                 label="Trabajo ya hecho / Material entregado"
-                                                formControlName="trabajoHecho" binary="true"
+                                                formControlName="trabajoHecho"
+                                                binary="true"
                                                 [disabled]="!puedeSeleccionarCondicionEspecial()"
                                                 (click)="validarChecks(); limpiarCheck(); evaluarMostrarInfoBox();"
                                                 (ngModelChange)="resetearFecha(); verificarCondicionesEspeciales(); onConditionChange();evaluarMostrarInfoBox();">
-                                            </p-checkbox>
-                                        </div>
-                                        <div style="margin-top: 2em;">
-                                            <p-checkbox [ngModelOptions]="{standalone:true}" name="conPresupuesto"
-                                                [(ngModel)]="model.conPresupuesto" label="Con presupuesto"
-                                                formControlName="conPresupuesto" binary="true"
+                                    </p-checkbox>
+                                </div>
+                                <div style="margin-top: 2em;">
+                                    <p-checkbox [ngModelOptions]="{standalone:true}"
+                                                name="conPresupuesto"
+                                                [(ngModel)]="model.conPresupuesto"
+                                                label="Con presupuesto"
+                                                formControlName="conPresupuesto"
+                                                binary="true"
                                                 [disabled]="!puedeSeleccionarCondicionEspecial()"
                                                 (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
-                                            </p-checkbox>
-                                        </div>
+                                    </p-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.trabajoHecho || model.conPresupuesto">
+                                <div class="col-xs-12 col-sm-10" *ngIf="model.trabajoHecho">
+                                    <p-checkbox
+                                        [ngModelOptions]="{standalone:true}"
+                                        name="certificacionAutomatica"
+                                        [(ngModel)]="model.certificacionAutomatica"
+                                        label="Certificación automática"
+                                        formControlName="certificacionAutomatica"
+                                        binary="true">
+                                    </p-checkbox>
+                                </div>
+                                <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5" *ngIf="(model.trabajoHecho || model.conPresupuesto) && !model.adicional; else ocultar">
+                                    <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
+                                        <strong>Selección de proveedores *</strong>
                                     </div>
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
-                                        *ngIf="model.trabajoHecho || model.conPresupuesto">
-                                        <div class="col-xs-12 col-sm-10" *ngIf="model.trabajoHecho">
-                                            <p-checkbox [ngModelOptions]="{standalone:true}"
-                                                name="certificacionAutomatica"
-                                                [(ngModel)]="model.certificacionAutomatica"
-                                                label="Certificación automática"
-                                                formControlName="certificacionAutomatica" binary="true">
-                                            </p-checkbox>
-                                        </div>
-                                        <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5"
-                                            *ngIf="(model.trabajoHecho || model.conPresupuesto) && !model.adicional; else ocultar">
-                                            <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
-                                                <strong>Selección de proveedores *</strong>
-                                            </div>
-                                            <div class="col-xs-12 col-sm-12 col-md-12"
-                                                style="font-size: 24px; margin-bottom: 20px;">
-                                                <p-autoComplete [(ngModel)]="proveedorSeleccionado"
-                                                    [suggestions]="proveedores"
-                                                    (completeMethod)="searchProveedor($event)"
-                                                    (onSelect)="selectProveedor($event)"
-                                                    placeholder="Seleccione un proveedor" field="RazonSocial"
-                                                    formControlName="proveedorSeleccionado" [minLength]="3"
-                                                    [forceSelection]="true"
-                                                    (ngModelChange)="validarChecks(); onConditionChange();">
-                                                    <ng-template let-proveedor pTemplate="item">
-                                                        <div class="ui-helper-clearfix">
-                                                            <div style="font-size:12px;margin:10px 10px 0 0">
-                                                                {{proveedor.Mail}}</div>
-                                                            <div
-                                                                style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">
-                                                                {{proveedor.CUIT}} - {{proveedor.RazonSocial}}</div>
-                                                        </div>
-                                                    </ng-template>
-                                                </p-autoComplete>
-                                                <div
-                                                    *ngIf="this.model.validacionCheck == false && (!this.proveedorSeleccionado || this.proveedorSeleccionado == '' || this.proveedorSeleccionado === undefined);">
-                                                    <p class="text-danger" style="font-size: 16px; margin-top: 1em;">
-                                                        Campo obligatorio si no se marca Adicional</p>
+                                    <div class="col-xs-12 col-sm-12 col-md-12" style="font-size: 24px; margin-bottom: 20px;">
+                                        <p-autoComplete [(ngModel)]="proveedorSeleccionado"
+                                                        [suggestions]="proveedores"
+                                                        (completeMethod)="searchProveedor($event)"
+                                                        (onSelect)="selectProveedor($event)"
+                                                        placeholder="Seleccione un proveedor"
+                                                        field="RazonSocial"
+                                                        formControlName="proveedorSeleccionado"
+                                                        [minLength]="3"
+                                                        [forceSelection]="true"
+                                                        (ngModelChange)="validarChecks(); onConditionChange();">
+                                            <ng-template let-proveedor pTemplate="item">
+                                                <div class="ui-helper-clearfix">
+                                                    <div style="font-size:12px;margin:10px 10px 0 0">{{proveedor.Mail}}</div>
+                                                    <div style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">{{proveedor.CUIT}} - {{proveedor.RazonSocial}}</div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <ng-template #ocultar>
-                                            <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                                                <!-- Contenido alternativo o puede dejarse vacío -->
-                                            </div>
-                                        </ng-template>
-                                        <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5"
-                                            *ngIf="model.trabajoHecho">
-                                            <div class="col-xs-12 col-sm-12 col-md-12 margenCheckbox">
-                                                <p-radioButton [ngModelOptions]="{standalone:true}" name="tipoTH"
-                                                    (onClick)="onRadioButtonChange('Servicio permanente')"
-                                                    [ngModel]="model.thServicioPermanente" label="Servicio permanente"
-                                                    [value]="true" binary="true" formControlName="servicioPermanente">
-                                                </p-radioButton>
-                                            </div>
-
-                                            <div class="col-xs-12 col-sm-12 col-md-12 margenCheckbox">
-                                                <p-radioButton [ngModelOptions]="{standalone:true}" name="tipoTH"
-                                                    [value]="true" (onClick)="onRadioButtonChange('Ajuste polinomica')"
-                                                    [ngModel]="model.thAjustePolinomica" label="Ajuste polinómica"
-                                                    binary="true" formControlName="ajustePolinomica"
-                                                    [disabled]="ajustePolinomicaDisabled">
-                                                </p-radioButton>
-                                            </div>
-
-                                            <div class="col-xs-12 col-sm-12 col-md-12 margenCheckbox">
-                                                <p-radioButton [ngModelOptions]="{standalone:true}" name="tipoTH"
-                                                    (onClick)="onRadioButtonChange('Proveedor directo')"
-                                                    [ngModel]="model.thProveedorDirecto" label="Proveedor directo"
-                                                    [value]="true" binary="true" formControlName="proveedorDirecto">
-                                                </p-radioButton>
-                                            </div>
-
-                                            <div class="col-xs-12 col-sm-12 col-md-12 margenCheckbox">
-                                                <p-radioButton [ngModelOptions]="{standalone:true}" name="tipoTH"
-                                                    (onClick)="onRadioButtonChange('Acuerdo Marco')"
-                                                    [ngModel]="model.thAcuerdoMarco" label="Acuerdo Marco"
-                                                    [value]="true" binary="true" formControlName="acuerdoMarco">
-                                                </p-radioButton>
-                                            </div>
+                                            </ng-template>
+                                        </p-autoComplete>
+                                        <div *ngIf="this.model.validacionCheck == false && (!this.proveedorSeleccionado || this.proveedorSeleccionado == '' || this.proveedorSeleccionado === undefined);">
+                                            <p class="text-danger" style="font-size: 16px; margin-top: 1em;">Campo obligatorio si no se marca Adicional</p>
                                         </div>
                                     </div>
+                                </div>
+                                <ng-template #ocultar>
+                                    <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                                        <!-- Contenido alternativo o puede dejarse vacío -->
+                                    </div>
+                                </ng-template>
+                                <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5" *ngIf="model.trabajoHecho">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 margenCheckbox">
+                                        <p-radioButton [ngModelOptions]="{standalone:true}"
+                                                       name="tipoTH"
+                                                       (onClick)="onRadioButtonChange('Servicio permanente')"
+                                                       [ngModel]="model.thServicioPermanente"
+                                                       label="Servicio permanente"
+                                                       [value]="true"
+                                                       binary="true"
+                                                       formControlName="servicioPermanente">
+                                        </p-radioButton>
+                                    </div>
 
-                                    <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
-                                        <p-checkbox [ngModelOptions]="{standalone:true}" name="adicional"
+                                    <div class="col-xs-12 col-sm-12 col-md-12 margenCheckbox">
+                                        <p-radioButton [ngModelOptions]="{standalone:true}"
+                                                       name="tipoTH"
+                                                       [value]="true"
+                                                       (onClick)="onRadioButtonChange('Ajuste polinomica')"
+                                                       [ngModel]="model.thAjustePolinomica"
+                                                       label="Ajuste polinómica"
+                                                       binary="true"
+                                                       formControlName="ajustePolinomica"
+                                                       [disabled]="ajustePolinomicaDisabled">
+                                        </p-radioButton>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-12 col-md-12 margenCheckbox">
+                                        <p-radioButton [ngModelOptions]="{standalone:true}"
+                                                       name="tipoTH"
+                                                       (onClick)="onRadioButtonChange('Proveedor directo')"
+                                                       [ngModel]="model.thProveedorDirecto"
+                                                       label="Proveedor directo"
+                                                       [value]="true"
+                                                       binary="true"
+                                                       formControlName="proveedorDirecto">
+                                        </p-radioButton>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
+                                <p-checkbox [ngModelOptions]="{standalone:true}"
+                                            name="adicional"
                                             [(ngModel)]="model.adicional"
                                             label="Adicional / Mano de obra administrada / Ajuste"
-                                            formControlName="adicional" binary="true"
+                                            formControlName="adicional"
+                                            binary="true"
                                             [disabled]="!puedeSeleccionarCondicionEspecial()"
                                             (click)="validarChecks(); limpiarCheckAdicional()"
                                             (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
-                                        </p-checkbox>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.adicional">
-                                        <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
-                                            <strong>Ingrese Nro. de orden de compra *</strong>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-10 col-md-4"
-                                            style="font-size: 24px; margin-bottom: 20px;">
-                                            <input type="text" class="styled-select inputAltura" pInputText
-                                                [(ngModel)]="model.ordenDeCompra" (keyup)="obtenerOrdenDeCompra()"
-                                                placeholder="Número de orden de compra" formControlName="ordenDeCompra"
-                                                maxlength="10" (ngModelChange)="validarChecks(); onConditionChange();">
-                                        </div>
-                                        <div class="col-xs-12 col-sm-10 col-md-4"
-                                            *ngIf="ordenDeCompraSap != null && ordenDeCompraSap.Error == null && model.ordenDeCompra != ''">
-                                            <label for="ordenDeCompra">
-                                                Razón social:
-                                                <strong>{{ordenDeCompraSap?.Cabecera?.RazonSocialProveedor}}</strong><br />
-                                                Fecha de Creación:
-                                                {{ordenDeCompraSap?.Cabecera?.FechaCreacionString}}<br />
-                                                Monto Total: {{ordenDeCompraSap?.Cabecera?.MontoTotal | number:
-                                                '1.2-2'}} <strong>{{ordenDeCompraSap?.Cabecera?.Moneda}}</strong>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
-                                        <p-checkbox [ngModelOptions]="{standalone:true}" name="urgencia"
-                                            [(ngModel)]="model.urgencia" label="Urgencia" formControlName="urgencia"
-                                            binary="true" [disabled]="!puedeSeleccionarCondicionEspecial()"
+                                </p-checkbox>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.adicional">
+                                <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
+                                    <strong>Ingrese Nro. de orden de compra *</strong>
+                                </div>
+                                <div class="col-xs-12 col-sm-10 col-md-4" style="font-size: 24px; margin-bottom: 20px;">
+                                    <input type="text"
+                                           class="styled-select inputAltura"
+                                           pInputText
+                                           [(ngModel)]="model.ordenDeCompra"
+                                           (keyup)="obtenerOrdenDeCompra()"
+                                           placeholder="Número de orden de compra"
+                                           formControlName="ordenDeCompra"
+                                           maxlength="10"
+                                           (ngModelChange)="validarChecks(); onConditionChange();">
+                                </div>
+                                <div class="col-xs-12 col-sm-10 col-md-4" *ngIf="ordenDeCompraSap != null && ordenDeCompraSap.Error == null && model.ordenDeCompra != ''">
+                                    <label for="ordenDeCompra">
+                                        Razón social: <strong>{{ordenDeCompraSap?.Cabecera?.RazonSocialProveedor}}</strong><br />
+                                        Fecha de Creación: {{ordenDeCompraSap?.Cabecera?.FechaCreacionString}}<br />
+                                        Monto Total: {{ordenDeCompraSap?.Cabecera?.MontoTotal | number: '1.2-2'}} <strong>{{ordenDeCompraSap?.Cabecera?.Moneda}}</strong>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
+                                <p-checkbox [ngModelOptions]="{standalone:true}"
+                                            name="urgencia"
+                                            [(ngModel)]="model.urgencia"
+                                            label="Urgencia"
+                                            formControlName="urgencia"
+                                            binary="true"
+                                            [disabled]="!puedeSeleccionarCondicionEspecial()"
                                             (click)="validarChecks(); listarLiberadorSap();"
                                             (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
-                                        </p-checkbox>
+                                </p-checkbox>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.urgencia && model.trabajoHecho != true && model.condEspProveedorAsignado != true">
+                                <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
+                                    <strong>Elija a los liberadores de esta SOLP e incluya al menos un jefe *</strong>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="col-md-4">
+                                        <p-multiSelect [options]="liberadoresJefes"
+                                                       [(ngModel)]="selectJefes"
+                                                       defaultLabel="Jefes"
+                                                       formControlName="jefes"
+                                                       [maxSelectedLabels]="1"
+                                                       selectedItemsLabel="{0} jefes"
+                                                       optionDisabled="disabled"
+                                                       (onChange)="onLiberadoresChange($event)">
+                                        </p-multiSelect>
                                     </div>
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
-                                        *ngIf="model.urgencia && model.trabajoHecho != true && model.condEspProveedorAsignado != true">
-                                        <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
-                                            <strong>Elija a los liberadores de esta SOLP e incluya al menos un jefe
-                                                *</strong>
-                                        </div>
-                                        <div class="col-xs-12">
-                                            <div class="col-md-4">
-                                                <p-multiSelect [options]="liberadoresJefes" [(ngModel)]="selectJefes"
-                                                    defaultLabel="Jefes" formControlName="jefes" [maxSelectedLabels]="1"
-                                                    selectedItemsLabel="{0} jefes" optionDisabled="disabled"
-                                                    (onChange)="onLiberadoresChange($event)">
-                                                </p-multiSelect>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <p-multiSelect [options]="liberadoresGerentes"
-                                                    [(ngModel)]="selectGerentes" defaultLabel="Gerentes"
-                                                    formControlName="gerentes" [maxSelectedLabels]="2"
-                                                    selectedItemsLabel="{0} gerentes" optionDisabled="disabled"
-                                                    (onChange)="onLiberadoresChange($event)">
-                                                </p-multiSelect>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <p-multiSelect [options]="liberadoresDirectores"
-                                                    [(ngModel)]="selectDirectores" defaultLabel="Directores"
-                                                    formControlName="directores" [maxSelectedLabels]="2"
-                                                    selectedItemsLabel="{0} directores" optionDisabled="disabled"
-                                                    (onChange)="onLiberadoresChange($event)">
-                                                </p-multiSelect>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-4">
+                                        <p-multiSelect [options]="liberadoresGerentes"
+                                                       [(ngModel)]="selectGerentes"
+                                                       defaultLabel="Gerentes"
+                                                       formControlName="gerentes"
+                                                       [maxSelectedLabels]="2"
+                                                       selectedItemsLabel="{0} gerentes"
+                                                       optionDisabled="disabled"
+                                                       (onChange)="onLiberadoresChange($event)">
+                                        </p-multiSelect>
                                     </div>
+                                    <div class="col-md-4">
+                                        <p-multiSelect [options]="liberadoresDirectores"
+                                                       [(ngModel)]="selectDirectores"
+                                                       defaultLabel="Directores"
+                                                       formControlName="directores"
+                                                       [maxSelectedLabels]="2"
+                                                       selectedItemsLabel="{0} directores"
+                                                       optionDisabled="disabled"
+                                                       (onChange)="onLiberadoresChange($event)">
+                                        </p-multiSelect>
+                                    </div>
+                                </div>
+                            </div>
 
-                                    <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
-                                        <p-checkbox [ngModelOptions]="{standalone:true}" name="condEspProveedorAsignado"
-                                            [(ngModel)]="model.condEspProveedorAsignado" label="Proveedor Asignado"
-                                            formControlName="condEspProveedorAsignado" binary="true"
+                            <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
+                                <p-checkbox [ngModelOptions]="{standalone:true}"
+                                            name="condEspProveedorAsignado"
+                                            [(ngModel)]="model.condEspProveedorAsignado"
+                                            label="Proveedor Asignado"
+                                            formControlName="condEspProveedorAsignado"
+                                            binary="true"
                                             [disabled]="!puedeSeleccionarCondicionEspecial()"
                                             (click)="validarChecks(); limpiarCheckProveedorAsignado(); evaluarMostrarInfoBox();"
                                             (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange(); evaluarMostrarInfoBox();">
-                                        </p-checkbox>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
-                                        *ngIf="model.condEspProveedorAsignado && !model.adicional && !model.trabajoHecho">
-                                        <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
-                                            <strong>Selección de proveedores *</strong>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-10 col-md-4"
-                                            style="font-size: 24px; margin-bottom: 20px;">
-                                            <p-autoComplete [(ngModel)]="proveedorSeleccionado"
-                                                [suggestions]="proveedores" (completeMethod)="searchProveedor($event)"
-                                                (onSelect)="selectProveedor($event)"
-                                                placeholder="Seleccione un proveedor" field="RazonSocial"
-                                                formControlName="proveedorSeleccionado" [minLength]="3"
-                                                [forceSelection]="true" (ngModelChange)="validarChecks()">
-                                                <ng-template let-proveedor pTemplate="item">
-                                                    <div class="ui-helper-clearfix">
-                                                        <div style="font-size:12px;margin:10px 10px 0 0">
-                                                            {{proveedor.Mail}}</div>
-                                                        <div style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">
-                                                            {{proveedor.CUIT}} - {{proveedor.RazonSocial}}</div>
-                                                    </div>
-                                                </ng-template>
-                                            </p-autoComplete>
-                                            <div
-                                                *ngIf="this.model.validacionCheck == false && (!this.proveedorSeleccionado || this.proveedorSeleccionado == '' || this.proveedorSeleccionado === undefined);">
-                                                <p class="text-danger" style="font-size: 16px; margin-top: 1em;">Campo
-                                                    obligatorio</p>
+                                </p-checkbox>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.condEspProveedorAsignado && !model.adicional && !model.trabajoHecho">
+                                <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
+                                    <strong>Selección de proveedores *</strong>
+                                </div>
+                                <div class="col-xs-12 col-sm-10 col-md-4" style="font-size: 24px; margin-bottom: 20px;">
+                                    <p-autoComplete [(ngModel)]="proveedorSeleccionado"
+                                                    [suggestions]="proveedores"
+                                                    (completeMethod)="searchProveedor($event)"
+                                                    (onSelect)="selectProveedor($event)"
+                                                    placeholder="Seleccione un proveedor"
+                                                    field="RazonSocial"
+                                                    formControlName="proveedorSeleccionado"
+                                                    [minLength]="3"
+                                                    [forceSelection]="true"
+                                                    (ngModelChange)="validarChecks()">
+                                        <ng-template let-proveedor pTemplate="item">
+                                            <div class="ui-helper-clearfix">
+                                                <div style="font-size:12px;margin:10px 10px 0 0">{{proveedor.Mail}}</div>
+                                                <div style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">{{proveedor.CUIT}} - {{proveedor.RazonSocial}}</div>
                                             </div>
-                                        </div>
+                                        </ng-template>
+                                    </p-autoComplete>
+                                    <div *ngIf="this.model.validacionCheck == false && (!this.proveedorSeleccionado || this.proveedorSeleccionado == '' || this.proveedorSeleccionado === undefined);">
+                                        <p class="text-danger" style="font-size: 16px; margin-top: 1em;">Campo obligatorio</p>
                                     </div>
-                                </ng-container>
+                                </div>
+                            </div>
+                        </ng-container>
                             </div>
                             <!-- Columna para el infoBoxText -->
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -332,22 +347,16 @@
 
 
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput"
-                        *ngIf="model.condEspProveedorAsignado || model.urgencia || model.adicional || model.trabajoHecho || model.conPresupuesto">
-                        <label class="labelCompras" for="checkbox">Justificación y Adjuntos de Condiciones
-                            Especiales</label>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput" *ngIf="model.condEspProveedorAsignado || model.urgencia || model.adicional || model.trabajoHecho || model.conPresupuesto">
+                        <label class="labelCompras" for="checkbox">Justificación y Adjuntos de Condiciones Especiales</label>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                             <label class="labelCompras" for="editorTexto"> Adjuntar Anexos</label>
-                            <label style="color: gray; font-size: 14px">&nbsp;&nbsp;(Sólo visible para el
-                                Comprador)</label>
-                            <p-fileUpload [styles]="{'margin-left':'-13px'}" name="fileUploadCotizacionesCondEsp"
-                                auto="true" multiple="multiple" chooseLabel="Elegir archivo" [showUploadButton]=false
-                                [showCancelButton]=false [customUpload]="true"
-                                (uploadHandler)="uploadHandlerCondEsp($event)">
-                                <ng-template *ngIf="model.archivosCotizacionesNuevosCondEsp.length == 0"
-                                    pTemplate="toolbar">
+                            <label style="color: gray; font-size: 14px">&nbsp;&nbsp;(Sólo visible para el Comprador)</label>
+                            <p-fileUpload [styles]="{'margin-left':'-13px'}" name="fileUploadCotizacionesCondEsp" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
+                                          [showUploadButton]=false [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandlerCondEsp($event)">
+                                <ng-template *ngIf="model.archivosCotizacionesNuevosCondEsp.length == 0" pTemplate="toolbar">
                                     <div *ngIf="model.archivosCotizacionesNuevosCondEsp.length == 0"
-                                        style="display: inline !important; font-family: Roboto Regular !important; color: #666666;">
+                                         style="display: inline !important; font-family: Roboto Regular !important; color: #666666;">
                                         Ningún archivo elegido
                                     </div>
                                 </ng-template>
@@ -356,43 +365,42 @@
                             </p-fileUpload>
                         </div>
                         <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
-                            <p-panel
-                                *ngIf="model.archivosCotizacionesNuevosCondEsp.length > 0 || model.archivosCotizacionesCondEsp.length > 0"
-                                header="Anexos agregados" [toggleable]="true" [collapsed]="false">
+                            <p-panel *ngIf="model.archivosCotizacionesNuevosCondEsp.length > 0 || model.archivosCotizacionesCondEsp.length > 0" header="Anexos agregados" [toggleable]="true" [collapsed]="false">
                                 <div class="row myRow">
                                     <div class="col-xs-12 col-md-9"
-                                        *ngFor="let archivo of model.archivosCotizacionesCondEsp">
+                                         *ngFor="let archivo of model.archivosCotizacionesCondEsp">
                                         <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
-                                            (click)="eliminarArchivoCondEsp(false,archivo)" style="width: 26px;" />
+                                             (click)="eliminarArchivoCondEsp(false,archivo)" style="width: 26px;" />
                                         <a class="link-archivo pointer" (click)="descargarArchivo(archivo)">
                                             {{archivo.nombreArchivo}}
                                         </a>
                                     </div>
                                     <div class="col-xs-12 col-md-9"
-                                        *ngFor="let archivo of model.archivosCotizacionesNuevosCondEsp">
+                                         *ngFor="let archivo of model.archivosCotizacionesNuevosCondEsp">
                                         <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
-                                            (click)="eliminarArchivoCondEsp(true,archivo)" style="width: 26px;" />
-                                        <a class="link-archivo pointer" (click)="descargarArchivo(archivo)"
-                                            style="font-weight: lighter;">
+                                             (click)="eliminarArchivoCondEsp(true,archivo)" style="width: 26px;" />
+                                        <a class="link-archivo pointer" (click)="descargarArchivo(archivo)" style="font-weight: lighter;">
                                             {{archivo.name}}
                                         </a>
                                     </div>
                                 </div>
                             </p-panel>
-                            <div
-                                *ngIf="this.model.validacionCheck == false && ((this.model.archivosCotizacionesCondEsp == null || this.model.archivosCotizacionesCondEsp.length == 0) && (this.model.archivosCotizacionesNuevosCondEsp == null || this.model.archivosCotizacionesNuevosCondEsp.length == 0));">
+                            <div *ngIf="this.model.validacionCheck == false && ((this.model.archivosCotizacionesCondEsp == null || this.model.archivosCotizacionesCondEsp.length == 0) && (this.model.archivosCotizacionesNuevosCondEsp == null || this.model.archivosCotizacionesNuevosCondEsp.length == 0));">
                                 <p class="text-danger">Campo obligatorio</p>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                             Justificación
                             <textarea [ngModelOptions]="{standalone:true}"
-                                [(ngModel)]="model.observacionesCotizacionCondEsp" (ngModelChange)="validarChecks()"
-                                name="observacionesCondEsp" id="observacionesCondEsp" cols="30" rows="5"
-                                placeholder="Texto de justificación visible solo para el comprador">
+                                      [(ngModel)]="model.observacionesCotizacionCondEsp"
+                                      (ngModelChange)="validarChecks()"
+                                      name="observacionesCondEsp"
+                                      id="observacionesCondEsp"
+                                      cols="30"
+                                      rows="5"
+                                      placeholder="Texto de justificación visible solo para el comprador">
                             </textarea>
-                            <div
-                                *ngIf="this.model.validacionCheck == false && (this.model.observacionesCotizacionCondEsp == ''  || this.model.observacionesCotizacionCondEsp == undefined || this.model.observacionesCotizacionCondEsp == null)">
+                            <div *ngIf="this.model.validacionCheck == false && (this.model.observacionesCotizacionCondEsp == ''  || this.model.observacionesCotizacionCondEsp == undefined || this.model.observacionesCotizacionCondEsp == null)">
                                 <p class="text-danger">Campo obligatorio</p>
                             </div>
                         </div>
@@ -409,12 +417,9 @@
     </div>
 </form>
 
-<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"
-    appendTo="body">
+<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
     <p-footer>
-        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal"
-            (click)="dialogo.reject()"></button>
-        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
-            (click)="dialogo.accept()"></button>
+        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
     </p-footer>
 </p-confirmDialog>

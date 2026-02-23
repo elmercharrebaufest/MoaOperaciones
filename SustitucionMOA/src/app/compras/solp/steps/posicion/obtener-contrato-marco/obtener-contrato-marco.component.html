@@ -1,89 +1,74 @@
 <div *ngIf="visible">
-  <p-dialog [(visible)]="visible" [responsive]="true" [draggable]="false" [modal]="true" appendTo="body" [width]="700"
-    [height]="500" positionTop="30" [contentStyle]="{ 
+  <p-dialog 
+    [(visible)]="visible" 
+    [responsive]="true"
+    [draggable]="false" 
+    [modal]="true" 
+    appendTo="body" 
+    [width]="700"
+    [height]="500"
+    positionTop="30"
+    [contentStyle]="{ 
       'max-height':'500px', 
       'min-height':'400px'}">
     <p-header class="headerModal">
       <span class="blue" aria-hidden="true">Vincular contrato marco</span>
     </p-header>
     <p-body>
-
+      
       <section class="container-fluid">
         <form [formGroup]="formGroup">
           <div class="row myRow" style="padding-top: 2px;">
-            <!-- Row 1: Centro and Proveedor -->
-            <div class="row" style="margin-bottom: 0.8em;">
-              <div class="col-xs-6 col-md-6 ui-fluid">
+            <div class="row" style="margin-bottom: 0.4em;">          
+              <div class="col-xs-5 col-md-5 ui-fluid">
                 <label class="m-label">
                   <b>Centro</b>
                 </label>
-                <p-dropdown dataKey="Id" filter="true" formControlName="centroEntrega" [options]="centrosEntrega"
-                  placeholder="Seleccione centro" optionLabel="CodigoDescripcion" appendTo="body"
-                  emptyMessage="Ningún centro encontrado" [minLength]="1" [dropdown]="true"
-                  [(ngModel)]="defaultCentroEntrega">
-                  <ng-template let-item pTemplate="selectedItem">
+                <p-dropdown 
+                dataKey="Id"
+                filter="true"
+                formControlName="centroEntrega"
+                [options]="centrosEntrega" 
+                placeholder="Seleccione centro" 
+                optionLabel="CodigoDescripcion" 
+                appendTo="body"                      
+                emptyMessage="Ningún centro encontrado" 
+                [minLength]="1" 
+                [dropdown]="true"
+                [(ngModel)]="defaultCentroEntrega">
+                <ng-template let-item pTemplate="selectedItem">
                     <span>{{item.value.Codigo}} - {{item.value.Descripcion}}</span>
-                  </ng-template>
-                  <ng-template let-item pTemplate="item">
+                </ng-template>
+                <ng-template let-item pTemplate="item">
                     <div>
-                      <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
+                        <div><b>{{item.value.Codigo}}</b> - {{item.value.Descripcion}}</div>
                     </div>
-                  </ng-template>
-                </p-dropdown>
+                </ng-template>
+            </p-dropdown>            
                 <div *ngIf="showInputError('centroEntrega')">
                   <p class="text-danger">campo obligatorio</p>
                 </div>
               </div>
 
-              <div class="col-xs-6 col-md-6 ui-fluid"
-                *ngIf="model && model.proveedorAsignado_Id && model.proveedorAsignado.toString().trim() !== ''">
-                <label class="m-label">
-                  <b>Proveedor</b>
-                </label>
-                <p-autoComplete formControlName="codProveedor" [suggestions]="proveedoresFiltrados"
-                  (completeMethod)="filtrarProveedores($event)" (onSelect)="onSelectProveedor($event)"
-                  placeholder="Seleccione un proveedor" field="RazonSocial" [minLength]="3" [forceSelection]="true"
-                  appendTo="body">
-                  <ng-template let-proveedor pTemplate="item">
-                    <div class="ui-helper-clearfix">
-                      <div style="font-size:12px;margin:10px 10px 0 0">
-                        {{proveedor.Mail}}</div>
-                      <div style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">
-                        {{proveedor.CUIT}} - {{proveedor.RazonSocial}}</div>
-                    </div>
-                  </ng-template>
-                </p-autoComplete>
-              </div>
-            </div>
-
-            <!-- Row 2: Nro de Contrato and Buscar button -->
-            <div class="row" style="margin-bottom: 0.4em;">
-              <div class="col-xs-6 col-md-6 ui-fluid">
+              <div class="col-xs-4 col-md-4 ui-fluid">
                 <label class="m-label">
                   <b>Nro de Contrato</b>
                 </label>
-                <p-dropdown
-                  *ngIf="model && model.proveedorAsignado_Id && model.proveedorAsignado.toString().trim() !== ''"
-                  [options]="numerosContratoOptions" formControlName="numeroContrato"
-                  [placeholder]="(numerosContratoOptions && numerosContratoOptions.length) ? 'Seleccione contrato' : 'No existen contratos'"
-                  [autoDisplayFirst]="false" appendTo="body">
-                </p-dropdown>
-                <input *ngIf="!model || !model.proveedorAsignado_Id || model.proveedorAsignado.toString().trim() === ''"
-                  type="text" class="form-control" formControlName="numeroContrato"
-                  placeholder="Ingrese nro de contrato" style="padding: 6px 12px; height: 34px;">
+                <input type="text" pInputText class="input-text"
+                  formControlName="numeroContrato">
                 <div *ngIf="showInputError('numeroContrato')">
-                  <p class="text-danger">campo obligatorio</p>
+                    <p class="text-danger">campo obligatorio</p>
                 </div>
               </div>
-              <div class="col-xs-6 col-md-6 ui-fluid" style="padding-top: 24px;">
+              <div class="col-xs-3 col-md-3 ui-fluid" style="padding-top: 24px;">
                 <button class="btn btn-primary btn-custom-primary" (click)="onSearchContrato()">BUSCAR</button>
               </div>
             </div>
-            <div *ngIf="!primerBusqueda && contratoMarcoModel == null && !muestroSpinner">
+            <div *ngIf="!primerBusqueda && contratoMarcoModel == null">
               <b>No se encontraron resultados</b>
             </div>
             <div *ngIf="contratoMarcoModel">
-              Fin periodo de validez: {{contratoMarcoModel.finPeriodoValidez}}
+              Fin periodo de validez: {{contratoMarcoModel?.finPeriodoValidez}}
             </div>
           </div>
         </form>
@@ -96,82 +81,88 @@
           <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12 margenInput">
             <label class="m-label"><b>Seleccionar Item/Posición</b></label>
             <div>
-              <p-dropdown [options]="posicionesAsOptions" id="numeroPosicion" appendTo="body"
-                ariaLabel="textoMaterialOServicio" optionLabel="fullTextoMaterialOServicio" field="numeroPosicion"
-                placeholder="Ingresar N° posición" (onChange)="onSelectPosicion($event.value)">
-                <ng-template let-item pTemplate="selectedItem">
-                  <span>{{item.value.fullTextoMaterialOServicio}}</span>
-                </ng-template>
-                <ng-template let-item pTemplate="item">
-                  <div>
-                    <b>{{item.value.numeroPosicion}}</b> - {{item.value.textoMaterialOServicio}}
-                  </div>
-                </ng-template>
-              </p-dropdown>
+                <p-dropdown [options]="posicionesAsOptions"
+                  id="numeroPosicion" 
+                  appendTo="body" 
+                  ariaLabel="textoMaterialOServicio" 
+                  optionLabel="fullTextoMaterialOServicio" 
+                  field="numeroPosicion"
+                  placeholder="Ingresar N° posición"
+                  (onChange)="onSelectPosicion($event.value)">
+                  <ng-template let-item pTemplate="selectedItem">
+                    <span>{{item.value.fullTextoMaterialOServicio}}</span>
+                  </ng-template>
+                  <ng-template let-item pTemplate="item">
+                    <div>
+                      <b>{{item.value.numeroPosicion}}</b> - {{item.value.textoMaterialOServicio}}
+                    </div>
+                  </ng-template>
+                </p-dropdown>
             </div>
           </div>
         </div>
       </section>
 
       <section class="container-fluid">
-        <p-table [value]="contratoMarcoModel ? contratoMarcoModel.posiciones : []" [rows]="20"
-          dataKey="numeroPosicionDocumentoCompras" [scrollable]="true" class="table-contrato">
+        <p-table [value]="contratoMarcoModel?.posiciones" [rows]="20"
+          dataKey="numeroPosicionDocumentoCompras" 
+          [scrollable]="true" 
+          class="table-contrato">
 
-          <ng-template pTemplate="body" let-posicion let-expanded="expanded" let-columns="columns"
-            let-rowIndex="rowIndex">
-            <tr
-              [ngClass]="{'vigente': (contratoMarcoModel && contratoMarcoModel.estaVigente), 'no-vigente': (contratoMarcoModel && !contratoMarcoModel.estaVigente)}">
+          <ng-template pTemplate="body" let-posicion let-expanded="expanded" let-columns="columns" let-rowIndex="rowIndex" >
+            <tr [ngClass]="{'vigente': contratoMarcoModel?.estaVigente, 'no-vigente': !contratoMarcoModel?.estaVigente}">
               <td style="width: 30px;">
-                <p-checkbox name="all-subposiciones" [binary]="true" [(ngModel)]="posicion.allSubPosicionesSelected"
-                  (click)="onClickSelectAllSubPosiciones(posicion)"
-                  [disabled]="contratoMarcoModel && !contratoMarcoModel.estaVigente">
-                </p-checkbox>
+                <p-checkbox name="all-subposiciones" [binary]="true" 
+                [(ngModel)]="posicion.allSubPosicionesSelected"
+                (click)="onClickSelectAllSubPosiciones(posicion)"
+                [disabled]="!contratoMarcoModel?.estaVigente">
+              </p-checkbox>
               </td>
               <td style="width: 90%;">
                 <strong>{{posicion.numeroPosicionDocumentoCompras}}</strong> &nbsp;
                 {{posicion.textoMaterialOServicio}} &nbsp;
-                <span *ngIf="posicion.numeroMaterial"><strong>Cod mat:</strong> {{
-                  eliminarCerosIniciales(posicion.numeroMaterial) }}</span>
+                <span *ngIf="posicion.numeroMaterial"><strong>Cod mat:</strong> {{ eliminarCerosIniciales(posicion.numeroMaterial) }}</span>
               </td>
               <td>
-                <a style="cursor: pointer;" [pRowToggler]="posicion"
-                  *ngIf="posicion && posicion.subPosiciones && posicion.subPosiciones.length">
-                  <b>
-                    <i [ngClass]="expanded ? 'fa fa-chevron-down' : 'fa fa-chevron-up'"></i>
-                  </b>
+                <a style="cursor: pointer;" [pRowToggler]="posicion" *ngIf="posicion?.subPosiciones.length">
+                    <b>
+                      <i [ngClass]="expanded ? 'fa fa-chevron-down' : 'fa fa-chevron-up'"></i>
+                    </b>
                 </a>
-              </td>
+              </td>              
             </tr>
           </ng-template>
-
+        
           <ng-template pTemplate="rowexpansion" let-posicion let-columns="col" let-rowIndex="rowIndex">
-            <div style="width: 620px;" *ngIf="posicion && posicion.subPosiciones && posicion.subPosiciones.length">
-              <div style="margin-left: 32px !important">
-                <p-table #dt class="table-contrato" [value]="posicion.subPosiciones" [rows]="20"
-                  dataKey="numeroPosicionDocumentoCompras" [scrollable]="true">
-                  <ng-template pTemplate="body" let-subPosiciones let-columns="columns" let-rowIndex="rowIndex">
-                    <tr
-                      [ngClass]="{'vigente': (contratoMarcoModel && contratoMarcoModel.estaVigente), 'no-vigente': (contratoMarcoModel && !contratoMarcoModel.estaVigente)}">
-                      <td style="width: 30px;">
-                        <p-checkbox name="subposiciones" binary="false" [(ngModel)]="subPosiciones.selected"
-                          (click)="onClickSelectSubPosicion(posicion)"
-                          [disabled]="contratoMarcoModel && !contratoMarcoModel.estaVigente">
-                        </p-checkbox>
-                      </td>
-                      <td>
-                        {{subPosiciones ? subPosiciones.textoBreve : ''}} &nbsp;
-                        <span *ngIf="subPosiciones && subPosiciones.numeroServicio"><strong>Cod serv:</strong> {{
-                          eliminarCerosIniciales(subPosiciones.numeroServicio) }}</span>
-                      </td>
-                    </tr>
-                  </ng-template>
-                </p-table>
+              <div style="width: 620px;" *ngIf="posicion?.subPosiciones.length">
+                <div style="margin-left: 32px !important">
+                  <p-table #dt class="table-contrato" 
+                    [value]="posicion?.subPosiciones" 
+                    [rows]="20" 
+                    dataKey="numeroPosicionDocumentoCompras" 
+                    [scrollable]="true">
+                    <ng-template pTemplate="body" let-subPosiciones let-columns="columns" let-rowIndex="rowIndex">
+                      <tr [ngClass]="{'vigente': contratoMarcoModel?.estaVigente, 'no-vigente': !contratoMarcoModel?.estaVigente}">
+                        <td style="width: 30px;">
+                          <p-checkbox name="subposiciones" binary="false" 
+                            [(ngModel)]="subPosiciones.selected" 
+                            (click)="onClickSelectSubPosicion(posicion)"
+                            [disabled]="!contratoMarcoModel?.estaVigente">
+                          </p-checkbox>
+                        </td>
+                        <td>
+                          {{subPosiciones?.textoBreve}} &nbsp;
+                          <span *ngIf="subPosiciones?.numeroServicio"><strong>Cod serv:</strong> {{ eliminarCerosIniciales(subPosiciones?.numeroServicio) }}</span>
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
               </div>
-            </div>
           </ng-template>
         </p-table>
       </section>
-
+      
     </p-body>
     <p-footer class="e-footer">
       <div class="row">
@@ -180,10 +171,9 @@
         </div>
         <div class="col-md-8 flex-end">
           <button class="btn btn-danger" (click)="onClose()">CANCELAR</button>
-          <button class="btn btn-primary btn-custom-primary" (click)="onAgregarPosiciones()"
-            [disabled]="!canAddItems">AGREGAR ITEMS</button>
+          <button class="btn btn-primary btn-custom-primary" (click)="onAgregarPosiciones()" [disabled]="!canAddItems">AGREGAR ITEMS</button>
         </div>
       </div>
     </p-footer>
   </p-dialog>
-</div>
+</div>      

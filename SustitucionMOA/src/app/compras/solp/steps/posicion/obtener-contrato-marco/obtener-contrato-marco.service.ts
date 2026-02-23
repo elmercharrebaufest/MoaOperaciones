@@ -6,12 +6,11 @@ import { Subject } from 'rxjs';
 })
 export class ObtenerContratoMarcoService implements OnDestroy {
   public toogleOn = new Subject<boolean>();
-  public finishedBusqueda = new Subject<void>();
 
   private visible = false;
 
   ngOnDestroy() {
-    if (this.visible) {
+    if (this.visible) { 
       this.toogleOn.unsubscribe();
     }
   }
