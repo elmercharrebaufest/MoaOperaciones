@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
-  <setParameter name="IIS Web Application Name" value="MOAOperaciones/externalApi" />
-  <setParameter name="ConnectionMOADB-Web.config Connection String" value="48aeT2pkByRD/Pt9RTmajdbvJN9aCRxXaB1MEvGX056WayW5HIgN3y65/0dIgGfU4BjD+9GBbnVTqueQqHs73k0TqCeqVC/Zx1F/jxikiOgcWf8r0BSfyBvV1oeAPV4tswkLb4Q8uWu7IAQNoXF0zFvvLnNhhATqEv0XGxt2bfZ80AGJmX2ypbDJi5MNQNMpUVcbMnOz+rhBGG/NYAvTrQ==" />
-  <setParameter name="CONTEXTO-Web.config Connection String" value="data source=MOAOPAGLSPRD;User Id=MOAOPPRDUSR;Password=17E9438901;initial catalog=Moaoperaciones;Pooling=False" />
-  <setParameter name="HfContexto-Web.config Connection String" value="data source=MOAOPAGLSPRD;User Id=MOAOPPRDUSR;Password=17E9438901;Initial Catalog=MOAOperacionesHangfire;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
-  <setParameter name="EmailMantenimiento Config" value="analistasysupervisores@molinosagro.onmicrosoft.com" />
+	<setParameter name="IIS Web Application Name" value="MOAOperaciones/externalApi" />
+	<setParameter name="ConnectionMOADB-Web.config Connection String" value="48aeT2pkByRD/Pt9RTmajdbvJN9aCRxXaB1MEvGX056WayW5HIgN3y65/0dIgGfU4BjD+9GBbnVTqueQqHs73k0TqCeqVC/Zx1F/jxikiOgcWf8r0BSfyBvV1oeAPV4tswkLb4Q8uWu7IAQNoXF0zFvvLnNhhATqEv0XGxt2bfZ80AGJmX2ypbDJi5MNQNMpUVcbMnOz+rhBGG/NYAvTrQ==" />
+	<setParameter name="CONTEXTO-Web.config Connection String" value="data source=MOAOPAGLSPRD;User Id=MOAOPPRDUSR;Password=17E9438901;initial catalog=Moaoperaciones;Pooling=False" />
+	<setParameter name="HfContexto-Web.config Connection String" value="data source=MOAOPAGLSPRD;User Id=MOAOPPRDUSR;Password=17E9438901;Initial Catalog=MOAOperacionesHangfire;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
+	<setParameter name="EmailMantenimiento Config" value="analistasysupervisores@molinosagro.onmicrosoft.com" />
 
-  <setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
-  <setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
+	<setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
+	<setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
 
-  <setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="http://gvicdataagro02.molinosagro.ad/services/AuthService.svc" />
-  <setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="http://gvicdataagro02.molinosagro.ad/services/DataAgroServices.svc" />
+	<setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="http://gvicdataagro02.molinosagro.ad/services/AuthService.svc" />
+	<setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="http://gvicdataagro02.molinosagro.ad/services/DataAgroServices.svc" />
 
-  <setParameter name="PasswordSap Config" value="GOL%2016" />
-  <setParameter name="SAPsinPI Config" value="1" />
-  <setParameter name="SapUserSinPI Config" value="GWEBSRV_GOL" />
-  <setParameter name="SapPassSinPI Config" value="#x=X$tZGo\cH" />
-  <setParameter name="AzureADTenantId Config" value="moagro.onmicrosoft.com" />
-  <setParameter name="AzureADAppId Config" value="560b50b4-0d0d-42b9-b6ed-792cba10142c" />
-  <setParameter name="AzureADAppSecret Config" value="7~1e6GkakqN0_kCpb60r2b7_-EIU5c34MU" />
+	<setParameter name="PasswordSap Config" value="GOL%2016" />
+	<setParameter name="SAPsinPI Config" value="1" />
+	<setParameter name="SapUserSinPI Config" value="GWEBSRV_GOL" />
+	<setParameter name="SapPassSinPI Config" value="#x=X$tZGo\cH" />
+	<setParameter name="AzureADTenantId Config" value="moagro.onmicrosoft.com" />
+	<setParameter name="AzureADAppId Config" value="560b50b4-0d0d-42b9-b6ed-792cba10142c" />
+	<setParameter name="AzureADAppSecret Config" value="7~1e6GkakqN0_kCpb60r2b7_-EIU5c34MU" />
 
-  <setParameter name="SI_MMRFC_OBTENER_FUENTE_APROV Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_FUENTE_APROV&amp;interfaceNamespace=urn%3AOPERACIONES" />
-  <setParameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_TIPO_CAMBIO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+	<setParameter name="SI_MMRFC_OBTENER_FUENTE_APROV Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_FUENTE_APROV&amp;interfaceNamespace=urn%3AOPERACIONES" />
+	<setParameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_TIPO_CAMBIO&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="SpaUrl Config" value="https://moaoperaciones.com.ar/web" />
 	<setParameter name="Url Config" value="http://gslopiprd00.molinosagro.ad:50000/" />
 
@@ -39,25 +39,25 @@
 
 	<setParameter name="EmailRegexFormato Config" value="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
 
-  <!--sin pi-->
-  <setParameter value="https://sapprgap.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mlbo/400/z_ws_bapi_direct_mlbo/z_ws_bapi_direct_mlbo" name="Z_WS_BAPI_DIRECT_MLBO Service Endpoint Address" />
-  <setParameter value="https://sapprgap.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_bapi_direct_2012/400/z_ws_bapi_direct_2012/z_ws_bapi_direct_2012" name="Z_WS_BAPI_DIRECT_2012 Service Endpoint Address" />
-  <setParameter value="https://sapprgap.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mewi/400/z_ws_bapi_direct_mewi/z_ws_bapi_direct_mewi" name="Z_WS_BAPI_DIRECT_MEWI Service Endpoint Address" />
-  <setParameter value="https://sapprgap.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mewp/400/z_ws_bapi_direct_mewp/z_ws_bapi_direct_mewp" name="Z_WS_BAPI_DIRECT_MEWP Service Endpoint Address" />
-  <setParameter value="https://sapprgap.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mewq/400/z_ws_bapi_direct_mewq/z_ws_bapi_direct_mewq" name="Z_WS_BAPI_DIRECT_MEWQ Service Endpoint Address" />
-  <setParameter value="https://sapprgap.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_bapi_direct_bapt/400/z_ws_bapi_direct_bapt/z_ws_bapi_direct_bapt" name="Z_WS_BAPI_DIRECT_BAPT Service Endpoint Address" />
-  <setParameter value="https://sapprgap.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_moaop_compras_direct/400/z_ws_moaop_compras_direct/z_ws_moaop_compras_direct" name="Z_WS_MOAOP_COMPRAS_DIRECT Service Endpoint Address" />
-  <setParameter value="https://sapprgap.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_moaop_direct/400/z_ws_moaop_direct/z_ws_moaop_direct" name="Z_WS_MOAOP_DIRECT Service Endpoint Address" />
-  <setParameter value="https://sapprgap.molinosagro.ad/sap/bc/srt/rfc/sap/z_ws_panol_direct/400/z_ws_panol_direct/z_ws_panol_direct" name="Z_WS_PANOL_DIRECT Service Endpoint Address" />
+	<!--sin pi-->
+	<setParameter value="https://vhmgkgapci.sap.molinosagro.ad:44300/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mlbo/400/z_ws_bapi_direct_mlbo/z_ws_bapi_direct_mlbo" name="Z_WS_BAPI_DIRECT_MLBO Service Endpoint Address" />
+	<setParameter value="https://vhmgkgapci.sap.molinosagro.ad:44300/sap/bc/srt/rfc/sap/z_ws_bapi_direct_2012/400/z_ws_bapi_direct_2012/z_ws_bapi_direct_2012" name="Z_WS_BAPI_DIRECT_2012 Service Endpoint Address" />
+	<setParameter value="https://vhmgkgapci.sap.molinosagro.ad:44300/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mewi/400/z_ws_bapi_direct_mewi/z_ws_bapi_direct_mewi" name="Z_WS_BAPI_DIRECT_MEWI Service Endpoint Address" />
+	<setParameter value="https://vhmgkgapci.sap.molinosagro.ad:44300/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mewp/400/z_ws_bapi_direct_mewp/z_ws_bapi_direct_mewp" name="Z_WS_BAPI_DIRECT_MEWP Service Endpoint Address" />
+	<setParameter value="https://vhmgkgapci.sap.molinosagro.ad:44300/sap/bc/srt/rfc/sap/z_ws_bapi_direct_mewq/400/z_ws_bapi_direct_mewq/z_ws_bapi_direct_mewq" name="Z_WS_BAPI_DIRECT_MEWQ Service Endpoint Address" />
+	<setParameter value="https://vhmgkgapci.sap.molinosagro.ad:44300/sap/bc/srt/rfc/sap/z_ws_bapi_direct_bapt/400/z_ws_bapi_direct_bapt/z_ws_bapi_direct_bapt" name="Z_WS_BAPI_DIRECT_BAPT Service Endpoint Address" />
+	<setParameter value="https://vhmgkgapci.sap.molinosagro.ad:44300/sap/bc/srt/rfc/sap/z_ws_moaop_compras_direct/400/z_ws_moaop_compras_direct/z_ws_moaop_compras_direct" name="Z_WS_MOAOP_COMPRAS_DIRECT Service Endpoint Address" />
+	<setParameter value="https://vhmgkgapci.sap.molinosagro.ad:44300/sap/bc/srt/rfc/sap/z_ws_moaop_direct/400/z_ws_moaop_direct/z_ws_moaop_direct" name="Z_WS_MOAOP_DIRECT Service Endpoint Address" />
+	<setParameter value="https://vhmgkgapci.sap.molinosagro.ad:44300/sap/bc/srt/rfc/sap/z_ws_panol_direct/400/z_ws_panol_direct/z_ws_panol_direct" name="Z_WS_PANOL_DIRECT Service Endpoint Address" />
 
-  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MLBO Binding Configuration" />
-  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_2012 Binding Configuration" />
-  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MEWI Binding Configuration" />
-  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MEWP Binding Configuration" />
-  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MEWQ Binding Configuration" />
-  <setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_BAPT Binding Configuration" />
-  <setParameter value="sap_sin_pi_https" name="Z_WS_MOAOP_COMPRAS_DIRECT Binding Configuration" />
-  <setParameter value="sap_sin_pi_https" name="Z_WS_MOAOP_DIRECT Binding Configuration" />
-  <setParameter value="sap_sin_pi_https" name="Z_WS_PANOL_DIRECT Binding Configuration" />
-  
+	<setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MLBO Binding Configuration" />
+	<setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_2012 Binding Configuration" />
+	<setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MEWI Binding Configuration" />
+	<setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MEWP Binding Configuration" />
+	<setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_MEWQ Binding Configuration" />
+	<setParameter value="sap_sin_pi_https" name="Z_WS_BAPI_DIRECT_BAPT Binding Configuration" />
+	<setParameter value="sap_sin_pi_https" name="Z_WS_MOAOP_COMPRAS_DIRECT Binding Configuration" />
+	<setParameter value="sap_sin_pi_https" name="Z_WS_MOAOP_DIRECT Binding Configuration" />
+	<setParameter value="sap_sin_pi_https" name="Z_WS_PANOL_DIRECT Binding Configuration" />
+
 </parameters>

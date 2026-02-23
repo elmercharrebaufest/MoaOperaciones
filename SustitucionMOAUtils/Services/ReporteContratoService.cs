@@ -24,7 +24,6 @@ namespace SustitucionMOAUtils.Services
         {
             this.consumer = consumer;
             this.repositorio = repositorio;
-
         }
 
         public ReporteContratoViewModel GetContratosReporte(
@@ -44,20 +43,15 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("El rango de fecha no puede ser mayor a 240 días.");
             }
 
-            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(us => us.Mail == mailUsuario);
-
-            if (usuario == null)
-            {
-                throw new ValidationCustomException("El usuario no existe. Reinicie su sesión.");
-            }
+            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(us => us.Mail == mailUsuario)
+                ?? throw new ValidationCustomException("El usuario no existe. Reinicie su sesión.");
 
             var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
 
             if (!usuario.TienePermiso(PermisoEnum.SeleccionarVendedor))
             {
-                proveedorDB = usuario.ObtenerProveedorAsignado();
+                proveedorDB = usuario.ObtenerProveedorAsignado() ?? throw new ValidationCustomException($"El usuario {mailUsuario} no tiene configurado correctamente el proveedor asignado");
             }
-
 
             var request = new ReporteContratoWSMOARequest()
             {
@@ -171,25 +165,24 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Contratos"));
         }
 
-        public ReporteContratoViewModel GetContratosDetalle(string contrato, string proveedor, string fechaInicio, string fechaFin)
+        public ReporteContratoViewModel GetContratosDetalle(string contrato, string proveedor, string fechaInicio, string fechaFin, string mailUsuario)
         {
-            var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
-            var request = new ReporteContratoWSMOARequest();
+            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(us => us.Mail == mailUsuario);
+            var esCorredor = usuario.EsCorredor();
 
             var dateInicio = DataFormatter.StringToDateTime(fechaInicio, "");
             var dateFin = DataFormatter.StringToDateTime(fechaFin, "");
 
-            request = new ReporteContratoWSMOARequest()
+            var request = new ReporteContratoWSMOARequest()
             {
                 //Se envia corredor o Cliente para efectos de mas rapidez en la consulta a la rfc
-                Cliente = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? "" : proveedor,
-                Corredor = proveedorDB.TipoProveedor.NombreCorto == "CORR" ? proveedor : "",
+                Cliente = esCorredor ? "" : proveedor,
+                Corredor = esCorredor ? proveedor : "",
                 Contrato = contrato,
                 Fechas = new List<FechaWS> { new FechaWS { fechaInicio = dateInicio, fechaFin = dateFin } }
             };
 
-            ReporteContratoViewModel view = new ReporteContratoViewModel();
-            view.data = consumer.ReporteContratoExecute(request);
+            var view = new ReporteContratoViewModel { data = consumer.ReporteContratoExecute(request) };
             return view;
         }
     }

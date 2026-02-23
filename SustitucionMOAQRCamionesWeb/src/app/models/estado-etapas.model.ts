@@ -6,12 +6,13 @@ export interface Etapa {
 }
 
 export interface DatosAdicionales {
-  pre_calado_fila: string;
-  post_calado_fila: string;
-  calado_estado: string;
-  pesada_bruto: number;
-  pesada_tara: number;
-  pesada_descargado: number;
+  rechazado: boolean;
+  preCaladoFila: string | null;      
+  postCaladoFila: string | null;     
+  caladoEstado: string | null;       
+  pesadaBruto: number | null;        
+  pesadaTara: number | null;         
+  pesadaDescargado: number | null;
 }
 
 export interface EstadoEtapas {

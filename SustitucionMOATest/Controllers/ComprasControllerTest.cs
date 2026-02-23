@@ -417,8 +417,10 @@ namespace SustitucionMOATest.Controllers
             var fechaDesde = "2023-01-01";
             var fechaHasta = "2023-02-01";
             var codigoProveedor = "PROV123";
+            usuarioServiceMock.Setup(s => s.GetUsuario(It.IsAny<string>()))
+                     .Returns(new UsuarioDto { Id = 1, Permisos = new List<string>() });
 
-            comprasSapServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
+            comprasSapServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor, It.IsAny<string>()))
                 .Returns(new List<OrdenDeCompraSAPDto>
                 {
                 new OrdenDeCompraSAPDto
@@ -455,7 +457,9 @@ namespace SustitucionMOATest.Controllers
             const string fechaHasta = "2023-02-01";
             const string codigoProveedor = "PROV123";
 
-            comprasSapServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
+            usuarioServiceMock.Setup(s => s.GetUsuario(It.IsAny<string>()))
+                    .Returns(new UsuarioDto { Id = 1, Permisos = new List<string>() });
+            comprasSapServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor, It.IsAny<string>()))
                 .Throws(new InfoCustomException("Información personalizada"));
 
             try
@@ -599,7 +603,7 @@ namespace SustitucionMOATest.Controllers
 
             // Mock para obtener el usuario actual
             var usuarioActual = new UsuarioDto { Id = usuarioId };
-            
+
             // Modificación: Mock correcto para GetUsuario en vez de GetUsuarioPorId
             usuarioServiceMock.Setup(x => x.GetUsuario(It.IsAny<string>())).Returns(usuarioActual);
             usuarioServiceMock.Setup(x => x.GetRolesUsuario(usuarioId)).Returns(roles);

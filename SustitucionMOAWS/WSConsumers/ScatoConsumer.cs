@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SustitucionMOAWS.ScatoWebService;
+﻿using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
 using SustitucionMOAWS.Interfaces;
-using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAWS.Logger;
-using SustitucionMOAFotmatter;
-using System;
+using SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAWS.Util;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -185,9 +184,11 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
-                var recorridoDto = service.ObtenerRecorridoNoRechazadoPorIdInsumos(ordenId.ToString());
-                Log.Info($"ScatoConsumer.ObtenerRecorridoOrdenResiduos. Id orden: {ordenId}. Respuesta Scato: {recorridoDto.ToJson()}");
-                return recorridoDto;
+                return new RecorridoDto();
+
+                //var recorridoDto = service.ObtenerRecorridoNoRechazadoPorIdInsumos(ordenId.ToString());
+                //            Log.Info($"ScatoConsumer.ObtenerRecorridoOrdenResiduos. Id orden: {ordenId}. Respuesta Scato: {recorridoDto.ToJson()}");
+                //            return recorridoDto;
             }
             catch (Exception ex)
             {
@@ -195,6 +196,48 @@ namespace SustitucionMOAWS.WSConsumers
                 throw ex;
             }
         }
+
+        public TrackingDataQRCamiones ObtenerTrackingDataQRCamiones(string numeroCTG, string patente)
+        {
+            try
+            {
+                var patenteNormalizada = patente?.ToUpperInvariant();
+
+                var trackingData = service.ObtenerTrackingData(numeroCTG, patenteNormalizada);
+
+                if (trackingData != null)
+                    Log.Info($"ObtenerTrackingDataQRCamiones: CTG: {numeroCTG}, Patente: {patente}. Datos encontrados.");
+                else
+                    Log.Info($"ObtenerTrackingDataQRCamiones: CTG: {numeroCTG}, Patente: {patente}. No se encontraron datos.");
+
+                return trackingData;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error en ScatoConsumer para ObtenerTrackingDataQRCamiones: {numeroCTG}, Patente: {patente}.");
+                throw ex;
+            }
+        }
+
+        public SustitucionMOAWS.ScatoWebService.TicketPesadaDto[] ObtenerDatosTicketPesada(DateTime fechaInicio, DateTime fechaEgreso, string cuitProveedor, string cuitTransportista, string ctg, string patente,string cuitIntermediarioFlete, bool esAdmin)
+        {
+            try
+            {
+                var tickets = service.ObtenerDatosTicketPesada(fechaInicio, fechaEgreso, cuitProveedor, cuitTransportista, ctg, patente, cuitIntermediarioFlete, esAdmin);
+                Log.Info(string.Format("ScatoConsumer.ObtenerDatosTicketPesada. fechaInicio: {0}, fechaEgreso: {1}, " +
+                "cuitProveedor: {2}, cuitTransportista: {3}, ctg: {4}, patente: {5}, cuitIntermediarioFlete: {6}",
+                fechaInicio, fechaEgreso, cuitProveedor, cuitTransportista, ctg, patente, cuitIntermediarioFlete));
+                return tickets;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error en ScatoConsumer para ObtenerDatosTicketPesada: fechaInicio: {fechaInicio}, fechaEgreso: {fechaEgreso}," +
+                    $"cuitProveedor:{cuitProveedor}, cuitTransportista: {cuitTransportista}, ctg: {ctg}, patente: {patente}, cuitIntermediarioFlete: {cuitIntermediarioFlete}.");
+                throw ex;
+            }
+        }
+
+		
     }
 
 }

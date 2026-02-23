@@ -1,27 +1,31 @@
 import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ContainerComponent } from '../../../shared/container/container';
-import { TrackingService } from '../../../infrastructure/services/external/tracking.service';
-import { formatDate } from '../../../shared/helpers/date.helper';
+import { InformationCargaComponent } from '../../components/information-carga/information-carga';
+import { InformationDocumentosComponent } from '../../components/information-documentos/information-documentos';
+import { ApiService } from '../../../infrastructure/services/external/api.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-information',
   standalone: true,
-  imports: [CommonModule, ContainerComponent],
+  imports: [
+    CommonModule,
+    InformationCargaComponent,
+    InformationDocumentosComponent
+  ],
   templateUrl: './information.html',
   styleUrls: ['./information.scss']
 })
 export class InformationComponent implements OnInit, OnDestroy {
-  detailType = signal<'carga' | 'planta'>('carga');
-  cargoData = computed(() => this.trackingService.trackingData());
+  detailType = signal<'carga' | 'documentos'>('carga');
+  cargoData = computed(() => this.apiService.trackingData());
 
   constructor(
     private route: ActivatedRoute,
     private location: Location,
     private router: Router,
-    private trackingService: TrackingService
+    private apiService: ApiService
   ) {}
 
   ngOnInit() {
@@ -52,11 +56,6 @@ export class InformationComponent implements OnInit, OnDestroy {
   }
 
   getTitle(): string {
-    return this.detailType() === 'carga' ? 'Información de la carga' : 'Información de la planta';
-  }
-
-  formatFechaHoraIngreso(): string {
-    const data = this.cargoData();
-    return data ? formatDate(data.fechaHoraIngreso) : '';
+    return this.detailType() === 'carga' ? 'Información de la carga' : 'Descarga de documentos';
   }
 }

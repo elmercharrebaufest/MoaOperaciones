@@ -11,7 +11,7 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class InformationButtonComponent {
   title = input.required<string>();
-  navigateTo = input<'carga' | 'planta' | null>(null);
+  navigateTo = input<'carga' | 'documentos' | null>(null);
 
   constructor(private router: Router) {}
 

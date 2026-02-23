@@ -50,7 +50,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult ObtenerDetalleContrato(string contrato, string fechaInicio, string fechaFin)
         {
             var mailUsuario = SessionPersister.Mail;
-            var detalleContrato = reporteContratoService.GetContratosDetalle(contrato, SessionPersister.Proveedor, fechaInicio, fechaFin);
+            var detalleContrato = reporteContratoService.GetContratosDetalle(contrato, SessionPersister.Proveedor, fechaInicio, fechaFin, mailUsuario);
 
             Result result = new Result();
             foreach (var det in detalleContrato.data.Resultados)
@@ -76,6 +76,7 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom(new { data = result.Detalles });
         }
+
         public ActionResult ObtenerOrdenDeCarga(string nroEntrega)
         {
             var mailUsuario = SessionPersister.Mail;

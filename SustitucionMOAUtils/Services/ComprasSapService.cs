@@ -1460,9 +1460,32 @@ namespace SustitucionMOAUtils.Services
             });
         }
 
-        public List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechasHasta, string codigoProveedor)
+        public List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechasHasta, string codigoProveedor, string usuarioActual)
         {
             var result = reporteOrdenDeCompraConsumerMOA.Request(nroOC, fechaDesde, codigoProveedor);
+
+            var usuario = usuarioService.GetUsuario(usuarioActual);
+            var usuarioRRHH = usuario != null && usuario.Permisos.Contains("COMPRAS RRHH");
+            var usuarioInternoNoRRHH = usuario != null && (
+                usuario.Permisos.Contains("ABM SOLP")
+                || usuario.Permisos.Contains("VER TODAS SOLPS")
+                || usuario.Permisos.Contains("VER SOLPS COMPRADOR")
+                );
+
+            if (usuarioRRHH)
+            {
+                result = result.Where(x => x.Cabecera != null &&
+                    (
+                    x.Cabecera.OrganizacionDeComprasCodigo == "4010"
+                    ||
+                    (x.Cabecera.OrganizacionDeComprasCodigo == "2029" && x.Cabecera.GrupoDeComprasCodigo == "018")
+                    )
+                ).ToList();
+            }
+            else if (usuarioInternoNoRRHH)
+            {
+                result = result.Where(x => x.Cabecera != null && x.Cabecera.OrganizacionDeComprasCodigo == "2029" && x.Cabecera.GrupoDeComprasCodigo != "018").ToList();
+            }
 
             var fechaHastaDate = string.IsNullOrEmpty(fechasHasta) ? DateTime.Now : DateTime.Parse(fechasHasta);
 
@@ -1566,7 +1589,7 @@ namespace SustitucionMOAUtils.Services
             ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request(string.Empty);
             return resultSap.Servicios;
         }
-      
+
         public List<Servicio> ObtenerServicioSapRawPorCodigo(string codigo)
         {
             ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request(codigo);
@@ -2789,7 +2812,7 @@ namespace SustitucionMOAUtils.Services
                     posicionSap.QUANTITY = posAdj.Cantidad;
                     //posicionSap.QUANTITYSpecified = true;
                     posicionSapX.QUANTITY = "X";
-                    if (modificarPedidoSAP.POACCOUNT.Count > 0)
+                    if (modificarPedidoSAP.POACCOUNT.Count > 0 && imputacionSap != null)
                     {
                         imputacionSap.QUANTITY = posAdj.Cantidad;
                         imputacionSapX.QUANTITY = "X";

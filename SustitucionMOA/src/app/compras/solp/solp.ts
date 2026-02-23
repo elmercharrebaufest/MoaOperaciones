@@ -11,6 +11,7 @@ import { SubPosicionViewModel } from './steps/posicion/tab-subposicion/sub-posic
 import { setupJornadaLaboralDias } from "./solp.utils";
 import { EnumEnvioCircularA } from "../enum-envio-circular";
 import { VisitaObraDto } from "../../modelos/infoVisitasDeObraDto";
+import { OrdenDeCompraSolp } from "../../modelos/compras/ordenDeCompraSolp";
 import { OrganizacionDeCompra } from "../../modelos/compras/organizacionDeCompra";
 
 export class Solp extends CommonResponse {
@@ -121,6 +122,7 @@ export class Solp extends CommonResponse {
     racional_Garantias: string = "";
     racional_TextoDeCabecera: string = "";
 
+    ordenesDeCompraGeneradas: OrdenDeCompraSolp[] = [];
 
 
     public get ultimaPosicion(): SolpPosicion {
@@ -329,6 +331,8 @@ export class Solp extends CommonResponse {
             this.racional_CondicionesDePago = solp.racional_CondicionesDePago;
             this.racional_Garantias = solp.racional_Garantias;
             this.racional_TextoDeCabecera = solp.racional_TextoDeCabecera;
+
+            this.ordenesDeCompraGeneradas = solp.OrdenesDeCompraGeneradas;
 
             if (solp.Posiciones && solp.Posiciones.length > 0) {
                 let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
@@ -559,6 +563,12 @@ export class Solp extends CommonResponse {
         return null
     }
 
+    esSolpDeCompras(): boolean {
+        if (!!this.organizacionDeCompra && this.organizacionDeCompra.Id == "4010") {
+            return true;
+        }
+        return false;
+    }
 }
 
 export class ValorTotalPorMoneda {

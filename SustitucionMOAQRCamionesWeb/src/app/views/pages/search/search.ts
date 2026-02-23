@@ -4,8 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RecaptchaModule, RecaptchaComponent } from "ng-recaptcha-2";
 import { environment } from '../../../../environments/environment';
-import { TrackingService } from '../../../infrastructure/services/external/tracking.service';
+import { ApiService } from '../../../infrastructure/services/external/api.service';
 import { AuthService } from '../../../infrastructure/services/auth/auth.service';
+import { CookieService } from '../../../infrastructure/services/internal/cookie.service';
 
 @Component({
   selector: 'app-search',
@@ -20,20 +21,24 @@ export class SearchComponent {
   isLoading = signal(false);
   captchaOk: string | null = null;
 
+  ctgError = signal(false);
+  patenteError = signal(false);
+
   recaptchaSiteKey = environment.recaptchaSiteKey;
-  isProduction = environment.production;
+  needsCaptcha = environment.production || environment.isQA;
 
   @ViewChild('recaptchaComponent')
   protected captcha!: RecaptchaComponent;
 
   constructor(
     private router: Router,
-    private trackingService: TrackingService,
-    private authService: AuthService
+    private apiService: ApiService,
+    private authService: AuthService,
+    private cookieService: CookieService
   ) {
-    if (environment.production) {
-      this.authService.logout();
-    }
+    this.authService.logout();
+    this.cookieService.deleteCookie('ctg');
+    this.cookieService.deleteCookie('patente');
   }
 
   handleCorrectCaptcha(event: string | null) {
@@ -43,49 +48,78 @@ export class SearchComponent {
     }
   }
 
+  onCtgChange(value: string) {
+    const hasInvalidChars = /[^0-9]/.test(value);
+    this.ctgError.set(hasInvalidChars);
+
+    const sanitized = value.replace(/[^0-9]/g, '');
+    this.ctg.set(sanitized);
+  }
+
+  onPatenteChange(value: string) {
+    const hasInvalidChars = /[^a-zA-Z0-9]/.test(value);
+    this.patenteError.set(hasInvalidChars);
+
+    const sanitized = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    this.patente.set(sanitized);
+  }
+
   onSubmit() {
+    if (this.isLoading()) {
+      return;
+    }
+
     if (!this.ctg() || !this.patente()) {
       alert('Por favor, complete todos los campos');
       return;
     }
 
-    if (environment.production && !this.captchaOk) {
+    if (this.needsCaptcha && !this.captchaOk) {
       alert('Debe completar el Captcha');
       return;
     }
 
     this.isLoading.set(true);
 
-    this.trackingService.getTrackingData(this.ctg(), this.patente(), this.captchaOk || undefined)
+    this.apiService.getTrackingData(this.ctg(), this.patente(), this.captchaOk || undefined)
       .subscribe({
         next: (response) => {
           this.isLoading.set(false);
-          
+
           if (response.resultado && response.data) {
+            this.cookieService.setSessionCookie('ctg', this.ctg(), 5);
+            this.cookieService.setSessionCookie('patente', this.patente(), 5);
+
             this.authService.login();
             this.router.navigate(['/tracking']);
           } else {
             this.authService.logout();
             this.router.navigate(['/search-error'], {
-              queryParams: { mensaje: response.mensaje }
+              queryParams: { mensaje: response.mensaje || 'No se encontraron datos' }
             });
           }
 
-          if (environment.production && this.captcha) {
+          if (this.needsCaptcha && this.captcha) {
             this.captcha.reset();
             this.captchaOk = null;
+            this.authService.setCaptchaVerified(false);
           }
         },
         error: (error) => {
           this.isLoading.set(false);
           this.authService.logout();
+
+          const errorMessage = error.error?.mensaje || error.message || 'Error de conexión';
+          console.error('Error fetching tracking data:', error);
+
           this.router.navigate(['/search-error'], {
-            queryParams: { mensaje: error.error?.mensaje || 'Error de conexión' }
+            queryParams: { mensaje: errorMessage }
           });
 
-          if (environment.production && this.captcha) {
+          if (this.needsCaptcha && this.captcha) {
             this.captcha.reset();
             this.captchaOk = null;
+            this.authService.setCaptchaVerified(false);
           }
         }
       });

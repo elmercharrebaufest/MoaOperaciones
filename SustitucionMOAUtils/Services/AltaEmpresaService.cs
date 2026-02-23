@@ -2,6 +2,7 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.AltaEmpresa;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
@@ -66,129 +67,123 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            try
+            List<ProveedorAltaDto> proveedorDtos =
+                repositorio
+                    .Listar<Proveedor, ProveedorAltaDto>(proveedor => new ProveedorAltaDto
+                    {
+                        CodigoProveedor = proveedor.CodigoProveedor ?? "",
+                        CUIT = proveedor.CUIT,
+                        EstadoAprobacion = proveedor.EstadoAprobacion,
+                        Id = proveedor.Id,
+                        IdComercialDataAgro = proveedor.IdComercialDataAgro,
+                        TipoProveedorNombre = proveedor.TipoProveedor.Nombre,
+                        IdDataAgro = proveedor.IdDataAgro,
+                        Mail = proveedor.Mail ?? "",
+                        Observaciones = proveedor.Observaciones,
+                        RazonSocial = proveedor.RazonSocial ?? "",
+                        RazonSocialCorredor = proveedor.TipoProveedor.NombreCorto == "NG" ? "No granos" : (proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : ""),
+
+                        FechaSolicitud = proveedor.HistorialAprobaciones.Where(e => e.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente).OrderBy(x => x.Fecha).FirstOrDefault().Fecha,
+
+                        Comercial = proveedor.TipoProveedor.NombreCorto == "NG" ? proveedor.SolicitanteInterno : proveedor.Comercial,
+                        EstadoSIPER = proveedor.EstadoSIPER,
+                        AltaInterna = proveedor.AltaInterna,
+                        IngresoAPlanta = proveedor.IngresoAPlanta,
+
+                        UltimaEdicion = proveedor.HistorialAprobaciones.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha,
+
+                        FechaAltaAceptada = proveedor.HistorialAprobaciones.Where(x => x.EstadoAprobacion == EstadoAprobacion.Aprobado || x.Observacion == "Alta aceptada").OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha,
+
+                        IdTipoUsuario = proveedor.TipoProveedor.Id,
+                        CBU = proveedor.CBU,
+                        CondicionDePago = proveedor.CondicionDePago,
+                        FacturacionAnual = proveedor.FacturacionAnual,
+                        OrganizacionDeCompra = proveedor.OrganizacionDeCompra,
+                        RazonDeEleccion = proveedor.RazonDeEleccion,
+                        RealizarAnalisisNOSIS = proveedor.RealizarAnalisisNOSIS ?? false,
+                        Rubro = proveedor.Rubro != null ? proveedor.Rubro.Nombre : "",
+                        RequiereVerificacionCompras = proveedor.RequiereVerificacionCompras ?? false,
+                        SolicitanteInterno = proveedor.SolicitanteInterno,
+                        ServicioPrestado = proveedor.ServicioPrestado,
+                        Telefono = proveedor.Telefono,
+                        IdSituacionIVA = proveedor.IdSituacionIVA,
+                        IdIngresoBruto = proveedor.IdIngresoBruto,
+                        SiperObligatorio = proveedor.SiperObligatorio,
+                        ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
+                        SISAEstadoCuit = proveedor.EstadoSISA
+                    },
+                        x =>
+                            (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
+                                || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
+                                || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
+                                || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
+                                || x.EstadoAprobacion == EstadoAprobacion.Aprobado
+                                || x.EstadoAprobacion == EstadoAprobacion.Rechazado
+                                || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
+                                || x.EstadoAprobacion == EstadoAprobacion.PendienteAprobacionCompras
+                                || x.EstadoAprobacion == EstadoAprobacion.RechazadoPorCompras
+                                || x.EstadoAprobacion == EstadoAprobacion.AltaIncompleta
+                                || x.EstadoAprobacion == EstadoAprobacion.SinAlta
+                                || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente
+                                || x.EstadoAprobacion == EstadoAprobacion.AnalisisInterno
+                            )
+                            && x.HistorialAprobaciones.Count > 0
+                            && IdTiposProveedor.Contains(x.TipoProveedor.Id)
+                            && x.HistorialAprobaciones.OrderByDescending(h => h.Fecha).FirstOrDefault().Fecha >= fechaIncioDateTime
+                            && x.HistorialAprobaciones.OrderByDescending(h => h.Fecha).FirstOrDefault().Fecha <= fechaFinDateTime
+                        , 0, null, SustitucionMOAModel.Consultas.DirOrden.Asc
+                    ).ToList();
+
+            if (proveedorDtos.Count == 0)
             {
-                List<ProveedorAltaDto> proveedorDtos =
-                    repositorio
-                        .Listar<Proveedor, ProveedorAltaDto>(proveedor => new ProveedorAltaDto
-                        {
-                            CodigoProveedor = proveedor.CodigoProveedor ?? "",
-                            CUIT = proveedor.CUIT,
-                            EstadoAprobacion = proveedor.EstadoAprobacion,
-                            Id = proveedor.Id,
-                            IdComercialDataAgro = proveedor.IdComercialDataAgro,
-                            TipoProveedorNombre = proveedor.TipoProveedor.Nombre,
-                            IdDataAgro = proveedor.IdDataAgro,
-                            Mail = proveedor.Mail ?? "",
-                            Observaciones = proveedor.Observaciones,
-                            RazonSocial = proveedor.RazonSocial ?? "",
-                            RazonSocialCorredor = proveedor.TipoProveedor.NombreCorto == "NG" ? "No granos" : (proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : ""),
-
-                            FechaSolicitud = proveedor.HistorialAprobaciones.Where(e => e.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente).OrderBy(x => x.Fecha).FirstOrDefault().Fecha,
-
-                            Comercial = proveedor.TipoProveedor.NombreCorto == "NG" ? proveedor.SolicitanteInterno : proveedor.Comercial,
-                            EstadoSIPER = proveedor.EstadoSIPER,
-                            AltaInterna = proveedor.AltaInterna,
-                            IngresoAPlanta = proveedor.IngresoAPlanta,
-
-                            UltimaEdicion = proveedor.HistorialAprobaciones.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha,
-
-                            FechaAltaAceptada = proveedor.HistorialAprobaciones.Where(x => x.EstadoAprobacion == EstadoAprobacion.Aprobado || x.Observacion == "Alta aceptada").OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha,
-
-                            IdTipoUsuario = proveedor.TipoProveedor.Id,
-                            CBU = proveedor.CBU,
-                            CondicionDePago = proveedor.CondicionDePago,
-                            FacturacionAnual = proveedor.FacturacionAnual,
-                            OrganizacionDeCompra = proveedor.OrganizacionDeCompra,
-                            RazonDeEleccion = proveedor.RazonDeEleccion,
-                            RealizarAnalisisNOSIS = proveedor.RealizarAnalisisNOSIS ?? false,
-                            Rubro = proveedor.Rubro != null ? proveedor.Rubro.Nombre : "",
-                            RequiereVerificacionCompras = proveedor.RequiereVerificacionCompras ?? false,
-                            SolicitanteInterno = proveedor.SolicitanteInterno,
-                            ServicioPrestado = proveedor.ServicioPrestado,
-                            Telefono = proveedor.Telefono,
-                            IdSituacionIVA = proveedor.IdSituacionIVA,
-                            IdIngresoBruto = proveedor.IdIngresoBruto,
-                            SiperObligatorio = proveedor.SiperObligatorio,
-                            ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
-                            SISAEstadoCuit = proveedor.EstadoSISA
-                        },
-                                 x =>
-                                 (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
-                                    || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
-                                    || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
-                                    || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
-                                    || x.EstadoAprobacion == EstadoAprobacion.Aprobado
-                                    || x.EstadoAprobacion == EstadoAprobacion.Rechazado
-                                    || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
-                                    || x.EstadoAprobacion == EstadoAprobacion.PendienteAprobacionCompras
-                                    || x.EstadoAprobacion == EstadoAprobacion.RechazadoPorCompras
-                                    || x.EstadoAprobacion == EstadoAprobacion.AltaIncompleta
-                                    || x.EstadoAprobacion == EstadoAprobacion.SinAlta
-                                    || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente
-                                    || x.EstadoAprobacion == EstadoAprobacion.AnalisisInterno
-                                    )
-                                && x.HistorialAprobaciones.Count > 0
-                                 && IdTiposProveedor.Contains(x.TipoProveedor.Id)
-                                && x.HistorialAprobaciones.OrderByDescending(h => h.Fecha).FirstOrDefault().Fecha >= fechaIncioDateTime
-                                && x.HistorialAprobaciones.OrderByDescending(h => h.Fecha).FirstOrDefault().Fecha <= fechaFinDateTime
-                         , 0, null, SustitucionMOAModel.Consultas.DirOrden.Asc
-                        ).ToList();
-
-                if (proveedorDtos.Count == 0)
-                {
-                    throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Empresas"));
-                }
-
-                //Esto deberia hacerse a demanda cuando se abre el proveedor en el front y no traer toda el historial al pedo
-                var historial = GetProveedorHistorialAprobacion(proveedorDtos.Select(a => a.Id).ToList());
-                foreach (var proveedor in proveedorDtos)
-                {
-                    proveedor.HistorialAprobaciones = historial.Where(a => a.Proveedor_Id == proveedor.Id).ToList();
-                }
-
-                return proveedorDtos;
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Empresas"));
             }
-            catch (Exception ex)
+
+            //Esto deberia hacerse a demanda cuando se abre el proveedor en el front y no traer toda el historial al pedo
+            var historial = GetProveedorHistorialAprobacion(proveedorDtos.Select(a => a.Id).ToList());
+            foreach (var proveedor in proveedorDtos)
             {
-                throw ex;
+                proveedor.HistorialAprobaciones = historial.Where(a => a.Proveedor_Id == proveedor.Id).ToList();
             }
+
+            return proveedorDtos;
         }
 
-        public string VolverProveedorCanalDeAltas(string CUIT)
+        public string VolverProveedorCanalDeAltas(string CUIT, string mailProveedor, string mailUsuario, string codigoProveedor)
         {
-            try {
-                //Filtrar proveedores por cuit
-            
-                List<Proveedor> proveedor = repositorio.Listar<Proveedor>(x => x.CUIT == CUIT).ToList();
-                if (proveedor.Count == 0)
-                {
-                    return "No se encontró ningún proveedor con el CUIT ingresado.";
-                }
-                if (proveedor.Count > 1)
-                {
-                    return "Se encontraron múltiples proveedores con el CUIT ingresado. Por favor, contacte a soporte.";
-                }
-                if (proveedor.Count == 1)
-                { 
-                    // Cambiar el valor de la columna EstadoAprobación para dicho proveedor en la base de datos
-                    int proveedorId = proveedor[0].Id;
-                    Proveedor proveedorToUpdate = repositorio.Obtener<Proveedor>(proveedorId);
-                    if (proveedorToUpdate == null)
-                    {
-                        return "No se encontró el proveedor para actualizar.";
-                    }
-                    proveedorToUpdate.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
-                    repositorio.GuardarCambios();
-                    return "El proveedor ha sido exitosamente vuelto al canal de altas.";
-                }
-                return "Error al intentar volver el proveedor al canal de altas.";
+            var proveedores = repositorio.Listar<Proveedor>(x =>
+                x.CUIT == CUIT &&
+                (string.IsNullOrEmpty(mailProveedor) || x.Mail == mailProveedor) &&
+                x.CodigoProveedor == codigoProveedor);
+
+            if (proveedores.Count == 0)
+            {
+                return $"No se encontró ningún proveedor con CUIT {CUIT} y mail {mailProveedor}.";
+            }
+            if (proveedores.Count > 1)
+            {
+                return $"Se encontraron múltiples proveedores con CUIT {CUIT} y mail {mailProveedor}. Por favor, contacte a Soporte.";
             }
 
-            catch (Exception ex)
+            var proveedor = proveedores[0];
+
+            proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            var historialAprobacion = new ProveedorHistorialAprobacion
             {
-                throw ex;
-            }
+                EstadoAprobacion = proveedor.EstadoAprobacion,
+                Observacion = "El proveedor ha sido vuelto al canal de altas",
+                Usuario = usuario,
+                Proveedor = proveedor,
+                Fecha = DateTime.Now
+            };
+            repositorio.Agregar(historialAprobacion);
+            proveedor.HistorialAprobaciones.Add(historialAprobacion);
+
+            repositorio.GuardarCambios();
+            return "El proveedor ha sido exitosamente vuelto al canal de altas.";
         }
 
         private List<ProveedorHistorialAprobacionDto> GetProveedorHistorialAprobacion(List<int> IdProveedor)
@@ -795,30 +790,39 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.ObservacionAgregadaOK;
         }
 
-        public Resultado VerificarExistenciaEmpresa(string cuit)
+        public ExistenciaEmpresaResponse VerificarExistenciaEmpresa(string cuit)
         {
-            var resultado = new Resultado();
-            var proveedor = this.repositorio.Obtener<Proveedor>(p => p.CUIT == cuit);
+            var proveedores = this.repositorio.Listar<Proveedor>(p => p.CUIT == cuit);
 
-            if (proveedor == null)
+            if (!(proveedores?.Any() ?? false))
             {
-                resultado.error = $"No se encontró el cuit : {cuit} en el sistema.";
+                return new ExistenciaEmpresaResponse { Error = $"No se encontró el CUIT {cuit} en el sistema." };
+            }
+
+            var response = new ExistenciaEmpresaResponse
+            {
+                EmpresasExistentes = proveedores.Select(x => new EmpresaExistenciaVerificada
+                {
+                    Codigo = x.CodigoProveedor,
+                    Id = x.Id,
+                    Mail = x.Mail
+                }).ToList()
+            };
+
+            if (proveedores.Count == 1)
+            {
+                response.Mensaje = $"El cuit {cuit} se encuentra registrado en el sistema con Razón social '{proveedores[0].RazonSocial}', Código de proveedor {proveedores[0].CodigoProveedor}.";
             }
             else
             {
-                resultado.Mensaje = $"El cuit {cuit} se encuentra registrado en el sistema con Razon Social: {proveedor.RazonSocial}, Codigo de Proveedor: {proveedor.CodigoProveedor}";
+                response.Mensaje = $"Se encontraron varios proveedores con el CUIT {cuit}.";
             }
-
-            return resultado;
+            return response;
         }
+
         public int ModificarEstadoProveedor(int proveedorId, string nuevoEstado, string emailUsuario)
         {
-            var proveedor = this.repositorio.Obtener<Proveedor>(proveedorId);
-
-            if (proveedor == null)
-            {
-                throw new ValidationCustomException("No se encontró el proveedor en el sistema.");
-            }
+            var proveedor = this.repositorio.Obtener<Proveedor>(proveedorId) ?? throw new ValidationCustomException("No se encontró el proveedor en el sistema.");
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == emailUsuario);
             if (!usuario.TienePermiso(PermisoEnum.ModificarEstadoProveedor))
@@ -831,7 +835,7 @@ namespace SustitucionMOAUtils.Services
             var historialAprobacion = new ProveedorHistorialAprobacion
             {
                 EstadoAprobacion = nuevoEstadoEnum,
-                Observacion = "Se modifico manualmente el estado",
+                Observacion = "Se modificó manualmente el estado",
                 Usuario = usuario,
                 Proveedor = proveedor,
                 Fecha = DateTime.Now

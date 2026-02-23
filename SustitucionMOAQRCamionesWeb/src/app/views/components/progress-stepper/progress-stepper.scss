@@ -10,7 +10,6 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0 0.5rem;
 }
 
 .step-wrapper {
@@ -83,7 +82,7 @@
   width: 100%;
   padding: 0.75rem 1rem;
   background-color: transparent;
-  border: 1px solid #d1d5db;
+  border: none;
   border-radius: 0.375rem;
   color: #003087;
   font-size: 0.875rem;

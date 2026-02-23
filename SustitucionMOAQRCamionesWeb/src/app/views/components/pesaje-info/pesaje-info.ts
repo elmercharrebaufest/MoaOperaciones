@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,10 +9,10 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./pesaje-info.scss']
 })
 export class PesajeInfoComponent {
-  pesadaBruto = input.required<number>();
-  pesadaTara = input.required<number>();
-  pesadaDescargado = input.required<number>();
-  fechaPesajeBruto = input.required<string>();
+  @Input() pesadaBruto: number | null = null;
+  @Input() pesadaTara: number | null = null;
+  @Input() pesadaDescargado: number | null = null;
+  @Input() fechaPesajeBruto: string = '';
   
   isExpanded = signal(false);
 
@@ -20,7 +20,10 @@ export class PesajeInfoComponent {
     this.isExpanded.update(value => !value);
   }
 
-  formatWeight(weight: number): string {
-    return weight.toLocaleString('es-AR') + ' KG';
+  formatWeight(weight: number | null): string {
+    if (weight === null || weight === undefined) {
+      return 'N/A';
+    }
+    return `${weight.toLocaleString('es-AR')} kg`;
   }
 }

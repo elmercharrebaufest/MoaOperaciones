@@ -215,9 +215,11 @@ namespace SustitucionMOAUtils.Services
                 .Distinct()
                 .ToList();
 
-                List<SolicitantesSolpedDto> solicitantes = GetSolicitantes(numeroSolpList).GetAwaiter().GetResult(); ;
+                List<SolicitantesSolpedDto> solicitantes = GetSolicitantes(numeroSolpList).GetAwaiter().GetResult();
 
                 var solicitanteDiccionario = solicitantes.ToDictionary(s => s.NumeroSolp);
+
+                var adjudicaciones = repositorioEntradaServicio.Listar<Adjudicacion>(x => x.NumeroOrdenDeCompra == ordenCompra.NumeroOrdenDeCompra);
 
                 foreach (var posicion in detalleOrdenDeCompraDto.Posiciones)
                 {
@@ -225,10 +227,8 @@ namespace SustitucionMOAUtils.Services
                     {
                         posicion.Solicitante = solicitante.Solicitante.Aprobador;
                     }
+                    posicion.AdmiteCertificacionesParciales = adjudicaciones.FirstOrDefault(a => a.Posiciones.Any(ap => ap.Posicion.Solp.NroSolp == posicion.NumeroSolp))?.AdmiteCertificacionesParciales ?? true;
                 }
-
-                Adjudicacion adjudicacion = repositorioEntradaServicio.ObtenerUltimaAdjudicacionOC(ordenCompra.NumeroOrdenDeCompra);
-                detalleOrdenDeCompraDto.AdmiteCertificacionesParciales = adjudicacion?.AdmiteCertificacionesParciales ?? true;
 
                 List<Aprobaciones> aprobaciones = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_OC == ordenCompra.NumeroOrdenDeCompra && (x.Estado_certificacion == "Pendiente Aprobación" || x.Estado_certificacion == "Aprobada"));
                 foreach (Aprobaciones aprobacion in aprobaciones)

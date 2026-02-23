@@ -124,21 +124,25 @@ namespace SustitucionMOAUtils.Services
 
         public List<OrdenDeCargaFason> VerificarVencimientoOrdenDeCargaFason()
         {
-
             var fechaLimite = DateTime.Now.Date;
+            var ordenesVencidas = new List<OrdenDeCargaFason>();
 
             if (repositorioFason.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaFasonJob" && a.Habilitado) == null)
-                return new List<OrdenDeCargaFason>();
+                return ordenesVencidas;
 
+            var feriados = feriadoService.ObtenerFeriados();
 
             var ordenes = repositorioFason.Listar<OrdenDeCargaFason>((orden) => orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente);
-            List<OrdenDeCargaFason> ordenesVencidas = new List<OrdenDeCargaFason>();
             foreach (var orden in ordenes)
             {
-                if (CalcularFechaVencimiento(orden.FechaCreacion) < fechaLimite)
+                if (CalcularFechaVencimiento(orden.FechaCreacion, feriados) < fechaLimite)
                 {
-                    orden.Estado = EstadoOrdenDeCargaFason.Vencida;
-                    ordenesVencidas.Add(orden);
+                    var camionEstaEnPlanta = ValidarOrdenActivaScato(orden.Id);
+                    if (!camionEstaEnPlanta)
+                    {
+                        orden.Estado = EstadoOrdenDeCargaFason.Vencida;
+                        ordenesVencidas.Add(orden);
+                    }
                 }
             }
             if (ordenesVencidas.Any())

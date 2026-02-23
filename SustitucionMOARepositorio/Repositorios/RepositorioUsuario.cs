@@ -100,6 +100,15 @@ namespace SustitucionMOARepositorio.Repositorios
             return proveedoresARelacionar;
         }
 
+        public List<string> GetMailsUsuariosConPermisos(ICollection<string> permisos)
+        {
+            var mailsUsuariosAprobadores = Listar<Usuario, string>(
+                u => u.Mail,
+                u => u.Roles.Any(r => r.PermisosAsociados.Any(p => permisos.Contains(p.Permiso))));
+
+            return mailsUsuariosAprobadores;
+        }
+
         public bool VerificarActividadUsuario(Usuario usuario)
         {
             return ExecuteQuery<VerificarActividadUsuario>

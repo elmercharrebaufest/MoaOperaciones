@@ -4,6 +4,7 @@ using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -54,9 +55,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
-        public ActionResult VolverProveedorCanalDeAltas(string CUIT)
-        { 
-            var resultado = altaEmpresaService.VolverProveedorCanalDeAltas(CUIT);
+        public ActionResult VolverProveedorCanalDeAltas(string CUIT, string mailProveedor, string codigoProveedor)
+        {
+            var decodedMailProveedor = HttpUtility.UrlDecode(mailProveedor);
+            var mailUsuario = SessionPersister.Mail;
+            var resultado = altaEmpresaService.VolverProveedorCanalDeAltas(CUIT, decodedMailProveedor, mailUsuario, codigoProveedor);
             return JsonCustom(new { data = resultado });
         }
 
@@ -148,7 +151,6 @@ namespace SustitucionMOA.Controllers
         public JsonResult VerificarExistenciaEmpresa(string cuit)
         {
             return JsonCustom(new { data = altaEmpresaService.VerificarExistenciaEmpresa(cuit) });
-
         }
 
         [HttpGet]

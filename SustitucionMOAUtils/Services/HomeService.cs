@@ -132,7 +132,8 @@ namespace SustitucionMOAUtils.Services
                 return listaResultados;
             }
             var formatoContrato = "0000000000";
-            var palabraABuscarContrato = (formatoContrato + palabraABuscar).Substring((formatoContrato + palabraABuscar).Length - 10);
+            // Ahora (respeta largos mayores a 10)
+            var palabraABuscarContrato = palabraABuscar.Length > 10 ? palabraABuscar : (formatoContrato + palabraABuscar).Substring((formatoContrato + palabraABuscar).Length - 10);
             var formatoCCPP1 = (formatoContrato + palabraABuscar).Substring((formatoContrato + palabraABuscar).Length - 12);
             var formatoCCPP2 = string.Format("000{0}", palabraABuscar.Substring(3));
 
@@ -288,7 +289,7 @@ namespace SustitucionMOAUtils.Services
                         ccppDescargas = cartasPorteDescargas.cartasPorte.Count > 0;
                         if (ccppAplicacion || ccppDescargas)
                         {
-                            var ccpp = cartasPorteAplicacion.cartasPorte.Count > 0? cartasPorteAplicacion.cartasPorte.First().cartaPorte: cartasPorteDescargas.cartasPorte.First().cartaPorte;
+                            var ccpp = cartasPorteAplicacion.cartasPorte.Count > 0 ? cartasPorteAplicacion.cartasPorte.First().cartaPorte : cartasPorteDescargas.cartasPorte.First().cartaPorte;
                             listaResultados.Add(new BuscadorOption { Link = "/carta-porte/detalle", Tipo = "detalle carta de porte", Value = ccpp, Code = TipoBusqueda.CCPP, CtaParams = 1 });
                             listaResultados.Add(new BuscadorOption { Link = "", Tipo = "carta de porte", Value = ccpp, Code = TipoBusqueda.CCPP, CtaParams = 1 });
                         }

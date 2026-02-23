@@ -1,12 +1,12 @@
 <div class="login-container">
   <div class="image-section">
     <img 
-      src="assets/login_image.jpg" 
+      src="assets/search_image.jpg" 
       alt="Molinos Agro" 
       class="background-image"
     />
     <img 
-      src="assets/moa_full_logo.svg" 
+      src="assets/moa_full_logo_white.svg" 
       alt="Molinos Agro Logo" 
       class="logo-overlay"
     />
@@ -24,15 +24,22 @@
         <input
           id="ctg"
           type="text"
+          inputmode="numeric"
           class="form-input"
+          [class.input-error]="ctgError()"
           [ngModel]="ctg()"
-          (ngModelChange)="ctg.set($event)"
+          (ngModelChange)="onCtgChange($event)"
           name="ctg"
           placeholder=""
           [disabled]="isLoading()"
           autocomplete="off"
         />
         <p class="form-helper">Código de Trazabilidad de Granos</p>
+        @if (ctgError()) {
+          <div class="error-message">
+            El CTG solo permite números
+          </div>
+        }
       </div>
 
       <div class="form-group">
@@ -41,15 +48,22 @@
           id="patente"
           type="text"
           class="form-input"
+          [class.input-error]="patenteError()"
           [ngModel]="patente()"
-          (ngModelChange)="patente.set($event)"
+          (ngModelChange)="onPatenteChange($event)"
           name="patente"
           placeholder=""
           [disabled]="isLoading()"
           autocomplete="off"
         />
+        @if (patenteError()) {
+          <div class="error-message">
+            La patente solo permite números y letras
+          </div>
+        }
       </div>
 
+      @if (needsCaptcha) {
         <div class="recaptcha-container">
           <re-captcha
             #recaptchaComponent
@@ -57,11 +71,12 @@
             [siteKey]="recaptchaSiteKey"
           ></re-captcha>
         </div>
+      }
 
       <button
         type="submit"
         class="submit-button"
-        [disabled]="isLoading() || (isProduction && !captchaOk)"
+        [disabled]="isLoading() || (needsCaptcha && !captchaOk)"
         [class.loading]="isLoading()">
         @if (isLoading()) {
           <span class="spinner"></span>
@@ -70,6 +85,23 @@
           Ingresar
         }
       </button>
+
+      <div class="municipal-warning">
+        <img 
+          src="assets/info_icon.svg" 
+          alt="Information Icon"
+          class="warning-icon"
+        />
+        <p class="warning-text">
+          Pague la tasa municipal<br>
+          <a 
+            href="https://puertomoa.tramitesenlinea.com.ar/login" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="warning-link"
+          >aquí</a>
+        </p>
+      </div>
     </form>
   </div>
 </div>

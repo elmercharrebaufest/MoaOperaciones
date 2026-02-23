@@ -1430,6 +1430,12 @@ namespace SustitucionMOAUtils.Services
                 solpDevuelta.CodigoProveedorSap = usuario.ObtenerCodigoProveedor();
             }
 
+            if (solp.OrganizacionDeCompra_Id == OrganizacionDeCompraIds.ComprasRRHH)
+            {
+                var ordenesCompraSap = comprasServiceSap.ObtenerOrdenesCompraSapParaSolpPosicion(solpDevuelta.Posiciones);
+                solpDevuelta.OrdenesDeCompraGeneradas = ordenesCompraSap.Select(x => new OrdenDeCompraSolpDto { NumeroOrdenDeCompra = x.Cabecera.OrdenDeCompra }).ToList();
+            }
+
             return solpDevuelta;
         }
 
@@ -4199,7 +4205,7 @@ namespace SustitucionMOAUtils.Services
         private static void ObtenerLegajoAdjuntosPeticionOferta(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor, List<LegajoDto> legajo, PeticionDeOferta peticion)
         {
             //buscar archivos de la peticion ( menos lo de legajo cuando es un usuario proveedor)
-            foreach (var item in peticion.Archivos.Where(a => !esProveedor || (esProveedor && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
+            foreach (var item in peticion.Archivos.Where(a => !esProveedor || (esProveedor && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo))) // GSIAN: Uso correcto para no ver "PeticionDeOfertaLegajo"
             {
                 legajo.Add(new LegajoDto
                 {
@@ -4479,7 +4485,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     foreach (var item in circular.Archivos)
                     {
-                        if ((peticionDeOfertaUsuarios_Id != null && item.FileKey != FileKeys.PeticionDeOfertaLegajo) || peticionDeOfertaUsuarios_Id == null)
+                        if ((peticionDeOfertaUsuarios_Id != null && item.FileKey != FileKeys.PeticionDeOfertaLegajo) || peticionDeOfertaUsuarios_Id == null) // GSIAN: Revisar condiciones.
                         {
                             string fileName = Path.GetFileName(item.Ruta);
                             archivo.CreateEntryFromFile(item.Ruta, $"PO-{idPeticion}-" + fileName);
@@ -4516,7 +4522,8 @@ namespace SustitucionMOAUtils.Services
             // Agregar archivos de la petición de oferta al zip
             if (peticion.Archivos != null)
             {
-                foreach (var archivoSubido in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
+                //foreach (var archivoSubido in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
+                foreach (var archivoSubido in peticion.Archivos.Where(a => !esProveedor || (esProveedor && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo))) // GSIAN: Se modifican condiciones. Probar.
                 {
                     if (File.Exists(archivoSubido.Archivo.Ruta))
                     {
@@ -6359,9 +6366,17 @@ namespace SustitucionMOAUtils.Services
                         };
                         if (!esMateriales && adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.Adicional == true)
                         {
-                            var NroOrdenDeCompraAdicional = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;
-                            var ordenesDeCompraAnteriores = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == NroOrdenDeCompraAdicional);
-                            ordenesDeCompraAnteriores.ForEach(a => a.AdmiteCertificacionesParciales = adjudicacionDto.AdmiteCertificacionesParciales);
+                            var nroOrdenDeCompraAdicional = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;
+                            var adjudicacionesOCPrimaria = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOrdenDeCompraAdicional);
+                            foreach(var adjudicacionOCPrimaria in adjudicacionesOCPrimaria)
+                            {
+                                // Si se ingresó que admite certificaciones parciales pero la OC anterior es de una SOLP con Trabajo ya hecho, no debe actualizarle este campo (con TH no se puede certificar parcialmente)
+                                if (adjudicacionOCPrimaria.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.First().SolpPosicion.Solp.TrabajoYaHecho != true &&
+                                    adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.First().SolpPosicion.Solp.TrabajoYaHecho != true)
+                                {
+                                    adjudicacionOCPrimaria.AdmiteCertificacionesParciales = adjudicacionDto.AdmiteCertificacionesParciales;
+                                }
+                            }
                         }
                         repositorio.Agregar(adjudicacion);
                         repositorio.GuardarCambios();
@@ -6374,6 +6389,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         else
                         {
+                            EnviarMailErrorOCAutomaticaSap(adjudicacion, respuestaGuardarSOLP.Errores);
                             repositorio.Remover(adjudicacion);
                         }
 
@@ -9590,6 +9606,65 @@ namespace SustitucionMOAUtils.Services
                 };
                 var resultado = GrabarAdjudicacion(adjudicacion, solp.UsuarioCreacion_Id.Value);
             }
+        }
+
+        private void EnviarMailErrorOCAutomaticaSap(Adjudicacion adjudicacion, List<string> errores)
+        {
+            try
+            {
+                var asunto = $"Error en generacion OC automatica - Adjudicacion ID: {adjudicacion.Id}. ";
+                var enviarA = new List<string>();
+                var destinatarioErrores = ConfigurationManager.AppSettings["EmailEnvioErrores"];
+                var msjError = string.Join(", ", errores);
+
+                Usuario usuario = null;
+
+                if (adjudicacion?.UsuarioCreador_Id != null)
+                {
+                    usuario = repositorio.Obtener<Usuario>(x => x.Id == adjudicacion.UsuarioCreador_Id);
+                }
+
+                if (usuario == null)
+                {
+                    enviarA.Add(usuario.Mail);
+                }
+                
+                enviarA.Add(destinatarioErrores);
+           
+                Logger.Log.Info($"Enviando mail a {enviarA.ToJson()}");
+
+                emailService.EnviarMail(enviarA, asunto, "", null, CuerpoEnviarMailErrorOCAutomaticaSap(adjudicacion, msjError));
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"EnviarMailErrorOCAutomaticaSap - Adjudicacion Id:{adjudicacion?.Id}");
+                Logger.Log.Error(e);
+            }
+        }
+
+        private AlternateView CuerpoEnviarMailErrorOCAutomaticaSap(Adjudicacion adjudicacion, string mensaje)
+        {
+            var filePath = httpContextService.ObtenerPathLogoMail();
+            
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+
+            string adjudicacionJson = JsonConvert.SerializeObject(adjudicacion, Formatting.Indented);
+
+            string htmlBody = "";
+            htmlBody += $"Hubo un error de SAP al intentar generar la OC automatica. <br />";
+            htmlBody += $"Motivo: {mensaje}  <br />";
+            htmlBody += $" <br/><br/> ";
+            htmlBody += $"Data Adjudicacion: {adjudicacionJson}";
+            htmlBody += $" <br/><br/> ";
+            htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
+                  "<br/><br/>Saludos Cordiales<br/>" +
+                  "Molinos Agro S.A. <br/><br/> " +
+                   @"<img width='15%' src='cid:" + res.ContentId + @"'/>";
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
         }
     }
 }

@@ -72,7 +72,10 @@ namespace SustitucionMOAWS.WSConsumers
                     Log.Info($"SAP sin PI BAPI_ENTRYSHEET_GETDETAIL");
                     Log.Info(request.ToXml());
                     var response = agent.BAPI_ENTRYSHEET_GETDETAIL(request);
-                    SapLogHelper.LogResponse(response.ToXml(), "BAPI_ENTRYSHEET_GETDETAIL");
+                    if (ConfigurationManager.AppSettings["SAPEnableBigLogs"] == "1")
+                    {
+                        SapLogHelper.LogResponse(response.ToXml(), "BAPI_ENTRYSHEET_GETDETAIL");
+                    }
                     return MapSinPI(response);
                 }
                 else

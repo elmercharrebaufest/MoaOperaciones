@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://qacompras.moaoperaciones.com.ar/externalapi/external/Api/',
-  apiKey: 'prueba',
-  recaptchaSiteKey: 'YOUR_PRODUCTION_RECAPTCHA_SITE_KEY'
+  isQA: true,
+  apiUrl: 'https://qacompras.moaoperaciones.com.ar/externalApi',
+  apiKey: 'pruebaQRCamiones',
+  recaptchaSiteKey: '6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide'
 };
