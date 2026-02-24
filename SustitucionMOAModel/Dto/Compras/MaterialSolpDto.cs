@@ -12,6 +12,7 @@ namespace SustitucionMOAModel.Dto
         public string TipoValoracion { get; set; }
         public decimal? PrecioMaterial { get; set; }
         public bool Estado { get; set; }
+        public string TextoAmpliado { get; set; }
         public TablaSapDto GrupoArticulo { get; set; }
         public TablaSapDto CentroLogistico { get; set; }
         public TablaSapDto UnidadMedidaBase { get; set; }
@@ -32,6 +33,7 @@ namespace SustitucionMOAModel.Dto
                 TipoValoracion = materialSolp.TipoValoracion;
                 PrecioMaterial = materialSolp.PrecioMaterial;
                 Estado = materialSolp.Estado;
+                TextoAmpliado = materialSolp.TextoAmpliado;
                 GrupoArticulo = new TablaSapDto(materialSolp.GrupoArticulo);
                 CentroLogistico = new TablaSapDto(materialSolp.CentroLogistico);
                 UnidadMedidaBase = new TablaSapDto(materialSolp.UnidadMedidaBase);

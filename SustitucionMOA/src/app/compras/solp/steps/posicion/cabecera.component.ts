@@ -1001,7 +1001,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     servicioSeleccionado(posicion: SolpPosicion) {
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
-        posicion.textoSuministro = posicion.codigoServicio.Descripcion;
+        posicion.textoSuministro = posicion.codigoServicio.TextoAmpliado;
         posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
         posicion.unidadesAlternativas = this.combos.Unidades;
 
