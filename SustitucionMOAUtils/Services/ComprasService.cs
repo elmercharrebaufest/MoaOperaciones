@@ -4443,21 +4443,26 @@ namespace SustitucionMOAUtils.Services
                 var pdfFilePath = $"{pathBase}/{pliegoFilename}";
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(solp.Id));
 
-                // Agregar archivos de pliego al zip
-                archivo.CreateEntryFromFile(pdfFilePath, pliegoFilename);
-
-                // Agregar archivos adjuntos del solp al zip
-                if (solp.Pliego.Archivos != null)
+                if(solp.TipoSolp != null && solp.TipoSolp.Codigo == "CON_PLIEGO")
                 {
-                    foreach (var archivoSubido in solp.Pliego.Archivos)
+                    // Agregar archivos de pliego al zip unicamente si es de tipo CON_PLIEGO
+                    archivo.CreateEntryFromFile(pdfFilePath, pliegoFilename);
+
+                    // Agregar archivos adjuntos del solp al zip
+                    if (solp.Pliego.Archivos != null)
                     {
-                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
+                        foreach (var archivoSubido in solp.Pliego.Archivos)
                         {
-                            string fileName = Path.GetFileName(archivoSubido.Ruta);
-                            archivo.CreateEntryFromFile(archivoSubido.Ruta, $"PO-{idPeticion}-" + fileName);
+                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
+                            {
+                                string fileName = Path.GetFileName(archivoSubido.Ruta);
+                                archivo.CreateEntryFromFile(archivoSubido.Ruta, $"PO-{idPeticion}-" + fileName);
+                            }
                         }
                     }
+
                 }
+                
 
                 // Agregar archivos PDF de PeticionDeOfertaMateriales al zip
                 if (solp.Posiciones.Any(a => a.TipoPosicion_Id != null && a.TipoPosicion.Codigo == "MATERIALES"))
