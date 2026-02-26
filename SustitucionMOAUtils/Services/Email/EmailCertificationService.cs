@@ -24,7 +24,7 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string TEMPLATE_NOTIFICACION_APROBACIONES_EXT_POSICION = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacion-Posicion.html");
         private static readonly string TEMPLATE_NOTIFICACION_APROBACIONES_PROVEEDOR = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacion-Proveedor.html");
         private static readonly string TEMPLATE_NOTIFICACION_DIARIA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionEsPendientesDeAprobacion.html");
-
+        private static readonly string rutaCertifPendiente = ConfigurationManager.AppSettings["UrlCertifPendiente"];
 
         private readonly IEmailService emailService;
         protected readonly IAzureService azureService;
@@ -56,7 +56,7 @@ namespace SustitucionMOAUtils.Services.Email
         {
             string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_DIARIA);
 
-            string body = BuildDailyNotification(aprobaciones, bodyTemplate);
+            string body = BuildDailyNotification(aprobaciones, bodyTemplate, rutaCertifPendiente);
 
 
             var emailSenderData = new EmailSenderData
@@ -245,11 +245,11 @@ namespace SustitucionMOAUtils.Services.Email
             return importe;
         }
 
-        private string BuildDailyNotification(List<NotificacionEsPendientesDiariasDto> aprobaciones, string bodyTemplate)
+        private string BuildDailyNotification(List<NotificacionEsPendientesDiariasDto> aprobaciones, string bodyTemplate, string rutaCertif)
         {
             var bodyTable = BuildTableDailyNotification(aprobaciones);
 
-            var body = string.Format(bodyTemplate, bodyTable.ToString());
+            var body = string.Format(bodyTemplate, bodyTable.ToString(), rutaCertif);
 
             return body;
         }

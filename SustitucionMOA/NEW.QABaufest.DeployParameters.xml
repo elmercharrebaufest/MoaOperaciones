@@ -7,7 +7,7 @@
 
 	<setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
 	<setParameter name="UrlMisConsultas Config" value="https://qabaufest.moaoperaciones.com.ar/web/consulta/mis-consultas" />
-
+	<setParameter name="UrlCertifPendiente Config" value="https://qabaufest.moaoperaciones.com.ar/web/compras/listadoEstadoCertificaciones" />
 	<setParameter name="PasswordSap Config" value="prueba" />
 	<setParameter name="SAPsinPI Config" value="1" />
 	<setParameter name="SapUserSinPI Config" value="GWEBSRV_GOL" />

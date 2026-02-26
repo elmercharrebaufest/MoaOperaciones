@@ -19,6 +19,7 @@
 
 	<setParameter name="SpaUrl Config" value="https://moaoperaciones.com.ar/web" />
 	<setParameter name="UrlMisConsultas Config" value="https://moaoperaciones.com.ar/web/consulta/mis-consultas" />
+	<setParameter name="UrlCertifPendiente Config" value="https://moaoperaciones.com.ar/web/compras/listadoEstadoCertificaciones" />
 	<setParameter name="Url Config" value="http://gslopiprd00.molinosagro.ad:50000/" />
 	<setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
 	<setParameter name="defAmbiente Config" value="" />

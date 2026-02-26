@@ -189,6 +189,11 @@ export class AppComponent implements OnDestroy {
                 (
                     () => { this.navService.navegarSeccion('/consulta/mis-consultas'); }, 3);
 
+        }else if (this.path === '/compras/listadoEstadoCertificaciones') {
+            setTimeout
+                (
+                    () => { this.navService.navegarSeccion('/compras/listadoEstadoCertificaciones'); }, 3);
+
         } else {
             this.navService.navegarSeccion(result.redirectURL);
         }
