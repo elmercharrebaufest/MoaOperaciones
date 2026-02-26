@@ -30,7 +30,9 @@ VALUES
 	( '64199 - RESIDUOS PELIGROSOS',				'64199',	3,			0,				'Resid. peligr.',	0),
 	( '64196 - RESIDUOS SOLIDOS URBANOS',			'64196',	3,			0,				'Resid. sól. urb',	0),
 	('172789 - SUELO SELECCIONADO',					'172789',	3,			0,				'Suelo selecc.',	0),
-	('99131 - BIODIESEL (METILESTER DE SOJA) A GRANEL',	'99131',2,			0,				'BIO',				0)
+	('99131 - BIODIESEL (METILESTER DE SOJA) A GRANEL',	'99131',2,			0,				'BIO',				0),
+	('98855 - ACEITE DE SOJA NEUTRALIZADO',			'98855',	2,			0,				'Ac. Neutro',		0),
+	('99098 - ACEITE METILADO DE SOJA',				'99098',	2,			0,				'Ac. Metilado',		0)
 
 -- Actualización de materiales existentes
 UPDATE Material
