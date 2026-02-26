@@ -4459,7 +4459,12 @@ namespace SustitucionMOAUtils.Services
                     {
                         foreach (var archivoSubido in solp.Pliego.Archivos)
                         {
-                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
+                            var debeIncluirArchivo =
+                                archivoSubido.FileKey == FileKeys.AdjuntoSolp ||
+                                archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp ||
+                                (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp && !esProveedor);
+
+                            if (debeIncluirArchivo && File.Exists(archivoSubido.Ruta))
                             {
                                 string fileName = Path.GetFileName(archivoSubido.Ruta);
                                 archivo.CreateEntryFromFile(archivoSubido.Ruta, $"PO-{idPeticion}-" + fileName);
