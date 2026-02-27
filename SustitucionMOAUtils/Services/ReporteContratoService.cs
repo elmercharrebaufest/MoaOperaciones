@@ -165,19 +165,18 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Contratos"));
         }
 
-        public ReporteContratoViewModel GetContratosDetalle(string contrato, string proveedor, string fechaInicio, string fechaFin, string mailUsuario)
+        public ReporteContratoViewModel GetContratoDetalle(string contrato, string fechaInicio, string fechaFin)
         {
-            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(us => us.Mail == mailUsuario);
-            var esCorredor = usuario.EsCorredor();
+            if (string.IsNullOrWhiteSpace(contrato))
+            {
+                throw new ArgumentException("El número de contrato no puede ser vacío");
+            }
 
             var dateInicio = DataFormatter.StringToDateTime(fechaInicio, "");
             var dateFin = DataFormatter.StringToDateTime(fechaFin, "");
 
             var request = new ReporteContratoWSMOARequest()
             {
-                //Se envia corredor o Cliente para efectos de mas rapidez en la consulta a la rfc
-                Cliente = esCorredor ? "" : proveedor,
-                Corredor = esCorredor ? proveedor : "",
                 Contrato = contrato,
                 Fechas = new List<FechaWS> { new FechaWS { fechaInicio = dateInicio, fechaFin = dateFin } }
             };
