@@ -129,6 +129,7 @@ export class CotizacionComponent extends ListBaseComponent {
             servicioPermanente: [{ value: this.model.thServicioPermanente }, []],
             ajustePolinomica: [{ value: this.model.thAjustePolinomica }, []],
             proveedorDirecto: [{ value: this.model.thProveedorDirecto }, []],
+            acuerdoMarco: [{ value: this.model.thAcuerdoMarco }, []],
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -158,13 +159,13 @@ export class CotizacionComponent extends ListBaseComponent {
         } else {
             this.estaFinalizada = false
         }
-        
+
         this.listarLiberadorSap();
-        
-        if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
+
+        if (this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true && this.model.thAcuerdoMarco != true) {
             this.onRadioButtonChange("Servicio permanente");
         }
-        
+
         this.adjustFormControlsBasedOnConditions();
     }
 
@@ -177,7 +178,7 @@ export class CotizacionComponent extends ListBaseComponent {
         this.model.archivosCotizacionesNuevos = filesUpload["files"];
         this.validarChecks();
     }
-    
+
     uploadHandlerCondEsp(filesUpload: any): void {
         this.model.archivosCotizacionesNuevosCondEsp = filesUpload["files"];
         this.validarChecks();
@@ -236,7 +237,7 @@ export class CotizacionComponent extends ListBaseComponent {
     eliminarAdjuntoNuevo(archivo): void {
         this.eliminarAdjuntoNuevoGenerico(archivo, 'archivosCotizacionesNuevos');
     }
-    
+
     eliminarAdjuntoNuevoCondEsp(archivo): void {
         this.eliminarAdjuntoNuevoGenerico(archivo, 'archivosCotizacionesNuevosCondEsp');
     }
@@ -252,7 +253,7 @@ export class CotizacionComponent extends ListBaseComponent {
     eliminarAdjuntoGuardado(archivo): void {
         this.eliminarAdjuntoGuardadoGenerico(archivo, 'archivosCotizaciones');
     }
-    
+
     eliminarAdjuntoGuardadoCondEsp(archivo): void {
         this.eliminarAdjuntoGuardadoGenerico(archivo, 'archivosCotizacionesCondEsp');
     }
@@ -319,6 +320,7 @@ export class CotizacionComponent extends ListBaseComponent {
         try {
             this.model.proveedorAsignado_Id = event.Id;
             this.model.proveedorAsignado = event.RazonSocial;
+            this.model.codigoProveedorSap = event.CodigoProveedorSap;
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
         }
@@ -371,8 +373,8 @@ export class CotizacionComponent extends ListBaseComponent {
                 this.model.validacionCheck = false;
             }
 
-            if(this.model.trabajoHecho == true){
-                if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
+            if (this.model.trabajoHecho == true) {
+                if (this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true && this.model.thAcuerdoMarco != true) {
                     this.model.mensajeCotizacion = "Debe elegir una categoría de trabajo ya hacho en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                     this.model.validacionCheck = false;
@@ -389,6 +391,7 @@ export class CotizacionComponent extends ListBaseComponent {
             this.proveedorSeleccionado = null;
             this.model.thAjustePolinomica = false;
             this.model.thProveedorDirecto = false;
+            this.model.thAcuerdoMarco = false;
             this.model.thServicioPermanente = true;
         }
         this.model.certificacionAutomatica = this.model.trabajoHecho || false;
@@ -399,7 +402,7 @@ export class CotizacionComponent extends ListBaseComponent {
             this.model.editarCondicionesEspeciales &&
             this.model.trabajoHecho == false &&
             this.model.conPresupuesto
-            ) {
+        ) {
             this.model.proveedorAsignado = "";
             this.model.proveedorAsignado_Id = null;
             this.proveedorSeleccionado = null;
@@ -428,7 +431,7 @@ export class CotizacionComponent extends ListBaseComponent {
                         } else if (result.info != undefined) {
                             this.floatMsgService.setInfoMsg(result.info);
                         } else {
-                          
+
                             if (this.estaFinalizada == true && this.model.proveedorIdAdicional && this.model.proveedorIdAdicional != result.data.Cabecera.Usuario_Id) {
                                 this.floatMsgService.setErrorMsg("La OC ingresada debe ser para el proveedor " + this.model.proveedorRazonSocialAdicional);
                                 this.model.ordenDeCompra = "";
@@ -525,9 +528,9 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     resetearFecha(): void {
-        if(this.model.trabajoHecho != true || this.model.urgencia != true){
-            if (this.model.fechaEntrega < this.hoy) {          
-              this.model.fechaEntrega = this.hoy;
+        if (this.model.trabajoHecho != true || this.model.urgencia != true) {
+            if (this.model.fechaEntrega < this.hoy) {
+                this.model.fechaEntrega = this.hoy;
             }
         }
     }
@@ -536,17 +539,22 @@ export class CotizacionComponent extends ListBaseComponent {
         this.model.thServicioPermanente = false;
         this.model.thAjustePolinomica = false;
         this.model.thProveedorDirecto = false;
+        this.model.thAcuerdoMarco = false;
 
-        if(value == "Servicio permanente"){
+        if (value == "Servicio permanente") {
             this.model.thServicioPermanente = true;
         }
 
-        if(value == "Ajuste polinomica"){
+        if (value == "Ajuste polinomica") {
             this.model.thAjustePolinomica = true;
         }
 
-        if(value == "Proveedor directo"){
+        if (value == "Proveedor directo") {
             this.model.thProveedorDirecto = true;
+        }
+
+        if (value == "Acuerdo Marco") {
+            this.model.thAcuerdoMarco = true;
         }
         // Evaluamos el mensaje a mostrar
         this.evaluarMostrarInfoBox();
@@ -554,9 +562,10 @@ export class CotizacionComponent extends ListBaseComponent {
 
     habilitarOC() {
         if (this.model.editarCondicionesEspeciales == true) {
-            this.formularioCotizacion.controls['ordenDeCompra'].enable();        
+            this.formularioCotizacion.controls['ordenDeCompra'].enable();
         } else {
-            this.formularioCotizacion.controls['ordenDeCompra'].disable();        }
+            this.formularioCotizacion.controls['ordenDeCompra'].disable();
+        }
     }
 
     verificarCondicionesEspeciales(): void {
@@ -565,16 +574,16 @@ export class CotizacionComponent extends ListBaseComponent {
         }
         this.evaluarMostrarInfoBox();
     }
-  
+
     borrarArchivosCargados(): void {
-        if(this.model.editarCondicionesEspeciales){
+        if (this.model.editarCondicionesEspeciales) {
             this.model.archivosCotizacionesNuevosCondEsp = [];
             this.model.archivosCotizacionesCondEsp = [];
 
         }
     }
 
-    habilitarCondicionesEspeciales(condicionEspecial){
+    habilitarCondicionesEspeciales(condicionEspecial) {
         if (!condicionEspecial && this.model.editarCondicionesEspeciales == true) {
             this.habilitarUrgencia(true);
             this.habilitarAdicional(true);
@@ -606,7 +615,7 @@ export class CotizacionComponent extends ListBaseComponent {
             this.habilitarCertificacionAutomatica(false);
             this.habilitarProveedorSeleccionado(false);
             this.habilitarCondEspProveedorAsignado(false);
-            
+
             if (this.condEspOriginales.trabajoHecho || (this.condEspOriginales.trabajoHecho && this.condEspOriginales.adicional)) {
                 this.habilitarAdicional(true);
                 this.habilitarUrgencia(true);
@@ -620,17 +629,17 @@ export class CotizacionComponent extends ListBaseComponent {
                         this.habilitarProveedorSeleccionado(true);
                     }
 
-                    if(this.model.adicional == true){
+                    if (this.model.adicional == true) {
                         this.habilitarAdicional(true);
                         this.habilitarCondEspProveedorAsignado(false);
                         this.habilitarProveedorSeleccionado(false);
-                    } 
+                    }
 
-                    if(this.model.condEspProveedorAsignado != true && this.model.adicional != true){
+                    if (this.model.condEspProveedorAsignado != true && this.model.adicional != true) {
                         this.habilitarAdicional(true);
                         this.habilitarCondEspProveedorAsignado(true);
                         this.habilitarProveedorSeleccionado(true);
-                    } 
+                    }
                     this.verificarMismoProveedor();
 
                 }
@@ -701,41 +710,41 @@ export class CotizacionComponent extends ListBaseComponent {
 
     onConditionChange(): void {
         this.adjustFormControlsBasedOnConditions();
-        if(this.condicionEspecial){
+        if (this.condicionEspecial) {
             this.verificarMismoProveedor();
         }
         this.evaluarMostrarInfoBox();
     }
 
-    verificarMismoProveedor(){
+    verificarMismoProveedor() {
         if (this.ordenDeCompraSap != undefined && this.condEspOriginales.proveedorSeleccionado != this.ordenDeCompraSap.Cabecera.Usuario_Id) {
             this.floatMsgService.setErrorMsg("El proveedor seleccionado debe ser el mismo que el proveedor asignado");
         }
     }
 
-    tieneCondEspOriginal(){
+    tieneCondEspOriginal() {
         return this.condicionEspecialOriginal = this.condEspOriginales.trabajoHecho == true || this.condEspOriginales.adicional == true || this.condEspOriginales.urgencia == true || this.condEspOriginales.proveedorAsignado == true;
     }
 
-    validarCondicionEspecial(){
-        if(this.tieneCondEspOriginal()){
+    validarCondicionEspecial() {
+        if (this.tieneCondEspOriginal()) {
             this.floatMsgService.setErrorMsg("Debe completar la condicion especial");
         }
     }
 
-    puedeSeleccionarPliegoMultiple() : boolean {
+    puedeSeleccionarPliegoMultiple(): boolean {
         const hayCondicionEspecialSeleccionada = this.model.trabajoHecho || this.model.conPresupuesto || this.model.adicional || this.model.urgencia || this.model.condEspProveedorAsignado;
         return !hayCondicionEspecialSeleccionada;
     }
 
-    puedeSeleccionarCondicionEspecial() : boolean {
+    puedeSeleccionarCondicionEspecial(): boolean {
         return !this.model.seraUsadoEnPliegoMultiple;
     }
 
     habilitarUrgencia(habilitar: boolean) {
         this.habilitarControlFormulario('urgencia', habilitar);
     }
-    
+
     habilitarAdicional(habilitar: boolean) {
         this.habilitarControlFormulario('adicional', habilitar);
     }
@@ -776,36 +785,42 @@ export class CotizacionComponent extends ListBaseComponent {
         let textos: string[] = [];
 
         // SOLP donde ya se tiene el precio (Si se marca Trabajo hecho o Con Presupuesto) 
-        if(this.model.trabajoHecho == true && this.model.thServicioPermanente == true){
+        if (this.model.trabajoHecho == true && this.model.thServicioPermanente == true) {
             textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, rutinario y que no queda bajo las condiciones de un Acuerdo Marco (AM). El fiscal podrá recibir desde compras el presupuesto, para la carga de la SOLP o de tener el fiscal la oferta procederá a cargarla.")
         }
-        if(this.model.trabajoHecho == true && this.model.thAjustePolinomica == true){
+        if (this.model.trabajoHecho == true && this.model.thAjustePolinomica == true) {
             textos.push("Referencia la necesidad de un ajuste por condiciones comerciales (Polinómica de ajuste) sobre un servicio ya realizado o producto entregado. El fiscal recibirá el control económico realizado desde compras, generará su propio control y gestionará la carga de la SOLP.");
         }
-        if(this.model.trabajoHecho == true && this.model.thProveedorDirecto == true){
+        if (this.model.trabajoHecho == true && this.model.thProveedorDirecto == true) {
             textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, no rutinario. El fiscal define un proveedor directo técnicamente por sus condiciones especiales o particularidad del trabajo o producto.El fiscal podrá recibir desde compras el presupuesto para la carga de la SOLP o de tener la oferta procederá a cargar la misma.");
         }
-        if(this.model.conPresupuesto == true){
+
+        if (this.model.trabajoHecho == true && this.model.thAcuerdoMarco == true) {
+            textos.push("Trabajo Realizado con acuerdo marco");
+            textos.push("Referencia la necesidad de un servicio ya realizado o material entregado, rutinario que queda bajo las condiciones de un Acuerdo Marco (AM).");
+        }
+
+        if (this.model.conPresupuesto == true) {
             textos.push("Referencia la necesidad de un servicio a realizar o material a entregar, sin un proceso de licitación bajo las condiciones estándar. El fiscal podrá recibir desde compras el presupuesto para la carga de la SOLP o de tener el fiscal la oferta procederá a cargar la misma. La SOLP, con su alcance técnico, cantidad, precio unitario, justificaciones, etc., será vinculada a un proveedor definido. Podrán emitirse circulares comerciales cuando así corresponda, validadas estas se avanzará con la orden de compra.");
         }
 
         // SOLP donde hay que salir a buscar la Oferta
-        if(this.model.condEspProveedorAsignado == true){
+        if (this.model.condEspProveedorAsignado == true) {
             textos.push("Referencia la necesidad de un servicio a realizar o material a entregar.");
             textos.push("La solp será asignada a un proveedor definido técnicamente por sus condiciones especiales o particularidad del servicio, material, insumo o equipo.");
         }
-        if(this.model.trabajoHecho == false && this.model.conPresupuesto == false){
+        if (this.model.trabajoHecho == false && this.model.conPresupuesto == false) {
             textos.push("Generará un proceso de licitación bajo las condiciones estándar.");
             textos.push("El fiscal al momento de la carga de la SOLP solicitara un alcance técnico del servicio o producto y un precio a cotizar.");
         }
 
-        if(this.model.adicional == true){
+        if (this.model.adicional == true) {
             textos.push("Estas SOLPS nuevas se agregarán a una OC ya existente ya que hubo un proceso de licitación ya ejecutado y adjudicado con anterioridad.");
         }
-        else{
+        else {
             textos.push("Validadas las condiciones técnicas y comerciales cuando así lo requiera, esta SOLP nueva permitirá gestionar una OC puntual.")
         }
-        if(this.model.urgencia == true){
+        if (this.model.urgencia == true) {
             textos.push("Referencia la necesidad de un servicio realizado o material entregado como urgente.");
         }
 
@@ -816,7 +831,7 @@ export class CotizacionComponent extends ListBaseComponent {
         if (this.model.certificacionAutomatica == false) {
             textos.push("VA A REQUERIR DEFINIR DESDE COMPRAS SI ADMITE O NO CERTIFICACIONES PARCIALES EN LOS SERVICIOS.");
         }
-        
+
         // Si hay condiciones especiales, mostrar el info box
         if (textos.length > 0) {
             this.infoBoxText = textos.join("\n");

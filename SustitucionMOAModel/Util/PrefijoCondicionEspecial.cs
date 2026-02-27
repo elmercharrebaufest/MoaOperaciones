@@ -163,6 +163,11 @@ namespace SustitucionMOAModel.Util
                 {
                     prefijo = PD;
                 }
+
+                if (solp.THAcuerdoMarco == true && solp.Adicional != true && solp.Urgencia != true)
+                {
+                    prefijo = AM;
+                }
             }
             else
             {
