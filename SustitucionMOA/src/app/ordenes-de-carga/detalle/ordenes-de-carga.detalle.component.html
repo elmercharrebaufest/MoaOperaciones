@@ -725,7 +725,7 @@
                     <div *ngIf="mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
                         {{mensajeValidacionScato}}
                     </div>
-                    <div class="row" class="col-xs-12 col-sm-12 col-md-12">
+                    <div *ngIf="!ordenActivaScato" class="row" class="col-xs-12 col-sm-12 col-md-12">
                         ¿Está seguro de que desea anular la orden de carga?
                     </div>
                 </div>
@@ -734,7 +734,7 @@
                         id="closemodalAnularOrden" style="display: inline-flex;">
                         Cancelar
                     </button>
-                    <button type="button" class="btn-custom btn-remove btn-mediano" (click)="anularOrden()"
+                    <button *ngIf="!ordenActivaScato" type="button" class="btn-custom btn-remove btn-mediano" (click)="anularOrden()"
                         style="display: inline-flex;" [disabled]="validandoEstadoScato">
                         Anular orden
                     </button>
@@ -763,7 +763,7 @@
                     <div *ngIf="mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
                         {{mensajeValidacionScato}}
                     </div>
-                    <div class="row" class="col-xs-12 col-sm-12 col-md-12">
+                    <div *ngIf="!ordenActivaScato" class="row" class="col-xs-12 col-sm-12 col-md-12">
                         ¿Está seguro de que desea anular la orden de carga?
                     </div>
                 </div>
@@ -772,7 +772,7 @@
                         id="closemodalAnularOrdenVencimiento" style="display: inline-flex;">
                         Cancelar
                     </button>
-                    <button type="button" class="btn-custom btn-remove btn-mediano"
+                    <button *ngIf="!ordenActivaScato" type="button" class="btn-custom btn-remove btn-mediano"
                         (click)="anularOrdenPorVencimiento()" style="display: inline-flex;"
                         [disabled]="validandoEstadoScato">
                         Anular orden
