@@ -193,12 +193,16 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     this.spinnerComponent.hideIt();
                     this.blockUI.stop();
                     let puedeSolicitarEdicion = this.manejarErroresApiResponse(result);
-                    if (puedeSolicitarEdicion) {
+                    if (puedeSolicitarEdicion && !this.ordenActivaScato) {
                         this.goToSeccion('/ordenes-de-carga/alta/' + this.ordenDeCarga.Id + '/' + this.tipoOperacion);
                     }
                     else {
+                        if(this.ordenActivaScato){
+                            this.mensajeComponent.setErrorMsg("La orden no se puede editar por estar activa en Scato.");
+                            this.mostrarBotonEditar = false;
+                        }
                         if (puedeSolicitarEdicion === false) {
-                            this.mensajeComponent.setErrorMsg("La orden no se puede editar por estar el camión en planta");
+                            this.mensajeComponent.setErrorMsg("La orden no se puede editar por estar el camión en planta.");
                             this.mostrarBotonEditar = false;
                         }
                     }
@@ -362,6 +366,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                             this.mensajeComponent.setMsgsEmpty();
                             this.mensajeComponent.setInfoMsg(this.ordenDeCarga.MensajeValidacionSAP)
                         }
+                        this.verificarOrdenActivaScato(this.ordenDeCargaId.toString(), this.spinnerModalAnulacionVencimiento);
                     }
                 },
                 error => {

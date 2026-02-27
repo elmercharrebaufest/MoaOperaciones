@@ -78,7 +78,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         this.navService.setSeccionList([]);
         this.obtenerOrdenDeCargaFason();
 
-        this.verificarOrdenActivaScato()
+        //this.verificarOrdenActivaScato()
     }
 
     verificarBotones() {
@@ -107,6 +107,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
                         this.ordenDeCargaFason = result.data.Response;
                         this.validaCPEDG = this.ordenDeCargaFason.ValidaSisaRuca;
                         this.verificarBotones();
+                        this.verificarOrdenActivaScato()
                     }
                 },
                 error => {
@@ -128,12 +129,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         } else {
             this.confirmationService.confirm({
                 key: 'confirmarEdicionActiva',
-                message: `La orden está activa en SCATO, ¿seguro que quiere continuar con la edición?`,
-                accept: () => {
-                    this.goToSeccion('/ordenes-de-carga-fason/alta/' + this.ordenDeCargaFason.Id);
-                },
-                reject: () => {
-                }
+                message: `La orden está activa en SCATO, no es posible editarla.`
             })
         }
     }
@@ -175,7 +171,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
     confirmarAnulacion() {
         this.confirmationService.confirm({
             key: 'confirmarAnular',
-            message: '¿Desea anular la orden?',
+            message: this.activaEnScato? 'No es posible anular la orden.' :'¿Desea anular la orden?',
             accept: () => {
                 this.anularOrden()
             },
