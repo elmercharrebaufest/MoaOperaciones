@@ -3985,7 +3985,7 @@ namespace SustitucionMOAUtils.Services
             AgregarALegajoPeticionVisualizarPrecio(legajo, peticion, esProveedor);
 
 
-            List<Circular> circulares = ObtenerLegajoCirculares(peticionDeOfertaId, idPeticionDeOfertaUsuario, legajo, peticion);
+            List<Circular> circulares = ObtenerLegajoCirculares(peticionDeOfertaId, legajo, peticion, esProveedor, usuarioDto);
 
 
             ObtenerLegajoCierrePlazoOferta(peticionDeOfertaId, legajo, peticion, esProveedor);
@@ -4076,18 +4076,19 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private List<Circular> ObtenerLegajoCirculares(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, List<LegajoDto> legajo, PeticionDeOferta peticion)
+        private List<Circular> ObtenerLegajoCirculares(int peticionDeOfertaId, List<LegajoDto> legajo, PeticionDeOferta peticion, bool esProveedor, UsuarioDto usuarioDto)
         {
-            //circular
-            var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => idPeticionDeOfertaUsuario == null || u.Id == idPeticionDeOfertaUsuario).Select(u => u.Id).ToList();
+            var peticionDeOfertaUsuarios_Id = peticion.Usuarios
+                .Where(u => !esProveedor || u.Usuario_Id == usuarioDto.Id)
+                .Select(u => u.Id).ToList();
             var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
 
             foreach (var circular in circulares)
             {
                 bool noLeido = false;
-                if (idPeticionDeOfertaUsuario.HasValue)
+                if (esProveedor)
                 {
-                    noLeido = circular.PeticionDeOfertaUsuarios.Any(a => a.PeticionDeOfertaUsuario_Id == idPeticionDeOfertaUsuario && a.Leida != true);
+                    noLeido = circular.PeticionDeOfertaUsuarios.Any(a => a.PeticionDeOfertaUsuario.Usuario_Id == usuarioDto.Id && a.Leida != true);
                 }
 
                 //buscar archivos de la circular
@@ -4156,9 +4157,9 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                if (noLeido)
+                if (esProveedor && noLeido)
                 {
-                    foreach (var circularNoLeida in circular.PeticionDeOfertaUsuarios.Where(a => a.PeticionDeOfertaUsuario_Id == idPeticionDeOfertaUsuario && a.Leida != true))
+                    foreach (var circularNoLeida in circular.PeticionDeOfertaUsuarios.Where(a => a.PeticionDeOfertaUsuario.Usuario_Id == usuarioDto.Id && a.Leida != true))
                     {
                         circularNoLeida.Leida = true;
                         circularNoLeida.FechaLeida = DateTime.Now;
@@ -4488,14 +4489,16 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                // Agregar archivos de circulares al zip
-                var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId).Select(u => u.Id).ToList();
+                // Agregar archivos de circulares al zip. Si es proveedor, se deben considerar solamente las circulares que fueron dirigidas al él
+                var peticionDeOfertaUsuarios_Id = peticion.Usuarios
+                    .Where(u => !esProveedor || u.Usuario_Id == usuarioDto.Id)
+                    .Select(u => u.Id).ToList();
                 var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
                 foreach (var circular in circulares)
                 {
                     foreach (var item in circular.Archivos)
                     {
-                        if ((peticionDeOfertaUsuarios_Id != null && item.FileKey != FileKeys.PeticionDeOfertaLegajo) || peticionDeOfertaUsuarios_Id == null) // GSIAN: Revisar condiciones.
+                        if (!esProveedor || item.FileKey != FileKeys.PeticionDeOfertaLegajo) // GSIAN: Revisar condiciones.
                         {
                             string fileName = Path.GetFileName(item.Ruta);
                             archivo.CreateEntryFromFile(item.Ruta, $"PO-{idPeticion}-" + fileName);
