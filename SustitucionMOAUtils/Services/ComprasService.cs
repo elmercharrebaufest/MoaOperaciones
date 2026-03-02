@@ -4449,11 +4449,11 @@ namespace SustitucionMOAUtils.Services
                 var pdfFilePath = $"{pathBase}/{pliegoFilename}";
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(solp.Id));
 
-                if(solp.TipoSolp != null && solp.TipoSolp.Codigo == "CON_PLIEGO")
+                if (solp.TipoSolp != null && solp.TipoSolp.Codigo == "CON_PLIEGO")
                 {
                     // Agregar archivos de pliego al zip unicamente si es de tipo CON_PLIEGO
                     archivo.CreateEntryFromFile(pdfFilePath, pliegoFilename);
-
+                }
                     // Agregar archivos adjuntos del solp al zip
                     if (solp.Pliego.Archivos != null)
                     {
@@ -4472,7 +4472,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
-                }
+                
                 
 
                 // Agregar archivos PDF de PeticionDeOfertaMateriales al zip
