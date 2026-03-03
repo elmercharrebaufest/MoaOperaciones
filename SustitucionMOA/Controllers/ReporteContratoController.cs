@@ -50,7 +50,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult ObtenerDetalleContrato(string contrato, string fechaInicio, string fechaFin)
         {
             var mailUsuario = SessionPersister.Mail;
-            var detalleContrato = reporteContratoService.GetContratosDetalle(contrato, SessionPersister.Proveedor, fechaInicio, fechaFin, mailUsuario);
+            var detalleContrato = reporteContratoService.GetContratoDetalle(contrato, fechaInicio, fechaFin);
 
             Result result = new Result();
             foreach (var det in detalleContrato.data.Resultados)

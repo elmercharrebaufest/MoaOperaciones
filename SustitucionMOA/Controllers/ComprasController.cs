@@ -15,10 +15,12 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using HttpHelper = System.Web.Http;
+
 
 namespace SustitucionMOA.Controllers
 {
@@ -508,16 +510,31 @@ namespace SustitucionMOA.Controllers
             var mailUsuario = SessionPersister.Mail;
             var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
             Directory.CreateDirectory(path);
-
+            bool zipVacio = false;
             string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario, esProveedor, adjudicacionId, mailUsuario, esSolicitante);
+
+            // Verificar si el archivo ZIP contiene entradas
+            using (FileStream zipToOpen = new FileStream(rutaZip, FileMode.Open))
+            {
+                using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Read))
+                {
+                    if (!archivo.Entries.Any())
+                    {
+                        zipVacio = true;
+                    }
+                }
+            }
+
             byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
             string fileName = Path.GetFileName(rutaZip);
 
-            //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+            // Para evitar sobrecargar el server con zips, una vez cargado lo borro
             Directory.Delete(path, true);
 
-            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            if (zipVacio)
+                return JsonCustom(new { FileContents = new byte[0], success = false, message = "El archivo ZIP está vacío o no contiene entradas." });
 
+            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
         }
 
         [HttpGet]

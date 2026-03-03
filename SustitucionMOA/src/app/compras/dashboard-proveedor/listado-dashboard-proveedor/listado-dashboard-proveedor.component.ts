@@ -226,6 +226,13 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                             type: "application/octet-stream",
                         });
 
+                        if (result.FileContents.length === 0) {
+                            this.blockUI.stop();
+                            this.displayLegajo = false;
+                            this.floatMsgService.setInfoMsg("No hay contenido para descargar");
+                            return;
+                        }
+
                         if (window.navigator.msSaveOrOpenBlob) {
                             // IE11
                             window.navigator.msSaveOrOpenBlob(

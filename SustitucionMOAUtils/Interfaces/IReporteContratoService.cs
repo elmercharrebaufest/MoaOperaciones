@@ -7,6 +7,6 @@ namespace SustitucionMOAUtils.Interfaces
     {
         ReporteContratoViewModel GetContratosReporte(string mailUsuario,string proveedor, string fechaInicio, string fechaFin, bool mostrarPendientes, ReporteContratoWSMOAResponse dataFiltro);
         ReporteContratoViewModel obtenerAgrupadoProducto(ReporteContratoViewModel view);
-        ReporteContratoViewModel GetContratosDetalle(string contrato, string proveedor, string fechaInicio, string fechaFin, string mailUsuario);
+        ReporteContratoViewModel GetContratoDetalle(string contrato, string fechaInicio, string fechaFin);
     }
 }
