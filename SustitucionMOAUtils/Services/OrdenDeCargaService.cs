@@ -1106,7 +1106,13 @@ namespace SustitucionMOAUtils.Services
         public Resultado VerificarSituacionCrediticia(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-            return VerificarSituacionCrediticia(orden, false);
+            var estadoOriginal = orden.Estado;
+            var resultadoVerificacion = VerificarSituacionCrediticia(orden, false);
+            if (estadoOriginal == EstadoOrdenDeCarga.PendienteAprobacionCredito)
+            {
+                NotificarAutorizacionDeNomina(new List<OrdenDeCarga> { orden }, false);
+            }
+            return resultadoVerificacion;
         }
 
         public string ActivarOC(int ordenId, string mailUsuario)
