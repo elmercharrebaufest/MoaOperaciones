@@ -65,6 +65,7 @@
 	<setParameter name="EmailAsuntoPrefijo Config" value="[QA] " />
 	<setParameter name="EmailKgsMenos15TNFasTo Config" value="sebastian.serighetti@molinosagro.com.ar; noelia.caceres@molinosagro.com.ar; moaoperaciones@molinosagro.com.ar"/>
 	<setParameter name="EmailAutorizacionNominaTo Config" value="moaoperaciones@baufest.com"/>
+	<setParameter name="EmailAutorizacionNominaInternoTo Config" value="moaoperaciones@baufest.com"/>
 	<setParameter name="EmailConsultaInternaCC Config" value="sebastian.serighetti@molinosagro.com.ar; noelia.caceres@molinosagro.com.ar; moaoperaciones@baufest.com"/>
 	<setParameter name="EmailAltaTransporteResiduosTo Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar" />
 	<setParameter name="EmailAltaTransporteResiduosCC Config" value="moa.operaciones@molinosagro.com.ar" />
