@@ -15,7 +15,7 @@
 
 	<setParameter name="EsLocal Config" value="false" />
 
-	<setParameter name="DataAgroURL Config" value="https://test.dataagro.com.ar" />
+	<setParameter name="DataAgroURL Config" value="http://test.dataagro.com.ar" />
 
 	<setParameter name="SpaUrl Config" value="https://qabaufest.moaoperaciones.com.ar/web" />
 	<setParameter name="Url Config" value="http://no-usar-gslopidevqa00.molinosagro.ad:50000/" />
@@ -143,8 +143,8 @@
 	<setParameter name="SI_MMRFC_MODIFICAR_SOLPED Service Endpoint Address" value="http://no-usar-gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_MODIFICAR_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="BAPI_PO_CHANGEPortType Service Endpoint Address" value="http://no-usar-gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_CHANGE&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
-	<setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="https://test.dataagro.com.ar/services/AuthService.svc" />
-	<setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="https://test.dataagro.com.ar/services/DataAgroServices.svc" />
+	<setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="http://test.dataagro.com.ar/services/AuthService.svc" />
+	<setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="http://test.dataagro.com.ar/services/DataAgroServices.svc" />
 
 	<setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
 

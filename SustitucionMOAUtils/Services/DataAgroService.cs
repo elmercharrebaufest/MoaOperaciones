@@ -237,6 +237,20 @@ namespace SustitucionMOAUtils.Services
 
         }
 
+        public SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranosNuevo(string CUIT, bool? corredor = false, string cuitCorredor = "")
+        {
+            try
+            {
+                SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUITNuevo(CUIT, corredor, cuitCorredor);
+
+                return respuesta;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public decimal TraerTipoDeCambio()
         {
             try

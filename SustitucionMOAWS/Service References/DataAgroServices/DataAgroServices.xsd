@@ -881,6 +881,7 @@
       <xs:element minOccurs="0" name="CampañaIdActual" type="xs:int" />
       <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinoId" type="xs:int" />
       <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
@@ -1724,6 +1725,8 @@
       <xs:element minOccurs="0" name="CampaniaTableroId" type="xs:int" />
       <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Destino" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinoId" type="xs:int" />
       <xs:element minOccurs="0" name="IVA" nillable="true" type="xs:decimal" />
       <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
     </xs:sequence>

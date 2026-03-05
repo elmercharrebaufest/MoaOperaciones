@@ -13,6 +13,7 @@ namespace SustitucionMOAUtils.Interfaces
         bool ValidarCUITProveedorGranos(ref UsuarioGranos usuario, SustitucionMOAModel.Entities.Proveedor proveedor);
         string ObtenerCBUProveedor(string CUITproveedor);
         SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT, bool? corredor = false);
+        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranosNuevo(string CUIT, bool? corredor = false, string cuitCorredor = "");
         void ValidarNuevoProveedorMultifirma(ref SustitucionMOAModel.Entities.Proveedor nuevoProveedor);
         string VerificarEstadoProveedor(int proveedorID, string usuarioMail);
         bool ProveedorApocrifo(string CUIT);
