@@ -325,7 +325,7 @@ namespace SustitucionMOAUtils.Services.Email
 
             var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_AUTORIZACION_NOMINA);
             var tablaOrdenes = GenerarTablaOrdenesAutorizacionDeNomina(ordenes);
-            var cuerpo = string.Format(cuerpoTemplate, tablaOrdenes);
+            var cuerpo = string.Format(cuerpoTemplate, ordenes.First().Observacion, tablaOrdenes);
             var destinatarios = esEdicionDeOrden ? DireccionToAutorizacionNominaInternoMoa : DireccionToAutorizacionNomina;
 
             var emailSenderData = new EmailSenderData
