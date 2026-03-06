@@ -46,6 +46,8 @@ using System.Linq.Expressions;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 
 namespace SustitucionMOAUtils.Services
@@ -7610,6 +7612,7 @@ namespace SustitucionMOAUtils.Services
             {
                 foreach (var nroSolp in detalleOc.Posiciones?.Select(x => x.NroSolp).Distinct())
                 {
+                    
                     var solpTh = solpsTrabajosHechos.FirstOrDefault(s => s.SolpNro == nroSolp);
                     if (solpTh != null)
                     {
@@ -7617,21 +7620,94 @@ namespace SustitucionMOAUtils.Services
                         {
                             SolpNro = solpTh.SolpNro,
                             SolpCreador = solpTh.SolpCreador,
+                            SolpProveedor = solpTh.SolpProveedor,
                             SolpFecha = solpTh.SolpFecha,
                             OrdenCompraNro = detalleOc.Cabecera.OrdenDeCompra,
                             OrdenCompraCreador = detalleOc.Cabecera.UsuarioComprasSAP,
                             OrdenCompraFecha = detalleOc.Cabecera.FechaCreacion.ToString("dd/MM/yyyy"),
-                            OrdenCompraFechaLiberacion = fechasLiberacionPorOc.TryGetValue(detalleOc.Cabecera.OrdenDeCompra, out DateTime fechaLiberacionOc) ? fechaLiberacionOc.ToString("dd/MM/yyyy") : null
+                            OrdenCompraFechaLiberacion = fechasLiberacionPorOc.TryGetValue(detalleOc.Cabecera.OrdenDeCompra, out DateTime fechaLiberacionOc)
+                            ? fechaLiberacionOc.ToString("dd/MM/yyyy") : (!string.IsNullOrEmpty(solpTh.OrdenCompraFechaLiberacion)
+                            ? solpTh.OrdenCompraFechaLiberacion : solpTh.SolpFecha),
+                            Posiciones = solpTh.Posiciones,
+                            SolpAprobador = solpTh.SolpAprobador
                         });
                     }
                 }
             }
 
             Log.Info("Trabajos hechos a reportar: " + trabajosHechosAReportar.Count);
-            var excelMemStream = ExcelExport.CreateExcelFileMs(trabajosHechosAReportar, new string[] { "Nro solp", "Creador solp", "Fecha solp", "Liberación OC", "Nro OC", "Creador OC", "Fecha OC" });
+            var excel = this.GenerarReporteConNPOI(trabajosHechosAReportar);
             var nombreArchivoXls = $"Reporte OCs trabajos ya hechos {DateTime.Today:yyyy-MM-dd}.xlsx";
 
-            emailComprasService.EnviarMailReporteTrabajoYaHecho(excelMemStream.ToArray(), nombreArchivoXls);
+            emailComprasService.EnviarMailReporteTrabajoYaHecho(excel, nombreArchivoXls);
+        }
+
+        public byte[] GenerarReporteConNPOI(List<TrabajoYaHechoReporte> trabajosHechosAReportar)
+        {
+            IWorkbook workbook = new XSSFWorkbook();
+            ISheet sheet = workbook.CreateSheet("Reporte");
+
+            var headers = new string[] { "Nro OC", "Proveedor", "Creador Solp", "Aprobador Solp", "Nro Solp", "Fecha Liberacion", "Nro Posicion", "Texto Posicion"};
+            IRow headerRow = sheet.CreateRow(0);
+            for (int i = 0; i < headers.Length; i++)
+            {
+                headerRow.CreateCell(i).SetCellValue(headers[i]);
+            }
+
+            int currentRow = 1;
+            foreach (var trabajo in trabajosHechosAReportar)
+            {
+                int startRow = currentRow;
+
+                foreach (var posicion in trabajo.Posiciones)
+                {
+                    IRow row = sheet.CreateRow(currentRow);
+                    row.CreateCell(6).SetCellValue(posicion.NroPosicion);
+                    row.CreateCell(7).SetCellValue(posicion.TextoPosicion);
+                    currentRow++;
+                }
+
+                if (trabajo.Posiciones.Any())
+                {
+                    if (currentRow - startRow > 1) 
+                    {
+                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, currentRow - 1, 0, 0));
+                        sheet.GetRow(startRow).CreateCell(0).SetCellValue(trabajo.OrdenCompraNro);
+
+                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, currentRow - 1, 1, 1));
+                        sheet.GetRow(startRow).CreateCell(1).SetCellValue(trabajo.SolpProveedor);
+
+                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, currentRow - 1, 2, 2));
+                        sheet.GetRow(startRow).CreateCell(2).SetCellValue(trabajo.SolpCreador);
+
+                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, currentRow - 1, 3, 3));
+                        sheet.GetRow(startRow).CreateCell(3).SetCellValue(trabajo.SolpAprobador);
+
+                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, currentRow - 1, 4, 4));
+                        sheet.GetRow(startRow).CreateCell(4).SetCellValue(trabajo.SolpNro);
+
+                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, currentRow - 1, 5, 5));
+                        sheet.GetRow(startRow).CreateCell(5).SetCellValue(trabajo.OrdenCompraFechaLiberacion);
+
+                    }
+                    else
+                    {
+                        IRow row = sheet.GetRow(startRow);
+                        row.CreateCell(0).SetCellValue(trabajo.OrdenCompraNro);
+                        row.CreateCell(1).SetCellValue(trabajo.SolpProveedor);
+                        row.CreateCell(2).SetCellValue(trabajo.SolpCreador);
+                        row.CreateCell(3).SetCellValue(trabajo.SolpAprobador);
+                        row.CreateCell(4).SetCellValue(trabajo.SolpNro);
+                        row.CreateCell(5).SetCellValue(trabajo.OrdenCompraFechaLiberacion);
+                    }
+                }
+            }
+
+            using (var stream = new MemoryStream())
+            {
+                workbook.Write(stream);
+                return stream.ToArray();
+            }
         }
 
         private void EnviarMailReporteSolp(byte[] archivoExcel, string archivo)

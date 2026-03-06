@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SustitucionMOAModel.Dto.Compras
 {
@@ -7,6 +8,10 @@ namespace SustitucionMOAModel.Dto.Compras
         public string SolpNro { get; set; }
 
         public string SolpCreador { get; set; }
+        
+        public string SolpAprobador { get; set; }
+
+        public string SolpProveedor { get; set; }
 
         public string SolpFecha { get; set; }
 
@@ -17,5 +22,13 @@ namespace SustitucionMOAModel.Dto.Compras
         public string OrdenCompraCreador { get; set; }
 
         public string OrdenCompraFecha { get; set; }
+
+        public List<DetallePosicion> Posiciones { get; set; }
+    }
+
+    public class DetallePosicion
+    {
+        public string NroPosicion { get; set; }
+        public string TextoPosicion { get; set; }
     }
 }
