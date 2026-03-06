@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.Compras.POMultiple;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -84,19 +85,32 @@ namespace SustitucionMOARepositorio.Repositorios
                 Set<Solp>()
                 .Where(solp =>
                     solp.TrabajoYaHecho == true &&
+                    solp.TipoSolpSap != (int)TipoSolpSap.Mantenimiento &&
                     nrosSolps.Contains(solp.NroSolp))
                 .Select(solp => new
                 {
                     solp.NroSolp,
-                    solp.UsuarioCreacion.Mail,
-                    solp.FechaCreacion
+                    SolpCreadorMail = solp.UsuarioCreacion.Mail, 
+                    solp.FechaCreacion,
+                    solp.FechaLiberacionSap,
+                    ProveedorAsignadoMail = solp.ProveedorAsignado.Mail,
+                    AprobadorMail = solp.Pliego.Email,
+                    Posiciones = solp.Posiciones.Select(x => new { x.Indice, x.Tarea }).ToList(),
                 })
                 .AsEnumerable()
                 .Select(solp => new TrabajoYaHechoReporte
                 {
                     SolpNro = solp.NroSolp,
-                    SolpCreador = solp.Mail,
-                    SolpFecha = solp.FechaCreacion.ToString("dd/MM/yyyy")
+                    SolpCreador = solp.SolpCreadorMail,
+                    SolpFecha = solp.FechaCreacion.ToString("dd/MM/yyyy"),
+                    OrdenCompraFechaLiberacion = solp.FechaLiberacionSap.HasValue ? solp.FechaLiberacionSap.Value.ToString("dd/MM/yyyy") : null,
+                    SolpProveedor = solp.ProveedorAsignadoMail,
+                    SolpAprobador = solp.AprobadorMail,
+                    Posiciones = solp.Posiciones.Select(p => new DetallePosicion
+                    {
+                        NroPosicion = p.Indice.ToString(),
+                        TextoPosicion = p.Tarea
+                    }).ToList()
                 })
                 .ToList();
 
@@ -115,6 +129,7 @@ namespace SustitucionMOARepositorio.Repositorios
                     g => g.Key,
                     g => g.Max(x => x.FechaLiberacionSap.Value)
                 );
+
             return fechasLiberacionPorOc;
         }
     }
