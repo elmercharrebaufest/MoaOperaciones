@@ -24,9 +24,9 @@
                 <p-confirmDialog #dialogoConfirmarAnular key="confirmarAnular" header="Confirmación de anulación"
                     [responsive]="true" appendTo="body">
                     <p-footer>
-                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal"
                             (click)="dialogoConfirmarAnular.reject()"></button>
-                        <button type="button" pButton label="Sí" class="ui-button-success botonModal"
+                        <button *ngIf="!camionHaIngresadoAPlanta" type="button" pButton label="Aceptar" class="ui-button-success botonModal"
                             (click)="dialogoConfirmarAnular.accept()"></button>
                     </p-footer>
                 </p-confirmDialog>
