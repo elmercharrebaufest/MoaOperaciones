@@ -320,7 +320,7 @@ export class CotizacionComponent extends ListBaseComponent {
         try {
             this.model.proveedorAsignado_Id = event.Id;
             this.model.proveedorAsignado = event.RazonSocial;
-            this.model.codigoProveedorSap = event.CodigoProveedorSap;
+            this.model.codigoProveedorSap = event.CodigoProveedor;
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
         }
