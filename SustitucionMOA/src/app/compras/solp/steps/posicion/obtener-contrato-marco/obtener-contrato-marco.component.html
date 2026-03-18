@@ -20,7 +20,7 @@
                 <p-dropdown dataKey="Id" filter="true" formControlName="centroEntrega" [options]="centrosEntrega"
                   placeholder="Seleccione centro" optionLabel="CodigoDescripcion" appendTo="body"
                   emptyMessage="Ningún centro encontrado" [minLength]="1" [dropdown]="true"
-                  [(ngModel)]="defaultCentroEntrega">
+                  [(ngModel)]="defaultCentroEntrega" (onChange)="onSelectCentro($event)">
                   <ng-template let-item pTemplate="selectedItem">
                     <span>{{item.value.Codigo}} - {{item.value.Descripcion}}</span>
                   </ng-template>

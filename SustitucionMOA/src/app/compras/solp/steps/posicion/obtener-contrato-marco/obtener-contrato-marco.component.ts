@@ -53,6 +53,8 @@ export class ObtenerContratoMarcoComponent implements OnInit {
 
   @Input()
   set ListaContratos(value: ContratoMarco[]) {
+    if(this.formGroup && this.numeroContratoValue && this.numeroContratoValue.length > 0)
+      return;
     if (value && value.length > 0) {
       this.numerosContratoOptions = value.map(contrato => {
         return { label: this.eliminarCerosIniciales(contrato.numeroDocumentoCompras), value: contrato.numeroDocumentoCompras };
@@ -226,12 +228,29 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     });
   }
 
+  onSelectCentro(event) {
+    if (event) {
+      this.muestroSpinner = true;
+
+      const payload = {
+        centro: this.centroEntregaValue || (this.defaultCentroEntrega ? this.defaultCentroEntrega.Codigo : ''),
+        numeroContrato: '',
+        codigoProveedor: this.model.codigoProveedorSap ? String(this.model.codigoProveedorSap).trim() : ''
+      } as ObtenerContratoMarco;
+
+      this.contratoMarcoModel = null;
+      this.obtenerContratoMarcoEmitter.next(payload);
+
+      this.primerBusqueda = false;
+    }
+  }
+
   onSelectProveedor(event) {
     if (event) {
       this.muestroSpinner = true;
       let codProveedor = '';
-      if (event && event.CodigoProveedorSap) {
-        codProveedor = event.CodigoProveedorSap;
+      if (event && (event.CodigoProveedorSap || event.CodigoProveedor)) {
+        codProveedor = event.CodigoProveedorSap || event.CodigoProveedor;
       }
 
       const payload = {
@@ -283,6 +302,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     return centro;
   }
   get numeroContratoValue() {
+    if (!this.formGroup) return '';
     return this.formGroup.get('numeroContrato').value;
   }
 
