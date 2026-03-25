@@ -1466,7 +1466,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         // this.continuarAFinalizar();//fix hasta que se implmente bien RRHH
 
-        if (this.solpActual.trabajoHecho && this.solpActual.organizacionDeCompra.Id == "4010") {
+        if (this.solpActual.trabajoHecho && this.solpActual.organizacionDeCompra != undefined && this.solpActual.organizacionDeCompra.Id == "4010") {
            this.mostrarModalRacionales = true;
         }
         else {
@@ -1477,6 +1477,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
     onGuardarRacionalesDeCompra() {
         this.mostrarModalRacionales = false;
         this.continuarAFinalizar();
+    }
+
+    onCancelarRacionalesDeCompra() {
+        this.mostrarModalRacionales = false;
     }
 
     // Nuevo método para continuar al modal de finalizar
