@@ -1429,6 +1429,7 @@
     <Compile Include="Jobs\EnviarCamposUcropitJob.cs" />
     <Compile Include="Jobs\EnviarMailReporteSOLPJob.cs" />
     <Compile Include="Jobs\NotificarAprobacionesPendientesJob.cs" />
+    <Compile Include="Jobs\ReenviarCamposSustentablesACertificadorJob.cs" />
     <Compile Include="Jobs\VencimientoOrdenesResiduosJob.cs" />
     <Compile Include="Jobs\VerificarOrdenesFacturasCompensadasJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaFasonJob.cs" />

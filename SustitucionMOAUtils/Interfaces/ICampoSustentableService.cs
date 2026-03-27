@@ -34,5 +34,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<TipoNormativa> ObtenerNormativas();
         string ObtenerRutaArchivoEPA(int campoCosechaId, int proveedorId);
         string AdjuntarEPAValidado(string mailUsuario, int campoCosechaId, int proveedorId, HttpPostedFileBase archivoEPA);
+        void ReenviarCamposACertificadorDeSustentables();
     }
 }

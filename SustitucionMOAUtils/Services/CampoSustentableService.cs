@@ -785,33 +785,7 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.HectareasSojaUcropit = resultadoProcesadoUcropit.Bsvs2?.SuperficieElegible;
             campoProveedor.HectareasTotalesUcropit = resultadoProcesadoUcropit.Bsvs2?.SuperficieTotalCampo;
 
-            ActualizarCamposSuperpuestos(campoProveedor);
-
             repositorio.GuardarCambios();
-        }
-
-        public void ActualizarCamposSuperpuestos(CampoProveedor campoProveedorProcesado)
-        {
-            var camposSuperpuestos = this.repositorio.Listar<CampoProveedor>(cp => cp.CampoCosechaSuperposicion_Id == campoProveedorProcesado.CampoCosecha_Id
-            && cp.CampoCosecha.CampoCosechaNormativas.Any(n => n.ToneladasAprobadas == -1));
-
-            if (camposSuperpuestos == null || !camposSuperpuestos.Any())
-                return;
-
-            foreach (var campo in camposSuperpuestos)
-            {
-                var normativasSuperpuesto = campoProveedorProcesado.CampoCosecha.CampoCosechaNormativas
-                                       .ToDictionary(x => x.TipoNormativa_Id);
-
-                foreach (var normativa in campo.CampoCosecha.CampoCosechaNormativas)
-                {
-                    if (normativasSuperpuesto.TryGetValue(normativa.TipoNormativa_Id, out var normativaSuperpuesta))
-                    {
-                        normativa.ToneladasAprobadas = normativaSuperpuesta.ToneladasAprobadas;
-                        normativa.MotivoRechazo = normativaSuperpuesta.MotivoRechazo;
-                    }
-                }
-            }
         }
 
         public bool RenspaExiste(string renspa, string cuit, int cosechaId, bool epa, bool bsvs2, bool eudr)
@@ -1084,32 +1058,27 @@ namespace SustitucionMOAUtils.Services
         {
             Log.Info($"EnviarCampoACertificadorDeSustentables archivo {rutaArchivo} proveedor id {campoProveedor.Proveedor_Id}");
 
-            var campoSuperpuesto = this.ObtenerCampoSuperposicion(campoProveedor, rutaArchivo);
-            if (campoSuperpuesto != null)
+            var archivoCampoSustentable = new ArchivoCampoSustentable
             {
-                Log.Info($"El campo '{campoProveedor.CampoCosecha.Campo.Nombre}' se superpone con el campo '{campoSuperpuesto.CampoCosecha.Campo.Nombre}' del proveedor '{campoSuperpuesto.Proveedor.CodigoProveedor}'.");
+                CampoCosechaId = campoProveedor.CampoCosecha_Id,
+                IdArchivoRecepcion = 0,
+                ProcesadoUcropit = false,
+                ProveedorId = campoProveedor.Proveedor_Id
+            };
+            repositorio.Agregar(archivoCampoSustentable);
 
-                campoProveedor.CampoCosechaSuperposicion_Id = campoSuperpuesto.CampoCosecha_Id;
+            SubirArchivosAGoogleDrive(rutaArchivo, campoProveedor);
+            repositorio.GuardarCambios();
+        }
 
-                var archivoCampoSust = this.repositorio.Obtener<ArchivoCampoSustentable>(a => a.CampoCosechaId == campoSuperpuesto.CampoCosecha_Id);
-                if (archivoCampoSust != null && archivoCampoSust.ProcesadoUcropit)
-                {
-                    var normativasSuperpuesto = campoSuperpuesto.CampoCosecha.CampoCosechaNormativas
-                        .ToDictionary(x => x.TipoNormativa_Id);
+        private void EnviarCampoFaltanteACertificadorDeSustentables(string rutaArchivo, CampoProveedor campoProveedor)
+        {
+            Log.Info($"EnviarCampoACertificadorDeSustentables archivo {rutaArchivo} proveedor id {campoProveedor.Proveedor_Id}");
 
-                    foreach (var normativa in campoProveedor.CampoCosecha.CampoCosechaNormativas)
-                    {
-                        if (normativasSuperpuesto.TryGetValue(normativa.TipoNormativa_Id, out var normativaSuperpuesta))
-                        {
-                            normativa.ToneladasAprobadas = normativaSuperpuesta.ToneladasAprobadas;
-                            normativa.MotivoRechazo = normativaSuperpuesta.MotivoRechazo;
-                        }
-                    }
-                }
-                repositorio.GuardarCambios();
-            }
-            else
+            try
             {
+                SubirArchivosAGoogleDrive(rutaArchivo, campoProveedor);
+
                 var archivoCampoSustentable = new ArchivoCampoSustentable
                 {
                     CampoCosechaId = campoProveedor.CampoCosecha_Id,
@@ -1118,9 +1087,36 @@ namespace SustitucionMOAUtils.Services
                     ProveedorId = campoProveedor.Proveedor_Id
                 };
                 repositorio.Agregar(archivoCampoSustentable);
-
-                SubirArchivosAGoogleDrive(rutaArchivo, campoProveedor);
                 repositorio.GuardarCambios();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error al enviar campo a certificador. Proveedor ID: {campoProveedor.Proveedor_Id}, Archivo: {rutaArchivo}", ex);
+                throw;
+            }
+        }
+
+        public void ReenviarCamposACertificadorDeSustentables()
+        {
+            var cosechaId = this.repositorio.Obtener<Cosecha>(c => c.Nombre == "25-26").Id;
+            var archivosCamposAnalizados = this.repositorio.Listar<ArchivoCampoSustentable>(a => a.CampoCosecha.Cosecha_Id == cosechaId)
+                .Select(x => x.CampoCosechaId).ToList();
+            var camposAReenviar = this.repositorio.Listar<CampoProveedor>(x => x.CampoCosecha.Cosecha_Id == cosechaId && !archivosCamposAnalizados.Contains(x.CampoCosecha_Id));
+            
+            Log.Info($"Ejecucion Job ReenviarCamposACertificadorDeSustentables camposCosecha IDs: {string.Join(",", camposAReenviar.Select(c => c.CampoCosecha.Id))}");
+
+            foreach (var campo in camposAReenviar)
+            {
+                try
+                {
+                    var rutaArchivo = this.repositorio.Obtener<Archivo>(a => a.Id == campo.Archivo_Id).Ruta;
+                    EnviarCampoFaltanteACertificadorDeSustentables(rutaArchivo, campo);
+                    Log.Info($"Ejecución correcta en JOB. campoCosechaId {campo.CampoCosecha_Id}");
+                }
+                catch(Exception ex)
+                {
+                    Log.Error($"Error ejecucion ReenviarCamposACertificadorDeSustentables campoCosechaId {campo.CampoCosecha_Id}", ex);
+                }
             }
         }
 
