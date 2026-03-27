@@ -1111,6 +1111,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     var rutaArchivo = this.repositorio.Obtener<Archivo>(a => a.Id == campo.Archivo_Id).Ruta;
                     EnviarCampoFaltanteACertificadorDeSustentables(rutaArchivo, campo);
+                    Log.Info($"Ejecución correcta en JOB. campoCosechaId {campo.CampoCosecha_Id}");
                 }
                 catch(Exception ex)
                 {
