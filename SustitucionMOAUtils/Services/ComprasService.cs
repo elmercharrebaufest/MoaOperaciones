@@ -1380,7 +1380,7 @@ namespace SustitucionMOAUtils.Services
                 RevisadoPor = solp.Pliego.RevisadoPor,
                 EstadoSolpSap_Id = solp.EstadoSolpSap_Id,
                 EstadoDocumento_Id = solp.EstadoDocumento_Id,
-                Posiciones = solp.Posiciones.Select(p => new SolpPosicionDto(p)).ToList(),
+                Posiciones = solp.Posiciones.Select(p => new SolpPosicionDto(p) { NroSolp = solp.NroSolp }).ToList(),
                 PasoCompletado = solp.PasoCompletado,
                 EstadoPasos = solp.EstadoPasos,
                 EmailLinkToken = solp.EmailLinkToken,
