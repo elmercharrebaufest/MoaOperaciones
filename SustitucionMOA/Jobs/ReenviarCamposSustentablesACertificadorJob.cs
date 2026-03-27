@@ -24,7 +24,7 @@ namespace SustitucionMOA.Jobs
         {
             try
             {
-                if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ReenviarCamposACertificadorDeSustentables").Habilitado == false)
+                if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "ReenviarCamposSustentablesACertificadorJob").Habilitado == false)
                     return;
 
                 campoSustentableService.ReenviarCamposACertificadorDeSustentables();
