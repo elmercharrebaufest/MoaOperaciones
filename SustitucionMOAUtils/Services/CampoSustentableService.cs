@@ -1071,6 +1071,31 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
+        private void EnviarCampoFaltanteACertificadorDeSustentables(string rutaArchivo, CampoProveedor campoProveedor)
+        {
+            Log.Info($"EnviarCampoACertificadorDeSustentables archivo {rutaArchivo} proveedor id {campoProveedor.Proveedor_Id}");
+
+            try
+            {
+                SubirArchivosAGoogleDrive(rutaArchivo, campoProveedor);
+
+                var archivoCampoSustentable = new ArchivoCampoSustentable
+                {
+                    CampoCosechaId = campoProveedor.CampoCosecha_Id,
+                    IdArchivoRecepcion = 0,
+                    ProcesadoUcropit = false,
+                    ProveedorId = campoProveedor.Proveedor_Id
+                };
+                repositorio.Agregar(archivoCampoSustentable);
+                repositorio.GuardarCambios();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error al enviar campo a certificador. Proveedor ID: {campoProveedor.Proveedor_Id}, Archivo: {rutaArchivo}", ex);
+                throw;
+            }
+        }
+
         public void ReenviarCamposACertificadorDeSustentables()
         {
             var cosechaId = this.repositorio.Obtener<Cosecha>(c => c.Nombre == "25-26").Id;
@@ -1085,7 +1110,7 @@ namespace SustitucionMOAUtils.Services
                 try
                 {
                     var rutaArchivo = this.repositorio.Obtener<Archivo>(a => a.Id == campo.Archivo_Id).Ruta;
-                    EnviarCampoACertificadorDeSustentables(rutaArchivo, campo);
+                    EnviarCampoFaltanteACertificadorDeSustentables(rutaArchivo, campo);
                 }
                 catch(Exception ex)
                 {
