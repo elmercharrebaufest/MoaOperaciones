@@ -159,6 +159,11 @@ namespace SustitucionMOA
                 j => j.Execute(),
                 "15 3 * * *", tz);
 
+            RecurringJob.AddOrUpdate<Jobs.IReenviarCamposSustentablesACertificadorJob>(
+            "ReenviarCamposSustentablesACertificadorJob",
+            j => j.Execute(),
+            "0 15 1 1 *", tz);
+
         }
     }
 

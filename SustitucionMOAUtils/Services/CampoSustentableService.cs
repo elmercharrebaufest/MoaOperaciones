@@ -1071,6 +1071,29 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
+        public void ReenviarCamposACertificadorDeSustentables()
+        {
+            var cosechaId = this.repositorio.Obtener<Cosecha>(c => c.Nombre == "25-26").Id;
+            var archivosCamposAnalizados = this.repositorio.Listar<ArchivoCampoSustentable>(a => a.CampoCosecha.Cosecha_Id == cosechaId)
+                .Select(x => x.CampoCosechaId).ToList();
+            var camposAReenviar = this.repositorio.Listar<CampoProveedor>(x => x.CampoCosecha.Cosecha_Id == cosechaId && !archivosCamposAnalizados.Contains(x.CampoCosecha_Id));
+            
+            Log.Info($"Ejecucion Job ReenviarCamposACertificadorDeSustentables camposCosecha IDs: {string.Join(",", camposAReenviar.Select(c => c.CampoCosecha.Id))}");
+
+            foreach (var campo in camposAReenviar)
+            {
+                try
+                {
+                    var rutaArchivo = this.repositorio.Obtener<Archivo>(a => a.Id == campo.Archivo_Id).Ruta;
+                    EnviarCampoACertificadorDeSustentables(rutaArchivo, campo);
+                }
+                catch(Exception ex)
+                {
+                    Log.Error($"Error ejecucion ReenviarCamposACertificadorDeSustentables campoCosechaId {campo.CampoCosecha_Id}", ex);
+                }
+            }
+        }
+
         private List<SP_CampoProveedorListadoDto> ListarCampos(Usuario usuario)
         {
             var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
