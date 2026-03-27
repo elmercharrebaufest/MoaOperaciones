@@ -28,6 +28,7 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionCCAltaTempranaCuitFas = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasCC"];
         private static readonly string DireccionToKgsMenos15TNFas = ConfigurationManager.AppSettings["EmailKgsMenos15TNFasTo"];
         private static readonly string DireccionToAutorizacionNomina = ConfigurationManager.AppSettings["EmailAutorizacionNominaTo"];
+        private static readonly string DireccionToAutorizacionNominaInternoMoa = ConfigurationManager.AppSettings["EmailAutorizacionNominaInternoTo"];
 
         private readonly IEmailService emailService;
 
@@ -315,7 +316,7 @@ namespace SustitucionMOAUtils.Services.Email
             emailService.EnviarMail(emailSenderData);
         }
 
-        public void EnviarMailAutorizacionDeNomina(IEnumerable<OrdenDeCarga> ordenes)
+        public void EnviarMailAutorizacionDeNomina(IEnumerable<OrdenDeCarga> ordenes, bool esEdicionDeOrden)
         {
             if (!ordenes?.Any() ?? false)
             {
@@ -324,12 +325,13 @@ namespace SustitucionMOAUtils.Services.Email
 
             var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_AUTORIZACION_NOMINA);
             var tablaOrdenes = GenerarTablaOrdenesAutorizacionDeNomina(ordenes);
-            var cuerpo = string.Format(cuerpoTemplate, tablaOrdenes);
+            var cuerpo = string.Format(cuerpoTemplate, ordenes.First().Observacion, tablaOrdenes);
+            var destinatarios = esEdicionDeOrden ? DireccionToAutorizacionNominaInternoMoa : DireccionToAutorizacionNomina;
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionToAutorizacionNomina }),
-                Asunto = "Nómina de carga por cuenta de Molinos Agro SA",
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { destinatarios }),
+                Asunto = "Nómina de carga por cuenta de Molinos Agro SA" + (esEdicionDeOrden ? " - Orden modificada" : ""),
                 Cuerpo = cuerpo
             };
             emailService.EnviarMail(emailSenderData);

@@ -168,7 +168,7 @@ namespace SustitucionMOAUtils.Services
 
                     kilosDisponibles -= kilosPorOrden;
                 }
-                NotificarAutorizacionDeNomina(ordenesAgregadas);
+                NotificarAutorizacionDeNomina(ordenesAgregadas, false);
                 var resultado = new Resultado { IdEntidad = nuevaOrden.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
                 return resultado;
             }
@@ -306,6 +306,7 @@ namespace SustitucionMOAUtils.Services
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
                 gestionAltas.OrdenId = ordenDeCarga.Id;
                 EnviarMailAltaCuitTerceros(gestionAltas);
+                NotificarAutorizacionDeNomina(new List<OrdenDeCarga> { ordenEditar }, true);
                 Log.Info($"Result: {resultado.ToJson()}");
                 return resultado;
             }
@@ -1105,7 +1106,13 @@ namespace SustitucionMOAUtils.Services
         public Resultado VerificarSituacionCrediticia(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-            return VerificarSituacionCrediticia(orden, false);
+            var estadoOriginal = orden.Estado;
+            var resultadoVerificacion = VerificarSituacionCrediticia(orden, false);
+            if (estadoOriginal == EstadoOrdenDeCarga.PendienteAprobacionCredito)
+            {
+                NotificarAutorizacionDeNomina(new List<OrdenDeCarga> { orden }, false);
+            }
+            return resultadoVerificacion;
         }
 
         public string ActivarOC(int ordenId, string mailUsuario)
@@ -2984,7 +2991,7 @@ namespace SustitucionMOAUtils.Services
             return recorridosScato != null && recorridosScato.Any();
         }
 
-        private void NotificarAutorizacionDeNomina(List<OrdenDeCarga> ordenesAgregadas)
+        private void NotificarAutorizacionDeNomina(List<OrdenDeCarga> ordenesAgregadas, bool esEdicionDeOrden)
         {
             try
             {
@@ -2996,7 +3003,7 @@ namespace SustitucionMOAUtils.Services
                 if (DebeNotificarAutorizacionDeNomina(ordenesAgregadas[0]))
                 {
                     var ordenesANotificar = ordenesAgregadas.Where(o => o.Estado == EstadoOrdenDeCarga.EntregaGenerada);
-                    emailFasService.EnviarMailAutorizacionDeNomina(ordenesANotificar);
+                    emailFasService.EnviarMailAutorizacionDeNomina(ordenesANotificar, esEdicionDeOrden);
                 }
             }
             catch (Exception ex)

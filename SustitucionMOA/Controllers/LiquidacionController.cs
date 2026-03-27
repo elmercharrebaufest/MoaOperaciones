@@ -206,7 +206,7 @@ namespace SustitucionMOA.Controllers
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_LIQUIDACIONES)]
         public ActionResult getInformadas()
         {
-            return Json(new { data = _liquidacionService.GetLiquidacionInformadas(SessionPersister.Proveedor) }, JsonRequestBehavior.AllowGet);
+            return JsonCustom(new { data = _liquidacionService.GetLiquidacionInformadas(SessionPersister.Proveedor) });
         }
     }
 }
