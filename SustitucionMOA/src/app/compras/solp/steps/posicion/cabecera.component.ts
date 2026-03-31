@@ -72,8 +72,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
+    readonly CodigoGrupoComprasRHAceitesyOT: string = "005";
     readonly CodigoGrupoComprasRHComercial: string = "018";
-    readonly CodigoOrganizCompra2029Estrategicas: string = "2029";
+    readonly CodigoOrganizCompraEstrategicas: string = "2029";
+    readonly CodigoOrganizCompraRRHH: string = "4010";
     esUsuarioRRHH: boolean = this.isAuthorized(Permiso.ComprasRRHH);
 
     //Posiciones
@@ -215,12 +217,12 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 let organizaciones = this.manejarErroresApiResponse(resp);
                 if (organizaciones) {
                     this.organizacionesDeCompra = organizaciones;
-                    if (this.model.organizacionDeCompra.Id) {
+                    if (this.model.organizacionDeCompra && this.model.organizacionDeCompra.Id) {
                         this.model.organizacionDeCompra = this.organizacionesDeCompra.find(x => x.Id == this.model.organizacionDeCompra.Id) as OrganizacionDeCompra;
                     }
                     else {
                         if (!this.esUsuarioRRHH) {
-                            this.model.organizacionDeCompra = this.organizacionesDeCompra.find(x => x.Id == this.CodigoOrganizCompra2029Estrategicas) || this.organizacionesDeCompra[0];
+                            this.model.organizacionDeCompra = this.organizacionesDeCompra.find(x => x.Id == this.CodigoOrganizCompraEstrategicas) || this.organizacionesDeCompra[0];
                         }
                         else {
                             this.model.organizacionDeCompra = this.organizacionesDeCompra[0];
@@ -350,6 +352,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.completarDatosUltimaSolp();
             this.combos.CombosSeteados = true;
         }
+        this.setGrupoComprasDefault();
     }
 
     duplicarPosicion(el: HTMLElement) {
@@ -549,6 +552,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     organizacionDeCompraChanged() {
+        this.setGrupoComprasDefault();
     }
 
     cambiarClaseDocumento() {
@@ -1063,7 +1067,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
 
         let grupoComprasAux = this.combos.GrupoCompras.find(x => x.Descripcion == posicion.codigoServicio.GrupoCompras.Descripcion);
-        if (grupoComprasAux && !(this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompra2029Estrategica())) {
+        if (grupoComprasAux && !(this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompraEstrategica2029())) {
             // Si es de RRHH, solp servicio y organización 2029 (Estratégicas), el grupo de compras debe ser 018 RH Comercial
             posicion.selectGrupoCompras = grupoComprasAux;
         }
@@ -1117,6 +1121,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.model.calcularValorTotalPorMoneda();
             this.listarContratosAsociados();
         }
+        this.setGrupoComprasDefault();
     }
 
     // Abre el modal de Asociar contrato
@@ -1143,7 +1148,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         let unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == $event.contrato.UnidadMedida);
         this.model.posiciones[posicionIndex].unidadSeleccionada = unidadSeleccionadaAux;
 
-        if (this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompra2029Estrategica()) {
+        if (this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompraEstrategica2029()) {
             // Si es de RRHH, solp servicio y organización 2029 (Estratégicas), el grupo de compras debe ser 018 RH Comercial
             this.model.posiciones[posicionIndex].selectGrupoCompras = this.combos.GrupoCompras.find((x: any) => x.Codigo == this.CodigoGrupoComprasRHComercial);
         }
@@ -1247,7 +1252,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     newPos.selectArticuloCompras = grupoArticuloSeleccionadoObj;
                 }
 
-                if (grupoComprasSeleccionadoObj && !(this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompra2029Estrategica())) {
+                if (grupoComprasSeleccionadoObj && !(this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompraEstrategica2029())) {
                     // Si es de RRHH, solp servicio y organización 2029 (Estratégicas), el grupo de compras debe ser 018 RH Comercial
                     newPos.selectGrupoCompras = grupoComprasSeleccionadoObj;
                 }
@@ -1424,7 +1429,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     this.model.posiciones[0].selectAlmacenEntrega = this.datosUltimaSolp.Almacen;
                 }
 
-                if (this.datosUltimaSolp.GrupoCompras != null && !(this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompra2029Estrategica())) {
+                if (this.datosUltimaSolp.GrupoCompras != null && !(this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompraEstrategica2029())) {
                     // Si es de RRHH, solp servicio y organización 2029 (Estratégicas), el grupo de compras debe ser 018 RH Comercial
                     this.model.posiciones[0].selectGrupoCompras = this.datosUltimaSolp.GrupoCompras;
                 }
@@ -1486,7 +1491,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
             this.model.posicionActual.monedaSeleccionada = moneda;
             this.model.posicionActual.GrupoCompras = grupoCompras;
-            if (this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompra2029Estrategica()) {
+            if (this.esUsuarioRRHH && this.esSolpServicio() && this.esOrganizacionCompraEstrategica2029()) {
                 this.model.posicionActual.selectGrupoCompras = this.combos.GrupoCompras.find((x: any) => x.Codigo == this.CodigoGrupoComprasRHComercial)
             }
             else {
@@ -1616,11 +1621,29 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         return false;
     }
 
-    esOrganizacionCompra2029Estrategica(): boolean {
-        if (this.model.organizacionDeCompra && this.model.organizacionDeCompra.Id == this.CodigoOrganizCompra2029Estrategicas) {
+    esOrganizacionCompraEstrategica2029(): boolean {
+        if (this.model.organizacionDeCompra && this.model.organizacionDeCompra.Id == this.CodigoOrganizCompraEstrategicas) {
             return true;
         }
         return false;
+    }
+
+    esOrganizacionCompraRRHH4010(): boolean {
+        if (this.model.organizacionDeCompra && this.model.organizacionDeCompra.Id == this.CodigoOrganizCompraRRHH) {
+            return true;
+        }
+        return false;
+    }
+
+    setGrupoComprasDefault() {
+        if (this.esSolpServicio()) {
+            if (this.esOrganizacionCompraEstrategica2029()) {
+                this.model.posicionActual.selectGrupoCompras = this.combos.GrupoCompras.find((x: any) => x.Codigo == this.CodigoGrupoComprasRHComercial); // Grupo compras código 018
+            }
+            if (this.esOrganizacionCompraRRHH4010()) {
+                this.model.posicionActual.selectGrupoCompras = this.combos.GrupoCompras.find((x: any) => x.Codigo == this.CodigoGrupoComprasRHAceitesyOT); // Grupo compras código 005
+            }
+        }
     }
 
     manejarErroresResponse<T>(response: T): T | undefined {
