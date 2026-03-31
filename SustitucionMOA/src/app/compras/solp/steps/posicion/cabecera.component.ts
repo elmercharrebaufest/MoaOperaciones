@@ -1636,7 +1636,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     setGrupoComprasDefault() {
-        if (this.esSolpServicio()) {
+        if (this.esUsuarioRRHH && this.esSolpServicio()) {
             if (this.esOrganizacionCompraEstrategica2029()) {
                 this.model.posicionActual.selectGrupoCompras = this.combos.GrupoCompras.find((x: any) => x.Codigo == this.CodigoGrupoComprasRHComercial); // Grupo compras código 018
             }
