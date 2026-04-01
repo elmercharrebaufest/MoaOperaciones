@@ -1631,8 +1631,11 @@ namespace SustitucionMOAUtils.Services
             var ordenesDeCompraSap = new List<OrdenDeCompraSAPDto>();
             foreach (var pos in solpPosiciones)
             {
-                var ordenesSapResp = obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(pos.NroSolp, pos.Indice.ToString());
-                ordenesDeCompraSap.AddRange(ordenesSapResp);
+                if(pos.NroSolp != null)
+                {
+                    var ordenesSapResp = obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(pos.NroSolp, pos.Indice.ToString());
+                    ordenesDeCompraSap.AddRange(ordenesSapResp);
+                }       
             }
 
             return ordenesDeCompraSap.Distinct().ToList();
