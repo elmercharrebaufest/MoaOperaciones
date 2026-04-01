@@ -3,6 +3,7 @@
 using SustitucionMOAModel.Dto.PliegoMultiple;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Enums.Compras;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Helpers;
@@ -84,6 +85,7 @@ namespace SustitucionMOAUtils.Services
                         && !solpQuery.Pliego.Multiple
                         && !solpQuery.Posiciones.Any(posicion => posicion.AdjudicacionPosiciones.Any())
                         && solpQuery.OrganizacionDeCompra_Id == OrganizacionDeCompraIds.Estrategica
+                        && !solpQuery.Posiciones.Any(x => x.GrupoCompras.Codigo == GrupoComprasCodigos.RH_RRHHyOrganiz)
                     )
                 ;
 

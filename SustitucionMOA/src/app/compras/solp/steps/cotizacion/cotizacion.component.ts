@@ -14,6 +14,7 @@ import { ValidadorPasoSolpService } from '../../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../../enum-paso-solp';
 import { OrdenDeCompraSap } from '../../../../modelos/ordenDeCompraSap';
 import { CondicionesEspecialesOriginales } from './condiciones-especiales-originales';
+import { Permiso } from '../../../../common/enums/Permisos';
 
 declare var $: any;
 
@@ -40,6 +41,8 @@ export class CotizacionComponent extends ListBaseComponent {
     camposObligatorios: any[] = [
         { campo: 'dias', esObligatorio: true }
     ];
+
+    esUsuarioRRHH: boolean = this.isAuthorized(Permiso.ComprasRRHH);
 
     proveedorSeleccionado: any;
     proveedores: any[] = new Array();
@@ -734,7 +737,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
     puedeSeleccionarPliegoMultiple(): boolean {
         const hayCondicionEspecialSeleccionada = this.model.trabajoHecho || this.model.conPresupuesto || this.model.adicional || this.model.urgencia || this.model.condEspProveedorAsignado;
-        return !hayCondicionEspecialSeleccionada;
+        return !this.esUsuarioRRHH && !hayCondicionEspecialSeleccionada;
     }
 
     puedeSeleccionarCondicionEspecial(): boolean {
