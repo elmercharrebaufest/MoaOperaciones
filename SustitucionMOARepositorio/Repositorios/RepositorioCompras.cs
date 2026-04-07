@@ -85,7 +85,8 @@ namespace SustitucionMOARepositorio.Repositorios
                 Set<Solp>()
                 .Where(solp =>
                     solp.TrabajoYaHecho == true &&
-                    solp.TipoSolpSap != (int)TipoSolpSap.Mantenimiento &&
+                    (solp.TipoSolpSap != (int)TipoSolpSap.Mantenimiento || 
+                    solp.THAcuerdoMarco == true) &&
                     nrosSolps.Contains(solp.NroSolp))
                 .Select(solp => new
                 {
