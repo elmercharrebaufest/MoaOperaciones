@@ -7617,6 +7617,12 @@ namespace SustitucionMOAUtils.Services
                     var solpTh = solpsTrabajosHechos.FirstOrDefault(s => s.SolpNro == nroSolp);
                     if (solpTh != null)
                     {
+                        var aprobaciones = this.repositorio.Listar<Aprobaciones>(a => a.NRO_OC == detalleOc.Cabecera.OrdenDeCompra);
+                        solpTh.Posiciones.ForEach(p =>
+                        {
+                            p.FechaAprobacionES = aprobaciones.FirstOrDefault(a => a.NRO_POS == p.NroPosicion).Fecha_aprobacion?.ToString("dd/MM/yyyy");
+                        });
+
                         trabajosHechosAReportar.Add(new TrabajoYaHechoReporte
                         {
                             SolpNro = solpTh.SolpNro,
@@ -7648,7 +7654,7 @@ namespace SustitucionMOAUtils.Services
             IWorkbook workbook = new XSSFWorkbook();
             ISheet sheet = workbook.CreateSheet("Reporte");
 
-            var headers = new string[] { "Nro OC", "Proveedor", "Creador Solp", "Aprobador Solp", "Nro Solp", "Fecha Liberacion", "Nro Posicion", "Texto Posicion"};
+            var headers = new string[] { "Nro OC", "Proveedor", "Creador Solp", "Aprobador Solp", "Nro Solp", "Fecha Liberacion", "Nro Posicion", "Texto Posicion", "Fecha Aprobacion ES"};
             IRow headerRow = sheet.CreateRow(0);
             for (int i = 0; i < headers.Length; i++)
             {
@@ -7665,6 +7671,7 @@ namespace SustitucionMOAUtils.Services
                     IRow row = sheet.CreateRow(currentRow);
                     row.CreateCell(6).SetCellValue(posicion.NroPosicion);
                     row.CreateCell(7).SetCellValue(posicion.TextoPosicion);
+                    row.CreateCell(8).SetCellValue(posicion.FechaAprobacionES);
                     currentRow++;
                 }
 

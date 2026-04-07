@@ -30,5 +30,6 @@ namespace SustitucionMOAModel.Dto.Compras
     {
         public string NroPosicion { get; set; }
         public string TextoPosicion { get; set; }
+        public string FechaAprobacionES { get; set; }
     }
 }
