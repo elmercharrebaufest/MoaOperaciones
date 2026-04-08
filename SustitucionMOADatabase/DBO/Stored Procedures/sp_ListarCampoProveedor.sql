@@ -59,14 +59,14 @@ BEGIN
             OR (cp.EUDR = 1 AND tn.Descripcion = 'EUDR')
         )
         AND cp.Borrado = 0
-        AND (
+        AND ((
             NOT EXISTS (SELECT 1 FROM @TablaIds)
             OR p.Id IN (SELECT Id FROM @TablaIds)
             OR cp.Proveedor_Id IN (SELECT Id FROM @TablaIds)
         )
-        AND (
+        OR (
             NOT EXISTS (SELECT 1 FROM @TablaCuits)
             OR cp.CUIT IN (SELECT CUIT FROM @TablaCuits)
-        )
+        ))
     ORDER BY cp.FechaCreacion DESC;
 END
