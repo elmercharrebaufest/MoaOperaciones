@@ -8121,7 +8121,7 @@ namespace SustitucionMOAUtils.Services
                         TieneCotizacion = solp.Posiciones.Any(pos => pos.Peticiones.Any())
                     },
                     solp =>
-                        solpIds.Contains(solp.Id) &&
+                        solpIds.Contains(solp.Id) && solp.OrganizacionDeCompra.Id != OrganizacionDeCompraIds.ComprasRRHH &&
                         (solp.Pliego.MultipleFinalizado == true || solp.Pliego.Multiple == false)
                 );
 
