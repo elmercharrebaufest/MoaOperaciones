@@ -417,6 +417,7 @@ namespace SustitucionMOAModel.Entities
                 case "COM": return RolEnum.Comisiones;
                 case "COMPRADOR": return RolEnum.Comprador;
                 case "COMPRAS": return RolEnum.Compras;
+                case "COMPRASRRHH": return RolEnum.ComprasRRHH;
                 case "COMP": return RolEnum.Comprobantes;
                 case "CORR": return RolEnum.Corredor;
                 case "DES": return RolEnum.Deshabilitado;
