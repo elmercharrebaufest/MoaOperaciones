@@ -621,7 +621,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
     }
     if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'CAP') {
       if (this.listaArchivos == null || this.listaArchivos.length < 1) {
-        this.mensajeComponent.setErrorMsg("Falta adjuntar Carta presentacón");
+        this.mensajeComponent.setErrorMsg("Falta adjuntar Carta presentación");
         return true;
       }
     }
