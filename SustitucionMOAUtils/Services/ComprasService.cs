@@ -9678,7 +9678,7 @@ namespace SustitucionMOAUtils.Services
 
         private void CrearAdjudicacionYOrdenCompraPorLiberacionSolp(Solp solp, Cotizacion cotizacion)
         {
-            if (solp.OrganizacionDeCompra_Id == OrganizacionDeCompraIds.ComprasRRHH && solp.TrabajoYaHecho == true)
+            if (solp.OrganizacionDeCompra_Id == OrganizacionDeCompraIds.ComprasRRHH && solp.TrabajoYaHecho == true && !EstaAdjudicadaCompletamenteEnSap(solp.NroSolp))
             {
                 var centroSolp = solp.Posiciones.First().Centro.CodigoSap;
                 var centroRegion = repositorio.Obtener<CentroDireccion>(cr => cr.CodigoSap == centroSolp);
@@ -9765,6 +9765,16 @@ namespace SustitucionMOAUtils.Services
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(res);
             return alternateView;
+        }
+
+        private bool EstaAdjudicadaCompletamenteEnSap(string nroSolp)
+        {
+            var posicionesSap = comprasServiceSap.ObtenerPosiciones(nroSolp);
+            if (posicionesSap != null && posicionesSap.Any())
+            {
+                return posicionesSap.All(p => p.Cantidad - p.Ordered <= 0);
+            }
+            return false;
         }
     }
 }
