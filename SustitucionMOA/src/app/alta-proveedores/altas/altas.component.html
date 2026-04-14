@@ -1634,7 +1634,7 @@
         </div>
 
         <div style="text-align: right;">
-            <button type="button" pButton label="Volver al canal de altas" class="ui-button-success botonModal"
+            <button *ngIf="esUsuarioDeAltaInterna" type="button" pButton label="Volver al canal de altas" class="ui-button-success botonModal"
                 style="margin-right: 10px;" (click)="moverAlCanalDeAltas();" [disabled]="!puedeVolverAlCanalDeAltas()">
             </button>
             <button type="button" pButton label="Cerrar" class="ui-button-info botonModal"
