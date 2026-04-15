@@ -107,20 +107,27 @@ namespace SustitucionMOAUtils.Services.Email
                 var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT);
                 var cuerpoTemplatePosiciones = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT_POSICION);
                 var contenidoHtmlPosiciones = string.Empty;
-
+                var procesados = new HashSet<string>();
+ 
                 foreach (var posicion in request.Posiciones)
                 {
                     var certificacionNro = posicion.Aprobacion.NRO_ES_LOCAL;
                     var reporteMemStream = new MemoryStream();
-                    try
+
+                    if (!procesados.Contains(certificacionNro))
                     {
-                        var reporteES = GetReportES(certificacionNro).ConfigureAwait(false).GetAwaiter().GetResult();
-                        reporteES.CopyTo(reporteMemStream);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.AzureError(ex);
-                        Log.Error("Error al obtener archivo para " + certificacionNro, ex);
+                        try
+                        {
+                            var reporteES = GetReportES(certificacionNro).ConfigureAwait(false).GetAwaiter().GetResult();
+                            reporteES.CopyTo(reporteMemStream);
+                            reporteMemStream.Position = 0; 
+                            procesados.Add(certificacionNro);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.AzureError(ex);
+                            Log.Error("Error al obtener archivo para " + certificacionNro, ex);
+                        }
                     }
 
                     var proveedorRazonSocial = posicion.ProveedorRazonSocial ?? string.Empty;
