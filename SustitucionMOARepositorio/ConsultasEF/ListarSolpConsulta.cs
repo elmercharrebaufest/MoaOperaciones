@@ -96,6 +96,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                    select u).First();
                 var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
                 var esUsuarioCompras = usuario.TieneRol(RolEnum.ComprasRRHH);
+                var organizacionDeCompraAFiltrar = esUsuarioCompras ? OrganizacionDeCompraIds.ComprasRRHH : OrganizacionDeCompraIds.Estrategica;
                 var visualizarEditarOC = usuario.ObtenerPermisos().Contains("EDITAR OC");
                 var sinSolps = !Solps.Any();
 
@@ -124,7 +125,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     || (TipoPliego == TipoPliego.PliegoUnico && !x.Pliego.Multiple)
                                                     || (TipoPliego == TipoPliego.PliegoMultiple && x.Pliego.Multiple)
                                                 ) &&
-                                                (esUsuarioCompras || x.OrganizacionDeCompra_Id == OrganizacionDeCompraIds.Estrategica)
+                                                (x.OrganizacionDeCompra_Id == organizacionDeCompraAFiltrar)
                                                 select new SolpDto
                                                 {
                                                     VerEditarOC = visualizarEditarOC,
