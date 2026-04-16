@@ -7620,7 +7620,7 @@ namespace SustitucionMOAUtils.Services
                         var aprobaciones = this.repositorio.Listar<Aprobaciones>(a => a.NRO_OC == detalleOc.Cabecera.OrdenDeCompra);
                         solpTh.Posiciones.ForEach(p =>
                         {
-                            p.FechaAprobacionES = aprobaciones.FirstOrDefault(a => a.NRO_POS == p.NroPosicion).Fecha_aprobacion?.ToString("dd/MM/yyyy");
+                            p.FechaAprobacionES = aprobaciones.FirstOrDefault(a => a.NRO_POS == p.NroPosicion)?.Fecha_aprobacion?.ToString("dd/MM/yyyy");
                         });
 
                         trabajosHechosAReportar.Add(new TrabajoYaHechoReporte
