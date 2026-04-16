@@ -1052,6 +1052,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 x.numeroContratoSuperior === ""
         );
 
+        const noCumpleCttoMarco = posicionesActivas.some(x => x.numeroContratoSuperior === null || 
+            x.numeroContratoSuperior === undefined || 
+            x.numeroContratoSuperior === "");
+
+        if (this.solpActual.thAcuerdoMarco && noCumpleCttoMarco) {            
+            return false;
+        }
+
         // 2. Si hay posiciones con contrato marco y sin contrato marco al mismo tiempo,
         // la función debe devolver false (condición no permitida)
         if (tienenContratoMarco.length > 0 && sinContratoMarco.length > 0) {
