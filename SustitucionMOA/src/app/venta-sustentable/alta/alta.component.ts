@@ -335,15 +335,15 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     public onCheck2BSVS(value: any) {
-        this.normativaChanged(true, value);
+        this.normativaChanged(true);
     }
 
     public onCheckEPA(value: any) {
-        this.normativaChanged(false, value);
+        this.normativaChanged(false);
     }
 
     public onCheckEUDR(value: any) {
-        this.normativaChanged(false, value);
+        this.normativaChanged(false);
     }
 
     private validarModalDeclaracion() {
@@ -703,14 +703,21 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }
     }
 
-    normativaChanged(bsvs2: boolean, value: boolean = null): void {
-        if (this.renspa && this.cosechaId) {
-            this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId, this.normEPA, this.normBSVS2, this.normEUDR).subscribe((result: any) => {
-                this.renspaExiste = result;
-                if(bsvs2 && value){
+    normativaChanged(bsvs2Cambiado: boolean): void {
+        if (this.cosechaId) {
+            if (this.renspa) {
+                this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId, this.normEPA, this.normBSVS2, this.normEUDR).subscribe((result) => {
+                    this.renspaExiste = result;
+                    if(!this.renspaExiste && bsvs2Cambiado && this.normBSVS2){
+                        this.validarModalDeclaracion();
+                    }
+                });
+            }
+            else {
+                if(bsvs2Cambiado && this.normBSVS2){
                     this.validarModalDeclaracion();
                 }
-            });
+            }
         }
     }
 
