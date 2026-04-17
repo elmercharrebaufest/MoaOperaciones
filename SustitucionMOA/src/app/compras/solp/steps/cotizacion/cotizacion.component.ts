@@ -388,9 +388,9 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     limpiarCheck() {
-        if ((this.model.trabajoHecho == undefined || this.model.trabajoHecho == false) && this.model.editarCondicionesEspeciales && this.model.condEspProveedorAsignado == false) {
+        if ((this.model.trabajoHecho == undefined || this.model.trabajoHecho == false) && this.model.editarCondicionesEspeciales && (this.model.condEspProveedorAsignado == false || this.model.condEspProveedorAsignado == undefined)) {
             this.model.proveedorAsignado = "";
-            this.model.proveedorAsignado_Id = null;
+            this.model.proveedorAsignado_Id = 0;
             this.proveedorSeleccionado = null;
             this.model.thAjustePolinomica = false;
             this.model.thProveedorDirecto = false;
