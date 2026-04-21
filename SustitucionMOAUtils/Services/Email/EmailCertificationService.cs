@@ -107,27 +107,29 @@ namespace SustitucionMOAUtils.Services.Email
                 var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT);
                 var cuerpoTemplatePosiciones = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT_POSICION);
                 var contenidoHtmlPosiciones = string.Empty;
-                var procesados = new HashSet<string>();
- 
+
+                bool esPrimeraPosicion = true;
+
                 foreach (var posicion in request.Posiciones)
                 {
                     var certificacionNro = posicion.Aprobacion.NRO_ES_LOCAL;
                     var reporteMemStream = new MemoryStream();
 
-                    if (!procesados.Contains(certificacionNro))
+                    // Ejecutar GetReportES solo para la primera posición porque es el mismo archivo siempre.
+                    if (esPrimeraPosicion)
                     {
                         try
                         {
                             var reporteES = GetReportES(certificacionNro).ConfigureAwait(false).GetAwaiter().GetResult();
                             reporteES.CopyTo(reporteMemStream);
-                            reporteMemStream.Position = 0; 
-                            procesados.Add(certificacionNro);
                         }
                         catch (Exception ex)
                         {
                             Log.AzureError(ex);
                             Log.Error("Error al obtener archivo para " + certificacionNro, ex);
                         }
+
+                        esPrimeraPosicion = false;
                     }
 
                     var proveedorRazonSocial = posicion.ProveedorRazonSocial ?? string.Empty;
@@ -154,10 +156,15 @@ namespace SustitucionMOAUtils.Services.Email
 
                     if (reporteMemStream.Length > 0)
                     {
-                        adjuntosMail.Add(new EmailAttachment(reporteMemStream, $"Reporte_{certificacionNro}.pdf"));
+                        adjuntosMail.Add(new EmailAttachment(reporteMemStream, $"Reporte_{ordenCompraNro}.pdf"));
                     }
 
-                    foreach (var adjuntoPosicion in posicion.Adjuntos)
+                    var adjuntosPosicion = posicion.Adjuntos
+                    .GroupBy(adjunto => adjunto.NombreEnBlob)
+                    .Select(grupo => grupo.First())
+                    .ToList();
+
+                    foreach (var adjuntoPosicion in adjuntosPosicion)
                     {
                         var adjuntoMemStream = azureService.ObtenerArchivoBlobStorageAsync(adjuntoPosicion.NombreEnBlob, "certificaciones").ConfigureAwait(false).GetAwaiter().GetResult();
                         adjuntoMemStream.Position = 0;
