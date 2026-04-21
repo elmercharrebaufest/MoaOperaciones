@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.OrdenesCompra;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -107,6 +108,7 @@ namespace SustitucionMOAUtils.Services.Email
                 var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT);
                 var cuerpoTemplatePosiciones = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT_POSICION);
                 var contenidoHtmlPosiciones = string.Empty;
+                var adjuntosPosiciones = new List<AdjuntosEntradasDeServicio>();
 
                 bool esPrimeraPosicion = true;
 
@@ -159,20 +161,22 @@ namespace SustitucionMOAUtils.Services.Email
                         adjuntosMail.Add(new EmailAttachment(reporteMemStream, $"Reporte_{ordenCompraNro}.pdf"));
                     }
 
-                    var adjuntosPosicion = posicion.Adjuntos
+                    adjuntosPosiciones.AddRange(posicion.Adjuntos);
+                }
+
+                adjuntosPosiciones = adjuntosPosiciones
                     .GroupBy(adjunto => adjunto.NombreEnBlob)
                     .Select(grupo => grupo.First())
                     .ToList();
 
-                    foreach (var adjuntoPosicion in adjuntosPosicion)
-                    {
-                        var adjuntoMemStream = azureService.ObtenerArchivoBlobStorageAsync(adjuntoPosicion.NombreEnBlob, "certificaciones").ConfigureAwait(false).GetAwaiter().GetResult();
-                        adjuntoMemStream.Position = 0;
+                foreach (var adjuntoPosicion in adjuntosPosiciones)
+                {
+                    var adjuntoMemStream = azureService.ObtenerArchivoBlobStorageAsync(adjuntoPosicion.NombreEnBlob, "certificaciones").ConfigureAwait(false).GetAwaiter().GetResult();
+                    adjuntoMemStream.Position = 0;
 
-                        if (adjuntoMemStream.Length > 0)
-                        {
-                            adjuntosMail.Add(new EmailAttachment(adjuntoMemStream, adjuntoPosicion.NombreArchivo));
-                        }
+                    if (adjuntoMemStream.Length > 0)
+                    {
+                        adjuntosMail.Add(new EmailAttachment(adjuntoMemStream, adjuntoPosicion.NombreArchivo));
                     }
                 }
 
