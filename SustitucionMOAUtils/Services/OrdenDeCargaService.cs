@@ -77,7 +77,7 @@ namespace SustitucionMOAUtils.Services
             var ordenReq = crearOrdenDeCargaRequest.OrdenDeCarga;
             var gestionAltas = crearOrdenDeCargaRequest.GestionAltasFAS;
 
-            Log.Info($"Agregar orden de carga con datos: {ordenReq.ToDto().ToJson()}. MailUsuario: {mailUsuario}");
+            Log.Info($"Agregar orden de carga con datos: {ordenReq.ToJson()}. MailUsuario: {mailUsuario}");
 
             try
             {
