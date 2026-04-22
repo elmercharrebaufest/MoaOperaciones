@@ -56,7 +56,7 @@
                             </p>
                             <div class="styled-select" style="overflow: initial;">
                                 <input type="search" [(ngModel)]="CUIT" class="fourRounded" mask="00-00000000-0" maxlength="13"
-                                    (change)="verificarCUITIngresado(); renspaChanged();" aria-controls="tableModal">
+                                    (change)="cuitTitularCPChanged();" aria-controls="tableModal">
                             </div>
                         </div>
                     
@@ -67,7 +67,7 @@
                                                         optionLabel="Nombre">
                                                     </p-dropdown> -->
                     
-                                <select [(ngModel)]="cosechaId" (change)="onChangeCosecha()">
+                                <select [(ngModel)]="cosechaId" (change)="onCosechaChanged()">
                                     <option *ngFor="let x of cosechas" value="{{x.Id}}">{{x.Nombre}}</option>
                                 </select>
                             </div>
