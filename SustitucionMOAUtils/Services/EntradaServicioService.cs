@@ -122,6 +122,7 @@ namespace SustitucionMOAUtils.Services
             {
                 aprobacionesTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
                     x.NRO_ES_SAP == null &&
+                    x.Estado_certificacion.Contains(parametros.Estado) &&
                     (string.IsNullOrEmpty(parametros.OrdenCompra) || x.NRO_OC == parametros.OrdenCompra) &&
                     (!debeFiltrarPorFecha || !x.Fecha_Carga_ES.HasValue || (x.Fecha_Carga_ES >= fechaDesde && x.Fecha_Carga_ES <= fechaHasta)));
             }
@@ -129,6 +130,7 @@ namespace SustitucionMOAUtils.Services
             {
                 aprobacionesTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
                     x.NRO_ES_SAP == null &&
+                    x.Estado_certificacion.Contains(parametros.Estado) &&
                     (x.Ingresante_CDS.ToLower() == correoUsuario ||
                         x.Fiscal_SOLPED.ToLower() == correoUsuario ||
                         x.Aprobador_CDS.ToLower() == correoUsuario ||
@@ -137,6 +139,14 @@ namespace SustitucionMOAUtils.Services
                     (!debeFiltrarPorFecha || !x.Fecha_Carga_ES.HasValue || (x.Fecha_Carga_ES >= fechaDesde && x.Fecha_Carga_ES <= fechaHasta)));
             }
 
+            int pagina = parametros.Pagina > 0 ? parametros.Pagina : 1;
+            int elementosPorPagina = parametros.ElementosPorPagina > 0 ? parametros.ElementosPorPagina : 10;
+            var itemTotales = aprobacionesTemporales.Count();
+
+            aprobacionesTemporales = aprobacionesTemporales
+                .Skip((pagina - 1) * elementosPorPagina)
+                .Take(elementosPorPagina)
+                .ToList();
 
             Dictionary<string, EntradaServicioCabeceraDto> diccionarioES = aprobacionesTemporales
             .GroupBy(temporal => temporal.NRO_ES_LOCAL)
@@ -154,13 +164,11 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var kvp in diccionarioES)
             {
+                kvp.Value.ItemsTotales = itemTotales;
                 entradasServicio.Add(kvp.Value);
             }
 
-
-
             entradasServicio = OrdenarEntradasServicio(entradasServicio);
-
             return entradasServicio;
         }
 
@@ -936,6 +944,7 @@ namespace SustitucionMOAUtils.Services
             entradasServicioCabeceraSap = entradasServicioCabeceraSap
                 .Where(x =>
                     x.OrdenCompra.StartsWith("412") && //Se filtran por las OC tomando las que empiezan con 412
+                    //x.Ingresante.Contains("@") &&
                     (!debeFiltrarPorFecha || !x.FechaCreacionDateTime.HasValue || x.FechaCreacionDateTime <= fechaHasta)
                 ).ToList();
 
@@ -943,14 +952,24 @@ namespace SustitucionMOAUtils.Services
             if (parametros.DocumentoNumero != null)
                 entradasServicioCabeceraSap = entradasServicioCabeceraSap.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();
 
+            var pagina = parametros.Pagina;
+            var elementosPorPagina = parametros.ElementosPorPagina;
+            var totalItems = entradasServicioCabeceraSap.Count();
+            //Paginamos
+            entradasServicioCabeceraSap = entradasServicioCabeceraSap
+                .Skip((pagina - 1) * elementosPorPagina)
+                .Take(elementosPorPagina)
+                .ToList();
+
             var ordenParams = new OrderParamsDto();
 
             // ES APROBADAS
             foreach (var documento in entradasServicioCabeceraSap)
             {
                 var correoSolp = "-";
-                    var nroDoc = documento.EntradaServicio.ToString();
+                var nroDoc = documento.EntradaServicio.ToString();
                 var nro_es_sap = int.Parse(nroDoc);
+                documento.ItemsTotales = totalItems;
 
                 // Se obtiene detalle de una ES
                 documento.entradaServicioDetalle = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(nroDoc);
@@ -1018,7 +1037,7 @@ namespace SustitucionMOAUtils.Services
                 entradasServicioResponse.Add(documento);
             }
 
-            return entradasServicioResponse.Where(x => x.Ingresante.Contains("@")).ToList();
+            return entradasServicioResponse;
         }
 
         /// <summary>
@@ -1968,6 +1987,11 @@ namespace SustitucionMOAUtils.Services
             }
 
             return null;
+        }
+
+        public Task<List<EntradaServicioCabeceraDto>> ListarEntradasServicio(EntradaServicioParamsDto parametros, UsuarioDto usuario)
+        {
+            throw new NotImplementedException();
         }
     }
 }

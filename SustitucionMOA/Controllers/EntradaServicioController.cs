@@ -47,7 +47,7 @@ namespace SustitucionMOA.Controllers
         }
 
         /// <summary>
-        /// Servicio para obtener las entradas de servicios guardadas en aprobaciones.
+        /// Servicio para obtener las entradas de servicios.
         /// </summary>
         /// <param name="parametros"></param>
         /// <returns></returns>
@@ -56,6 +56,21 @@ namespace SustitucionMOA.Controllers
             UsuarioDto usuarioActual = ObtenerUsuarioActual();
             List<EntradaServicioCabeceraDto> result = EntradaServicioService.ServicioAprobaciones_EntradasServicioCabecera(parametros, usuarioActual);
 
+            return JsonCustom(new { data = result });
+        }
+
+        public async Task<ActionResult> ListarEntradaServicio(EntradaServicioParamsDto parametros)
+        {
+            var result = new List<EntradaServicioCabeceraDto>();
+            UsuarioDto usuarioActual = ObtenerUsuarioActual();
+            if(parametros.Estado == "Aprobada")
+            {
+                result = await EntradaServicioService.ObtenerEntradasServicioCompleta(parametros, usuarioActual);
+            }
+            else
+            {
+                result = EntradaServicioService.ServicioAprobaciones_EntradasServicioCabecera(parametros, usuarioActual);
+            }
             return JsonCustom(new { data = result });
         }
 

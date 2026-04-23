@@ -214,6 +214,39 @@ export class ComprasService extends BaseService {
             .get<any[]>('/api/Order/GetSolicitantesByNroSolped', { params, headers: this.headers })
     }
 
+    public ListarEntradaServicio(
+        verTodo: boolean, 
+        fechaInicio: any = this.filtros.fechaDesde,
+        fechaFin: string, 
+        ordenCompra: string | undefined,
+        proveedorId: string,
+        DocumentoNumero: string,
+        columnaOrden: string = this.filtros.columnaNombre,
+        ordenAscendente: boolean = this.filtros.ordenAscendente,
+        pagina: number = this.filtros.pagina,
+        elementosPorPagina: number = this.filtros.itemsPorPagina,
+    ): Observable<any> {
+        
+        let params: HttpParams = new HttpParams();
+        params = params.set('verTodo', verTodo.toString());
+        params = params.set('fechaInicio', (fechaInicio != null ? fechaInicio : ""));
+        params = params.set('fechaFin', fechaFin);
+        params = params.set('OrdenCompra', ordenCompra || "");
+        params = params.set('vendedor', proveedorId);
+        params = params.set('documentoNumero', DocumentoNumero);
+        params = params.set('ColumnaOrden', columnaOrden);
+        params = params.set('OrdenAscendente', ordenAscendente.toString());
+        params = params.set('pagina', pagina.toString());
+        params = params.set('elementosPorPagina', elementosPorPagina.toString());
+
+        return this.http
+            .get<any[]>('/api/EntradaServicio/ListarEntradaServicio', { params: params, headers: this.headers }).pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
+
     public getByProveedorAsync(
         fechaInicio: any = this.filtros.fechaDesde,
         fechaFin: string,

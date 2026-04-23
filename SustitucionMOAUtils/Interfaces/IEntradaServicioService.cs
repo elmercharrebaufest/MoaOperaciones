@@ -9,6 +9,7 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IEntradaServicioService
     {
+        Task<List<EntradaServicioCabeceraDto>> ListarEntradasServicio(EntradaServicioParamsDto parametros, UsuarioDto usuario);
         Task<List<EntradaServicioCabeceraDto>> ObtenerEntradasServicioCompleta(EntradaServicioParamsDto parametros, UsuarioDto usuario);
         string BorrarEntradaServicio(EntradaServicioParamsDto parametros, UsuarioDto usuarioActual);
         List<EntradaServicioCabeceraDto> ServicioAprobaciones_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario);
