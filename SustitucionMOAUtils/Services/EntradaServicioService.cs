@@ -67,7 +67,7 @@ namespace SustitucionMOAUtils.Services
         public async Task<List<EntradaServicioCabeceraDto>> ObtenerEntradasServicioCompleta(EntradaServicioParamsDto parametros, UsuarioDto usuario)
         {
             List<EntradaServicioCabeceraDto> Documentos = await ServicioSAP_EntradasServicioCabecera(parametros, usuario);
-            Documentos = OrdenarEntradasServicio(Documentos);
+            //Documentos = OrdenarEntradasServicio(Documentos);
 
             return Documentos;
         }
@@ -143,6 +143,8 @@ namespace SustitucionMOAUtils.Services
             int elementosPorPagina = parametros.ElementosPorPagina > 0 ? parametros.ElementosPorPagina : 10;
             var itemTotales = aprobacionesTemporales.Count();
 
+            // Ordenar aprobacionesTemporales antes del paginado
+
             aprobacionesTemporales = aprobacionesTemporales
                 .Skip((pagina - 1) * elementosPorPagina)
                 .Take(elementosPorPagina)
@@ -168,8 +170,41 @@ namespace SustitucionMOAUtils.Services
                 entradasServicio.Add(kvp.Value);
             }
 
-            entradasServicio = OrdenarEntradasServicio(entradasServicio);
+            if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
+            {
+                // Verificar si la ordenación es ascendente o descendente
+                if (parametros.OrdenAscendente)
+                {
+                    entradasServicio = entradasServicio
+                        .OrderBy(x => ObtenerValorOrdenacion(x, parametros.ColumnaOrden))
+                        .ToList();
+                }
+                else
+                {
+                    entradasServicio = entradasServicio
+                        .OrderByDescending(x => ObtenerValorOrdenacion(x, parametros.ColumnaOrden))
+                        .ToList();
+                }
+            }
+            else
+            {
+                entradasServicio = OrdenarEntradasServicio(entradasServicio);
+            }
             return entradasServicio;
+        }
+
+        private object ObtenerValorOrdenacion(EntradaServicioCabeceraDto entrada, string columnaOrden)
+        {
+            // Usar reflexión para obtener el valor de la propiedad especificada
+            var propiedad = typeof(EntradaServicioCabeceraDto).GetProperty(columnaOrden, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            if (propiedad != null)
+            {
+                return propiedad.GetValue(entrada);
+            }
+
+            // Si la propiedad no existe, devolver null
+            return null;
         }
 
         /// <summary>
@@ -944,7 +979,7 @@ namespace SustitucionMOAUtils.Services
             entradasServicioCabeceraSap = entradasServicioCabeceraSap
                 .Where(x =>
                     x.OrdenCompra.StartsWith("412") && //Se filtran por las OC tomando las que empiezan con 412
-                    //x.Ingresante.Contains("@") &&
+                    x.Ingresante.Contains("@") &&
                     (!debeFiltrarPorFecha || !x.FechaCreacionDateTime.HasValue || x.FechaCreacionDateTime <= fechaHasta)
                 ).ToList();
 
@@ -952,16 +987,17 @@ namespace SustitucionMOAUtils.Services
             if (parametros.DocumentoNumero != null)
                 entradasServicioCabeceraSap = entradasServicioCabeceraSap.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();
 
+           
+            var totalItems = entradasServicioCabeceraSap.Count();
+            var ordenParams = new OrderParamsDto();
+
             var pagina = parametros.Pagina;
             var elementosPorPagina = parametros.ElementosPorPagina;
-            var totalItems = entradasServicioCabeceraSap.Count();
             //Paginamos
             entradasServicioCabeceraSap = entradasServicioCabeceraSap
                 .Skip((pagina - 1) * elementosPorPagina)
                 .Take(elementosPorPagina)
                 .ToList();
-
-            var ordenParams = new OrderParamsDto();
 
             // ES APROBADAS
             foreach (var documento in entradasServicioCabeceraSap)
@@ -975,9 +1011,9 @@ namespace SustitucionMOAUtils.Services
                 documento.entradaServicioDetalle = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(nroDoc);
 
                 if (documento.entradaServicioDetalle != null && documento.entradaServicioDetalle.Count > 0)
-            {
-                    if (ordenParams.OrdenCompraId != documento.entradaServicioDetalle[0].OrdenCompra || string.IsNullOrEmpty(ordenParams.OrdenCompraId))
                 {
+                    if (ordenParams.OrdenCompraId != documento.entradaServicioDetalle[0].OrdenCompra || string.IsNullOrEmpty(ordenParams.OrdenCompraId))
+                    {
                         var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFCSinPI(documento.entradaServicioDetalle[0].OrdenCompra);
                         ModificarPedidoSAP POSCHEDULE = new ModificarPedidoSAP
                         {
@@ -987,7 +1023,7 @@ namespace SustitucionMOAUtils.Services
                         string nroSolp = POSCHEDULE.NRO_SOLP;
 
                         correoSolp = ObtenerCorreoSolp(nroSolp);
-                }
+                    }
 
                     ordenParams.OrdenCompraId = documento.entradaServicioDetalle[0].OrdenCompra;
 
@@ -1035,6 +1071,23 @@ namespace SustitucionMOAUtils.Services
                 documento.Estado = "Aprobada";
 
                 entradasServicioResponse.Add(documento);
+            }
+
+            if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
+            {
+                // Verificar si la ordenación es ascendente o descendente
+                if (parametros.OrdenAscendente)
+                {
+                    entradasServicioResponse = entradasServicioResponse
+                        .OrderBy(x => ObtenerValorOrdenacion(x, parametros.ColumnaOrden))
+                        .ToList();
+                }
+                else
+                {
+                    entradasServicioResponse = entradasServicioResponse
+                        .OrderByDescending(x => ObtenerValorOrdenacion(x, parametros.ColumnaOrden))
+                        .ToList();
+                }
             }
 
             return entradasServicioResponse;
