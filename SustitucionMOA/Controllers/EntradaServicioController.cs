@@ -9,6 +9,8 @@ using SustitucionMOAUtils.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAUtils.Extensions;
 
 namespace SustitucionMOA.Controllers
 {
@@ -63,13 +65,14 @@ namespace SustitucionMOA.Controllers
         {
             var result = new List<EntradaServicioCabeceraDto>();
             UsuarioDto usuarioActual = ObtenerUsuarioActual();
-            if(parametros.Estado == "Aprobada")
+
+            if (parametros.Estado == EstadoCertificacionEnum.Aprobada.GetDescription())
             {
-                result = await EntradaServicioService.ObtenerEntradasServicioCompleta(parametros, usuarioActual);
+                result = await EntradaServicioService.ObtenerESAprobadasSAP(parametros, usuarioActual);
             }
             else
             {
-                result = EntradaServicioService.ServicioAprobaciones_EntradasServicioCabecera(parametros, usuarioActual);
+                result = EntradaServicioService.ObtenerESLocales(parametros, usuarioActual);
             }
             return JsonCustom(new { data = result });
         }

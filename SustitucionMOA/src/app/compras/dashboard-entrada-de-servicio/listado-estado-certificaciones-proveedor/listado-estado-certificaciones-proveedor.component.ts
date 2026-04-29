@@ -43,6 +43,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     length = 0;
     pageSize: number = 10;
     pageIndex: number = 1;
+    totalRows: number = 0;
+    currentPage: number = 1;
     @ViewChild('paginator') paginator: Paginator
     subscripcionPO: Subscription
     documentoNumero: string = "";
@@ -60,14 +62,18 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     ordenCompraIdsMostradas: Set<number> = new Set<number>();
     selectedRow: any;
     innerWidth: number;
-    tablaPOSap: EntradaServicioCabeceraDto[] = [];
-    tablaPOAprobaciones: EntradaServicioCabeceraDto[] = [];
+    //tablaPOSap: EntradaServicioCabeceraDto[] = [];
+    //tablaPOAprobaciones: EntradaServicioCabeceraDto[] = [];
+    tablaPO: EntradaServicioCabeceraDto[] = [];
     fechaSeleccionadaAux: string = "1";
     recalculando: boolean = false;
     recalculandoAprobadas: boolean = false;
     filtroFechaDesde: string;
     filtroFechaHasta: string;
     ordenCompraFiltro: string = "";
+
+    first: number = 0;
+    lastEvent: any = null;
 
     @HostListener('window:resize', ['$event'])
     onResize(event) {
@@ -157,14 +163,14 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     msgs: Message[] = [];
 
     async ngOnInit() {
+        this.estadoCertificacion = this.listadoEstadoCertificacion.find(
+        x => x.code === 'Pendiente Aprobación') || this.estadoCertificacion;
         this.getFecha('1');
         this.innerWidth = window.innerWidth;
         this.navService.setSeccionActive("Estado certificaciones");
         this.navService.navegarSeccion("compras/listadoEstadoCertificacionesProveedor");
         this.recalculando = true;
         this.recalculandoAprobadas = true;
-        await this.getListarPO(); // No mover.
-        this.obtenerESSap(this.proveedor, this.documentoNumero);
     }
 
     toggleTable(data: any) {
@@ -182,34 +188,41 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
     }
 
-    getListarPO(fechaDesde: string = "", fechaHasta: string = ""): Promise<void> {
+    listarEntradasServicio(fechaDesde: string, fechaHasta: string, proveedor: string, documentoNumero: string): Promise<void> {
+        this.recalculando = true;
+        this.tablaPO = [];
         return new Promise<void>((resolve, reject) => {
             this.unsubscribe();
-            this.subscripcionPO = this.service.ObtenerESLocales(false, this.proveedor, fechaDesde, fechaHasta, this.ordenCompraFiltro).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                    } else if (result.info != undefined) {
-                    } else {
-                        this.agregarTipoMonedaEnDetalle(result.data);
-                        this.tablaPOAprobaciones = result.data;
-                        this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
-                        this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
-                        this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+            this.subscripcionPO = this.service.ListarEntradaServicio(false, fechaDesde, fechaHasta, this.ordenCompraFiltro,
+                proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.estadoCertificacion.code).subscribe(
+                    (result: any) => {
+                        if (result.logout === true) {
+                            this.sessionDataService.logout();
+                            reject('Logout required');
+                        } else {
+                            this.tablaPO = result.data;
+                            const valor = result.data.length > 0 ? result.data[0].ItemsTotales : 0;
+                            this.totalRows = valor;
+
+                            if (this.estadoCertificacion.code !== 'Aprobada') {
+                                this.agregarTipoMonedaEnDetalle(result.data);
+                            }
+
+                            this.filtrarColumnasPorEstado(this.estadoCertificacion.code);
+                        }
+                        this.recalculando = false;
+                        resolve();
+                    },
+                    error => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                        this.recalculando = false;
+                        reject(error);
                     }
-                    this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
-                    this.recalculando = false;
-                    resolve();
-                }, error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                    this.recalculando = false;
-                    reject(error);
-                }
-            );
+                );
         });
     }
 
+    
     displayContent() {
         return !this.spinnerComponent.visible;
     }
@@ -234,27 +247,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         this.fechaInicio = fechaActual.toISOString().slice(0, 10);
     }
 
-
     deleteES(item: any) {
         //TODO: lógica para cuando se especifique el borrado de una ES
-    }
-
-    async handlePageEvent(e: any) {
-        this.pageSize = e.rows;
-        this.pageIndex = e.page + 1;
-        this.recalculando = true;
-        await this.getListarPO(); // No mover.
-    }
-
-    async onOrder(columna: string) {
-        if (this.columnaOrden != columna) {
-            this.ordenAscendente = false
-        } else {
-            this.ordenAscendente = this.ordenAscendente == false ? true : false;
-        }
-        this.columnaOrden = columna;
-        this.recalculando = true;
-        await this.getListarPO(); // No mover.
     }
 
     toggleRow(rowData: any): void {
@@ -265,17 +259,13 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         return this.selectedRow === rowData;
     }
 
-    filtrarPorEstado(event: any): void {
-        const estado = event.value.code;
+    filtrarColumnasPorEstado(estado: string): void {
 
         // Determinar qué columnas deben mostrarse u ocultarse según el estado
         const columnasVisibles = this.obtenerColumnasVisiblesSegunEstado(estado);
 
         // Aplicar los cambios de visibilidad a las columnas
         this.aplicarVisibilidadColumnas(columnasVisibles);
-
-        // Filtrar la tabla por el estado seleccionado
-        this.tabla.filter(estado, 'Estado', 'contains');
     }
 
     // Método para determinar qué columnas deben mostrarse u ocultarse según el estado
@@ -325,44 +315,6 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     //     return false;
     // }
 
-    obtenerESSap(proveedor, documentoNumero): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            this.service
-                .getByProveedorAsync(
-                    this.filtroFechaDesde,
-                    this.filtroFechaHasta,
-                    proveedor,
-                    documentoNumero,
-                    this.columnaOrden,
-                    this.ordenAscendente,
-                    this.pageIndex,
-                    this.pageSize,
-                    false,
-                    this.ordenCompraFiltro)
-                .subscribe(
-                    (result: { error: any, data: any }) => {
-                        this.recalculandoAprobadas = false;
-                        if (result.error != null) {
-                            this.floatMsgService.setErrorMsg(result.error);
-                            resolve(); // Resolve anyway to avoid hanging
-                            return;
-                        }
-                        if (result.data.length > 0) {
-                            this.tablaPOSap = result.data;
-                        } else {
-                            // Ensure table is cleared if no data
-                            this.tablaPOSap = [];
-                        }
-                        this.tabla.first = 0;
-                        resolve();
-                    }, error => {
-                        this.floatMsgService.setErrorMsg(error.message);
-                        this.recalculandoAprobadas = false;
-                        reject(error);
-                    })
-        });
-    }
-
     onFiltroFechaDesdeChanged(fechaDesde: string) {
         this.filtroFechaDesde = fechaDesde;
     }
@@ -382,10 +334,13 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     }
 
     async onBuscar() {
-        this.recalculandoAprobadas = true;
-        await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
-        await this.obtenerESSap(this.proveedor, this.documentoNumero);
-        this.filtrarPorEstado({ value: this.estadoCertificacion });
+           this.first = 0;
+        this.currentPage = 1;
+        this.lastEvent = null;
+        this.loadData({
+            first: 0,
+            rows: this.pageSize
+        });
     }
 
     agregarTipoMonedaEnDetalle(certificaciones: any[]): void {
@@ -502,13 +457,43 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     }
 
     refreshDataTable() {
-        if (this.estadoCertificacion.code === 'Aprobada' && !this.recalculandoAprobadas) {
-            this.recalculandoAprobadas = true;
-            this.obtenerESSap(this.proveedor, this.documentoNumero);
+        this.first = 0;
+        this.loadData({
+            first: 0,
+            rows: this.pageSize
+        });
+    }
+
+    loadData(event: any) {
+        const mismoEvento =
+            this.lastEvent &&
+            this.lastEvent.first === event.first &&
+            this.lastEvent.rows === event.rows &&
+            this.lastEvent.sortField === event.sortField &&
+            this.lastEvent.sortOrder === event.sortOrder;
+
+        if (mismoEvento) {
+            return;
         }
-        if ((this.estadoCertificacion.code === 'Aprobada' || this.estadoCertificacion.code === 'Pendiente Aprobación' || this.estadoCertificacion.code === 'Rechazado' || this.estadoCertificacion.code === 'Anulada') && !this.recalculandoAprobadas) {
-            this.recalculando = true;
-            this.getListarPO(); // No mover.
-        }
+
+        this.lastEvent = { ...event };
+
+        this.first = event.first;
+
+        this.columnaOrden = event.sortField;
+        this.ordenAscendente = event.sortOrder === 1;
+
+        const page = event.first / event.rows;
+        const size = event.rows;
+
+        this.currentPage = page + 1;
+        this.pageSize = size;
+
+        this.listarEntradasServicio(
+            this.filtroFechaDesde,
+            this.filtroFechaHasta,
+            this.proveedor,
+            this.documentoNumero
+        );
     }
 }

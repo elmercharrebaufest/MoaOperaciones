@@ -32,6 +32,7 @@ import { MaterialSolp } from '../modelos/compras/materialSolp';
 import { ServicioSolp } from '../modelos/compras/servicioSolp';
 import { PeticionDeOfertaDesvincularDto } from '../modelos/compras/POMultiple/peticionDeOfertaDesvincularDto';
 import { OrganizacionDeCompra } from '../modelos/compras/organizacionDeCompra';
+import { EntradaServicioCabeceraDto } from '../common/models/ordenes-compra/entradaServicioCabecera';
 
 @Injectable({
     providedIn: 'root'
@@ -226,7 +227,7 @@ export class ComprasService extends BaseService {
         pagina: number = this.filtros.pagina,
         elementosPorPagina: number = this.filtros.itemsPorPagina,
         estado: string = "Pendiente Aprobación"
-    ): Observable<any> {
+    ): Observable<EntradaServicioCabeceraDto[]> {
         
         let params: HttpParams = new HttpParams();
         params = params.set('verTodo', verTodo.toString());
@@ -241,7 +242,7 @@ export class ComprasService extends BaseService {
         params = params.set('elementosPorPagina', elementosPorPagina.toString());
         params = params.set('estado', estado);
         return this.http
-            .get<any[]>('/api/EntradaServicio/ListarEntradaServicio', { params: params, headers: this.headers }).pipe(
+            .get<EntradaServicioCabeceraDto[]>('/api/EntradaServicio/ListarEntradaServicio', { params: params, headers: this.headers }).pipe(
                 catchError(error => {
                     return throwError(error);
                 })

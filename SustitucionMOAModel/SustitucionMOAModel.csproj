@@ -381,6 +381,7 @@
     <Compile Include="Entities\TipoRetencion.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
     <Compile Include="Enums\CondicionRetiro.cs" />
+    <Compile Include="Enums\EstadoCertificacionEnum.cs" />
     <Compile Include="Enums\EstadoCursoEnum.cs" />
     <Compile Include="Enums\EnviarCircularEnum.cs" />
     <Compile Include="Enums\EstadoListarTratamientoSolp.cs" />

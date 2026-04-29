@@ -95,8 +95,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     userId: any = '';
     tablaPO: EntradaServicioCabeceraDto[] = [];
     tablaPOReporte: EntradaServicioCabeceraDto[] = [];
-    //tablaPOAprobaciones: EntradaServicioCabeceraDto[] = [];
-    //tablaPOSap: EntradaServicioCabeceraDto[] = [];
     cols: any[];
     usuario: string;
     vendedor: string;
@@ -111,11 +109,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     cargando: boolean = false;
     recalculandoAprobadas: boolean = false;
     ordenCompraFiltro: string = "";
-    actualPage: number = 1;
-    lastFirst: number | null = null;
-    lastRows: number | null = null;
+    currentPage: number = 1;
     first: number = 0;
     lastEvent: any = null;
+
     motivos = [
         { name: 'Servicio no ejecutado/concluido', code: '1' },
         { name: 'Error en las cantidades certificadas, porcentajes erróneos', code: '2' },
@@ -287,10 +284,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                         if (result.logout === true) {
                             this.sessionDataService.logout();
                             reject('Logout required');
-                        } else if (result.error !== undefined && result.error !== "") {
-                        } else if (result.info !== undefined) {
-                            // Manejo de mensajes informativos, si es necesario
-                        } else {
+                        }else {
                             this.tablaPO = result.data;
                             const valor = result.data.length > 0 ? result.data[0].ItemsTotales : 0;
                             this.totalRows = valor;
@@ -299,9 +293,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                                 this.agregarTipoMonedaEnDetalle(result.data);
                                 this.userId = this.setColumsByUserProfile(this.tablaPO, this.usuario);
                             }
-                        }
-                        if (this.estadoCertificacion.code === 'Pendiente Aprobación') {
-                            this.tabla.filter("Pendiente Aprobación", "Estado", "contains");
                         }
                         this.recalculando = false;
                         resolve();
@@ -940,7 +931,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.proveedor = '';
         }
         this.first = 0;
-        this.actualPage = 1;
+        this.currentPage = 1;
         this.loadData({
             first: 0,
             rows: this.pageSize
@@ -1333,7 +1324,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         const page = event.first / event.rows;
         const size = event.rows;
 
-        this.actualPage = page + 1;
+        this.currentPage = page + 1;
         this.pageSize = size;
 
         this.listarEntradasServicio(
