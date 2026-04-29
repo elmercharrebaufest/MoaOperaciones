@@ -26,7 +26,7 @@ BEGIN
         co.Nombre AS NombreCosecha,
         cp.HectareasSoja,
         cp.HectareasTotales,
-        cst.Nombre AS NombreCampo,
+        cs.Nombre AS NombreCampo,
         cnn.ToneladasAprobadas,
         cp.CampoCosecha_Id,
         p.Id AS IdProveedor,
@@ -43,7 +43,9 @@ BEGIN
         cnn.Validado,
         cnn.ValidadoPor,
         cp.EvidenciaEPA_Id,
-        cst.Renspa
+        cs.Renspa,
+        PC.CUIT as ProveedorCreadorCuit,
+        PC.RazonSocial as ProveedorCreadorRazonSocial
     FROM CampoProveedor cp
         INNER JOIN CampoCosecha cc ON cp.CampoCosecha_Id = cc.Id
         INNER JOIN CampoSustentable cs ON cc.CampoSustentable_Id = cs.Id
@@ -51,7 +53,7 @@ BEGIN
         INNER JOIN Proveedor p ON cp.Proveedor_Id = p.Id
         INNER JOIN CampoCosechaNormativa cnn ON cc.Id = cnn.CampoCosecha_Id
         INNER JOIN TipoNormativa tn ON cnn.TipoNormativa_Id = tn.Id
-        INNER JOIN CampoSustentable cst ON cc.CampoSustentable_Id = cst.Id
+        left join Proveedor PC on cp.ProveedorCreadorId = PC.Id
     WHERE
         (
             (cp.BSVS2 = 1 AND tn.Descripcion = '2BSVS')
