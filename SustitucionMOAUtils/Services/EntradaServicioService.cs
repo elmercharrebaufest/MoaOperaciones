@@ -1051,7 +1051,7 @@ namespace SustitucionMOAUtils.Services
             entradasServicioCabeceraSap = entradasServicioCabeceraSap
                 .Where(x =>
                     x.OrdenCompra.StartsWith("412") && //Se filtran por las OC tomando las que empiezan con 412
-                    //x.Ingresante.Contains("@") &&
+                    x.Ingresante.Contains("@") &&
                     (!debeFiltrarPorFecha || !x.FechaCreacionDateTime.HasValue || x.FechaCreacionDateTime <= fechaHasta)
                 ).ToList();
 
