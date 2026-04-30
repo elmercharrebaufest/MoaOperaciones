@@ -123,7 +123,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     Archivo_Id: number;
     UsarArchivo_Id: boolean = false;
     Proveedor_Id: number;
-    operarComo: number = 1;
+    operarComo: number = 1; // 1=Corredor
 
     ingresarProveedorPorCUIT: boolean;
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
@@ -160,14 +160,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.CUITInicial = this.CUIT;
 
         this.declaracionComformidad.esCorredor = this.esCorredor;
-        this.ingresarProveedorPorCUIT = true;
+        
+        this.ingresarProveedorPorCUIT = !this.esCorredor;
 
-        if (this.esCorredor) {
-            this.ingresarProveedorPorCUIT = false;
-        }
-
-        this.operarComo = 1;
-        this.declaracionComformidad.operarComo = 1;
+        this.setOperarComoCorredor();
+        this.declaracionComformidad.operarComo = this.operarComo;
         this.getParams();
         this.getCosechas();
     }
@@ -218,10 +215,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
                         if (this.esCorredor) {
                             if (this.Proveedor_Id != this.proveedorId) {
-                                this.operarComo = 1;
+                                this.setOperarComoCorredor();
                                 this.CodigoProveedorEdit = result.CodigoProveedor;
                             } else {
-                                this.operarComo = 2;
+                                this.setOperarComoAcopiador();
                                 this.cambiarModoOperacion();
                                 this.CUIT = result.CUIT;
                             }
@@ -269,6 +266,12 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.proveedorSeleccionado = proveedor;
             this.getProveedorId(this.proveedorSeleccionado.idVendedor);
         }
+        else {
+            this.CUIT = "";
+            this.proveedorSeleccionado = null;
+            this.declaracionComformidad.CUITDeclaracion = "";
+            this.declaracionComformidad.razonSocialDeclaracion = "";
+        }
     }
 
     getProveedorId(codigo: string) {
@@ -313,45 +316,41 @@ export class AltaComponent extends BaseComponent implements OnInit {
             );
     }
 
-    onChangeCosecha() {
+    onCosechaChanged() {
         if (this.cosechaId > 0) {
-            if (!this.esCorredor || (this.esCorredor && (this.operarComo == 2 || !this.sePreseleccionoProveedor))) {
+            if (!this.esCorredor || (this.esCorredor && (this.operaComoAcopiador() || !this.sePreseleccionoProveedor))) {
                 this.mensajeComponent.setMsgsEmpty();
                 if (this.CUIT == "" || this.CUIT.length != 11) {
                     this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
                     setTimeout(() => {
                         this.cosechaId = 0;
                     }, 100);
-                    return false
+                    return false;
                 }
             }
-
-            /*if(this.normBSVS2){
-                this.validarModalDeclaracion();
-            }*/
 
             this.renspaChanged();
         }
     }
 
     public onCheck2BSVS(value: any) {
-        this.normativaChanged(true, value);
+        this.normativaChanged(true);
     }
 
     public onCheckEPA(value: any) {
-        this.normativaChanged(false, value);
+        this.normativaChanged(false);
     }
 
     public onCheckEUDR(value: any) {
-        this.normativaChanged(false, value);
+        this.normativaChanged(false);
     }
 
     private validarModalDeclaracion() {
         if (this.cosechaId > 0) {
             if (this.esCorredor) {
 
-                if (this.operarComo == 2) {
-                    this.declaracionComformidad.CUIT = this.CUIT;
+                if (this.operaComoAcopiador()) {
+                    this.declaracionComformidad.CUITDeclaracion = this.CUIT;
                     this.declaracionComformidad.razonSocialDeclaracion = "";
                 }
 
@@ -450,11 +449,12 @@ export class AltaComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    verificarCUITIngresado() {
+    cuitTitularCPChanged() {
+        this.declaracionComformidad.CUITDeclaracion = this.CUIT;
         if (this.normBSVS2) {
-            this.declaracionComformidad.CUITDeclaracion = this.CUIT;
             this.revisarDeclaracionJurada()
         }
+        this.renspaChanged();
     }
 
     getCosechas() {
@@ -475,7 +475,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
                         this.cosechas = [{ Id: 0, Nombre: "Seleccione" }, ...this.cosechas];
 
                         this.cosechaId = 0;
-                        this.onChangeCosecha();
 
                         if (this.campoCosechaId != null && this.campoCosechaId > 0) {
                             this.cargarDatosCopiar();
@@ -517,7 +516,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             return true;
         }
 
-        if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
+        if (!this.esCorredor || (this.esCorredor && this.operaComoAcopiador())) {
             if (!this.CUIT) {
                 this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
                 return true
@@ -528,7 +527,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
                 return true
             }
         }
-        if (this.esCorredor && this.operarComo == 1 && (!this.CUIT || !this.proveedorTexto)) {
+        if (this.esCorredor && this.operaComoCorredor() && (!this.CUIT || !this.proveedorTexto)) {
             this.mensajeComponent.setErrorMsg("Falta seleccionar un proveedor.");
             return true
         }
@@ -597,9 +596,13 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     cambiarModoOperacion() {
         this.CUIT = "";
-        this.ingresarProveedorPorCUIT = this.operarComo == 2;
+        this.ingresarProveedorPorCUIT = this.operaComoAcopiador();
         this.declaracionComformidad.operarComo = this.operarComo;
+        
         this.proveedorSeleccionado = null;
+        this.declaracionComformidad.CUITDeclaracion = "";
+        this.declaracionComformidad.razonSocialDeclaracion = "";
+        
         this.corredorDebeCargarCuit = false;
         this.sePreseleccionoProveedor = false;
     }
@@ -619,8 +622,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     revisarDeclaracionJurada() {
         if ((this.CUIT == "" || this.CUIT.length == 11) && this.cosechaId > 0) {
-            if (this.esCorredor && this.operarComo == 1
-                && (!this.proveedorSeleccionado) && this.proveedorTexto) {
+            if (this.esCorredor && this.operaComoCorredor() && (!this.proveedorSeleccionado) && this.proveedorTexto) {
                 this.declaracionComformidad.razonSocialDeclaracion = this.proveedorTexto
             }
             this.declaracionComformidad.verificarDeclaracion();
@@ -703,14 +705,21 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }
     }
 
-    normativaChanged(bsvs2: boolean, value: boolean = null): void {
-        if (this.renspa && this.cosechaId) {
-            this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId, this.normEPA, this.normBSVS2, this.normEUDR).subscribe((result: any) => {
-                this.renspaExiste = result;
-                if(bsvs2 && value){
+    normativaChanged(bsvs2Cambiado: boolean): void {
+        if (this.cosechaId) {
+            if (this.renspa) {
+                this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId, this.normEPA, this.normBSVS2, this.normEUDR).subscribe((result) => {
+                    this.renspaExiste = result;
+                    if(!this.renspaExiste && bsvs2Cambiado && this.normBSVS2){
+                        this.validarModalDeclaracion();
+                    }
+                });
+            }
+            else {
+                if(bsvs2Cambiado && this.normBSVS2){
                     this.validarModalDeclaracion();
                 }
-            });
+            }
         }
     }
 
@@ -1023,21 +1032,36 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     onConfirmarSugeridos(respuesta: boolean) {
-    this.mostrarConfirmacionSugeridos2BSVS = false;
-    if (respuesta) {
-        this.validarModalDeclaracion();
-    } else {
-        this.mostrarSugerenciasCamposNuevos = true;
-    }
-}
-
-onEvidenciaEpaPresentadaChange() {
-    if (this.evidenciaEpaPresentada) {
-        this.fileEPA = null;
-        if (this.fileInputEPA) {
-            this.fileInputEPA.nativeElement.value = '';
+        this.mostrarConfirmacionSugeridos2BSVS = false;
+        if (respuesta) {
+            this.validarModalDeclaracion();
+        } else {
+            this.mostrarSugerenciasCamposNuevos = true;
         }
     }
-}
 
+    onEvidenciaEpaPresentadaChange() {
+        if (this.evidenciaEpaPresentada) {
+            this.fileEPA = null;
+            if (this.fileInputEPA) {
+                this.fileInputEPA.nativeElement.value = '';
+            }
+        }
+    }
+
+    operaComoCorredor(): boolean {
+        return this.esCorredor && this.operarComo == 1;
+    }
+
+    operaComoAcopiador(): boolean {
+        return this.esCorredor && this.operarComo == 2;
+    }
+
+    setOperarComoCorredor() {
+        this.operarComo = 1;
+    }
+
+    setOperarComoAcopiador() {
+        this.operarComo = 2;
+    }
 }

@@ -146,7 +146,7 @@
 
 	<setParameter name="EmailToMesaENTSL Config" value="Mesaentsl@molinosagro.com.ar" />
 	<setParameter name="EmailToMesaVentaFas Config" value="mesafassanlorenzo@molinosagro.com.ar" />
-	<setParameter name="EmailToReporteTrabajoHecho Config" value="mariadelrosario.lattini@molinosagro.com.ar;liza.molina@molinosagro.com.ar;guillermo.ayuso@molinosagro.com.ar;anibal.javier.heltner@molinosagro.com.ar" />
+	<setParameter name="EmailToReporteTrabajoHecho Config" value="mariadelrosario.lattini@molinosagro.com.ar;liza.molina@molinosagro.com.ar;guillermo.ayuso@molinosagro.com.ar;anibal.javier.heltner@molinosagro.com.ar;matias.aboy@molinosagro.com.ar;dayana.lima@molinosagro.com.ar" />
 	<setParameter name="EmailToGestionAltaCuit Config" value="Mesaentsl@molinosagro.com.ar" />
 	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="mesafassanlorenzo@molinosagro.com.ar" />
 	<setParameter name="EmailAltaTempranaCuitFasonTo Config" value="Mesaentsl@molinosagro.com.ar"/>
@@ -163,9 +163,8 @@
 	<setParameter name="EmailToComercialesAlimAnimal Config" value="alimentacion.animal@molinosagro.com.ar" />
 	<setParameter name="EmailToAuditoriaOrdenesVencidas Config" value="noelia.caceres@molinosagro.com.ar;luciano.calaon@molinosagro.com.ar;martin.manoni@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar;franco.berardi@molinosagro.com.ar"/>
 	<setParameter name="EmailKgsMenos15TNFasTo Config" value="sebastian.serighetti@molinosagro.com.ar; noelia.caceres@molinosagro.com.ar; luciano.calaon@molinosagro.com.ar"/>
-	<!--Temporalmente se configura que el envio de mail por órdenes de aceite se dirija a la cuenta de BF, hasta que se despliegue definitivamente la funcionalidad-->
-	<!--<setParameter name="EmailAutorizacionNominaTo Config" value="balanza@patagoniabioenergia.com.ar;logistica@patagoniabioenergia.com.ar;porteria@patagoniabioenergia.com.ar;coordinacion.logistica@patagoniabioenergia.com.ar;guillermo.weidmann@patagoniabioenergia.com.ar;sergio.arata@patagoniabioenergia.com.ar;diego.guzman@patagoniabioenergia.com.ar;maria.carrizo@patagoniabioenergia.com.ar;brian.agustinelli@patagoniabioenergia.com.ar;erica.aguirre@patagoniabioenergia.com.ar;oscar.secoff@patagoniabioenergia.com.ar;ignacio.cefarelli@patagoniabioenergia.com.ar;damian.russmann@patagoniabioenergia.com.ar;pablo.sotelo@patagoniabioenergia.com.ar;jorgelina.franichevich@molinosagro.com.ar;comerciolocal@molinosagro.com.ar"/>-->
-	<setParameter name="EmailAutorizacionNominaTo Config" value="moaoperaciones@baufest.com"/>
+	<setParameter name="EmailAutorizacionNominaTo Config" value="balanza@patagoniabioenergia.com.ar;logistica@patagoniabioenergia.com.ar;porteria@patagoniabioenergia.com.ar;coordinacion.logistica@patagoniabioenergia.com.ar;guillermo.weidmann@patagoniabioenergia.com.ar;sergio.arata@patagoniabioenergia.com.ar;diego.guzman@patagoniabioenergia.com.ar;maria.carrizo@patagoniabioenergia.com.ar;brian.agustinelli@patagoniabioenergia.com.ar;erica.aguirre@patagoniabioenergia.com.ar;oscar.secoff@patagoniabioenergia.com.ar;ignacio.cefarelli@patagoniabioenergia.com.ar;damian.russmann@patagoniabioenergia.com.ar;pablo.sotelo@patagoniabioenergia.com.ar;jorgelina.franichevich@molinosagro.com.ar;comerciolocal@molinosagro.com.ar"/>
+	<setParameter name="EmailAutorizacionNominaInternoTo Config" value="comerciolocal@molinosagro.com.ar"/>
 	<setParameter name="EmailConsultaInternaCC Config" value="mesafassanlorenzo@molinosagro.com.ar; comerciolocal@molinosagro.com.ar"/>
 	<setParameter name="EmailAltaTransporteResiduosTo Config" value="Mesaentsl@molinosagro.com.ar" />
 	<setParameter name="EmailAltaTransporteResiduosCC Config" value="mesafassanlorenzo@molinosagro.com.ar;comerciolocal@molinosagro.com.ar" />

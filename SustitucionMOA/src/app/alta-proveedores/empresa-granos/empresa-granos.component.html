@@ -103,9 +103,7 @@
                             </div>
                             <div class="col-xs-12">
                                 <label for="constanciaCBU">
-                                    <span class="link-adjuntar">Adjuntar</span> constancia de CBU con firma certificada
-                                    por banco SISA <span class="requerido">*</span>
-
+                                    <span class="link-adjuntar">Adjuntar</span> constancia de CBU SISA <span class="requerido">*</span>
                                 </label>
                                 <input style="display:none" type="file" class="form-control-file" id="constanciaCBU"
                                        (change)="handleFileInput($event.target.files, 'constanciaCBU')">
@@ -125,8 +123,8 @@
 
                             <div class="col-xs-12">
                                 <p>
-                                    Recordá que deberás enviar el original completo con firma certificada por banco a
-                                    nuestras oficinas.
+                                    Recordá que deberás realizar la firma electrónica del informe comercial+carta Datanet
+                                    que les enviaremos por correo electrónico desde adobesign@adobesign.com
                                 </p>
                             </div>
                         </div>
@@ -135,8 +133,7 @@
                             <div class="col-xs-12">
 
                                 <label class="label" for="constanciaCBUMercaderia">
-                                    <span class="link-adjuntar">Adjuntar</span> constancia de CBU con firma certificada
-                                    por banco mercadería
+                                    <span class="link-adjuntar">Adjuntar</span> constancia de CBU mercadería (opcional).
                                 </label>
                                 <input style="display:none" type="file" class="form-control-file"
                                        id="constanciaCBUMercaderia"
@@ -795,8 +792,10 @@
                 </div>
                 <ng-template #elseBlock>
                     <label>¡Su solicitud fue enviada con éxito!</label><br />
-                    <label style="color: red;">Por favor, enviar la cbu con firma certificada en físico original a nuestras oficinas de</label><br />
-                    <label>URUGUAY 4075 (1644) Victoria, Buenos Aires.</label><br />
+                    <label style="color: red;">
+                        Por favor realizar la firma electrónica del informe comercial+carta Datanet que les enviamos
+                        por correo electrónico desde adobesign@adobesign.com, de ya haberlo realizado, desestimar.
+                    </label><br />
                     <br>
                     <label>¡Muchas gracias!, Datos Maestros.</label><br />
                 </ng-template>

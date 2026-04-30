@@ -26,6 +26,8 @@ namespace SustitucionMOAModel.Dto.CampoSustentable
         public int? EvidenciaEPA_Id { get; set; }
         public string CUITCampoProveedor { get; set; }
         public string Renspa { get; set; }
+        public string ProveedorCreadorCuit { get; set; }
+        public string ProveedorCreadorRazonSocial { get; set; }
     }
 
 }

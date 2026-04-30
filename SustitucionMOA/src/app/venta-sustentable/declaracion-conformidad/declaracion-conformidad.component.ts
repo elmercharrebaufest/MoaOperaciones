@@ -38,7 +38,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
   camposSustentables: any[];
   razonSocial: string = ""
-  CUIT: string = "";
+  private CUIT: string = "";
   fechaActual: string = ""
   razonSocialDeclaracion: string = ""
   hectareasTotales: number = 0;
