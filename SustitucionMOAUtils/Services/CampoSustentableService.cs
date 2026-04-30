@@ -686,7 +686,7 @@ namespace SustitucionMOAUtils.Services
                          {
                              Campo = cp.NombreCampo,
                              Renspa = cp.Renspa,
-                             ProveedorRazonSocial = cp.RazonSocialProveedor,
+                             ProveedorRazonSocial = cp.ProveedorCreadorRazonSocial, //cp.RazonSocialProveedor,
                              Cosecha = cp.NombreCosecha,
                              HectareasSoja = cp.HectareasSoja ?? 0,
                              HectareasTotales = cp.HectareasTotales ?? 0,
