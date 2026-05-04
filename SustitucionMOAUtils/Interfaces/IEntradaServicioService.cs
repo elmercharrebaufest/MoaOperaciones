@@ -12,8 +12,9 @@ namespace SustitucionMOAUtils.Interfaces
         Task<List<EntradaServicioCabeceraDto>> ObtenerEntradasServicioCompleta(EntradaServicioParamsDto parametros, UsuarioDto usuario);
         string BorrarEntradaServicio(EntradaServicioParamsDto parametros, UsuarioDto usuarioActual);
         List<EntradaServicioCabeceraDto> ServicioAprobaciones_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario);
+        List<EntradaServicioCabeceraDto> ObtenerESLocales(EntradaServicioParamsDto parametros, UsuarioDto usuario);
+        Task<List<EntradaServicioCabeceraDto>> ObtenerESAprobadasSAP(EntradaServicioParamsDto parametros, UsuarioDto usuario);        
         List<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(CreateEntradaServicioDto crearESRequestDto, string mailUsuario);
-
         Task<bool> NotifyRejection(EmailDetailCertificateDto emailDetailCertificateDto);
         EntradaServicioRejectRespuestaDto RechazarEntradaDeServicio(EmailDetailCertificateDto rechazo);
         Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local, string Moneda);

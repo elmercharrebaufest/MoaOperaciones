@@ -15,11 +15,11 @@
         <br />
     </section>
     <!-- HEADER END -->
-    <!-- SEARCH PANEL -->
+    <!-- SEARCH PANEL  -->
     <aux-pannel
-        (obtenerESSap)="onBuscar()"  
         [proveedor]="proveedor"
-        [visible]="recalculandoAprobadas"
+        [visible]="recalculando"
+        (obtenerESSap)="onBuscar()"  
         (getFecha)="getFecha($event)"
         (onFiltroFechaDesdeChanged)="onFiltroFechaDesdeChanged($event)"
         (onFiltroFechaHastaChanged)="onFiltroFechaHastaChanged($event)"
@@ -32,7 +32,7 @@
     <div class="container-tabla">
         <div class="table-options">
             <div class="refresh-row">
-                <i class="pi pi-refresh" [style.cursor]="recalculando || recalculandoAprobadas ? 'no-drop' : 'pointer'" (click)="refreshDataTable()"></i>
+                <i class="pi pi-refresh" [style.cursor]="recalculando ? 'no-drop' : 'pointer'" (click)="refreshDataTable()"></i>
             </div>
             <!-- FILTERS -->
             <div class="filters-row">
@@ -55,11 +55,11 @@
     
                 <div *ngIf="havePermission">
                     <button *ngIf="!isAll;" (click)="SeeAll()" class="see-all"
-                        [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
+                        [disabled]="recalculando">
                         Ver todo
                     </button>
                     <button *ngIf="isAll;" (click)="SeeForProvider()" class="see-provider"
-                        [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
+                        [disabled]="recalculando">
                         Ver Propias
                     </button>
                 </div>
@@ -68,10 +68,16 @@
         </div>
         <!-- TABLE 1 -->
         <p-table #tabla class="level1"
-                 [value]="estadoCertificacion.code === 'Aprobada' ? tablaPOSap : tablaPOAprobaciones"
-                 dataKey="EntradaServicio" [paginator]="true" [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
+                 [value]="tablaPO"
+                 dataKey="EntradaServicio" 
+                 [paginator]="true" 
+                 [rows]="pageSize"
+                 [totalRecords]="totalRows"
+                 [first]="first"
+                 [lazy]="true"
+                 (onLazyLoad)="loadData($event)"
                  [columns]="columns" [(globalFilter)]="globalFilterValue" responsiveLayout="scroll | stack"
-                 rowExpandMode="single" [customSort]="true" (sortFunction)="sortFunction($event, defaultTablesConfig[0].name)">
+                 rowExpandMode="single">
             <!-- TABLE 1 HEADERS -->
             <ng-template pTemplate="header" let-columns class="lista-header">
                 <tr>
@@ -152,7 +158,7 @@
             </ng-template>
 
             <ng-template pTemplate="footer" let-columns>
-                <tr *ngIf="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
+                <tr *ngIf="recalculando">
                     <td colspan="13">
                         <recalculando-spinner [description]="'Cargando las entradas de servicio, espere por favor...'"></recalculando-spinner>
                     </td>
@@ -161,7 +167,7 @@
 
             <!-- TABLE 1 BODY END -->
             <ng-template pTemplate="emptymessage">
-                <tr *ngIf="(!recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (!recalculando && estadoCertificacion.code === 'Rechazado') || (!recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
+                <tr *ngIf="tablaPO.length === 0 && !recalculando">
                     <td class="emptyData" colspan="13">
                         No hay entradas de servicios para mostrar
                     </td>
