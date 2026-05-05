@@ -32,6 +32,7 @@ namespace SustitucionMOA.Controllers
         public JsonResult CampoProveedorAgregar(string campoProveedorJson, HttpPostedFileBase archivoKmz, bool UsarArchivoId, HttpPostedFileBase archivoEpa)
         {
             var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);
+            campoProveedor.ProveedorCreadorId = SessionPersister.ProveedorId;
             return JsonCustom(campoSustentableService.Agregar(SessionPersister.User.username, campoProveedor, archivoKmz, UsarArchivoId, archivoEpa));
         }
 

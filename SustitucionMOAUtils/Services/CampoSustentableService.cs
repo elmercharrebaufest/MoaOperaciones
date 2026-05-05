@@ -663,8 +663,8 @@ namespace SustitucionMOAUtils.Services
                             {
                                 Campo = cp.NombreCampo,
                                 Renspa = cp.Renspa,
-                                ProveedorRazonSocial = cp.RazonSocialProveedor,
-                                CuitProveedor = cp.CUITProveedor,
+                                ProveedorRazonSocial = cp.ProveedorCreadorRazonSocial, //cp.RazonSocialProveedor,
+                                CuitProveedor = cp.ProveedorCreadorCuit, //cp.CUITProveedor,
                                 Cosecha = cp.NombreCosecha,
                                 HectareasSoja = cp.HectareasSoja ?? 0,
                                 HectareasTotales = cp.HectareasTotales ?? 0,
@@ -686,7 +686,7 @@ namespace SustitucionMOAUtils.Services
                          {
                              Campo = cp.NombreCampo,
                              Renspa = cp.Renspa,
-                             ProveedorRazonSocial = cp.RazonSocialProveedor,
+                             ProveedorRazonSocial = cp.ProveedorCreadorRazonSocial, //cp.RazonSocialProveedor,
                              Cosecha = cp.NombreCosecha,
                              HectareasSoja = cp.HectareasSoja ?? 0,
                              HectareasTotales = cp.HectareasTotales ?? 0,
@@ -1111,6 +1111,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     var rutaArchivo = this.repositorio.Obtener<Archivo>(a => a.Id == campo.Archivo_Id).Ruta;
                     EnviarCampoFaltanteACertificadorDeSustentables(rutaArchivo, campo);
+                    Log.Info($"Ejecución correcta en JOB. campoCosechaId {campo.CampoCosecha_Id}");
                 }
                 catch(Exception ex)
                 {
