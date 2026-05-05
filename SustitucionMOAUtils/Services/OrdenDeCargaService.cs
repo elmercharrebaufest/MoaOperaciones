@@ -2995,7 +2995,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                if (!ordenesAgregadas?.Any() ?? false)
+                if (!(ordenesAgregadas?.Any() ?? false))
                 {
                     return;
                 }
