@@ -1048,12 +1048,19 @@ namespace SustitucionMOAUtils.Services
                 !string.IsNullOrEmpty(parametros.FechaFin) &&
                 DateTime.TryParseExact(parametros.FechaFin, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaHasta);
 
+
+            var fechaInicio = DateTime.Now;
+            DateTime.TryParseExact(parametros.FechaInicio, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicio);
+            var nrosESSAPBd = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.Fecha_Carga_ES >= fechaInicio && x.Fecha_Carga_ES <= fechaHasta).Select(y => y.NRO_ES_SAP.ToString()).ToList();
+
             entradasServicioCabeceraSap = entradasServicioCabeceraSap
                 .Where(x =>
                     x.OrdenCompra.StartsWith("412") && //Se filtran por las OC tomando las que empiezan con 412
-                    (!debeFiltrarPorFecha || !x.FechaCreacionDateTime.HasValue || x.FechaCreacionDateTime <= fechaHasta)
+                    (!debeFiltrarPorFecha || !x.FechaCreacionDateTime.HasValue || x.FechaCreacionDateTime <= fechaHasta) &&
+                    nrosESSAPBd.Contains(x.EntradaServicio)
                 ).ToList();
 
+           
             // Filtra por número de documento, si se proporciona el parámetro
             if (parametros.DocumentoNumero != null)
                 entradasServicioCabeceraSap = entradasServicioCabeceraSap.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();
@@ -1161,7 +1168,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            return entradasServicioResponse;
+            return entradasServicioResponse; 
         }
 
         private async Task<List<EntradaServicioCabeceraDto>> ServicioSAP_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario)

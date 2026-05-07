@@ -313,7 +313,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.cargando = true;
         this.tablaPOReporte = [];
         return new Promise<void>((resolve, reject) => {
-            const subscription = this.service.ListarEntradaServicio(this.isAll, fechaDesde, fechaHasta, this.ordenCompraFiltro,
+            const subscription = this.service.ListarESReporteExcel(this.isAll, fechaDesde, fechaHasta, this.ordenCompraFiltro,
                 proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, 1, this.totalRows, this.estadoCertificacion.code).subscribe(
                     (result: any) => {
                         if (result.logout === true) {
@@ -345,6 +345,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.clearMessage();
         });
     }
+    
 
     clearMessage() {
         setTimeout(() => {

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAUtils.Extensions;
+using System.Linq;
 
 namespace SustitucionMOA.Controllers
 {
@@ -75,6 +76,15 @@ namespace SustitucionMOA.Controllers
                 result = EntradaServicioService.ObtenerESLocales(parametros, usuarioActual);
             }
             return JsonCustom(new { data = result });
+        }
+
+        public async Task<ActionResult> ListarESReporteExcel(EntradaServicioParamsDto parametros)
+        {
+            UsuarioDto usuarioActual = ObtenerUsuarioActual();
+            List<EntradaServicioCabeceraDto> aprobadas = await EntradaServicioService.ObtenerEntradasServicioCompleta(parametros, usuarioActual);
+            List<EntradaServicioCabeceraDto> otrosEstados = EntradaServicioService.ServicioAprobaciones_EntradasServicioCabecera(parametros, usuarioActual);
+
+            return JsonCustom(new { data = aprobadas.Concat(otrosEstados) });
         }
 
 
