@@ -4,8 +4,10 @@ using Quartz.Util;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Util.EntitiesExtensions;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Extensions;
@@ -1051,7 +1053,8 @@ namespace SustitucionMOAUtils.Services
 
             var fechaInicio = DateTime.Now;
             DateTime.TryParseExact(parametros.FechaInicio, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicio);
-            var nrosESSAPBd = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.Fecha_Carga_ES >= fechaInicio && x.Fecha_Carga_ES <= fechaHasta).Select(y => y.NRO_ES_SAP.ToString()).ToList();
+            var nrosESSAPBd = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.Fecha_Carga_ES >= fechaInicio && x.Fecha_Carga_ES <= fechaHasta &&
+            x.Estado_certificacion.Equals(EstadoCertificacionEnum.Aprobada.GetDescription())).Select(y => y.NRO_ES_SAP.ToString()).ToList();
 
             entradasServicioCabeceraSap = entradasServicioCabeceraSap
                 .Where(x =>
