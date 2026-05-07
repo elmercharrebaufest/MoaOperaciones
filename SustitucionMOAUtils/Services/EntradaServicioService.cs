@@ -197,6 +197,8 @@ namespace SustitucionMOAUtils.Services
             {
                 aprobacionesTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
                     x.NRO_ES_SAP == null &&
+                    (string.IsNullOrEmpty(parametros.Usuario) || x.Ingresante_CDS == parametros.Usuario) &&
+                    (string.IsNullOrEmpty(parametros.Aprobador) || x.Aprobador_CDS == parametros.Aprobador) &&
                     x.Estado_certificacion.Contains(parametros.Estado) &&
                     (string.IsNullOrEmpty(parametros.OrdenCompra) || x.NRO_OC == parametros.OrdenCompra) &&
                     (!debeFiltrarPorFecha || !x.Fecha_Carga_ES.HasValue || (x.Fecha_Carga_ES >= fechaDesde && x.Fecha_Carga_ES <= fechaHasta)));
@@ -1053,8 +1055,11 @@ namespace SustitucionMOAUtils.Services
 
             var fechaInicio = DateTime.Now;
             DateTime.TryParseExact(parametros.FechaInicio, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicio);
+
             var nrosESSAPBd = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.Fecha_Carga_ES >= fechaInicio && x.Fecha_Carga_ES <= fechaHasta &&
-            x.Estado_certificacion.Equals(EstadoCertificacionEnum.Aprobada.GetDescription())).Select(y => y.NRO_ES_SAP.ToString()).ToList();
+            x.Estado_certificacion == "Aprobada" &&
+            (string.IsNullOrEmpty(parametros.Aprobador) || x.Aprobador_CDS == parametros.Aprobador) &&
+            (string.IsNullOrEmpty(parametros.Usuario) || x.Ingresante_CDS == parametros.Usuario)).Select(y => y.NRO_ES_SAP.ToString()).ToList();
 
             entradasServicioCabeceraSap = entradasServicioCabeceraSap
                 .Where(x =>
@@ -2227,6 +2232,18 @@ namespace SustitucionMOAUtils.Services
             }
 
             return null;
+        }
+
+        public List<string> ListarUsuariosES()
+        {
+            var ingresantes = this.repositorioEntradaServicio.Listar<Aprobaciones>().Select(x => x.Ingresante_CDS).Distinct().ToList();
+            return ingresantes;
+        }
+
+        public List<string> ListarAprobadoresES()
+        {
+            var aprobadores = this.repositorioEntradaServicio.Listar<Aprobaciones>().Select(x => x.Aprobador_CDS).Distinct().ToList();
+            return aprobadores;
         }
     }
 }

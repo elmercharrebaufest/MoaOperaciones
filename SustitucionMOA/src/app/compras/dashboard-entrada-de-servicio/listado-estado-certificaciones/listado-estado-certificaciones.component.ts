@@ -27,6 +27,11 @@ export interface autoCompleteObject {
     valor: string;
     CodigoProveedor: string;
 };
+
+export interface CombosResponse {
+    usuarios: string[];
+    aprobadores: string[];
+}
 import { certificacionES } from '../components/modal-aprobacion/modalAprobacion.interface';
 import { TableCustomSort } from '../tableCustomSort.helper';
 import { EntradaServicioCabeceraDto } from '../../../common/models/ordenes-compra/entradaServicioCabecera';
@@ -112,6 +117,11 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     currentPage: number = 1;
     first: number = 0;
     lastEvent: any = null;
+
+    aprobadorSeleccionado: string = '';
+    aprobadoresFiltrados: any[] = [];
+    usuarioSeleccionado: string = '';
+    usuariosFiltrados: any[] = [];
 
     motivos = [
         { name: 'Servicio no ejecutado/concluido', code: '1' },
@@ -218,12 +228,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.havePermission = true;
         }
 
-        // Esperar un momento para que el aux-panel emita las fechas iniciales
-        /*setTimeout(async () => {
-            await this.listarEntradasServicio(this.filtroFechaDesde, this.filtroFechaHasta, this.proveedor, this.documentoNumero);
-            //await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
-            //this.obtenerESSap(this.proveedor, this.documentoNumero);
-        }, 100);*/
+        this.getCombos();
     }
 
     // Nuevo método para establecer las fechas iniciales basándose en la lógica del aux-panel
@@ -277,9 +282,11 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     listarEntradasServicio(fechaDesde: string, fechaHasta: string, proveedor: string, documentoNumero: string): Promise<void> {
         this.recalculando = true;
         this.tablaPO = [];
+        const usuario = this.usuarioSeleccionado;
+        const aprobador = this.aprobadorSeleccionado;
         return new Promise<void>((resolve, reject) => {
             const subscription = this.service.ListarEntradaServicio(this.isAll, fechaDesde, fechaHasta, this.ordenCompraFiltro,
-                proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.estadoCertificacion.code).subscribe(
+                proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.estadoCertificacion.code, this.aprobadorSeleccionado, this.usuarioSeleccionado).subscribe(
                     (result: any) => {
                         if (result.logout === true) {
                             this.sessionDataService.logout();
@@ -931,6 +938,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         else {
             this.proveedor = '';
         }
+
         this.first = 0;
         this.currentPage = 1;
         this.loadData({
@@ -1333,6 +1341,18 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.filtroFechaHasta,
             this.proveedor,
             this.documentoNumero
+        );
+    }
+
+    getCombos() {
+        this.service.listarCombos().subscribe(
+            (resp: CombosResponse) => {
+                this.usuariosFiltrados = resp.usuarios.map(user => ({ label: user, value: user }));
+                this.aprobadoresFiltrados = resp.aprobadores.map(ap => ({ label: ap, value: ap }));
+            },
+            error => {
+                console.error('Error al obtener los combos:', error);
+            }
         );
     }
 

@@ -144,5 +144,11 @@ namespace SustitucionMOA.Controllers
             var result = EntradaServicioService.ActualizarInformacionIngresante(info);
             return JsonCustom(new { data = result });
         }
+        
+        [HttpGet]
+        public ActionResult Combos(EntradaServicioParamsDto parametros)
+        {
+            return JsonCustom(new { usuarios = EntradaServicioService.ListarUsuariosES(), aprobadores = EntradaServicioService.ListarAprobadoresES() });
+        }
     }
 }

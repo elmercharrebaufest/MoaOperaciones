@@ -226,7 +226,9 @@ export class ComprasService extends BaseService {
         ordenAscendente: boolean = this.filtros.ordenAscendente,
         pagina: number = this.filtros.pagina,
         elementosPorPagina: number = this.filtros.itemsPorPagina,
-        estado: string = "Pendiente Aprobación"
+        estado: string = "Pendiente Aprobación",
+        aprobador: string = '',
+        usuario: string = ''
     ): Observable<EntradaServicioCabeceraDto[]> {
         
         let params: HttpParams = new HttpParams();
@@ -241,6 +243,8 @@ export class ComprasService extends BaseService {
         params = params.set('pagina', pagina.toString());
         params = params.set('elementosPorPagina', elementosPorPagina.toString());
         params = params.set('estado', estado);
+        params = params.set('aprobador', aprobador || "");
+        params = params.set('usuario', usuario || "");
         return this.http
             .get<EntradaServicioCabeceraDto[]>('/api/EntradaServicio/ListarEntradaServicio', { params: params, headers: this.headers }).pipe(
                 catchError(error => {
@@ -1807,5 +1811,14 @@ export class ComprasService extends BaseService {
                 { headers: this.headers })
             .pipe(timeoutWith(20000,
                 throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    listarCombos() : Observable<{ usuarios: string[], aprobadores: string[] }>{
+        return this.http
+            .get<{ usuarios: any[], aprobadores: any[] }>('/api/EntradaServicio/Combos', { headers: this.headers }).pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
     }
 }
