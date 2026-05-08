@@ -1815,7 +1815,7 @@ export class ComprasService extends BaseService {
 
     listarCombos() : Observable<{ usuarios: string[], aprobadores: string[] }>{
         return this.http
-            .get<{ usuarios: any[], aprobadores: any[] }>('/api/EntradaServicio/Combos', { headers: this.headers }).pipe(
+            .get<{ usuarios: string[], aprobadores: string[] }>('/api/EntradaServicio/Combos', { headers: this.headers }).pipe(
                 catchError(error => {
                     return throwError(error);
                 })

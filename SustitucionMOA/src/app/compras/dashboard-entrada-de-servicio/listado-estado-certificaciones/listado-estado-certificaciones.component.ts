@@ -119,9 +119,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     lastEvent: any = null;
 
     aprobadorSeleccionado: string = '';
-    aprobadoresFiltrados: any[] = [];
+    aprobadoresFiltrados: string[] = [];
     usuarioSeleccionado: string = '';
-    usuariosFiltrados: any[] = [];
+    usuariosFiltrados: string[] = [];
 
     motivos = [
         { name: 'Servicio no ejecutado/concluido', code: '1' },
