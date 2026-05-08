@@ -575,3 +575,109 @@ td:has(> div.ingresante) {
         cursor: pointer;
     }
   }
+
+  .filtro-aprobador-input {
+    width: 100% !important;
+    max-width: 250px;
+    padding: 0.25rem 0.5rem !important;
+    height: 32px !important;
+    font-size: 13px !important;
+}
+
+.filtro-aprobador-input .p-autocomplete-input {
+    padding: 0.25rem 0.5rem !important;
+    height: 30px !important;
+    font-size: 13px !important;
+}
+
+.filtro-aprobador-input .p-autocomplete-panel {
+    max-width: 250px;
+}
+
+
+
+:host
+    ::ng-deep
+    .filtro-nuevo-aprobador
+    > p-dropdown#select-aprobador
+    > .ui-dropdown {
+    height: 1.8em;
+    width: 17em !important;
+    position: relative;
+}
+
+:host
+    ::ng-deep
+    .filtro-nuevo-aprobador
+    > p-dropdown#select-aprobador
+    > .ui-dropdown
+    > .ui-dropdown-label {
+    font-size: 0.9em !important;
+    font-family: "Roboto Condensed", Arial, sans-serif !important;
+    padding: 0.2em 0.4em;
+    margin-bottom: 0;
+}
+
+:host
+    ::ng-deep
+    .filtro-nuevo-aprobador
+    > p-dropdown#select-aprobador
+    > .ui-dropdown
+    > .ui-dropdown-panel {
+    max-height: 250px !important;
+    min-height: 150px !important;
+}
+
+:host
+    ::ng-deep
+    .filtro-nuevo-aprobador
+    > p-dropdown#select-aprobador
+    > .ui-dropdown.ui-dropdown-open
+    > .ui-dropdown-panel
+    > .ui-dropdown-items-wrapper
+    > .ui-dropdown-items {
+    font-size: 0.9em !important;
+}
+
+:host
+    ::ng-deep
+    .filtro-nuevo-usuario
+    > p-dropdown#select-usuario
+    > .ui-dropdown {
+    height: 1.8em;
+    width: 17em !important;
+    position: relative;
+}
+
+:host
+    ::ng-deep
+    .filtro-nuevo-usuario
+    > p-dropdown#select-usuario
+    > .ui-dropdown
+    > .ui-dropdown-label {
+    font-size: 0.9em !important;
+    font-family: "Roboto Condensed", Arial, sans-serif !important;
+    padding: 0.2em 0.4em;
+    margin-bottom: 0;
+}
+
+:host
+    ::ng-deep
+    .filtro-nuevo-usuario
+    > p-dropdown#select-usuario
+    > .ui-dropdown
+    > .ui-dropdown-panel {
+    max-height: 250px !important;
+    min-height: 150px !important;
+}
+
+:host
+    ::ng-deep
+    .filtro-nuevo-usuario
+    > p-dropdown#select-usuario
+    > .ui-dropdown.ui-dropdown-open
+    > .ui-dropdown-panel
+    > .ui-dropdown-items-wrapper
+    > .ui-dropdown-items {
+    font-size: 0.9em !important;
+}

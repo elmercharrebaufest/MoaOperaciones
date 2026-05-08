@@ -20,5 +20,7 @@ namespace SustitucionMOAModel.Dto
         public string FechaContabilizacion { get; set; }
         public string OrdenCompra { get; set; }
         public string Estado { get; set; }
+        public string Usuario { get; set; }
+        public string Aprobador { get; set; }
     }
 }

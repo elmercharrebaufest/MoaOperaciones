@@ -226,6 +226,44 @@ export class ComprasService extends BaseService {
         ordenAscendente: boolean = this.filtros.ordenAscendente,
         pagina: number = this.filtros.pagina,
         elementosPorPagina: number = this.filtros.itemsPorPagina,
+        estado: string = "Pendiente Aprobación",
+        aprobador: string = '',
+        usuario: string = ''
+    ): Observable<EntradaServicioCabeceraDto[]> {
+        
+        let params: HttpParams = new HttpParams();
+        params = params.set('verTodo', verTodo.toString());
+        params = params.set('fechaInicio', (fechaInicio != null ? fechaInicio : ""));
+        params = params.set('fechaFin', fechaFin);
+        params = params.set('OrdenCompra', ordenCompra || "");
+        params = params.set('vendedor', proveedorId);
+        params = params.set('documentoNumero', DocumentoNumero);
+        params = params.set('ColumnaOrden', columnaOrden);
+        params = params.set('OrdenAscendente', ordenAscendente.toString());
+        params = params.set('pagina', pagina.toString());
+        params = params.set('elementosPorPagina', elementosPorPagina.toString());
+        params = params.set('estado', estado);
+        params = params.set('aprobador', aprobador || "");
+        params = params.set('usuario', usuario || "");
+        return this.http
+            .get<EntradaServicioCabeceraDto[]>('/api/EntradaServicio/ListarEntradaServicio', { params: params, headers: this.headers }).pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
+
+    public ListarESReporteExcel(
+        verTodo: boolean, 
+        fechaInicio: any = this.filtros.fechaDesde,
+        fechaFin: string, 
+        ordenCompra: string | undefined,
+        proveedorId: string,
+        DocumentoNumero: string,
+        columnaOrden: string = this.filtros.columnaNombre,
+        ordenAscendente: boolean = this.filtros.ordenAscendente,
+        pagina: number = this.filtros.pagina,
+        elementosPorPagina: number = this.filtros.itemsPorPagina,
         estado: string = "Pendiente Aprobación"
     ): Observable<EntradaServicioCabeceraDto[]> {
         
@@ -242,7 +280,7 @@ export class ComprasService extends BaseService {
         params = params.set('elementosPorPagina', elementosPorPagina.toString());
         params = params.set('estado', estado);
         return this.http
-            .get<EntradaServicioCabeceraDto[]>('/api/EntradaServicio/ListarEntradaServicio', { params: params, headers: this.headers }).pipe(
+            .get<EntradaServicioCabeceraDto[]>('/api/EntradaServicio/ListarESReporteExcel', { params: params, headers: this.headers }).pipe(
                 catchError(error => {
                     return throwError(error);
                 })
@@ -1773,5 +1811,14 @@ export class ComprasService extends BaseService {
                 { headers: this.headers })
             .pipe(timeoutWith(20000,
                 throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    listarCombos() : Observable<{ usuarios: string[], aprobadores: string[] }>{
+        return this.http
+            .get<{ usuarios: string[], aprobadores: string[] }>('/api/EntradaServicio/Combos', { headers: this.headers }).pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
     }
 }
