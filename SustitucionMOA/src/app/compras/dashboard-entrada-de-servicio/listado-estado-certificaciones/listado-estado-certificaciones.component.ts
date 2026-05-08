@@ -32,6 +32,12 @@ export interface CombosResponse {
     usuarios: string[];
     aprobadores: string[];
 }
+
+export interface OpcionCombo {
+  label: string;
+  value: string;
+}
+
 import { certificacionES } from '../components/modal-aprobacion/modalAprobacion.interface';
 import { TableCustomSort } from '../tableCustomSort.helper';
 import { EntradaServicioCabeceraDto } from '../../../common/models/ordenes-compra/entradaServicioCabecera';
@@ -119,9 +125,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     lastEvent: any = null;
 
     aprobadorSeleccionado: string = '';
-    aprobadoresFiltrados: string[] = [];
+    aprobadoresFiltrados: OpcionCombo[] = [];
     usuarioSeleccionado: string = '';
-    usuariosFiltrados: string[] = [];
+    usuariosFiltrados: OpcionCombo[] = [];
 
     motivos = [
         { name: 'Servicio no ejecutado/concluido', code: '1' },
