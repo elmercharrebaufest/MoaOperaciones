@@ -218,34 +218,36 @@ namespace SustitucionMOAUtils.Services
 
             int pagina = parametros.Pagina > 0 ? parametros.Pagina : 1;
             int elementosPorPagina = parametros.ElementosPorPagina > 0 ? parametros.ElementosPorPagina : 10;
-            var itemTotales = aprobacionesTemporales.Count();
 
-            // Ordenar aprobacionesTemporales antes del paginado
+            var grupos = aprobacionesTemporales
+            .GroupBy(x => x.NRO_ES_LOCAL)
+            .ToList();
 
-            aprobacionesTemporales = aprobacionesTemporales
+            int totalItems = grupos.Count;
+
+            var gruposPaginados = grupos
                 .Skip((pagina - 1) * elementosPorPagina)
                 .Take(elementosPorPagina)
                 .ToList();
 
-            Dictionary<string, EntradaServicioCabeceraDto> diccionarioES = aprobacionesTemporales
-            .GroupBy(temporal => temporal.NRO_ES_LOCAL)
-            .ToDictionary(
-                grupo => grupo.Key,
-                grupo =>
+            entradasServicio = gruposPaginados
+                .Select(grupo =>
                 {
                     ordenParams.OrdenCompraId = grupo.First().NRO_OC;
-                    var entradaServicioTemp = MapEntradaServicioCabecera(grupo.First(), ordenParams);
+
+                    var entradaServicioTemp =
+                        MapEntradaServicioCabecera(grupo.First(), ordenParams);
+
                     entradaServicioTemp.entradaServicioDetalle = grupo
                         .Select(MapEntradaServicioDetalle)
                         .ToList();
-                    return entradaServicioTemp;
-                });
 
-            foreach (var kvp in diccionarioES)
-            {
-                kvp.Value.ItemsTotales = itemTotales;
-                entradasServicio.Add(kvp.Value);
-            }
+                    entradaServicioTemp.ItemsTotales = totalItems;
+
+                    return entradaServicioTemp;
+                })
+                .ToList();
+
 
             if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
             {
@@ -1038,13 +1040,15 @@ namespace SustitucionMOAUtils.Services
         public async Task<List<EntradaServicioCabeceraDto>> ObtenerESAprobadasSAP(EntradaServicioParamsDto parametros, UsuarioDto usuario)
         {
             var entradasServicioResponse = new List<EntradaServicioCabeceraDto>();
+            bool verTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
+            bool certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
+            var correoUsuario = usuario.Mail.ToLower();
 
             // Si hay OrdenCompra, no usar fecha para la consulta a SAP
             var fechaConsultaSAP = string.IsNullOrEmpty(parametros.OrdenCompra) ? parametros.FechaInicio : null;
             var entradasServicioCabeceraSap = await new ObtenerCabecerasEntradaServicioConsumerMOA()
                 .ObtenerEntradasServicioCabeceraAsync(fechaConsultaSAP, parametros.OrdenCompra);
 
-            var correoUsuario = usuario.Mail.ToLower();
             var fechaHasta = DateTime.Now;
 
             var debeFiltrarPorFecha =
@@ -1052,14 +1056,24 @@ namespace SustitucionMOAUtils.Services
                 !string.IsNullOrEmpty(parametros.FechaFin) &&
                 DateTime.TryParseExact(parametros.FechaFin, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaHasta);
 
-
             var fechaInicio = DateTime.Now;
             DateTime.TryParseExact(parametros.FechaInicio, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicio);
 
-            var nrosESSAPBd = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.Fecha_Carga_ES >= fechaInicio && x.Fecha_Carga_ES <= fechaHasta &&
+            var aprobacionesBd = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.Fecha_Carga_ES >= fechaInicio && x.Fecha_Carga_ES <= fechaHasta &&
             x.Estado_certificacion == "Aprobada" &&
             (string.IsNullOrEmpty(parametros.Aprobador) || x.Aprobador_CDS == parametros.Aprobador) &&
-            (string.IsNullOrEmpty(parametros.Usuario) || x.Ingresante_CDS == parametros.Usuario)).Select(y => y.NRO_ES_SAP.ToString()).ToList();
+            (string.IsNullOrEmpty(parametros.Usuario) || x.Ingresante_CDS == parametros.Usuario)).ToList();
+            
+            //Si no es interno filtro las del usuario
+            if (!verTodo)
+            {
+                aprobacionesBd = aprobacionesBd.Where(x => (x.Ingresante_CDS.ToLower() == correoUsuario ||
+                            x.Fiscal_SOLPED.ToLower() == correoUsuario ||
+                            x.Aprobador_CDS.ToLower() == correoUsuario ||
+                        (certExt && x.Proveedor == parametros.Vendedor))).ToList();
+            }
+
+            var nrosESSAPBd = aprobacionesBd.Select(x => x.NRO_ES_SAP.ToString()).ToList();
 
             entradasServicioCabeceraSap = entradasServicioCabeceraSap
                 .Where(x =>
@@ -1073,7 +1087,6 @@ namespace SustitucionMOAUtils.Services
             if (parametros.DocumentoNumero != null)
                 entradasServicioCabeceraSap = entradasServicioCabeceraSap.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();
 
-           
             var totalItems = entradasServicioCabeceraSap.Count();
             var ordenParams = new OrderParamsDto();
 
@@ -1121,27 +1134,13 @@ namespace SustitucionMOAUtils.Services
                 // Se obtiene detalle de la APROBACIÓN de la Entrada de Servicio
                 List<Aprobaciones> ESTemporales = new List<Aprobaciones>();
 
-                bool verTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
-                bool certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
-
-                    if (verTodo)
-                    {
-                    ESTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap);
-                    }
-                    else
-                    {
-                    ESTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap &&
-                        (x.Ingresante_CDS.ToLower() == correoUsuario ||
-                            x.Fiscal_SOLPED.ToLower() == correoUsuario ||
-                            x.Aprobador_CDS.ToLower() == correoUsuario ||
-                        (certExt && x.Proveedor == parametros.Vendedor)));
-                }
+                ESTemporales = aprobacionesBd.Where(x => x.NRO_ES_SAP == nro_es_sap).ToList();
+                    
 
                 if (ESTemporales != null && ESTemporales.Count > 0)
                 {
-                    List<Aprobaciones> detalleAprobacionesTemporales = ESTemporales.Where(t => t.NRO_ES_SAP == int.Parse(documento.EntradaServicio)).ToList();
-
-                    var detalleEntradadeServicio = MergeDetalle(documento, detalleAprobacionesTemporales, correoSolp);
+                    //List<Aprobaciones> detalleAprobacionesTemporales = ESTemporales.Where(t => t.NRO_ES_SAP == int.Parse(documento.EntradaServicio)).ToList();
+                    var detalleEntradadeServicio = MergeDetalle(documento, ESTemporales, correoSolp);
 
                     documento.entradaServicioDetalle = detalleEntradadeServicio.entradaServicioDetalle;
                 }
