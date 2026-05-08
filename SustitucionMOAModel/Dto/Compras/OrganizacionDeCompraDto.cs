@@ -20,7 +20,7 @@ namespace SustitucionMOAModel.Dto.Compras
             if (entity != null)
             {
                 Id = entity.Id;
-                Descripcion = entity.Descripcion;
+                Descripcion = $"{entity.Descripcion} - {entity.Id}";
             }
         }
     }

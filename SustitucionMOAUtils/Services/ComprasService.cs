@@ -9391,8 +9391,8 @@ namespace SustitucionMOAUtils.Services
             var organizaciones = repositorio.ListarProyeccion<OrganizacionDeCompra, OrganizacionDeCompraDto>(
                 x => new OrganizacionDeCompraDto
                 {
-                    Id = x.Id,
-                    Descripcion = x.Descripcion
+                    Id = x.Id, 
+                    Descripcion = x.Descripcion + " - " + x.Id // -> Linq to entities no soporta string.Format
                 });
 
             return organizaciones;
