@@ -1082,11 +1082,23 @@ namespace SustitucionMOAUtils.Services
                     nrosESSAPBd.Contains(x.EntradaServicio)
                 ).ToList();
 
-           
             // Filtra por número de documento, si se proporciona el parámetro
             if (parametros.DocumentoNumero != null)
                 entradasServicioCabeceraSap = entradasServicioCabeceraSap.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();
 
+
+            foreach (var cabecera in entradasServicioCabeceraSap)
+            {
+                cabecera.entradaServicioDetalle = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(cabecera.EntradaServicio);
+                var aprobacionesBdCabecera = aprobacionesBd.Where(x => x.NRO_ES_SAP == int.Parse(cabecera.EntradaServicio)).ToList();
+                cabecera.NoCoincideDetalleSap = (cabecera.entradaServicioDetalle != null) && cabecera.entradaServicioDetalle.Any(detalle =>
+                    !aprobacionesBdCabecera.Any(x =>
+                        x.Planned_line == detalle.NumeroLinea &&
+                        x.Planned_package == detalle.PLN_PCKG));
+            } 
+
+            entradasServicioCabeceraSap = entradasServicioCabeceraSap.Where(c => !c.NoCoincideDetalleSap).ToList();
+           
             var totalItems = entradasServicioCabeceraSap.Count();
             var ordenParams = new OrderParamsDto();
 
@@ -1107,7 +1119,7 @@ namespace SustitucionMOAUtils.Services
                 documento.ItemsTotales = totalItems;
 
                 // Se obtiene detalle de una ES
-                documento.entradaServicioDetalle = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(nroDoc);
+                //documento.entradaServicioDetalle = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(nroDoc);
 
                 if (documento.entradaServicioDetalle != null && documento.entradaServicioDetalle.Count > 0)
                 {
