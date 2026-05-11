@@ -1059,19 +1059,18 @@ namespace SustitucionMOAUtils.Services
             var fechaInicio = DateTime.Now;
             DateTime.TryParseExact(parametros.FechaInicio, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicio);
 
-            var aprobacionesBd = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.Fecha_Carga_ES >= fechaInicio && x.Fecha_Carga_ES <= fechaHasta &&
+            var aprobacionesBd = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
+            x.Fecha_Carga_ES >= fechaInicio &&
+            x.Fecha_Carga_ES <= fechaHasta &&
             x.Estado_certificacion == "Aprobada" &&
             (string.IsNullOrEmpty(parametros.Aprobador) || x.Aprobador_CDS == parametros.Aprobador) &&
-            (string.IsNullOrEmpty(parametros.Usuario) || x.Ingresante_CDS == parametros.Usuario)).ToList();
-            
-            //Si no es interno filtro las del usuario
-            if (!verTodo)
-            {
-                aprobacionesBd = aprobacionesBd.Where(x => (x.Ingresante_CDS.ToLower() == correoUsuario ||
-                            x.Fiscal_SOLPED.ToLower() == correoUsuario ||
-                            x.Aprobador_CDS.ToLower() == correoUsuario ||
-                        (certExt && x.Proveedor == parametros.Vendedor))).ToList();
-            }
+            (string.IsNullOrEmpty(parametros.Usuario) || x.Ingresante_CDS == parametros.Usuario) &&
+            (verTodo || // Si no es interno, aplicar el filtro adicional
+                x.Ingresante_CDS.ToLower() == correoUsuario ||
+                x.Fiscal_SOLPED.ToLower() == correoUsuario ||
+                x.Aprobador_CDS.ToLower() == correoUsuario ||
+                (certExt && x.Proveedor == parametros.Vendedor))
+            ).ToList();
 
             var nrosESSAPBd = aprobacionesBd.Select(x => x.NRO_ES_SAP.ToString()).ToList();
 
@@ -1085,7 +1084,6 @@ namespace SustitucionMOAUtils.Services
             // Filtra por número de documento, si se proporciona el parámetro
             if (parametros.DocumentoNumero != null)
                 entradasServicioCabeceraSap = entradasServicioCabeceraSap.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();
-
 
             foreach (var cabecera in entradasServicioCabeceraSap)
             {
