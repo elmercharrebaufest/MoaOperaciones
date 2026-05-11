@@ -288,11 +288,12 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     listarEntradasServicio(fechaDesde: string, fechaHasta: string, proveedor: string, documentoNumero: string): Promise<void> {
         this.recalculando = true;
         this.tablaPO = [];
+        this.totalRows = 0;
         const usuario = this.usuarioSeleccionado;
         const aprobador = this.aprobadorSeleccionado;
         return new Promise<void>((resolve, reject) => {
             const subscription = this.service.ListarEntradaServicio(this.isAll, fechaDesde, fechaHasta, this.ordenCompraFiltro,
-                proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.estadoCertificacion.code, this.aprobadorSeleccionado, this.usuarioSeleccionado).subscribe(
+                proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.currentPage, this.pageSize, this.estadoCertificacion.code, this.aprobadorSeleccionado, this.usuarioSeleccionado).subscribe(
                     (result: any) => {
                         if (result.logout === true) {
                             this.sessionDataService.logout();

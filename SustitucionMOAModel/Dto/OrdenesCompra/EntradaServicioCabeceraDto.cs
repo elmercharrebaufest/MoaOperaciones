@@ -36,6 +36,8 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string NroPosicion { get; set; }
         public string AnuladaPor { get; set; }
         public int ItemsTotales { get; set; }
+        public bool NoCoincideDetalleSap { get; set; }
+
         public EntradaServicioCabeceraDto()
         {
             // Inicializa la lista entradaServicioDetalle en el constructor

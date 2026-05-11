@@ -224,8 +224,8 @@ export class ComprasService extends BaseService {
         DocumentoNumero: string,
         columnaOrden: string = this.filtros.columnaNombre,
         ordenAscendente: boolean = this.filtros.ordenAscendente,
-        pagina: number = this.filtros.pagina,
-        elementosPorPagina: number = this.filtros.itemsPorPagina,
+        pagina: number = 1,
+        elementosPorPagina: number = 10,
         estado: string = "Pendiente Aprobación",
         aprobador: string = '',
         usuario: string = ''
