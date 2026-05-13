@@ -81,8 +81,8 @@ namespace SustitucionMOA.Controllers
         public async Task<ActionResult> ListarESReporteExcel(EntradaServicioParamsDto parametros)
         {
             UsuarioDto usuarioActual = ObtenerUsuarioActual();
-            List<EntradaServicioCabeceraDto> aprobadas = await EntradaServicioService.ObtenerEntradasServicioCompleta(parametros, usuarioActual);
-            List<EntradaServicioCabeceraDto> otrosEstados = EntradaServicioService.ServicioAprobaciones_EntradasServicioCabecera(parametros, usuarioActual);
+            List<EntradaServicioCabeceraDto> aprobadas = await EntradaServicioService.ObtenerReporteESAprobadasSAP(parametros, usuarioActual);
+            List<EntradaServicioCabeceraDto> otrosEstados = EntradaServicioService.ObtenerReporteESLocales(parametros, usuarioActual);
 
             return JsonCustom(new { data = aprobadas.Concat(otrosEstados) });
         }
