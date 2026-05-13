@@ -46,7 +46,7 @@ namespace SustitucionMOAUtils.Services.Email
             cuerpo.AppendLine("SELECT * FROM DistanciaDomicilio DD WHERE DD.DistanciaKm is null ORDER BY DD.DomicilioDescripcion <br><br>");
             cuerpo.AppendLine("SELECT DD.*, O.DomicilioDescr, O.KmsARecorrer FROM DistanciaDomicilio DD inner join OrdenDeCarga O on O.DomicilioDescr = DD.DomicilioDescripcion WHERE DD.DistanciaKm is null <br><br>");
             cuerpo.AppendLine("2) Actualizar las distancias faltantes en la tabla DistanciaDomicilio. Se puede usar esta query como ejemplo, reemplazando los kilómetros calculados anteriormente. <br><br>");
-            cuerpo.AppendLine($"UPDATE DistanciaDomicilio SET DistanciaKm = 340 WHERE DomicilioDescripcion = '${direccionDestino}' <br><br>");
+            cuerpo.AppendLine($"UPDATE DistanciaDomicilio SET DistanciaKm = 340 WHERE DomicilioDescripcion = '{direccionDestino}' <br><br>");
             cuerpo.AppendLine("3) Actualizar las órdenes de carga que se crearon mientras no se tuvo distancias en la tabla. Se puede usar esta query como ejemplo, reemplazando los kilómetros calculados anteriormente. <br><br>");
             cuerpo.AppendLine($"UPDATE OrdenDeCarga SET KmsARecorrer = 340 WHERE DomicilioDescr = '{direccionDestino}' <br>");
 
