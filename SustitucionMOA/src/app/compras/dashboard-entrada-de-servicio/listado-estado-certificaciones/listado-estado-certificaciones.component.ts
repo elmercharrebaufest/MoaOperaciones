@@ -222,7 +222,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     async ngOnInit() {
         this.estadoCertificacion = this.listadoEstadoCertificacion.find(
         x => x.code === 'Pendiente Aprobación') || this.estadoCertificacion;
-        this.getFecha('1');
+        this.getFecha('5');
         this.formsCreate();
         this.innerWidth = window.innerWidth;
         this.navService.setSeccionActive("Estado certificaciones");
@@ -1172,10 +1172,12 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
 
     exportarTablaAExcel() {
+        this.blockUI.start('Generando Excel...');
         this.listarESReporte(this.filtroFechaDesde, this.filtroFechaHasta, this.proveedor, this.documentoNumero).then(() => {
         const datos = [...this.tablaPOReporte]
         const datosPorEstado = this.agruparDatosPorEstado(datos);
         this.exportarDatosAExcelFile(datosPorEstado);
+        this.blockUI.stop();
         });
     }
 
