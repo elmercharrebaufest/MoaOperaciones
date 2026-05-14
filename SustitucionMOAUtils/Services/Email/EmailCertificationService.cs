@@ -103,6 +103,7 @@ namespace SustitucionMOAUtils.Services.Email
             try
             {
                 var baseURL = ConfigurationManager.AppSettings["SpaUrl"];
+                var urlCertifPendientes = "\"" + rutaCertifPendiente + "\"";
                 var asunto = "Aprobación de servicio - Certificaciones: ";
                 var adjuntosMail = new List<EmailAttachment>();
                 var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT);
@@ -180,8 +181,7 @@ namespace SustitucionMOAUtils.Services.Email
                     }
                 }
 
-                var urlOperaciones = "\"" + baseURL + "\"";
-                var cuerpo = string.Format(cuerpoTemplate, contenidoHtmlPosiciones, urlOperaciones);
+                var cuerpo = string.Format(cuerpoTemplate, contenidoHtmlPosiciones, urlCertifPendientes);
 
                 var emailSenderData = new EmailSenderData
                 {
