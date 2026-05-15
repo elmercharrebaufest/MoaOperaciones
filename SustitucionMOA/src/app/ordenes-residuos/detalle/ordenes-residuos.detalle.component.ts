@@ -127,16 +127,31 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
             () => { this.blockUI.stop(); }
         );
     }
-    
+
     confirmarAnulacion() {
-        this.confirmationService.confirm({
-            key: 'confirmarAnular',
-            message: '¿Desea anular la orden?',
-            accept: () => {
-                this.anularOrden();
+        let msj = "¿Desea anular la orden?";
+        this.service.camionOrdenEstaEnPlanta(this.ordenResiduos.Id).subscribe(
+            (resp) => {
+                const camionEstaEnPlanta = this.manejarErroresApiResponse(resp);
+                if (camionEstaEnPlanta === true) {
+                    this.camionHaIngresadoAPlanta = true;
+                    this.puedeEditar = false;
+                    msj = "La orden no se puede anular por estar activa en Scato.";
+                }
+                else {
+                    this.goToSeccion('/ordenes-residuos/alta/' + this.ordenResiduos.Id);
+                }
+                this.confirmationService.confirm({
+                    key: 'confirmarAnular',
+                    message: msj,
+                    accept: () => {
+                        this.anularOrden();
+                    },
+                    reject: () => { }
+                });
             },
-            reject: () => {}
-        });
+            (err) => { this.mensajeComponent.setErrorMsg(err.message) }
+        );
     }
 
     anularOrden() {

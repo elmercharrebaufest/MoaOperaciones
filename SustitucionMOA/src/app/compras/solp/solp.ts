@@ -24,7 +24,7 @@ export class Solp extends CommonResponse {
     public Adjuntos?: { Id: number, Nombre: string }[];
     public EsPliegoMultiple: boolean = false;
     public Pliego_Id?: number;
-    public MultipleFinalizado :boolean;
+    public MultipleFinalizado: boolean;
 
     //paso 1
     public nombreDePedido: string;
@@ -94,6 +94,7 @@ export class Solp extends CommonResponse {
     public thServicioPermanente: boolean;
     public thAjustePolinomica: boolean;
     public thProveedorDirecto: boolean;
+    public thAcuerdoMarco: boolean;
     public admiteCertificacionesParciales: boolean = false;
 
     //inicio Cabecera == paso 5
@@ -311,6 +312,7 @@ export class Solp extends CommonResponse {
             this.thAjustePolinomica = solp.THAjustePolinomica;
             this.thProveedorDirecto = solp.THProveedorDirecto;
             this.thServicioPermanente = solp.THServicioPermanente;
+            this.thAcuerdoMarco = solp.THAcuerdoMarco;
 
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';

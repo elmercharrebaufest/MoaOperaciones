@@ -8,17 +8,22 @@ using System;
 using System.Text;
 using SustitucionMOAModel.Util;
 using System.Linq;
+using System.IO;
 
 namespace SustitucionMOAUtils.Services.Email
 {
     public class EmailFasonService : IEmailFasonService
     {
+        private static readonly string TEMPLATE_NOTIFICACION_AUTORIZACION_NOMINA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesAutorizacionNomina.html");
+
         private static readonly string DireccionToAltaTransporteCuitFason = ConfigurationManager.AppSettings["EmailAltaTransporteFasonTo"];
         private static readonly string DireccionCCAltaTransporteCuitFason = ConfigurationManager.AppSettings["EmailAltaTransporteFasonCC"];
         
         private static readonly string DireccionComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
         private static readonly string DireccionMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
         private static readonly string DireccionAuditoriaOrdenesVencidas = ConfigurationManager.AppSettings["EmailToAuditoriaOrdenesVencidas"];
+        private static readonly string DireccionToAutorizacionNomina = ConfigurationManager.AppSettings["EmailAutorizacionNominaTo"];
+        private static readonly string DireccionToAutorizacionNominaInternoMoa = ConfigurationManager.AppSettings["EmailAutorizacionNominaInternoTo"];
 
         private readonly IEmailService emailService;
 
@@ -142,6 +147,27 @@ namespace SustitucionMOAUtils.Services.Email
             {
                 Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionComerciales, DireccionMesaVentaFas }),
                 Asunto = $"Molinos Agro - Edición en su orden fason n°: {orden.Id}, {orden.Cliente.RazonSocial}",
+                Cuerpo = cuerpo
+            };
+            emailService.EnviarMail(emailSenderData);
+        }
+
+        public void EnviarMailAutorizacionDeNomina(IEnumerable<OrdenDeCargaFason> ordenes, bool esEdicionDeOrden)
+        {
+            if (!(ordenes?.Any() ?? false))
+            {
+                return;
+            }
+
+            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_AUTORIZACION_NOMINA);
+            var tablaOrdenes = GenerarTablaOrdenesAutorizacionDeNomina(ordenes);
+            var cuerpo = string.Format(cuerpoTemplate, ordenes.First().Observacion, tablaOrdenes);
+            var destinatarios = esEdicionDeOrden ? DireccionToAutorizacionNominaInternoMoa : DireccionToAutorizacionNomina;
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { destinatarios }),
+                Asunto = "Nómina de carga por cuenta de Molinos Agro SA" + (esEdicionDeOrden ? " - Orden modificada" : ""),
                 Cuerpo = cuerpo
             };
             emailService.EnviarMail(emailSenderData);
@@ -289,6 +315,24 @@ namespace SustitucionMOAUtils.Services.Email
             }
             tablaBuilder.Append("</tbody></table>");
             return tablaBuilder.ToString();
+        }
+
+        private static StringBuilder GenerarTablaOrdenesAutorizacionDeNomina(IEnumerable<OrdenDeCargaFason> ordenes)
+        {
+            var ordenesStrBuilder = new StringBuilder();
+            foreach (var orden in ordenes)
+            {
+                ordenesStrBuilder.Append($"<tr>" +
+                    $"<td>{orden.Producto.Nombre}</td>" +
+                    $"<td>{orden.Cliente.RazonSocial} ({orden.Cliente.CUIT})</td>" +
+                    $"<td>{orden.PatenteChasis}</td>" +
+                    $"<td>{orden.PatenteAcoplado}</td>" +
+                    $"<td>{orden.NombreChofer} ({orden.CUILChofer})</td>" +
+                    $"<td>{orden.RazonSocialTransporte} ({orden.CUITTransporte})</td>" +
+                    $"<td>{orden.DestinoMercaderia}</td>" +
+                    $"</tr>");
+            }
+            return ordenesStrBuilder;
         }
     }
 }

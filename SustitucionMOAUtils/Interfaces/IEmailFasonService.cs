@@ -15,5 +15,6 @@ namespace SustitucionMOAUtils.Interfaces
         void EnviarMailNotificacionEdicion(OrdenDeCargaFason orden, List<Variance> listaValoresDiferentes);
         void EnviarMailTransporteNoExiste(OrdenDeCargaFason ordenDeCarga);
         void EnviarMailVencieronOrdenesDeCarga(List<OrdenDeCargaFason> ordenes);
+        void EnviarMailAutorizacionDeNomina(IEnumerable<OrdenDeCargaFason> ordenes, bool esEdicionDeOrden);
     }
 }

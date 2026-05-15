@@ -26,8 +26,8 @@ export class ContratoMarco {
             this.finPeriodoValidez = entity.FinPeriodoValidez;
             const hoy = new Date();
             const finPeriodoValidezDate = new Date(entity.FinPeriodoValidez);
-            this.estaVigente = finPeriodoValidezDate >= hoy;            
-            
+            this.estaVigente = finPeriodoValidezDate >= hoy;
+
             if (entity.Posiciones && entity.Posiciones.length) {
                 this.posiciones = new Array<ContratoMarcoPosicion>();
                 entity.Posiciones.forEach(pos => {
@@ -117,4 +117,5 @@ export class ContratoMarcoSubposicion {
 export class ObtenerContratoMarco {
     public centro: string;
     public numeroContrato: string;
+    public codigoProveedor: string;
 }

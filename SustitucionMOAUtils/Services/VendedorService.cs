@@ -428,7 +428,8 @@ namespace SustitucionMOAUtils.Services
 
                 if (usuario.EsCorredor())
                 {
-                    var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit);
+                    //var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit);
+                    var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranosNuevo(cuit, false, usuario.ObtenerCorredor().CUIT);
                     string comercial = "";
                     if (infoDA.HayError)
                     {

@@ -5,6 +5,7 @@ using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Enums.Compras;
 using SustitucionMOARepositorio.Extensiones;
 using System;
 using System.Collections.Generic;
@@ -94,6 +95,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                    where u.Id == Usuario_Id
                                    select u).First();
                 var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
+                var esUsuarioCompras = usuario.TieneRol(RolEnum.ComprasRRHH);
+                var organizacionDeCompraAFiltrar = esUsuarioCompras ? OrganizacionDeCompraIds.ComprasRRHH : OrganizacionDeCompraIds.Estrategica;
                 var visualizarEditarOC = usuario.ObtenerPermisos().Contains("EDITAR OC");
                 var sinSolps = !Solps.Any();
 
@@ -121,7 +124,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     TipoPliego == TipoPliego.All
                                                     || (TipoPliego == TipoPliego.PliegoUnico && !x.Pliego.Multiple)
                                                     || (TipoPliego == TipoPliego.PliegoMultiple && x.Pliego.Multiple)
-                                                )
+                                                ) &&
+                                                (x.OrganizacionDeCompra_Id == organizacionDeCompraAFiltrar)
                                                 select new SolpDto
                                                 {
                                                     VerEditarOC = visualizarEditarOC,

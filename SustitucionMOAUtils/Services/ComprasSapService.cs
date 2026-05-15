@@ -1368,9 +1368,9 @@ namespace SustitucionMOAUtils.Services
         }
 
         //Obtener contrato es lo que consultamos cuando vamos a crear una posicion desde contrato marco
-        public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro)
+        public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro, string codigoProveedor)
         {
-            var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato, centro);
+            var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato, centro, codigoProveedor);
             return result.ContratosSolp;
         }
 
@@ -1631,8 +1631,11 @@ namespace SustitucionMOAUtils.Services
             var ordenesDeCompraSap = new List<OrdenDeCompraSAPDto>();
             foreach (var pos in solpPosiciones)
             {
-                var ordenesSapResp = obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(pos.NroSolp, pos.Indice.ToString());
-                ordenesDeCompraSap.AddRange(ordenesSapResp);
+                if(pos.NroSolp != null)
+                {
+                    var ordenesSapResp = obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(pos.NroSolp, pos.Indice.ToString());
+                    ordenesDeCompraSap.AddRange(ordenesSapResp);
+                }       
             }
 
             return ordenesDeCompraSap.Distinct().ToList();

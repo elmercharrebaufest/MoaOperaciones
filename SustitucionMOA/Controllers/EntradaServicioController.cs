@@ -9,6 +9,9 @@ using SustitucionMOAUtils.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAUtils.Extensions;
+using System.Linq;
 
 namespace SustitucionMOA.Controllers
 {
@@ -47,7 +50,7 @@ namespace SustitucionMOA.Controllers
         }
 
         /// <summary>
-        /// Servicio para obtener las entradas de servicios guardadas en aprobaciones.
+        /// Servicio para obtener las entradas de servicios.
         /// </summary>
         /// <param name="parametros"></param>
         /// <returns></returns>
@@ -57,6 +60,31 @@ namespace SustitucionMOA.Controllers
             List<EntradaServicioCabeceraDto> result = EntradaServicioService.ServicioAprobaciones_EntradasServicioCabecera(parametros, usuarioActual);
 
             return JsonCustom(new { data = result });
+        }
+
+        public async Task<ActionResult> ListarEntradaServicio(EntradaServicioParamsDto parametros)
+        {
+            var result = new List<EntradaServicioCabeceraDto>();
+            UsuarioDto usuarioActual = ObtenerUsuarioActual();
+
+            if (parametros.Estado == EstadoCertificacionEnum.Aprobada.GetDescription())
+            {
+                result = await EntradaServicioService.ObtenerESAprobadasSAP(parametros, usuarioActual);
+            }
+            else
+            {
+                result = EntradaServicioService.ObtenerESLocales(parametros, usuarioActual);
+            }
+            return JsonCustom(new { data = result });
+        }
+
+        public async Task<ActionResult> ListarESReporteExcel(EntradaServicioParamsDto parametros)
+        {
+            UsuarioDto usuarioActual = ObtenerUsuarioActual();
+            List<EntradaServicioCabeceraDto> aprobadas = await EntradaServicioService.ObtenerReporteESAprobadasSAP(parametros, usuarioActual);
+            List<EntradaServicioCabeceraDto> otrosEstados = EntradaServicioService.ObtenerReporteESLocales(parametros, usuarioActual);
+
+            return JsonCustom(new { data = aprobadas.Concat(otrosEstados) });
         }
 
 
@@ -115,6 +143,12 @@ namespace SustitucionMOA.Controllers
         {
             var result = EntradaServicioService.ActualizarInformacionIngresante(info);
             return JsonCustom(new { data = result });
+        }
+        
+        [HttpGet]
+        public ActionResult Combos(EntradaServicioParamsDto parametros)
+        {
+            return JsonCustom(new { usuarios = EntradaServicioService.ListarUsuariosES(), aprobadores = EntradaServicioService.ListarAprobadoresES() });
         }
     }
 }

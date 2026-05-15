@@ -27,6 +27,17 @@ export interface autoCompleteObject {
     valor: string;
     CodigoProveedor: string;
 };
+
+export interface CombosResponse {
+    usuarios: string[];
+    aprobadores: string[];
+}
+
+export interface OpcionCombo {
+  label: string;
+  value: string;
+}
+
 import { certificacionES } from '../components/modal-aprobacion/modalAprobacion.interface';
 import { TableCustomSort } from '../tableCustomSort.helper';
 import { EntradaServicioCabeceraDto } from '../../../common/models/ordenes-compra/entradaServicioCabecera';
@@ -60,6 +71,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     length = 0;
     pageSize: number = 10;
     pageIndex: number = 1;
+    totalRows: number = 0;
+
     subscripcionPO: Subscription
     documentoNumero: string = "";
     expandedRows: any[] = [];
@@ -91,8 +104,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     filtroFechaHasta: string;
     fullscreen: boolean = false;
     userId: any = '';
-    tablaPOAprobaciones: EntradaServicioCabeceraDto[] = [];
-    tablaPOSap: EntradaServicioCabeceraDto[] = [];
+    tablaPO: EntradaServicioCabeceraDto[] = [];
+    tablaPOReporte: EntradaServicioCabeceraDto[] = [];
     cols: any[];
     usuario: string;
     vendedor: string;
@@ -104,8 +117,17 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     isAll: boolean = false; // Permiso para ver todos los registros en la tabla aprobaciones.
     fechaSeleccionadaAux: string = "1";
     recalculando: boolean = false;
+    cargando: boolean = false;
     recalculandoAprobadas: boolean = false;
     ordenCompraFiltro: string = "";
+    currentPage: number = 1;
+    first: number = 0;
+    lastEvent: any = null;
+
+    aprobadorSeleccionado: string = '';
+    aprobadoresFiltrados: OpcionCombo[] = [];
+    usuarioSeleccionado: string = '';
+    usuariosFiltrados: OpcionCombo[] = [];
 
     motivos = [
         { name: 'Servicio no ejecutado/concluido', code: '1' },
@@ -174,8 +196,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
     private estadoSeleccionado?: string;
 
-
-
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -200,7 +220,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
 
     async ngOnInit() {
-        this.getFecha('1');
+        this.estadoCertificacion = this.listadoEstadoCertificacion.find(
+        x => x.code === 'Pendiente Aprobación') || this.estadoCertificacion;
+        this.getFecha('5');
         this.formsCreate();
         this.innerWidth = window.innerWidth;
         this.navService.setSeccionActive("Estado certificaciones");
@@ -212,11 +234,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.havePermission = true;
         }
 
-        // Esperar un momento para que el aux-panel emita las fechas iniciales
-        setTimeout(async () => {
-            await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
-            this.obtenerESSap(this.proveedor, this.documentoNumero);
-        }, 100);
+        this.getCombos();
     }
 
     // Nuevo método para establecer las fechas iniciales basándose en la lógica del aux-panel
@@ -267,75 +285,81 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
     }
 
-    getListarPO(fechaDesde: string = "", fechaHasta: string = ""): Promise<void> {
+    listarEntradasServicio(fechaDesde: string, fechaHasta: string, proveedor: string, documentoNumero: string): Promise<void> {
         this.recalculando = true;
-        this.tablaPOAprobaciones = [];
+        this.tablaPO = [];
+        this.totalRows = 0;
+        const usuario = this.usuarioSeleccionado;
+        const aprobador = this.aprobadorSeleccionado;
         return new Promise<void>((resolve, reject) => {
-            const subscription = this.service.ObtenerESLocales(this.isAll, '', fechaDesde, fechaHasta, this.ordenCompraFiltro).subscribe(
-                (result: any) => {
-                    if (result.logout === true) {
-                        this.sessionDataService.logout();
-                        reject('Logout required');
-                    } else if (result.error !== undefined && result.error !== "") {
-                    } else if (result.info !== undefined) {
-                        // Manejo de mensajes informativos, si es necesario
-                    } else {
-                        this.agregarTipoMonedaEnDetalle(result.data);
-                        this.tablaPOAprobaciones = result.data;
-                        this.userId = this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
+            const subscription = this.service.ListarEntradaServicio(this.isAll, fechaDesde, fechaHasta, this.ordenCompraFiltro,
+                proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.currentPage, this.pageSize, this.estadoCertificacion.code, this.aprobadorSeleccionado, this.usuarioSeleccionado).subscribe(
+                    (result: any) => {
+                        if (result.logout === true) {
+                            this.sessionDataService.logout();
+                            reject('Logout required');
+                        }else {
+                            this.tablaPO = result.data;
+                            const valor = result.data.length > 0 ? result.data[0].ItemsTotales : 0;
+                            this.totalRows = valor;
+
+                            if (this.estadoCertificacion.code !== 'Aprobada') {
+                                this.agregarTipoMonedaEnDetalle(result.data);
+                                this.userId = this.setColumsByUserProfile(this.tablaPO, this.usuario);
+                            }
+                        }
+                        this.recalculando = false;
+                        resolve();
+                    },
+                    error => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                        this.recalculando = false;
+                        reject(error);
                     }
-                    if (this.estadoCertificacion.code === 'Pendiente Aprobación') {
-                        this.tabla.filter("Pendiente Aprobación", "Estado", "contains");
-                    }
-                    this.recalculando = false;
-                    resolve();
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                    this.recalculando = false;
-                    reject(error);
-                }
-            );
+                );
 
             this.subscripciones.push(subscription);
             this.clearMessage();
         });
     }
 
-
-    obtenerESSap(proveedor: string, documentoNumero: string): Promise<void> {
-        this.recalculandoAprobadas = true;
-        this.tablaPOSap = [];
+    listarESReporte(fechaDesde: string, fechaHasta: string, proveedor: string, documentoNumero: string): Promise<void> {
+        this.cargando = true;
+        this.tablaPOReporte = [];
         return new Promise<void>((resolve, reject) => {
-            const subscription = this.service
-                .getByProveedorAsync(
-                    this.filtroFechaDesde,
-                    this.filtroFechaHasta,
-                    proveedor,
-                    documentoNumero,
-                    this.columnaOrden,
-                    this.ordenAscendente,
-                    this.pageIndex,
-                    this.pageSize,
-                    this.isAll,
-                    this.ordenCompraFiltro)
-                .subscribe(
-                    (result: { error: any, data: any }) => {
-                        this.recalculandoAprobadas = false;
-                        if (result.error != null) {
-                            this.floatMsgService.setErrorMsg(result.error);
-                            return;
+            const subscription = this.service.ListarESReporteExcel(this.isAll, fechaDesde, fechaHasta, this.ordenCompraFiltro,
+                proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, 1, this.totalRows, this.estadoCertificacion.code).subscribe(
+                    (result: any) => {
+                        if (result.logout === true) {
+                            this.sessionDataService.logout();
+                            reject('Logout required');
+                        } else if (result.error !== undefined && result.error !== "") {
+                        } else if (result.info !== undefined) {
+                            // Manejo de mensajes informativos, si es necesario
+                        } else {
+                            this.tablaPOReporte = result.data;
+
+                            if (this.estadoCertificacion.code !== 'Aprobada') {
+                                this.agregarTipoMonedaEnDetalle(result.data);
+                                //this.userId = this.setColumsByUserProfile(this.tablaPO, this.usuario);
+                            }
                         }
-                        this.tablaPOSap = result.data;
+                        
+                        this.cargando = false;
                         resolve();
-                    }, error => {
+                    },
+                    error => {
                         this.floatMsgService.setErrorMsg(error.message);
-                        this.recalculandoAprobadas = false;
+                        this.cargando = false;
                         reject(error);
-                    })
+                    }
+                );
+
             this.subscripciones.push(subscription);
+            this.clearMessage();
         });
     }
+    
 
     clearMessage() {
         setTimeout(() => {
@@ -381,7 +405,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
     getOrdenCompraFiltro(ocIngresada: string) {
         this.ordenCompraFiltro = ocIngresada;
-        //this.getListarPO();
     }
 
     toggleRow(rowData: any): void {
@@ -414,37 +437,26 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 });
                 break;
             case 'Pendiente Aprobación':
-                // Remover esta llamada duplicada
-                // if (this.tablaPOAprobaciones.length < 1) {
-                //     this.getListarPO();
-                // }
-                this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
+                this.setColumsByUserProfile(this.tablaPO, this.usuario);
                 break;
             case 'Rechazado':
-                // Remover esta llamada duplicada
-                // if (this.tablaPOAprobaciones.length < 1) {
-                //     this.getListarPO();
-                // }
                 this.defaultTablesConfig[0].columns.forEach(col => {
                     col.visible = col.field === 'Aprobador' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' || col.field === 'AnuladoPor' ? false : true;
                 });
                 break;
             case 'Anulada':
-                // Remover esta llamada duplicada
-                // if (this.tablaPOAprobaciones.length < 1) {
-                //     this.getListarPO();
-                // }
                 this.defaultTablesConfig[0].columns.forEach(col => {
                     col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobación' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' ? false : true;
                 });
                 break;
         }
-        this.tabla.filter(event.value.code, 'Estado', 'contains');
+
+        this.listarEntradasServicio(this.filtroFechaDesde, this.filtroFechaHasta, this.proveedor, this.documentoNumero);
         this.showAllESRows();
     }
 
     showAllESRows(): void {
-        this.tablaPOAprobaciones.forEach(es => {
+        this.tablaPO.forEach(es => {
             const element = document.getElementById(es.EntradaServicio);
             if (element) {
                 element.style.display = 'table-row';
@@ -643,7 +655,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                                         this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
                                         this.updateStateFromPending(numeroCertificacion, 'Aprobar');
                                         this.getFecha("1");
-                                        this.obtenerESSap(this.proveedor, this.documentoNumero);
+                                        //this.obtenerESSap(this.proveedor, this.documentoNumero);
+                                        this.listarEntradasServicio(this.filtroFechaDesde, this.filtroFechaHasta, this.proveedor, this.documentoNumero);
                                         break;
                                     }
                                     case "S":
@@ -689,17 +702,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.isAll = isAll;
         const mockEvent = { value: { code: this.estadoCertificacion.code } };
 
-        if (this.estadoCertificacion.code === 'Aprobada') {
-            await this.obtenerESSap(this.proveedor, this.documentoNumero);
-            await this.filtrarPorEstado(mockEvent);
-            this.blockUI.stop();
-            await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta); // Pasar fechas
-        } else {
-            await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta); // Pasar fechas
-            await this.filtrarPorEstado(mockEvent);
-            this.blockUI.stop();
-            await this.obtenerESSap(this.proveedor, this.documentoNumero);
-        }
+        await this.listarEntradasServicio(this.filtroFechaDesde, this.filtroFechaHasta, this.proveedor, this.documentoNumero);
+        await this.filtrarPorEstado(mockEvent);
+        this.blockUI.stop();
     }
 
     /**
@@ -941,8 +946,15 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.proveedor = '';
         }
 
-        await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
-        await this.obtenerESSap(this.proveedor, this.documentoNumero);
+        this.first = 0;
+        this.currentPage = 1;
+        this.loadData({
+            first: 0,
+            rows: this.pageSize
+        });
+        //await this.listarEntradasServicio(this.filtroFechaDesde, this.filtroFechaHasta, this.proveedor, this.documentoNumero);
+        //await this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
+        //await this.obtenerESSap(this.proveedor, this.documentoNumero);
 
         // Refrescar la vista reaplicando el estado actual para visualizar los datos recién cargados
         this.filtrarPorEstado({ value: this.estadoCertificacion });
@@ -953,7 +965,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
      * @param es Nro entrada de servicio
      */
     updateApprover(es: string, esUpdated: any): void {
-        this.tablaPOAprobaciones.filter(e => e.EntradaServicio === es)
+        this.tablaPO.filter(e => e.EntradaServicio === es)
             .forEach(x => {
                 x.Suplente = esUpdated.newSubstitute;
                 x.Aprobador = esUpdated.newApprover;
@@ -968,16 +980,16 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
      */
     updateStateFromPending(es: string, action: string, esRejected?: any): void {
         if (action === 'Aprobar') {
-            const indices = this.tablaPOAprobaciones
+            const indices = this.tablaPO
                 .map((ap, index) => ap.EntradaServicio === es ? index : -1)
                 .filter(index => index !== -1);
 
             // Eliminar los elementos desde el final hacia el inicio para evitar problemas de reindexación
             indices.reverse().forEach(index => {
-                this.tablaPOAprobaciones.splice(index, 1);
+                this.tablaPO.splice(index, 1);
             });
         } else {
-            this.tablaPOAprobaciones.filter(ap => ap.EntradaServicio === es).forEach(x => {
+            this.tablaPO.filter(ap => ap.EntradaServicio === es).forEach(x => {
                 x.Estado = esRejected.es.Estado_certificacion;
                 x.MotivoRechazo = esRejected.es.Motivo_rechazo;
                 x.FechaRechazo = esRejected.dateReject;
@@ -1089,13 +1101,11 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
 
     refreshDataTable() {
-        if (this.estadoCertificacion.code === 'Aprobada' && !this.recalculandoAprobadas) {
-            this.obtenerESSap(this.proveedor, this.documentoNumero);
-        }
-        if ((this.estadoCertificacion.code === 'Aprobada' || this.estadoCertificacion.code === 'Pendiente Aprobación' || this.estadoCertificacion.code === 'Rechazado' || this.estadoCertificacion.code === 'Anulada') && !this.recalculandoAprobadas) {
-            // Pasar las fechas actuales al refrescar
-            this.getListarPO(this.filtroFechaDesde, this.filtroFechaHasta);
-        }
+        this.first = 0;
+        this.loadData({
+            first: 0,
+            rows: this.pageSize
+        });
     }
 
 
@@ -1162,9 +1172,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
 
     exportarTablaAExcel() {
-        const datos = [...this.tablaPOAprobaciones, ...this.tablaPOSap]
+        this.blockUI.start('Generando Excel...');
+        this.listarESReporte(this.filtroFechaDesde, this.filtroFechaHasta, this.proveedor, this.documentoNumero).then(() => {
+        const datos = [...this.tablaPOReporte]
         const datosPorEstado = this.agruparDatosPorEstado(datos);
         this.exportarDatosAExcelFile(datosPorEstado);
+        this.blockUI.stop();
+        });
     }
 
     agruparDatosPorEstado(datos: any[]): { [key: string]: any[][] } {
@@ -1303,6 +1317,52 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         link.href = window.URL.createObjectURL(data);
         link.download = nombreArchivo + this.EXCEL_EXTENSION;
         link.click();
+    }
+
+
+    loadData(event: any) {
+        const mismoEvento =
+            this.lastEvent &&
+            this.lastEvent.first === event.first &&
+            this.lastEvent.rows === event.rows &&
+            this.lastEvent.sortField === event.sortField &&
+            this.lastEvent.sortOrder === event.sortOrder;
+
+        if (mismoEvento) {
+            return;
+        }
+
+        this.lastEvent = { ...event };
+
+        this.first = event.first;
+
+        this.columnaOrden = event.sortField;
+        this.ordenAscendente = event.sortOrder === 1;
+
+        const page = event.first / event.rows;
+        const size = event.rows;
+
+        this.currentPage = page + 1;
+        this.pageSize = size;
+
+        this.listarEntradasServicio(
+            this.filtroFechaDesde,
+            this.filtroFechaHasta,
+            this.proveedor,
+            this.documentoNumero
+        );
+    }
+
+    getCombos() {
+        this.service.listarCombos().subscribe(
+            (resp: CombosResponse) => {
+                this.usuariosFiltrados = resp.usuarios.map(user => ({ label: user, value: user }));
+                this.aprobadoresFiltrados = resp.aprobadores.map(ap => ({ label: ap, value: ap }));
+            },
+            error => {
+                console.error('Error al obtener los combos:', error);
+            }
+        );
     }
 
 }

@@ -3,6 +3,8 @@ export enum Permiso {
     AdjudicarDentroDelPlazoDeOfertas = "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS",
     AdminAppCCPP = "ADMIN APLICACIONES CCPP",
     AdministrarCursos = "ADMINISTRAR CURSOS",
+    AltaInternaGranos = "ALTA INTERNA GRANOS",
+    AltaInternaNoGranos = "ALTA INTERNA NO GRANOS",
     ComercialCamposSustentables = "COMERCIAL CAMPOS SUSTENTABLES",
     ComprasRRHH = "COMPRAS RRHH",
     EnviarSAP = "ENVIAR A SAP",

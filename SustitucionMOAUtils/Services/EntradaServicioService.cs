@@ -4,8 +4,10 @@ using Quartz.Util;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.Factura;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Util.EntitiesExtensions;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Extensions;
@@ -63,6 +65,7 @@ namespace SustitucionMOAUtils.Services
             this._reporteESService = reporteESService;
             this.comprasSapService = comprasSapService;
         }
+
 
         public async Task<List<EntradaServicioCabeceraDto>> ObtenerEntradasServicioCompleta(EntradaServicioParamsDto parametros, UsuarioDto usuario)
         {
@@ -162,6 +165,125 @@ namespace SustitucionMOAUtils.Services
             entradasServicio = OrdenarEntradasServicio(entradasServicio);
 
             return entradasServicio;
+        }
+
+        /// <summary>
+        /// Consultas SAP cabecera de documento.
+        /// No lista las entradas de servicio que esté en estado "Borrada"
+        /// </summary>
+        /// <param name="parametros"></param>
+        /// <returns></returns>
+        public List<EntradaServicioCabeceraDto> ObtenerESLocales(EntradaServicioParamsDto parametros, UsuarioDto usuario)
+        {
+            var entradasServicio = new List<EntradaServicioCabeceraDto>();
+            var ordenParams = new OrderParamsDto();
+            var correoUsuario = usuario.Mail.ToLower();
+            List<Aprobaciones> aprobacionesTemporales;
+
+            var debeVerTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
+            var certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
+
+            var fechaDesde = DateTime.Now;
+            var fechaHasta = DateTime.Now;
+
+            var debeFiltrarPorFecha =
+                string.IsNullOrEmpty(parametros.OrdenCompra) &&
+                !string.IsNullOrEmpty(parametros.FechaInicio) &&
+                !string.IsNullOrEmpty(parametros.FechaFin) &&
+                DateTime.TryParseExact(parametros.FechaInicio, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaDesde) &&
+                DateTime.TryParseExact(parametros.FechaFin, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaHasta);
+
+            if (debeVerTodo)
+            {
+                aprobacionesTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
+                    x.NRO_ES_SAP == null &&
+                    (string.IsNullOrEmpty(parametros.Usuario) || x.Ingresante_CDS == parametros.Usuario) &&
+                    (string.IsNullOrEmpty(parametros.Aprobador) || x.Aprobador_CDS == parametros.Aprobador) &&
+                    x.Estado_certificacion.Contains(parametros.Estado) &&
+                    (string.IsNullOrEmpty(parametros.OrdenCompra) || x.NRO_OC == parametros.OrdenCompra) &&
+                    (!debeFiltrarPorFecha || !x.Fecha_Carga_ES.HasValue || (x.Fecha_Carga_ES >= fechaDesde && x.Fecha_Carga_ES <= fechaHasta)));
+            }
+            else
+            {
+                aprobacionesTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
+                    x.NRO_ES_SAP == null &&
+                    x.Estado_certificacion.Contains(parametros.Estado) &&
+                    (x.Ingresante_CDS.ToLower() == correoUsuario ||
+                        x.Fiscal_SOLPED.ToLower() == correoUsuario ||
+                        x.Aprobador_CDS.ToLower() == correoUsuario ||
+                        (certExt && x.Proveedor == parametros.Vendedor)) &&
+                    (string.IsNullOrEmpty(parametros.OrdenCompra) || x.NRO_OC == parametros.OrdenCompra) &&
+                    (!debeFiltrarPorFecha || !x.Fecha_Carga_ES.HasValue || (x.Fecha_Carga_ES >= fechaDesde && x.Fecha_Carga_ES <= fechaHasta)));
+            }
+
+            int pagina = parametros.Pagina > 0 ? parametros.Pagina : 1;
+            int elementosPorPagina = parametros.ElementosPorPagina > 0 ? parametros.ElementosPorPagina : 10;
+
+            var grupos = aprobacionesTemporales
+            .GroupBy(x => x.NRO_ES_LOCAL)
+            .ToList();
+
+            int totalItems = grupos.Count;
+
+            var gruposPaginados = grupos
+                .Skip((pagina - 1) * elementosPorPagina)
+                .Take(elementosPorPagina)
+                .ToList();
+
+            entradasServicio = gruposPaginados
+                .Select(grupo =>
+                {
+                    ordenParams.OrdenCompraId = grupo.First().NRO_OC;
+
+                    var entradaServicioTemp =
+                        MapEntradaServicioCabecera(grupo.First(), ordenParams);
+
+                    entradaServicioTemp.entradaServicioDetalle = grupo
+                        .Select(MapEntradaServicioDetalle)
+                        .ToList();
+
+                    entradaServicioTemp.ItemsTotales = totalItems;
+
+                    return entradaServicioTemp;
+                })
+                .ToList();
+
+
+            if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
+            {
+                // Verificar si la ordenación es ascendente o descendente
+                if (parametros.OrdenAscendente)
+                {
+                    entradasServicio = entradasServicio
+                        .OrderBy(x => ObtenerValorOrdenacion(x, parametros.ColumnaOrden))
+                        .ToList();
+                }
+                else
+                {
+                    entradasServicio = entradasServicio
+                        .OrderByDescending(x => ObtenerValorOrdenacion(x, parametros.ColumnaOrden))
+                        .ToList();
+                }
+            }
+            else
+            {
+                entradasServicio = OrdenarEntradasServicio(entradasServicio);
+            }
+            return entradasServicio;
+        }
+
+        private object ObtenerValorOrdenacion(EntradaServicioCabeceraDto entrada, string columnaOrden)
+        {
+            // Usar reflexión para obtener el valor de la propiedad especificada
+            var propiedad = typeof(EntradaServicioCabeceraDto).GetProperty(columnaOrden, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            if (propiedad != null)
+            {
+                return propiedad.GetValue(entrada);
+            }
+
+            // Si la propiedad no existe, devolver null
+            return null;
         }
 
         /// <summary>
@@ -915,6 +1037,135 @@ namespace SustitucionMOAUtils.Services
         /// Consultas SAP cabecera de documento.
         /// No lista las entradas de servicio que esté en estado "Borrada"
         /// </summary>
+        public async Task<List<EntradaServicioCabeceraDto>> ObtenerESAprobadasSAP(EntradaServicioParamsDto parametros, UsuarioDto usuario)
+        {
+            var entradasServicioResponse = new List<EntradaServicioCabeceraDto>();
+            bool verTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
+            bool certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
+            var correoUsuario = usuario.Mail.ToLower();
+
+            // Si hay OrdenCompra, no usar fecha para la consulta a SAP
+            var fechaConsultaSAP = string.IsNullOrEmpty(parametros.OrdenCompra) ? parametros.FechaInicio : null;
+            var entradasServicioCabeceraSap = await new ObtenerCabecerasEntradaServicioConsumerMOA()
+                .ObtenerEntradasServicioCabeceraAsync(fechaConsultaSAP, parametros.OrdenCompra);
+
+            var fechaHasta = DateTime.Now;
+
+            var debeFiltrarPorFecha =
+                string.IsNullOrEmpty(parametros.OrdenCompra) &&
+                !string.IsNullOrEmpty(parametros.FechaFin) &&
+                DateTime.TryParseExact(parametros.FechaFin, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaHasta);
+
+            var fechaInicio = DateTime.Now;
+            DateTime.TryParseExact(parametros.FechaInicio, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicio);
+
+            var aprobacionesBd = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
+            (!debeFiltrarPorFecha || (x.Fecha_Carga_ES >= fechaInicio &&
+            x.Fecha_Carga_ES <= fechaHasta)) &&
+            x.Estado_certificacion == "Aprobada" &&
+            (string.IsNullOrEmpty(parametros.Aprobador) || x.Aprobador_CDS == parametros.Aprobador) &&
+            (string.IsNullOrEmpty(parametros.Usuario) || x.Ingresante_CDS == parametros.Usuario) &&
+            (verTodo || // Si no es interno, aplicar el filtro adicional
+                x.Ingresante_CDS.ToLower() == correoUsuario ||
+                x.Fiscal_SOLPED.ToLower() == correoUsuario ||
+                x.Aprobador_CDS.ToLower() == correoUsuario ||
+                (certExt && x.Proveedor == parametros.Vendedor))
+            ).ToList();
+
+            var nrosESSAPBd = aprobacionesBd.Select(x => x.NRO_ES_SAP.ToString()).ToList();
+            entradasServicioCabeceraSap = entradasServicioCabeceraSap
+                .Where(x =>
+                    x.OrdenCompra.StartsWith("412") && //Se filtran por las OC tomando las que empiezan con 412
+                    (!debeFiltrarPorFecha || !x.FechaCreacionDateTime.HasValue || x.FechaCreacionDateTime <= fechaHasta) &&
+                    nrosESSAPBd.Contains(x.EntradaServicio)
+                ).ToList();
+
+            // Filtra por número de documento, si se proporciona el parámetro
+            if (parametros.DocumentoNumero != null)
+                entradasServicioCabeceraSap = entradasServicioCabeceraSap.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();
+
+
+            foreach (var cabecera in entradasServicioCabeceraSap)
+            {
+                // Se obtiene detalle de la APROBACIÓN de la Entrada de Servicio
+                cabecera.entradaServicioDetalle = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(cabecera.EntradaServicio);
+
+                List<Aprobaciones> ESTemporales = new List<Aprobaciones>();
+                ESTemporales = aprobacionesBd.Where(x => x.NRO_ES_SAP == int.Parse(cabecera.EntradaServicio)).ToList();
+
+                if (ESTemporales != null && ESTemporales.Count > 0)
+                {
+                    var detalleEntradadeServicio = MergeDetalle(cabecera, ESTemporales, string.Empty);
+                    cabecera.entradaServicioDetalle = detalleEntradadeServicio.entradaServicioDetalle;
+                }
+            }
+
+            entradasServicioCabeceraSap = entradasServicioCabeceraSap.Where(c => c.Ingresante.Contains("@")).ToList();
+            var totalItems = entradasServicioCabeceraSap.Count();
+            var ordenParams = new OrderParamsDto();
+
+            var pagina = parametros.Pagina;
+            var elementosPorPagina = parametros.ElementosPorPagina;
+            
+            //Paginamos
+            entradasServicioCabeceraSap = entradasServicioCabeceraSap
+                .Skip((pagina - 1) * elementosPorPagina)
+                .Take(elementosPorPagina)
+                .ToList();
+
+            // ES APROBADAS
+            foreach (var documento in entradasServicioCabeceraSap)
+            {
+                var correoSolp = "-";
+                documento.ItemsTotales = totalItems;
+
+                if (documento.entradaServicioDetalle != null && documento.entradaServicioDetalle.Count > 0)
+                {
+                    if (ordenParams.OrdenCompraId != documento.entradaServicioDetalle[0].OrdenCompra || string.IsNullOrEmpty(ordenParams.OrdenCompraId))
+                    {
+                        var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFCSinPI(documento.entradaServicioDetalle[0].OrdenCompra);
+                        ModificarPedidoSAP POSCHEDULE = new ModificarPedidoSAP
+                        {
+                            NRO_SOLP = ocSap.POSCHEDULE.FirstOrDefault().PREQ_NO
+                        };
+
+                        string nroSolp = POSCHEDULE.NRO_SOLP;
+
+                        correoSolp = ObtenerCorreoSolp(nroSolp);
+                    }
+
+                    documento.Fiscal = correoSolp;
+                    ordenParams.OrdenCompraId = documento.entradaServicioDetalle[0].OrdenCompra;
+                    var proveedor = orderService.BuscarProveedor(ordenParams);
+                    documento.Proveedor = proveedor.RazonSocial ?? "-";
+                    documento.CUIT = proveedor.CUIT ?? "-";
+                }
+
+                documento.Estado = "Aprobada";
+
+                entradasServicioResponse.Add(documento);
+            }
+
+            if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
+            {
+                // Verificar si la ordenación es ascendente o descendente
+                if (parametros.OrdenAscendente)
+                {
+                    entradasServicioResponse = entradasServicioResponse
+                        .OrderBy(x => ObtenerValorOrdenacion(x, parametros.ColumnaOrden))
+                        .ToList();
+                }
+                else
+                {
+                    entradasServicioResponse = entradasServicioResponse
+                        .OrderByDescending(x => ObtenerValorOrdenacion(x, parametros.ColumnaOrden))
+                        .ToList();
+                }
+            }
+
+            return entradasServicioResponse; 
+        }
+
         private async Task<List<EntradaServicioCabeceraDto>> ServicioSAP_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario)
         {
             var entradasServicioResponse = new List<EntradaServicioCabeceraDto>();
@@ -949,16 +1200,16 @@ namespace SustitucionMOAUtils.Services
             foreach (var documento in entradasServicioCabeceraSap)
             {
                 var correoSolp = "-";
-                    var nroDoc = documento.EntradaServicio.ToString();
+                var nroDoc = documento.EntradaServicio.ToString();
                 var nro_es_sap = int.Parse(nroDoc);
 
                 // Se obtiene detalle de una ES
                 documento.entradaServicioDetalle = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(nroDoc);
 
                 if (documento.entradaServicioDetalle != null && documento.entradaServicioDetalle.Count > 0)
-            {
-                    if (ordenParams.OrdenCompraId != documento.entradaServicioDetalle[0].OrdenCompra || string.IsNullOrEmpty(ordenParams.OrdenCompraId))
                 {
+                    if (ordenParams.OrdenCompraId != documento.entradaServicioDetalle[0].OrdenCompra || string.IsNullOrEmpty(ordenParams.OrdenCompraId))
+                    {
                         var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFCSinPI(documento.entradaServicioDetalle[0].OrdenCompra);
                         ModificarPedidoSAP POSCHEDULE = new ModificarPedidoSAP
                         {
@@ -968,7 +1219,7 @@ namespace SustitucionMOAUtils.Services
                         string nroSolp = POSCHEDULE.NRO_SOLP;
 
                         correoSolp = ObtenerCorreoSolp(nroSolp);
-                }
+                    }
 
                     ordenParams.OrdenCompraId = documento.entradaServicioDetalle[0].OrdenCompra;
 
@@ -983,12 +1234,12 @@ namespace SustitucionMOAUtils.Services
                 bool verTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
                 bool certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
 
-                    if (verTodo)
-                    {
+                if (verTodo)
+                {
                     ESTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap);
-                    }
-                    else
-                    {
+                }
+                else
+                {
                     ESTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap &&
                         (x.Ingresante_CDS.ToLower() == correoUsuario ||
                             x.Fiscal_SOLPED.ToLower() == correoUsuario ||
@@ -1968,6 +2219,227 @@ namespace SustitucionMOAUtils.Services
             }
 
             return null;
+        }
+
+        public List<string> ListarUsuariosES()
+        {
+            var ingresantes = this.repositorioEntradaServicio.Listar<Aprobaciones>().Select(x => x.Ingresante_CDS).Distinct().ToList();
+            return ingresantes;
+        }
+
+        public List<string> ListarAprobadoresES()
+        {
+            var aprobadores = this.repositorioEntradaServicio.Listar<Aprobaciones>().Select(x => x.Aprobador_CDS).Distinct().ToList();
+            return aprobadores;
+        }
+
+        public async Task<List<EntradaServicioCabeceraDto>> ObtenerReporteESAprobadasSAP(EntradaServicioParamsDto parametros, UsuarioDto usuario)
+        {
+            var entradasServicioResponse = new List<EntradaServicioCabeceraDto>();
+            bool verTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
+            bool certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
+            var correoUsuario = usuario.Mail.ToLower();
+
+            // Si hay OrdenCompra, no usar fecha para la consulta a SAP
+            var fechaConsultaSAP = string.IsNullOrEmpty(parametros.OrdenCompra)
+            ? (parametros.FechaInicio == "2020-01-01" ? DateTime.Today.AddYears(-1).ToString("yyyy-MM-dd") : parametros.FechaInicio)
+            : null;
+            var entradasServicioCabeceraSap = await new ObtenerCabecerasEntradaServicioConsumerMOA()
+                .ObtenerEntradasServicioCabeceraAsync(fechaConsultaSAP, parametros.OrdenCompra);
+
+            var fechaHasta = DateTime.Now;
+
+            var debeFiltrarPorFecha =
+                string.IsNullOrEmpty(parametros.OrdenCompra) &&
+                !string.IsNullOrEmpty(parametros.FechaFin) &&
+                DateTime.TryParseExact(parametros.FechaFin, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaHasta);
+
+            var fechaInicio = DateTime.Now;
+            DateTime.TryParseExact(parametros.FechaInicio, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicio);
+
+            var aprobacionesBd = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
+            (!debeFiltrarPorFecha || (x.Fecha_Carga_ES >= fechaInicio &&
+            x.Fecha_Carga_ES <= fechaHasta)) &&
+            x.Estado_certificacion == "Aprobada" &&
+            (string.IsNullOrEmpty(parametros.Aprobador) || x.Aprobador_CDS == parametros.Aprobador) &&
+            (string.IsNullOrEmpty(parametros.Usuario) || x.Ingresante_CDS == parametros.Usuario) &&
+            (verTodo || // Si no es interno, aplicar el filtro adicional
+                x.Ingresante_CDS.ToLower() == correoUsuario ||
+                x.Fiscal_SOLPED.ToLower() == correoUsuario ||
+                x.Aprobador_CDS.ToLower() == correoUsuario ||
+                (certExt && x.Proveedor == parametros.Vendedor))
+            ).ToList();
+
+            var nrosESSAPBd = aprobacionesBd.Select(x => x.NRO_ES_SAP.ToString()).ToList();
+            entradasServicioCabeceraSap = entradasServicioCabeceraSap
+                .Where(x =>
+                    x.OrdenCompra.StartsWith("412") && //Se filtran por las OC tomando las que empiezan con 412
+                    (!debeFiltrarPorFecha || !x.FechaCreacionDateTime.HasValue || x.FechaCreacionDateTime <= fechaHasta) &&
+                    nrosESSAPBd.Contains(x.EntradaServicio)
+                ).ToList();
+
+            // Filtra por número de documento, si se proporciona el parámetro
+            if (parametros.DocumentoNumero != null)
+                entradasServicioCabeceraSap = entradasServicioCabeceraSap.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();
+
+
+            foreach (var cabecera in entradasServicioCabeceraSap)
+            {
+                // Se obtiene detalle de la APROBACIÓN de la Entrada de Servicio
+                cabecera.entradaServicioDetalle = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(cabecera.EntradaServicio);
+
+                List<Aprobaciones> ESTemporales = new List<Aprobaciones>();
+                ESTemporales = aprobacionesBd.Where(x => x.NRO_ES_SAP == int.Parse(cabecera.EntradaServicio)).ToList();
+
+                if (ESTemporales != null && ESTemporales.Count > 0)
+                {
+                    var detalleEntradadeServicio = MergeDetalle(cabecera, ESTemporales, string.Empty);
+                    cabecera.entradaServicioDetalle = detalleEntradadeServicio.entradaServicioDetalle;
+                }
+            }
+
+            entradasServicioCabeceraSap = entradasServicioCabeceraSap.Where(c => c.Ingresante.Contains("@")).ToList();
+            var totalItems = entradasServicioCabeceraSap.Count();
+            var ordenParams = new OrderParamsDto();
+
+            // ES APROBADAS
+            foreach (var documento in entradasServicioCabeceraSap)
+            {
+                var correoSolp = "-";
+                documento.ItemsTotales = totalItems;
+
+                if (documento.entradaServicioDetalle != null && documento.entradaServicioDetalle.Count > 0)
+                {
+                    if (ordenParams.OrdenCompraId != documento.entradaServicioDetalle[0].OrdenCompra || string.IsNullOrEmpty(ordenParams.OrdenCompraId))
+                    {
+                        var ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFCSinPI(documento.entradaServicioDetalle[0].OrdenCompra);
+                        ModificarPedidoSAP POSCHEDULE = new ModificarPedidoSAP
+                        {
+                            NRO_SOLP = ocSap.POSCHEDULE.FirstOrDefault().PREQ_NO
+                        };
+
+                        string nroSolp = POSCHEDULE.NRO_SOLP;
+
+                        correoSolp = ObtenerCorreoSolp(nroSolp);
+                    }
+
+                    documento.Fiscal = correoSolp;
+                    ordenParams.OrdenCompraId = documento.entradaServicioDetalle[0].OrdenCompra;
+                    var proveedor = orderService.BuscarProveedor(ordenParams);
+                    documento.Proveedor = proveedor.RazonSocial ?? "-";
+                    documento.CUIT = proveedor.CUIT ?? "-";
+                }
+
+                documento.Estado = "Aprobada";
+
+                entradasServicioResponse.Add(documento);
+            }
+
+            if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
+            {
+                // Verificar si la ordenación es ascendente o descendente
+                if (parametros.OrdenAscendente)
+                {
+                    entradasServicioResponse = entradasServicioResponse
+                        .OrderBy(x => ObtenerValorOrdenacion(x, parametros.ColumnaOrden))
+                        .ToList();
+                }
+                else
+                {
+                    entradasServicioResponse = entradasServicioResponse
+                        .OrderByDescending(x => ObtenerValorOrdenacion(x, parametros.ColumnaOrden))
+                        .ToList();
+                }
+            }
+
+            return entradasServicioResponse;
+        }
+
+        public List<EntradaServicioCabeceraDto> ObtenerReporteESLocales(EntradaServicioParamsDto parametros, UsuarioDto usuario)
+        {
+            var entradasServicio = new List<EntradaServicioCabeceraDto>();
+            var ordenParams = new OrderParamsDto();
+            var correoUsuario = usuario.Mail.ToLower();
+            List<Aprobaciones> aprobacionesTemporales;
+
+            var debeVerTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
+            var certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
+
+            var fechaDesde = DateTime.Now;
+            var fechaHasta = DateTime.Now;
+
+            var debeFiltrarPorFecha =
+                string.IsNullOrEmpty(parametros.OrdenCompra) &&
+                !string.IsNullOrEmpty(parametros.FechaInicio) &&
+                !string.IsNullOrEmpty(parametros.FechaFin) &&
+                DateTime.TryParseExact(parametros.FechaInicio, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaDesde) &&
+                DateTime.TryParseExact(parametros.FechaFin, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaHasta);
+
+            if (debeVerTodo)
+            {
+                aprobacionesTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
+                    x.NRO_ES_SAP == null &&
+                    (string.IsNullOrEmpty(parametros.Usuario) || x.Ingresante_CDS == parametros.Usuario) &&
+                    (string.IsNullOrEmpty(parametros.Aprobador) || x.Aprobador_CDS == parametros.Aprobador) &&
+                    x.Estado_certificacion != "Aprobada" &&
+                    (string.IsNullOrEmpty(parametros.OrdenCompra) || x.NRO_OC == parametros.OrdenCompra) &&
+                    (!debeFiltrarPorFecha || !x.Fecha_Carga_ES.HasValue || (x.Fecha_Carga_ES >= fechaDesde && x.Fecha_Carga_ES <= fechaHasta)));
+            }
+            else
+            {
+                aprobacionesTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
+                    x.NRO_ES_SAP == null &&
+                    x.Estado_certificacion != "Aprobada" && 
+                        (x.Ingresante_CDS.ToLower() == correoUsuario ||
+                        x.Fiscal_SOLPED.ToLower() == correoUsuario ||
+                        x.Aprobador_CDS.ToLower() == correoUsuario ||
+                        (certExt && x.Proveedor == parametros.Vendedor)) &&
+                    (string.IsNullOrEmpty(parametros.OrdenCompra) || x.NRO_OC == parametros.OrdenCompra) &&
+                    (!debeFiltrarPorFecha || !x.Fecha_Carga_ES.HasValue || (x.Fecha_Carga_ES >= fechaDesde && x.Fecha_Carga_ES <= fechaHasta)));
+            }
+
+            var grupos = aprobacionesTemporales
+            .GroupBy(x => x.NRO_ES_LOCAL)
+            .ToList();
+
+            entradasServicio = grupos
+                .Select(grupo =>
+                {
+                    ordenParams.OrdenCompraId = grupo.First().NRO_OC;
+
+                    var entradaServicioTemp =
+                        MapEntradaServicioCabecera(grupo.First(), ordenParams);
+
+                    entradaServicioTemp.entradaServicioDetalle = grupo
+                        .Select(MapEntradaServicioDetalle)
+                        .ToList();
+
+                    return entradaServicioTemp;
+                })
+                .ToList();
+
+
+            if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
+            {
+                // Verificar si la ordenación es ascendente o descendente
+                if (parametros.OrdenAscendente)
+                {
+                    entradasServicio = entradasServicio
+                        .OrderBy(x => ObtenerValorOrdenacion(x, parametros.ColumnaOrden))
+                        .ToList();
+                }
+                else
+                {
+                    entradasServicio = entradasServicio
+                        .OrderByDescending(x => ObtenerValorOrdenacion(x, parametros.ColumnaOrden))
+                        .ToList();
+                }
+            }
+            else
+            {
+                entradasServicio = OrdenarEntradasServicio(entradasServicio);
+            }
+            return entradasServicio;
         }
     }
 }

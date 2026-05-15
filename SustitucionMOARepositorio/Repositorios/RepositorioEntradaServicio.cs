@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace SustitucionMOARepositorio.Repositorios
                 where
                     nroSolps.Contains(solp.NroSolp)
                     && solp.CertificacionAutomatica
-                    && solp.TipoSolpSap != 2
+                    && solp.TipoSolpSap != (int)TipoSolpSap.Mantenimiento
                 select solp;
 
             return solpsQry.ToList();
@@ -41,7 +42,8 @@ namespace SustitucionMOARepositorio.Repositorios
                 where
                     nroSolps.Contains(solp.NroSolp)
                     && solp.CertificacionAutomatica
-                    && solp.TipoSolpSap != 2
+                    // A partir de ahora, si es TipoSolpSap=2 (OT) y tiene NumeroContratoSuperior (Acuerdo Marco), se puede auto-certificar.
+                    //&& solp.TipoSolpSap != (int)TipoSolpSap.Mantenimiento
                     && solp.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))
                 select solp;
 

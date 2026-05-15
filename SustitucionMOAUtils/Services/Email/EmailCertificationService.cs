@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.OrdenesCompra;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -24,7 +25,7 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string TEMPLATE_NOTIFICACION_APROBACIONES_EXT_POSICION = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacion-Posicion.html");
         private static readonly string TEMPLATE_NOTIFICACION_APROBACIONES_PROVEEDOR = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacion-Proveedor.html");
         private static readonly string TEMPLATE_NOTIFICACION_DIARIA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionEsPendientesDeAprobacion.html");
-
+        private static readonly string rutaCertifPendiente = ConfigurationManager.AppSettings["UrlCertifPendiente"];
 
         private readonly IEmailService emailService;
         protected readonly IAzureService azureService;
@@ -56,7 +57,7 @@ namespace SustitucionMOAUtils.Services.Email
         {
             string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_DIARIA);
 
-            string body = BuildDailyNotification(aprobaciones, bodyTemplate);
+            string body = BuildDailyNotification(aprobaciones, bodyTemplate, rutaCertifPendiente);
 
 
             var emailSenderData = new EmailSenderData
@@ -102,25 +103,36 @@ namespace SustitucionMOAUtils.Services.Email
             try
             {
                 var baseURL = ConfigurationManager.AppSettings["SpaUrl"];
+                var urlCertifPendientes = "\"" + rutaCertifPendiente + "\"";
                 var asunto = "Aprobación de servicio - Certificaciones: ";
                 var adjuntosMail = new List<EmailAttachment>();
                 var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT);
                 var cuerpoTemplatePosiciones = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT_POSICION);
                 var contenidoHtmlPosiciones = string.Empty;
+                var adjuntosPosiciones = new List<AdjuntosEntradasDeServicio>();
+
+                bool esPrimeraPosicion = true;
 
                 foreach (var posicion in request.Posiciones)
                 {
                     var certificacionNro = posicion.Aprobacion.NRO_ES_LOCAL;
                     var reporteMemStream = new MemoryStream();
-                    try
+
+                    // Ejecutar GetReportES solo para la primera posición porque es el mismo archivo siempre.
+                    if (esPrimeraPosicion)
                     {
-                        var reporteES = GetReportES(certificacionNro).ConfigureAwait(false).GetAwaiter().GetResult();
-                        reporteES.CopyTo(reporteMemStream);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.AzureError(ex);
-                        Log.Error("Error al obtener archivo para " + certificacionNro, ex);
+                        try
+                        {
+                            var reporteES = GetReportES(certificacionNro).ConfigureAwait(false).GetAwaiter().GetResult();
+                            reporteES.CopyTo(reporteMemStream);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.AzureError(ex);
+                            Log.Error("Error al obtener archivo para " + certificacionNro, ex);
+                        }
+
+                        esPrimeraPosicion = false;
                     }
 
                     var proveedorRazonSocial = posicion.ProveedorRazonSocial ?? string.Empty;
@@ -147,23 +159,29 @@ namespace SustitucionMOAUtils.Services.Email
 
                     if (reporteMemStream.Length > 0)
                     {
-                        adjuntosMail.Add(new EmailAttachment(reporteMemStream, $"Reporte_{certificacionNro}.pdf"));
+                        adjuntosMail.Add(new EmailAttachment(reporteMemStream, $"Reporte_{ordenCompraNro}.pdf"));
                     }
 
-                    foreach (var adjuntoPosicion in posicion.Adjuntos)
-                    {
-                        var adjuntoMemStream = azureService.ObtenerArchivoBlobStorageAsync(adjuntoPosicion.NombreEnBlob, "certificaciones").ConfigureAwait(false).GetAwaiter().GetResult();
-                        adjuntoMemStream.Position = 0;
+                    adjuntosPosiciones.AddRange(posicion.Adjuntos);
+                }
 
-                        if (adjuntoMemStream.Length > 0)
-                        {
-                            adjuntosMail.Add(new EmailAttachment(adjuntoMemStream, adjuntoPosicion.NombreArchivo));
-                        }
+                adjuntosPosiciones = adjuntosPosiciones
+                    .GroupBy(adjunto => adjunto.NombreEnBlob)
+                    .Select(grupo => grupo.First())
+                    .ToList();
+
+                foreach (var adjuntoPosicion in adjuntosPosiciones)
+                {
+                    var adjuntoMemStream = azureService.ObtenerArchivoBlobStorageAsync(adjuntoPosicion.NombreEnBlob, "certificaciones").ConfigureAwait(false).GetAwaiter().GetResult();
+                    adjuntoMemStream.Position = 0;
+
+                    if (adjuntoMemStream.Length > 0)
+                    {
+                        adjuntosMail.Add(new EmailAttachment(adjuntoMemStream, adjuntoPosicion.NombreArchivo));
                     }
                 }
 
-                var urlOperaciones = "\"" + baseURL + "\"";
-                var cuerpo = string.Format(cuerpoTemplate, contenidoHtmlPosiciones, urlOperaciones);
+                var cuerpo = string.Format(cuerpoTemplate, contenidoHtmlPosiciones, urlCertifPendientes);
 
                 var emailSenderData = new EmailSenderData
                 {
@@ -245,11 +263,11 @@ namespace SustitucionMOAUtils.Services.Email
             return importe;
         }
 
-        private string BuildDailyNotification(List<NotificacionEsPendientesDiariasDto> aprobaciones, string bodyTemplate)
+        private string BuildDailyNotification(List<NotificacionEsPendientesDiariasDto> aprobaciones, string bodyTemplate, string rutaCertif)
         {
             var bodyTable = BuildTableDailyNotification(aprobaciones);
 
-            var body = string.Format(bodyTemplate, bodyTable.ToString());
+            var body = string.Format(bodyTemplate, bodyTable.ToString(), rutaCertif);
 
             return body;
         }

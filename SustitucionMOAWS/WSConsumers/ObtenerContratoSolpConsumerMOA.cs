@@ -20,7 +20,7 @@ namespace SustitucionMOAWS.WSConsumers
         {
         }
 
-        ContratoSolpWSMOAResponse IObtenerContratoSolpConsumerMOA.Request(string numeroContrato, string centro)
+        ContratoSolpWSMOAResponse IObtenerContratoSolpConsumerMOA.Request(string numeroContrato, string centro, string codigoProveedor)
         {
             try
             {
@@ -38,16 +38,31 @@ namespace SustitucionMOAWS.WSConsumers
                     string IM_PLANT = centro;
                     WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5810[] IM_TEXT_POS = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5810[] { };
                     WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5870[] IM_VENDOR = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5870[] { };
+
+                    if (!string.IsNullOrEmpty(codigoProveedor))
+                    {
+                        IM_VENDOR = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5870[] { new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5870 {
+                            LOW = codigoProveedor,
+                            HIGH = codigoProveedor,
+                            OPTION = "EQ",
+                            SIGN = "I"
+                        }};
+                    }
                     WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5890[] EX_HEADER = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5890[] { };
                     WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5900[] EX_ITEM = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5900[] { };
                     WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIRETURN[] EX_RETURN = new WS_GAQ_sin_PI_DIRECT_COMPRAS.BAPIRETURN[] { };
                     WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5910[] EX_SUB_ITEM = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES5910[] { };
-                    WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES7150[] IM_CONTRACT = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES7150[] { new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES7150 {
-                    LOW = numeroContrato,
-                    HIGH = numeroContrato,
-                    OPTION = "EQ",
-                    SIGN = "I"
-                    }};
+                    WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES7150[] IM_CONTRACT = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES7150[] { };
+                    
+                    if (!string.IsNullOrEmpty(numeroContrato))
+                    {
+                        IM_CONTRACT = new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES7150[] { new WS_GAQ_sin_PI_DIRECT_COMPRAS.ZMPES7150 {
+                            LOW = numeroContrato,
+                            HIGH = numeroContrato,
+                            OPTION = "EQ",
+                            SIGN = "I"
+                        }};
+                    }
 
                     var request = new Z_MMRFC_OBTENER_CONTRATO()
                     {
@@ -83,16 +98,31 @@ namespace SustitucionMOAWS.WSConsumers
                     string IM_PLANT = centro;
                     ObtenerContratoSolpWebServiceMOA.ZMPES5810[] IM_TEXT_POS = new ObtenerContratoSolpWebServiceMOA.ZMPES5810[] { };
                     ObtenerContratoSolpWebServiceMOA.ZMPES5870[] IM_VENDOR = new ObtenerContratoSolpWebServiceMOA.ZMPES5870[] { };
+
+                    if (!string.IsNullOrEmpty(codigoProveedor))
+                    {
+                        IM_VENDOR = new ObtenerContratoSolpWebServiceMOA.ZMPES5870[] { new ObtenerContratoSolpWebServiceMOA.ZMPES5870 {
+                            LOW = codigoProveedor,
+                            HIGH = codigoProveedor,
+                            OPTION = "EQ",
+                            SIGN = "I"
+                        }};
+                    }
                     ObtenerContratoSolpWebServiceMOA.ZMPES5890[] EX_HEADER = new ObtenerContratoSolpWebServiceMOA.ZMPES5890[] { };
                     ObtenerContratoSolpWebServiceMOA.ZMPES5900[] EX_ITEM = new ObtenerContratoSolpWebServiceMOA.ZMPES5900[] { };
                     ObtenerContratoSolpWebServiceMOA.BAPIRETURN[] EX_RETURN = new ObtenerContratoSolpWebServiceMOA.BAPIRETURN[] { };
                     ObtenerContratoSolpWebServiceMOA.ZMPES5910[] EX_SUB_ITEM = new ObtenerContratoSolpWebServiceMOA.ZMPES5910[] { };
-                    ObtenerContratoSolpWebServiceMOA.ZMPES7150[] IM_CONTRACT = new ObtenerContratoSolpWebServiceMOA.ZMPES7150[] { new ObtenerContratoSolpWebServiceMOA.ZMPES7150 {
-                    LOW = numeroContrato,
-                    HIGH = numeroContrato,
-                    OPTION = "EQ",
-                    SIGN = "I"
-                    }};
+                    ObtenerContratoSolpWebServiceMOA.ZMPES7150[] IM_CONTRACT = new ObtenerContratoSolpWebServiceMOA.ZMPES7150[] { };
+
+                    if (!string.IsNullOrEmpty(numeroContrato))
+                    {
+                        IM_CONTRACT = new ObtenerContratoSolpWebServiceMOA.ZMPES7150[] { new ObtenerContratoSolpWebServiceMOA.ZMPES7150 {
+                            LOW = numeroContrato,
+                            HIGH = numeroContrato,
+                            OPTION = "EQ",
+                            SIGN = "I"
+                        }};
+                    }
 
                     string resultado = service.SI_MMRFC_OBTENER_CONTRATO(IM_COMP_CODE, IM_CONTRACT, IM_DETAIL, IM_ITEM_NO, IM_MATERIAL, IM_NOM_VENDOR, IM_PLANT, IM_TEXT_POS, IM_VENDOR, out EX_HEADER, out EX_ITEM, out EX_RETURN, out EX_SUB_ITEM);
 
