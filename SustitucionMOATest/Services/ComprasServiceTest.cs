@@ -2858,7 +2858,8 @@ namespace SustitucionMOATest.Services
                     SolpCreador = "usuario1@moa.com",
                     SolpFecha = "15/08/2025",
                     SolpAprobador = "usuario1@moa.com",
-                    SolpProveedor = "usuario1@moa.com",         
+                    SolpProveedor = "usuario1@moa.com",
+                    SolpProveedorNombre = "RS prov1",
                     Posiciones = new List<DetallePosicion>
                     {
                         new DetallePosicion
@@ -2880,6 +2881,7 @@ namespace SustitucionMOATest.Services
                     SolpFecha = "25/08/2025",
                     SolpAprobador = "usuario1@moa.com",
                     SolpProveedor = "usuario1@moa.com",
+                    SolpProveedorNombre = "RS prov2",
                     Posiciones = new List<DetallePosicion>
                     {
                         new DetallePosicion

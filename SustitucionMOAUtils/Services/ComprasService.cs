@@ -7628,6 +7628,7 @@ namespace SustitucionMOAUtils.Services
                             SolpNro = solpTh.SolpNro,
                             SolpCreador = solpTh.SolpCreador,
                             SolpProveedor = solpTh.SolpProveedor,
+                            SolpProveedorNombre = solpTh.SolpProveedorNombre,
                             SolpFecha = solpTh.SolpFecha,
                             OrdenCompraNro = detalleOc.Cabecera.OrdenDeCompra,
                             OrdenCompraCreador = detalleOc.Cabecera.UsuarioComprasSAP,
@@ -7645,7 +7646,6 @@ namespace SustitucionMOAUtils.Services
             Log.Info("Trabajos hechos a reportar: " + trabajosHechosAReportar.Count);
             var excel = this.GenerarReporteConNPOI(trabajosHechosAReportar);
             var nombreArchivoXls = $"Reporte OCs trabajos ya hechos {DateTime.Today:yyyy-MM-dd}.xlsx";
-
             emailComprasService.EnviarMailReporteTrabajoYaHecho(excel, nombreArchivoXls);
         }
 
@@ -7654,7 +7654,7 @@ namespace SustitucionMOAUtils.Services
             IWorkbook workbook = new XSSFWorkbook();
             ISheet sheet = workbook.CreateSheet("Reporte");
 
-            var headers = new string[] { "Nro OC", "Proveedor", "Creador Solp", "Aprobador Solp", "Nro Solp", "Fecha Liberacion", "Nro Posicion", "Texto Posicion", "Fecha Aprobacion ES"};
+            var headers = new string[] { "Nro OC", "CUIT Proveedor", "Razon Social Prov.", "Creador Solp", "Aprobador Solp", "Nro Solp", "Fecha Liberacion", "Nro Posicion", "Texto Posicion", "Fecha Aprobacion ES"};
             IRow headerRow = sheet.CreateRow(0);
             for (int i = 0; i < headers.Length; i++)
             {
@@ -7664,50 +7664,20 @@ namespace SustitucionMOAUtils.Services
             int currentRow = 1;
             foreach (var trabajo in trabajosHechosAReportar)
             {
-                int startRow = currentRow;
-
                 foreach (var posicion in trabajo.Posiciones)
                 {
                     IRow row = sheet.CreateRow(currentRow);
-                    row.CreateCell(6).SetCellValue(posicion.NroPosicion);
-                    row.CreateCell(7).SetCellValue(posicion.TextoPosicion);
-                    row.CreateCell(8).SetCellValue(posicion.FechaAprobacionES);
+                    row.CreateCell(0).SetCellValue(trabajo.OrdenCompraNro);
+                    row.CreateCell(1).SetCellValue(trabajo.SolpProveedor);
+                    row.CreateCell(2).SetCellValue(trabajo.SolpProveedorNombre);
+                    row.CreateCell(3).SetCellValue(trabajo.SolpCreador);
+                    row.CreateCell(4).SetCellValue(trabajo.SolpAprobador);
+                    row.CreateCell(5).SetCellValue(trabajo.SolpNro);
+                    row.CreateCell(6).SetCellValue(trabajo.OrdenCompraFechaLiberacion);
+                    row.CreateCell(7).SetCellValue(posicion.NroPosicion);
+                    row.CreateCell(8).SetCellValue(posicion.TextoPosicion);
+                    row.CreateCell(9).SetCellValue(posicion.FechaAprobacionES);
                     currentRow++;
-                }
-
-                if (trabajo.Posiciones.Any())
-                {
-                    if (currentRow - startRow > 1) 
-                    {
-                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, currentRow - 1, 0, 0));
-                        sheet.GetRow(startRow).CreateCell(0).SetCellValue(trabajo.OrdenCompraNro);
-
-                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, currentRow - 1, 1, 1));
-                        sheet.GetRow(startRow).CreateCell(1).SetCellValue(trabajo.SolpProveedor);
-
-                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, currentRow - 1, 2, 2));
-                        sheet.GetRow(startRow).CreateCell(2).SetCellValue(trabajo.SolpCreador);
-
-                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, currentRow - 1, 3, 3));
-                        sheet.GetRow(startRow).CreateCell(3).SetCellValue(trabajo.SolpAprobador);
-
-                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, currentRow - 1, 4, 4));
-                        sheet.GetRow(startRow).CreateCell(4).SetCellValue(trabajo.SolpNro);
-
-                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, currentRow - 1, 5, 5));
-                        sheet.GetRow(startRow).CreateCell(5).SetCellValue(trabajo.OrdenCompraFechaLiberacion);
-
-                    }
-                    else
-                    {
-                        IRow row = sheet.GetRow(startRow);
-                        row.CreateCell(0).SetCellValue(trabajo.OrdenCompraNro);
-                        row.CreateCell(1).SetCellValue(trabajo.SolpProveedor);
-                        row.CreateCell(2).SetCellValue(trabajo.SolpCreador);
-                        row.CreateCell(3).SetCellValue(trabajo.SolpAprobador);
-                        row.CreateCell(4).SetCellValue(trabajo.SolpNro);
-                        row.CreateCell(5).SetCellValue(trabajo.OrdenCompraFechaLiberacion);
-                    }
                 }
             }
 
