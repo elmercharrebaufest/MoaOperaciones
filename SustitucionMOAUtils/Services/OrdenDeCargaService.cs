@@ -1726,23 +1726,36 @@ namespace SustitucionMOAUtils.Services
                     x.CUIT == ordenDeCarga.CUITCliente &&
                     x.EstadoAprobacion == EstadoAprobacion.Aprobado &&
                     x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
+
                 if (!esComercial)
                 {
-                    ordenDeCarga.CodigoCorredor = "";
-                    ordenDeCarga.CUITCorredor = "";
-                    ordenDeCarga.Corredor_Id = null;
+                    if (usuario.EsCorredor())
+                    {
+                        var corredor = usuario.ObtenerCorredor() ?? throw new Exception("No se encontraron los datos de Corredor para el usuario " + usuario.Mail);
+                        ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
+                        ordenDeCarga.Corredor_Id = corredor.Id;
+                        ordenDeCarga.CUITCorredor = corredor.CUIT;
+                    }
+                    else
+                    {
+                        ordenDeCarga.CodigoCorredor = "";
+                        ordenDeCarga.CUITCorredor = "";
+                        ordenDeCarga.Corredor_Id = null;
+                    }
                 }
-
-                if (!string.IsNullOrEmpty(ordenDeCarga.CUITCorredor) && esComercial)
+                else
                 {
-                    var corredor = repositorio.Obtener<Proveedor>(x =>
-                        x.CUIT == ordenDeCarga.CUITCorredor &&
-                        x.EstadoAprobacion == EstadoAprobacion.Aprobado &&
-                        x.TipoProveedor.Id == (int)TipoUsuarioEnum.Corredor)
-                    ?? throw new Exception("No se encontró el corredor seleccionado");
+                    if (!string.IsNullOrEmpty(ordenDeCarga.CUITCorredor))
+                    {
+                        var corredor = repositorio.Obtener<Proveedor>(x =>
+                            x.CUIT == ordenDeCarga.CUITCorredor &&
+                            x.EstadoAprobacion == EstadoAprobacion.Aprobado &&
+                            x.TipoProveedor.Id == (int)TipoUsuarioEnum.Corredor)
+                        ?? throw new Exception("No se encontró el corredor seleccionado");
 
-                    ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
-                    ordenDeCarga.Corredor_Id = corredor.Id;
+                        ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
+                        ordenDeCarga.Corredor_Id = corredor.Id;
+                    }
                 }
             }
             else
