@@ -12,6 +12,9 @@ namespace SustitucionMOAModel.Dto.Compras
         public string SolpAprobador { get; set; }
 
         public string SolpProveedor { get; set; }
+        public int SolpProveedorId { get; set; }
+
+        public string SolpProveedorNombre { get; set; }
 
         public string SolpFecha { get; set; }
 

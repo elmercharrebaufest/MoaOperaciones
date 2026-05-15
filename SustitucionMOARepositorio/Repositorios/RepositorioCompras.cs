@@ -94,7 +94,8 @@ namespace SustitucionMOARepositorio.Repositorios
                     SolpCreadorMail = solp.UsuarioCreacion.Mail, 
                     solp.FechaCreacion,
                     solp.FechaLiberacionSap,
-                    ProveedorAsignadoMail = solp.ProveedorAsignado.Mail,
+                    ProveedorAsignadoCuit = solp.ProveedorAsignado.CUITRegistro,
+                    ProveedorAsignado = solp.ProveedorAsignado.Id,
                     AprobadorMail = solp.Pliego.Email,
                     Posiciones = solp.Posiciones.Select(x => new { x.Indice, x.Tarea }).ToList(),
                 })
@@ -105,7 +106,8 @@ namespace SustitucionMOARepositorio.Repositorios
                     SolpCreador = solp.SolpCreadorMail,
                     SolpFecha = solp.FechaCreacion.ToString("dd/MM/yyyy"),
                     OrdenCompraFechaLiberacion = solp.FechaLiberacionSap.HasValue ? solp.FechaLiberacionSap.Value.ToString("dd/MM/yyyy") : null,
-                    SolpProveedor = solp.ProveedorAsignadoMail,
+                    SolpProveedor = solp.ProveedorAsignadoCuit,
+                    SolpProveedorId = solp.ProveedorAsignado,
                     SolpAprobador = solp.AprobadorMail,
                     Posiciones = solp.Posiciones.Select(p => new DetallePosicion
                     {
@@ -114,6 +116,12 @@ namespace SustitucionMOARepositorio.Repositorios
                     }).ToList()
                 })
                 .ToList();
+
+            foreach(var trabajo in trabajosHechos)
+            {
+                var usuario = this.Obtener<Usuario>(u => u.Id == trabajo.SolpProveedorId);
+                trabajo.SolpProveedorNombre = usuario.ObtenerRazonSocial();
+            }
 
             return trabajosHechos;
         }
