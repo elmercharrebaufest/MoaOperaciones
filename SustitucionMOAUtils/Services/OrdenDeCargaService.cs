@@ -1218,6 +1218,7 @@ namespace SustitucionMOAUtils.Services
             foreach (OrdenDeCarga orden in ordenes)
             {
                 VerificarSituacionCrediticia(orden, false);
+                NotificarAutorizacionDeNomina(new List<OrdenDeCarga> { orden }, false); // En este caso, siempre el estado original de la orden era PendienteAprobacionCredito, por lo que no hace falta verificar esa condición.
             }
         }
 
