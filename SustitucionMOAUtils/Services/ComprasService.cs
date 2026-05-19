@@ -7618,7 +7618,9 @@ namespace SustitucionMOAUtils.Services
                     if (solpTh != null)
                     {
                         var aprobaciones = this.repositorio.Listar<Aprobaciones>(a => a.NRO_OC == detalleOc.Cabecera.OrdenDeCompra);
-                        solpTh.Posiciones.ForEach(p =>
+                        var indices = detalleOc.Posiciones.Select(x => int.Parse(x.IndiceSolp)).ToList();
+                        var posiciones = solpTh.Posiciones.Where(y => indices.Contains(int.Parse(y.NroPosicion))).ToList();
+                        posiciones.ForEach(p =>
                         {
                             p.FechaAprobacionES = aprobaciones.FirstOrDefault(a => a.NRO_POS == p.NroPosicion)?.Fecha_aprobacion?.ToString("dd/MM/yyyy");
                         });
@@ -7635,7 +7637,7 @@ namespace SustitucionMOAUtils.Services
                             OrdenCompraFechaLiberacion = fechasLiberacionPorOc.TryGetValue(detalleOc.Cabecera.OrdenDeCompra, out DateTime fechaLiberacionOc)
                             ? fechaLiberacionOc.ToString("dd/MM/yyyy") : (!string.IsNullOrEmpty(solpTh.OrdenCompraFechaLiberacion)
                             ? solpTh.OrdenCompraFechaLiberacion : solpTh.SolpFecha),
-                            Posiciones = solpTh.Posiciones,
+                            Posiciones = posiciones,
                             SolpAprobador = solpTh.SolpAprobador
                         });
                     }
