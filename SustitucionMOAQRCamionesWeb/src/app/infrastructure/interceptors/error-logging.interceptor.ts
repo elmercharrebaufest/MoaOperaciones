@@ -8,7 +8,7 @@ export const errorLoggingInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error) => {
-      if (! req.url.includes('/api/qrcamiones/log')) {
+      if (! req.url.includes('/api/seguimientocamiones/log')) {
         loggingService.logError(error, `HTTP error en ${req.url}`);
       } else {
         console.error('Logging endpoint failed:', error);

@@ -44,7 +44,7 @@ export class ApiService {
     }
 
     return this.http
-      .get<TrackingResponse>(`${this.apiUrl}/api/qrcamiones/search`, { 
+      .get<TrackingResponse>(`${this.apiUrl}/api/seguimientocamiones/search`, { 
         params, 
         headers: this.getHeaders() 
       })
@@ -98,7 +98,7 @@ export class ApiService {
       .set('request.tipoWorkflow', 'Ingreso por Compra de Granos - Calada Externa');
 
     return this.http
-      .get<EstadoEtapasResponse>(`${this.apiUrl}/api/qrcamiones/estadoEtapas`, { 
+      .get<EstadoEtapasResponse>(`${this.apiUrl}/api/seguimientocamiones/estadoEtapas`, { 
         params, 
         headers: this.getHeaders() 
       })
@@ -129,7 +129,7 @@ export class ApiService {
       .set('request.patente', patente);
 
     return this.http
-      .get<FilesResponse>(`${this.apiUrl}/api/qrcamiones/files`, { 
+      .get<FilesResponse>(`${this.apiUrl}/api/seguimientocamiones/files`, { 
         params, 
         headers: this.getHeaders() 
       })
@@ -239,7 +239,7 @@ export class ApiService {
     };
 
     return this.http.post<void>(
-      `${this.apiUrl}/api/qrcamiones/log`,
+      `${this.apiUrl}/api/seguimientocamiones/log`,
       request,
       { headers: this.getHeaders() }
     );

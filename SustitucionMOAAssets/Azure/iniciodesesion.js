@@ -28,10 +28,10 @@ $('document').ready(function () {
     var currentURL = window.location.href
     if (currentURL.includes('moagro.b2clogin.com')) {
         ticketPesadaUrl = 'https://moaoperaciones.com.ar/web/ticket-pesada';
-        qrCamionesUrl = 'https://moaoperaciones.com.ar/QRCamiones';
+        qrCamionesUrl = 'https://moaoperaciones.com.ar/SeguimientoCamiones';
     } else if (currentURL.includes('moagroqa.b2clogin.com')) {
         ticketPesadaUrl = 'http://qacompras.moaoperaciones.com.ar/web/ticket-pesada';
-        qrCamionesUrl = 'http://qacompras.moaoperaciones.com.ar/QRCamiones';
+        qrCamionesUrl = 'http://qacompras.moaoperaciones.com.ar/SeguimientoCamiones';
     } else {
         ticketPesadaUrl = 'http://localhost:4200/ticket-pesada';
         qrCamionesUrl = 'http://localhost:4200/';
