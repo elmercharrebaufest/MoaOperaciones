@@ -57,7 +57,7 @@ namespace SustitucionMOAUtils.Services.Email
         {
             string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_DIARIA);
 
-            string body = BuildDailyNotification(aprobaciones, bodyTemplate, rutaCertifPendiente);
+            string body = BuildDailyNotification(aprobaciones, bodyTemplate);
 
 
             var emailSenderData = new EmailSenderData
@@ -263,11 +263,12 @@ namespace SustitucionMOAUtils.Services.Email
             return importe;
         }
 
-        private string BuildDailyNotification(List<NotificacionEsPendientesDiariasDto> aprobaciones, string bodyTemplate, string rutaCertif)
+        private string BuildDailyNotification(List<NotificacionEsPendientesDiariasDto> aprobaciones, string bodyTemplate)
         {
+            var urlCertifPendientes = "\"" + rutaCertifPendiente + "\"";
             var bodyTable = BuildTableDailyNotification(aprobaciones);
 
-            var body = string.Format(bodyTemplate, bodyTable.ToString(), rutaCertif);
+            var body = string.Format(bodyTemplate, bodyTable.ToString(), urlCertifPendientes);
 
             return body;
         }
