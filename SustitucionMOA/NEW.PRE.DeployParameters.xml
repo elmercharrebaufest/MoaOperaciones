@@ -5,8 +5,9 @@
 	<setParameter name="CONTEXTO-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad;User Id=MOAOPQAUSR;Password=Ymei3658Ledq3;initial catalog=MOAOperacionesUAT;Pooling=False" />
 	<setParameter name="HfContexto-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad;User Id=MOAOPQAUSR;Password=Ymei3658Ledq3;Initial Catalog=MOAOperacionesHangfireUAT;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
 
-
+	
 	<setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
+	<setParameter name="UrlCertifPendiente Config" value="https://prenuevo.moaoperaciones.com.ar/web/compras/listadoEstadoCertificaciones" />
 
 	<setParameter name="PasswordSap Config" value="prueba" />
 	<setParameter name="SAPsinPI Config" value="1" />
