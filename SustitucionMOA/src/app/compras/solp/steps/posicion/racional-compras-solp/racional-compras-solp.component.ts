@@ -16,7 +16,10 @@ export class RacionalComprasSolpComponent implements OnInit {
 
     @Output()
     guardarRacionalComprasEmitter = new EventEmitter();
-
+    
+    @Output()
+    cancelarRacionalComprasEmitter = new EventEmitter();
+    
     condicionesDeEntrega: string = "";
     condicionesDePago: string = "";
     garantias: string = "";
@@ -49,6 +52,7 @@ export class RacionalComprasSolpComponent implements OnInit {
 
     onCancelar() {
         this.mostrarModalRacionales = false;
+        this.cancelarRacionalComprasEmitter.next();
         this.cerrarAccordion();
     }
 

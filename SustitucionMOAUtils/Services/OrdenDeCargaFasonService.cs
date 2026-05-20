@@ -26,6 +26,9 @@ namespace SustitucionMOAUtils.Services
     public class OrdenDeCargaFasonService : OrdenDeCargaServiceBase, IOrdenDeCargaFasonService
     {
         private readonly IEnumerable<string> codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
+        private readonly string _codigoAceiteSojaNeutralizado = "98855";
+        private readonly string _codigoAceiteMetiladoSoja = "99098";
+
         private readonly IEmailFasonService emailFasonService;
         private readonly IRepositorioOrdenDeCargaFason repositorioFason;
 
@@ -225,6 +228,7 @@ namespace SustitucionMOAUtils.Services
             var distanciaARecorrer = ObtenerDistanciaARecorrer(request.DomicilioDescr);
 
             var ordenEntity = new OrdenDeCargaFason { Id = 0 };
+            var ordenesAgregadas = new List<OrdenDeCargaFason>();
 
             foreach (var unidadTransporte in request.UnidadesTransporte)
             {
@@ -250,10 +254,12 @@ namespace SustitucionMOAUtils.Services
                         NotificacionCamionAutorizadoMultiplesOrdenes(ordenEntity);
                     }
                     repositorioFason.Agregar(ordenEntity);
+                    ordenesAgregadas.Add(ordenEntity);
                 }
             }
             repositorioFason.GuardarCambios();
             var ultimoId = ordenEntity.Id;
+            NotificarAutorizacionDeNomina(ordenesAgregadas, false);
 
             var resultado = new Resultado { Mensaje = SuccessMsg.OrdenDeCargaAgregada, IdEntidad = (int)ultimoId };
             return resultado;
@@ -306,7 +312,7 @@ namespace SustitucionMOAUtils.Services
                     emailFasonService.EnviarMailNotificacionEdicion(orden, listaValoresDiferentes);
                 }
                 repositorioFason.GuardarCambios();
-
+                NotificarAutorizacionDeNomina(new List<OrdenDeCargaFason> { orden }, true);
                 return new Resultado { IdEntidad = request.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
             }
             catch (Exception ex)
@@ -814,6 +820,34 @@ namespace SustitucionMOAUtils.Services
             }
             var localidades = ObtenerDestinos(request.Cliente);
             return localidades.Count > 0 ? localidades.First() : null;
+        }
+
+        private void NotificarAutorizacionDeNomina(List<OrdenDeCargaFason> ordenesAgregadas, bool esEdicionDeOrden)
+        {
+            try
+            {
+                if (!(ordenesAgregadas?.Any() ?? false))
+                {
+                    return;
+                }
+
+                if (DebeNotificarAutorizacionDeNomina(ordenesAgregadas[0]))
+                {
+                    var ordenesANotificar = ordenesAgregadas.Where(o => o.Estado == EstadoOrdenDeCargaFason.Generada);
+                    emailFasonService.EnviarMailAutorizacionDeNomina(ordenesANotificar, esEdicionDeOrden);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error al notificar autorización de nómina", ex);
+                throw;
+            }
+        }
+
+        private bool DebeNotificarAutorizacionDeNomina(OrdenDeCargaFason orden)
+        {
+            return orden.Estado == EstadoOrdenDeCargaFason.Generada &&
+                (orden.Producto.CodigoSap == _codigoAceiteSojaNeutralizado || orden.Producto.CodigoSap == _codigoAceiteMetiladoSoja);
         }
     }
 }

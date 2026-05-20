@@ -199,6 +199,7 @@
     <Compile Include="Entities\TipoNormativa.cs" />
     <Compile Include="Entities\UsuarioReasignacion.cs" />
     <Compile Include="Entities\VerificarActividadUsuario.cs" />
+    <Compile Include="Enums\Compras\GrupoComprasCodigos.cs" />
     <Compile Include="Enums\ComunicacionTipoEnum.cs" />
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
@@ -380,12 +381,13 @@
     <Compile Include="Entities\TipoRetencion.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
     <Compile Include="Enums\CondicionRetiro.cs" />
+    <Compile Include="Enums\EstadoCertificacionEnum.cs" />
     <Compile Include="Enums\EstadoCursoEnum.cs" />
     <Compile Include="Enums\EnviarCircularEnum.cs" />
     <Compile Include="Enums\EstadoListarTratamientoSolp.cs" />
     <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
     <Compile Include="Enums\FlujoActualizacionOrdenResiduos.cs" />
-    <Compile Include="Enums\OrganizacionDeCompraIds.cs" />
+    <Compile Include="Enums\Compras\OrganizacionDeCompraIds.cs" />
     <Compile Include="Enums\TipoConfiguracionUsuario.cs" />
     <Compile Include="Enums\TipoLegajo.cs" />
     <Compile Include="Enums\RolEnum.cs" />

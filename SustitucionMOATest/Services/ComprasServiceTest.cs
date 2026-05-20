@@ -2856,13 +2856,45 @@ namespace SustitucionMOATest.Services
                 {
                     SolpNro = "102002021",
                     SolpCreador = "usuario1@moa.com",
-                    SolpFecha = "15/08/2025"
+                    SolpFecha = "15/08/2025",
+                    SolpAprobador = "usuario1@moa.com",
+                    SolpProveedor = "usuario1@moa.com",
+                    SolpProveedorNombre = "RS prov1",
+                    Posiciones = new List<DetallePosicion>
+                    {
+                        new DetallePosicion
+                        {
+                            NroPosicion = "1",
+                            TextoPosicion = "texto 1"
+                        },
+                        new DetallePosicion
+                        {
+                            NroPosicion = "2",
+                            TextoPosicion = "texto 2"
+                        }
+                    }
                 },
                 new TrabajoYaHechoReporte
                 {
                     SolpNro = "102002022",
                     SolpCreador = "usuario2@moa.com",
-                    SolpFecha = "25/08/2025"
+                    SolpFecha = "25/08/2025",
+                    SolpAprobador = "usuario1@moa.com",
+                    SolpProveedor = "usuario1@moa.com",
+                    SolpProveedorNombre = "RS prov2",
+                    Posiciones = new List<DetallePosicion>
+                    {
+                        new DetallePosicion
+                        {
+                            NroPosicion = "1",
+                            TextoPosicion = "texto 1"
+                        },
+                        new DetallePosicion
+                        {
+                            NroPosicion = "2",
+                            TextoPosicion = "texto 2"
+                        }
+                    }
                 }
             };
 

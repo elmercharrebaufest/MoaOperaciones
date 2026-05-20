@@ -26,6 +26,7 @@
         Comisiones,
         Comprador,
         Compras,
+        ComprasRRHH,
         Comprobantes,
         Corredor,
         Deshabilitado,

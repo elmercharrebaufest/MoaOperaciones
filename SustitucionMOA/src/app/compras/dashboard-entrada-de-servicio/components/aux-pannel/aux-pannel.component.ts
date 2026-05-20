@@ -15,7 +15,7 @@ export class AuxPannelComponent implements OnInit {
     constructor() { }
 
     @Input() showOrHideAuxPanel: boolean = false;
-    @Input() periodoSeleccionado: string = '1';
+    @Input() periodoSeleccionado: string = '5';
     @Input() proveedor: string = '';
     @Input() visible: boolean = false;
     @Output() obtenerESSap: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -119,6 +119,9 @@ export class AuxPannelComponent implements OnInit {
 
             case '4':
                 fechaDesde.setDate(fechaDesde.getDate() - 1);
+                break;
+            case '5':
+                fechaDesde = new Date(2020, 0, 1);
                 break;
         }
         this.filtroFechaDesde = Formatter.DateToSting(fechaDesde);

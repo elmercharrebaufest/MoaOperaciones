@@ -19,6 +19,7 @@ using SustitucionMOAModel.Dto.Compras.POMultiple;
 using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Enums.Compras;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
@@ -46,6 +47,8 @@ using System.Linq.Expressions;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 
 namespace SustitucionMOAUtils.Services
@@ -355,6 +358,7 @@ namespace SustitucionMOAUtils.Services
                     THAjustePolinomica = solp.THAjustePolinomica,
                     THProveedorDirecto = solp.THProveedorDirecto,
                     THServicioPermanente = solp.THServicioPermanente,
+                    THAcuerdoMarco = solp.THAcuerdoMarco,
                     AdmiteCertificacionesParciales = solp.AdmiteCertificacionesParciales,
                 };
 
@@ -392,6 +396,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.THAjustePolinomica = solp.THAjustePolinomica;
                 solpEntity.THProveedorDirecto = solp.THProveedorDirecto;
                 solpEntity.THServicioPermanente = solp.THServicioPermanente;
+                solpEntity.THAcuerdoMarco = solp.THAcuerdoMarco;
                 solpEntity.Pliego.NombreObra = solp.NombreDeObra;
                 solpEntity.Racional_CondicionesDeEntrega = solp.Racional_CondicionesDeEntrega;
                 solpEntity.Racional_CondicionesDePago = solp.Racional_CondicionesDePago;
@@ -1376,7 +1381,7 @@ namespace SustitucionMOAUtils.Services
                 RevisadoPor = solp.Pliego.RevisadoPor,
                 EstadoSolpSap_Id = solp.EstadoSolpSap_Id,
                 EstadoDocumento_Id = solp.EstadoDocumento_Id,
-                Posiciones = solp.Posiciones.Select(p => new SolpPosicionDto(p)).ToList(),
+                Posiciones = solp.Posiciones.Select(p => new SolpPosicionDto(p) { NroSolp = solp.NroSolp }).ToList(),
                 PasoCompletado = solp.PasoCompletado,
                 EstadoPasos = solp.EstadoPasos,
                 EmailLinkToken = solp.EmailLinkToken,
@@ -1384,6 +1389,7 @@ namespace SustitucionMOAUtils.Services
                 THAjustePolinomica = solp.THAjustePolinomica,
                 THProveedorDirecto = solp.THProveedorDirecto,
                 THServicioPermanente = solp.THServicioPermanente,
+                THAcuerdoMarco = solp.THAcuerdoMarco,
                 TienePeticionDeOferta = solp.Posiciones.Any(p => p.Peticiones.Any()),
                 TieneModificaciones = solp.TieneModificaciones,
                 TieneRevisionTecnicaFinalizada = solp.Posiciones.Any(p => p.Peticiones != null && p.Peticiones.Any(po => po.PeticionDeOferta.RevisionTecnica != null && po.PeticionDeOferta.RevisionTecnica.Finalizada)),
@@ -2570,7 +2576,7 @@ namespace SustitucionMOAUtils.Services
 
                         if (!string.IsNullOrEmpty(posicion.NumeroContratoMarco)) //Contrato Marco
                         {
-                            var datosContratoMarco = comprasServiceSap.ObtenerContratoMarco(posicion.NumeroContratoMarco, posicion.CentroLogistico);
+                            var datosContratoMarco = comprasServiceSap.ObtenerContratoMarco(posicion.NumeroContratoMarco, posicion.CentroLogistico, null);
                             posicionEntity.NumeroContratoSuperior = posicion.NumeroContratoMarco;
                             posicionEntity.NumeroPosicionContratoSuperior = posicion.PosicionContratoMarco;
                             posicionEntity.ProveedorFijo = posicion.ProveedorFijo;
@@ -7607,28 +7613,81 @@ namespace SustitucionMOAUtils.Services
             {
                 foreach (var nroSolp in detalleOc.Posiciones?.Select(x => x.NroSolp).Distinct())
                 {
+                    
                     var solpTh = solpsTrabajosHechos.FirstOrDefault(s => s.SolpNro == nroSolp);
                     if (solpTh != null)
                     {
+                        var aprobaciones = this.repositorio.Listar<Aprobaciones>(a => a.NRO_OC == detalleOc.Cabecera.OrdenDeCompra);
+                        var indices = detalleOc.Posiciones.Select(x => int.Parse(x.IndiceSolp)).ToList();
+                        var posiciones = solpTh.Posiciones.Where(y => indices.Contains(int.Parse(y.NroPosicion))).ToList();
+                        posiciones.ForEach(p =>
+                        {
+                            p.FechaAprobacionES = aprobaciones.FirstOrDefault(a => a.NRO_POS == p.NroPosicion)?.Fecha_aprobacion?.ToString("dd/MM/yyyy");
+                        });
+
                         trabajosHechosAReportar.Add(new TrabajoYaHechoReporte
                         {
                             SolpNro = solpTh.SolpNro,
                             SolpCreador = solpTh.SolpCreador,
+                            SolpProveedor = solpTh.SolpProveedor,
+                            SolpProveedorNombre = solpTh.SolpProveedorNombre,
                             SolpFecha = solpTh.SolpFecha,
                             OrdenCompraNro = detalleOc.Cabecera.OrdenDeCompra,
                             OrdenCompraCreador = detalleOc.Cabecera.UsuarioComprasSAP,
                             OrdenCompraFecha = detalleOc.Cabecera.FechaCreacion.ToString("dd/MM/yyyy"),
-                            OrdenCompraFechaLiberacion = fechasLiberacionPorOc.TryGetValue(detalleOc.Cabecera.OrdenDeCompra, out DateTime fechaLiberacionOc) ? fechaLiberacionOc.ToString("dd/MM/yyyy") : null
+                            OrdenCompraFechaLiberacion = fechasLiberacionPorOc.TryGetValue(detalleOc.Cabecera.OrdenDeCompra, out DateTime fechaLiberacionOc)
+                            ? fechaLiberacionOc.ToString("dd/MM/yyyy") : (!string.IsNullOrEmpty(solpTh.OrdenCompraFechaLiberacion)
+                            ? solpTh.OrdenCompraFechaLiberacion : solpTh.SolpFecha),
+                            Posiciones = posiciones,
+                            SolpAprobador = solpTh.SolpAprobador
                         });
                     }
                 }
             }
 
             Log.Info("Trabajos hechos a reportar: " + trabajosHechosAReportar.Count);
-            var excelMemStream = ExcelExport.CreateExcelFileMs(trabajosHechosAReportar, new string[] { "Nro solp", "Creador solp", "Fecha solp", "Liberación OC", "Nro OC", "Creador OC", "Fecha OC" });
+            var excel = this.GenerarReporteConNPOI(trabajosHechosAReportar);
             var nombreArchivoXls = $"Reporte OCs trabajos ya hechos {DateTime.Today:yyyy-MM-dd}.xlsx";
+            emailComprasService.EnviarMailReporteTrabajoYaHecho(excel, nombreArchivoXls);
+        }
 
-            emailComprasService.EnviarMailReporteTrabajoYaHecho(excelMemStream.ToArray(), nombreArchivoXls);
+        public byte[] GenerarReporteConNPOI(List<TrabajoYaHechoReporte> trabajosHechosAReportar)
+        {
+            IWorkbook workbook = new XSSFWorkbook();
+            ISheet sheet = workbook.CreateSheet("Reporte");
+
+            var headers = new string[] { "Nro OC", "CUIT Proveedor", "Razon Social Prov.", "Creador Solp", "Aprobador Solp", "Nro Solp", "Fecha Liberacion", "Nro Posicion", "Texto Posicion", "Fecha Aprobacion ES"};
+            IRow headerRow = sheet.CreateRow(0);
+            for (int i = 0; i < headers.Length; i++)
+            {
+                headerRow.CreateCell(i).SetCellValue(headers[i]);
+            }
+
+            int currentRow = 1;
+            foreach (var trabajo in trabajosHechosAReportar)
+            {
+                foreach (var posicion in trabajo.Posiciones)
+                {
+                    IRow row = sheet.CreateRow(currentRow);
+                    row.CreateCell(0).SetCellValue(trabajo.OrdenCompraNro);
+                    row.CreateCell(1).SetCellValue(trabajo.SolpProveedor);
+                    row.CreateCell(2).SetCellValue(trabajo.SolpProveedorNombre);
+                    row.CreateCell(3).SetCellValue(trabajo.SolpCreador);
+                    row.CreateCell(4).SetCellValue(trabajo.SolpAprobador);
+                    row.CreateCell(5).SetCellValue(trabajo.SolpNro);
+                    row.CreateCell(6).SetCellValue(trabajo.OrdenCompraFechaLiberacion);
+                    row.CreateCell(7).SetCellValue(posicion.NroPosicion);
+                    row.CreateCell(8).SetCellValue(posicion.TextoPosicion);
+                    row.CreateCell(9).SetCellValue(posicion.FechaAprobacionES);
+                    currentRow++;
+                }
+            }
+
+            using (var stream = new MemoryStream())
+            {
+                workbook.Write(stream);
+                return stream.ToArray();
+            }
         }
 
         private void EnviarMailReporteSolp(byte[] archivoExcel, string archivo)
@@ -8034,7 +8093,7 @@ namespace SustitucionMOAUtils.Services
                         TieneCotizacion = solp.Posiciones.Any(pos => pos.Peticiones.Any())
                     },
                     solp =>
-                        solpIds.Contains(solp.Id) &&
+                        solpIds.Contains(solp.Id) && solp.OrganizacionDeCompra.Id != OrganizacionDeCompraIds.ComprasRRHH &&
                         (solp.Pliego.MultipleFinalizado == true || solp.Pliego.Multiple == false)
                 );
 
@@ -9304,8 +9363,8 @@ namespace SustitucionMOAUtils.Services
             var organizaciones = repositorio.ListarProyeccion<OrganizacionDeCompra, OrganizacionDeCompraDto>(
                 x => new OrganizacionDeCompraDto
                 {
-                    Id = x.Id,
-                    Descripcion = x.Descripcion
+                    Id = x.Id, 
+                    Descripcion = x.Descripcion + " - " + x.Id // -> Linq to entities no soporta string.Format
                 });
 
             return organizaciones;
@@ -9591,7 +9650,7 @@ namespace SustitucionMOAUtils.Services
 
         private void CrearAdjudicacionYOrdenCompraPorLiberacionSolp(Solp solp, Cotizacion cotizacion)
         {
-            if (solp.OrganizacionDeCompra_Id == OrganizacionDeCompraIds.ComprasRRHH && solp.TrabajoYaHecho == true)
+            if (solp.OrganizacionDeCompra_Id == OrganizacionDeCompraIds.ComprasRRHH && solp.TrabajoYaHecho == true && !EstaAdjudicadaCompletamenteEnSap(solp.NroSolp))
             {
                 var centroSolp = solp.Posiciones.First().Centro.CodigoSap;
                 var centroRegion = repositorio.Obtener<CentroDireccion>(cr => cr.CodigoSap == centroSolp);
@@ -9678,6 +9737,16 @@ namespace SustitucionMOAUtils.Services
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(res);
             return alternateView;
+        }
+
+        private bool EstaAdjudicadaCompletamenteEnSap(string nroSolp)
+        {
+            var posicionesSap = comprasServiceSap.ObtenerPosiciones(nroSolp);
+            if (posicionesSap != null && posicionesSap.Any())
+            {
+                return posicionesSap.All(p => p.Cantidad - p.Ordered <= 0);
+            }
+            return false;
         }
     }
 }

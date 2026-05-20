@@ -31,6 +31,19 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
+        public ResultadoValidarProveedorComercial ValidarCUITNuevo(string CUIT, bool? corredor = false, string cuitCorredor = "")
+        {
+            try
+            {
+                return service.ValidarProveedorComercialNuevo(CUIT, corredor, cuitCorredor);
+            }
+            //Significa que no estamos conectados
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public bool ProveedorApocrifo(string CUIT)
         {
             try

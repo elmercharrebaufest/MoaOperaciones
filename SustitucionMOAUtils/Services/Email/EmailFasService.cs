@@ -318,7 +318,7 @@ namespace SustitucionMOAUtils.Services.Email
 
         public void EnviarMailAutorizacionDeNomina(IEnumerable<OrdenDeCarga> ordenes, bool esEdicionDeOrden)
         {
-            if (!ordenes?.Any() ?? false)
+            if (!(ordenes?.Any() ?? false))
             {
                 return;
             }

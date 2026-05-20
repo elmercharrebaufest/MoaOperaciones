@@ -70,6 +70,12 @@
   <wsdl:message name="IDataAgroServices_ValidarProveedorComercial_OutputMessage">
     <wsdl:part name="parameters" element="tns:ValidarProveedorComercialResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataAgroServices_ValidarProveedorComercialNuevo_InputMessage">
+    <wsdl:part name="parameters" element="tns:ValidarProveedorComercialNuevo" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_ValidarProveedorComercialNuevo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ValidarProveedorComercialNuevoResponse" />
+  </wsdl:message>
   <wsdl:message name="IDataAgroServices_AltaContratoSAP_InputMessage">
     <wsdl:part name="parameters" element="tns:AltaContratoSAP" />
   </wsdl:message>
@@ -402,6 +408,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/ValidarProveedorComercial" message="tns:IDataAgroServices_ValidarProveedorComercial_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/ValidarProveedorComercialResponse" message="tns:IDataAgroServices_ValidarProveedorComercial_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="ValidarProveedorComercialNuevo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/ValidarProveedorComercialNuevo" message="tns:IDataAgroServices_ValidarProveedorComercialNuevo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/ValidarProveedorComercialNuevoResponse" message="tns:IDataAgroServices_ValidarProveedorComercialNuevo_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="AltaContratoSAP">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/AltaContratoSAP" message="tns:IDataAgroServices_AltaContratoSAP_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/AltaContratoSAPResponse" message="tns:IDataAgroServices_AltaContratoSAP_OutputMessage" />
@@ -681,6 +691,15 @@
     </wsdl:operation>
     <wsdl:operation name="ValidarProveedorComercial">
       <soap:operation soapAction="http://tempuri.org/IDataAgroServices/ValidarProveedorComercial" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ValidarProveedorComercialNuevo">
+      <soap:operation soapAction="http://tempuri.org/IDataAgroServices/ValidarProveedorComercialNuevo" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

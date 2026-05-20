@@ -13,7 +13,7 @@
     <aux-pannel
         (obtenerESSap)="onBuscar()"
         [proveedor]="proveedor"
-        [visible]="recalculandoAprobadas"
+        [visible]="recalculando"
         (getFecha)="getFecha($event)"
         (onFiltroFechaDesdeChanged)="onFiltroFechaDesdeChanged($event)"
         (onFiltroFechaHastaChanged)="onFiltroFechaHastaChanged($event)"
@@ -25,14 +25,14 @@
     <div class="container-tabla">
         <div class="table-options">
             <div class="refresh-row">
-                <i class="pi pi-refresh" [style.cursor]="recalculando || recalculandoAprobadas ? 'no-drop' : 'pointer'" (click)="refreshDataTable()"></i>
+                <i class="pi pi-refresh" [style.cursor]="recalculando ? 'no-drop' : 'pointer'" (click)="refreshDataTable()"></i>
             </div>
             <!-- FILTERS -->
             <div class="filters-row">
                 <i class="pi pi-filter"></i>
                 <div class="filtro-estado-certificacion">
                     <p-dropdown [(ngModel)]="estadoCertificacion" id="select-estado-certificacion"
-                        (onChange)="filtrarPorEstado($event)" optionLabel="name" [disabled]="recalculando"
+                        (onChange)="onBuscar()" optionLabel="name" [disabled]="recalculando"
                         [options]="listadoEstadoCertificacion"
                         placeholder="Seleccione un estado de certificación" appendTo="body"></p-dropdown>
                 </div>
@@ -41,8 +41,8 @@
         </div>
         <!-- TABLE 1 -->
         <p-table #tabla class="level1"
-            [value]="estadoCertificacion.code === 'Aprobada' ? tablaPOSap : tablaPOAprobaciones"
-            dataKey="EntradaServicio" [paginator]="true" [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
+            [value]="tablaPO"
+            dataKey="EntradaServicio" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords" [lazy]="true" (onLazyLoad)="loadData($event)"
             [columns]="columns" [globalFilterFields]="['OrdenCompra']" responsiveLayout="scroll | stack"
             rowExpandMode="single">
             <!-- TABLE 1 HEADERS -->
@@ -105,7 +105,7 @@
             <!-- TABLE 1 BODY END -->
 
             <ng-template pTemplate="footer" let-columns>
-                <tr *ngIf="recalculando || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
+                <tr *ngIf="recalculando">
                     <td colspan="12">
                         <recalculando-spinner [description]="'Cargando las entradas de servicio, espere por favor...'"></recalculando-spinner>
                     </td>
@@ -113,7 +113,7 @@
             </ng-template>
 
             <ng-template pTemplate="emptymessage">
-                <tr *ngIf="(!recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (!recalculando && estadoCertificacion.code === 'Rechazado') || (!recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
+                <tr *ngIf="!recalculando && tablaPO.length === 0">
                     <td class="emptyData" colspan="12">
                         No hay entradas de servicios para mostrar
                     </td>

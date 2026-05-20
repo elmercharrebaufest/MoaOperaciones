@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Export
 {
@@ -38,8 +36,10 @@ namespace SustitucionMOAUtils.Export
 
         private ExcelValidatorRowResult ValidateRow(object[] row)
         {
-            var ret = new ExcelValidatorRowResult();
-            ret.ContratoCorredor = row[0].ToString();
+            var ret = new ExcelValidatorRowResult
+            {
+                ContratoCorredor = row[0].ToString()
+            };
             foreach (var item in this._items)
             {
                 var retCell = ValidateCell(row[item.Position], item);
@@ -53,9 +53,11 @@ namespace SustitucionMOAUtils.Export
 
         private ExcelValidatorItemResult ValidateCell(object cell, ExcelValidatorItem item)
         {
-            var ret = new ExcelValidatorItemResult();
-            ret.Item = item;
-            
+            var ret = new ExcelValidatorItemResult
+            {
+                Item = item
+            };
+
             if (item.Required && item.Type != ExcelValidationColumnType.Bool && (cell == null || string.IsNullOrEmpty(cell.ToString().Trim())))
             {
                 ret.Errors.Add(string.Format("El campo {0} es obligatorio", item.Name));
@@ -162,20 +164,22 @@ namespace SustitucionMOAUtils.Export
                         ContratoCorredor = rowFatal.ContratoCorredor
                     };
 
-                    resumeItem.Errors.Add( string.Join("\n", itemFatal.Errors));
+                    resumeItem.Errors.Add(string.Join("\n", itemFatal.Errors));
                     ret.Add(resumeItem);
                 }
                 else
                 {
                     foreach (var row in this.RowsResult)
                     {
-                        var item = new ExcelValidatorResumeItem();
-                        item.Row = row.RowNumber;
-                        item.ContratoCorredor = row.ContratoCorredor;
+                        var item = new ExcelValidatorResumeItem
+                        {
+                            Row = row.RowNumber,
+                            ContratoCorredor = row.ContratoCorredor
+                        };
 
                         foreach (var itemResult in row.ItemsResult)
                         {
-                            item.Errors.Add( string.Join("\n", itemResult.Errors));
+                            item.Errors.Add(string.Join("\n", itemResult.Errors));
                         }
 
                         ret.Add(item);

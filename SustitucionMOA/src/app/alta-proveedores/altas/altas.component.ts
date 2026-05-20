@@ -24,6 +24,7 @@ import { finalize, take } from 'rxjs/operators';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ApiResponse } from '../../common/models/response';
 import { EmpresaExistenciaVerificada } from '../../modelos/alta-empresa/existencia-empresa-response';
+import { Permiso } from '../../common/enums/Permisos';
 declare var $: any;
 
 
@@ -58,7 +59,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     @ViewChild('dialogoExisteCuit')
     dialogoExisteCuit: ConfirmDialog;
 
-
+    esUsuarioDeAltaInterna: boolean = this.isAuthorized(Permiso.AltaInternaGranos) || this.isAuthorized(Permiso.AltaInternaNoGranos);
 
     @ViewChild(FiltroFechaComponent)
     protected filtroFechaComponent: FiltroFechaComponent;

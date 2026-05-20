@@ -1052,6 +1052,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 x.numeroContratoSuperior === ""
         );
 
+        const noCumpleCttoMarco = posicionesActivas.some(x => x.numeroContratoSuperior === null || 
+            x.numeroContratoSuperior === undefined || 
+            x.numeroContratoSuperior === "");
+
+        if (this.solpActual.thAcuerdoMarco && noCumpleCttoMarco) {            
+            return false;
+        }
+
         // 2. Si hay posiciones con contrato marco y sin contrato marco al mismo tiempo,
         // la función debe devolver false (condición no permitida)
         if (tienenContratoMarco.length > 0 && sinContratoMarco.length > 0) {
@@ -1463,18 +1471,24 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     continuarARacionalesDeCompra() {
         this.displayModalConfirmacionFinalizar = false;
-        this.continuarAFinalizar();//fix hasta que se implmente bien RRHH
-        //if (this.solpActual.trabajoHecho && this.solpActual.organizacionDeCompra.Id == "4010") {
-        //    this.mostrarModalRacionales = true;
-        //}
-        //else {
-        //    this.continuarAFinalizar();
-        //}
+
+        // this.continuarAFinalizar();//fix hasta que se implmente bien RRHH
+
+        if (this.solpActual.trabajoHecho && this.solpActual.organizacionDeCompra != undefined && this.solpActual.organizacionDeCompra.Id == "4010") {
+           this.mostrarModalRacionales = true;
+        }
+        else {
+           this.continuarAFinalizar();
+        }
     }
 
     onGuardarRacionalesDeCompra() {
         this.mostrarModalRacionales = false;
         this.continuarAFinalizar();
+    }
+
+    onCancelarRacionalesDeCompra() {
+        this.mostrarModalRacionales = false;
     }
 
     // Nuevo método para continuar al modal de finalizar

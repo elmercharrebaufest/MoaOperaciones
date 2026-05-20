@@ -32,6 +32,7 @@ import { MaterialSolp } from '../modelos/compras/materialSolp';
 import { ServicioSolp } from '../modelos/compras/servicioSolp';
 import { PeticionDeOfertaDesvincularDto } from '../modelos/compras/POMultiple/peticionDeOfertaDesvincularDto';
 import { OrganizacionDeCompra } from '../modelos/compras/organizacionDeCompra';
+import { EntradaServicioCabeceraDto } from '../common/models/ordenes-compra/entradaServicioCabecera';
 
 @Injectable({
     providedIn: 'root'
@@ -214,6 +215,78 @@ export class ComprasService extends BaseService {
             .get<any[]>('/api/Order/GetSolicitantesByNroSolped', { params, headers: this.headers })
     }
 
+    public ListarEntradaServicio(
+        verTodo: boolean, 
+        fechaInicio: any = this.filtros.fechaDesde,
+        fechaFin: string, 
+        ordenCompra: string | undefined,
+        proveedorId: string,
+        DocumentoNumero: string,
+        columnaOrden: string = this.filtros.columnaNombre,
+        ordenAscendente: boolean = this.filtros.ordenAscendente,
+        pagina: number = 1,
+        elementosPorPagina: number = 10,
+        estado: string = "Pendiente Aprobación",
+        aprobador: string = '',
+        usuario: string = ''
+    ): Observable<EntradaServicioCabeceraDto[]> {
+        
+        let params: HttpParams = new HttpParams();
+        params = params.set('verTodo', verTodo.toString());
+        params = params.set('fechaInicio', (fechaInicio != null ? fechaInicio : ""));
+        params = params.set('fechaFin', fechaFin);
+        params = params.set('OrdenCompra', ordenCompra || "");
+        params = params.set('vendedor', proveedorId);
+        params = params.set('documentoNumero', DocumentoNumero);
+        params = params.set('ColumnaOrden', columnaOrden);
+        params = params.set('OrdenAscendente', ordenAscendente.toString());
+        params = params.set('pagina', pagina.toString());
+        params = params.set('elementosPorPagina', elementosPorPagina.toString());
+        params = params.set('estado', estado);
+        params = params.set('aprobador', aprobador || "");
+        params = params.set('usuario', usuario || "");
+        return this.http
+            .get<EntradaServicioCabeceraDto[]>('/api/EntradaServicio/ListarEntradaServicio', { params: params, headers: this.headers }).pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
+
+    public ListarESReporteExcel(
+        verTodo: boolean, 
+        fechaInicio: any = this.filtros.fechaDesde,
+        fechaFin: string, 
+        ordenCompra: string | undefined,
+        proveedorId: string,
+        DocumentoNumero: string,
+        columnaOrden: string = this.filtros.columnaNombre,
+        ordenAscendente: boolean = this.filtros.ordenAscendente,
+        pagina: number = this.filtros.pagina,
+        elementosPorPagina: number = this.filtros.itemsPorPagina,
+        estado: string = "Pendiente Aprobación"
+    ): Observable<EntradaServicioCabeceraDto[]> {
+        
+        let params: HttpParams = new HttpParams();
+        params = params.set('verTodo', verTodo.toString());
+        params = params.set('fechaInicio', (fechaInicio != null ? fechaInicio : ""));
+        params = params.set('fechaFin', fechaFin);
+        params = params.set('OrdenCompra', ordenCompra || "");
+        params = params.set('vendedor', proveedorId);
+        params = params.set('documentoNumero', DocumentoNumero);
+        params = params.set('ColumnaOrden', columnaOrden);
+        params = params.set('OrdenAscendente', ordenAscendente.toString());
+        params = params.set('pagina', pagina.toString());
+        params = params.set('elementosPorPagina', elementosPorPagina.toString());
+        params = params.set('estado', estado);
+        return this.http
+            .get<EntradaServicioCabeceraDto[]>('/api/EntradaServicio/ListarESReporteExcel', { params: params, headers: this.headers }).pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
+
     public getByProveedorAsync(
         fechaInicio: any = this.filtros.fechaDesde,
         fechaFin: string,
@@ -295,7 +368,7 @@ export class ComprasService extends BaseService {
         return this.http
             .post('/api/EntradaServicio/CrearEntradaServicio', payload, { headers: this.headers });
     }
-    
+
     public AdjuntarArchivosCertificacion(archivos: File[]): Observable<any> {
 
         var payload = new FormData();
@@ -380,6 +453,7 @@ export class ComprasService extends BaseService {
             THServicioPermanente: solp.thServicioPermanente,
             THAjustePolinomica: solp.thAjustePolinomica,
             THProveedorDirecto: solp.thProveedorDirecto,
+            THAcuerdoMarco: solp.thAcuerdoMarco,
             EnvioCircularA: solp.envioCircularA,
             CodigoProveedorSap: solp.codigoProveedorSap,
             Posiciones: null,
@@ -658,10 +732,14 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/EnviarEmail', payload, { headers: this.headersPost });
     }
 
-    obtenerContratoMarco(centro: string, numeroContrato: string): Observable<any> {
+    obtenerContratoMarco(centro: string, numeroContrato: string, codigoProveedor: string = null): Observable<any> {
         let params: HttpParams = new HttpParams()
             .append('numeroContrato', numeroContrato)
             .append('centro', centro);
+
+        if (codigoProveedor) {
+            params = params.append('codigoProveedor', codigoProveedor);
+        }
 
         return this.http
             .get("/api/compras/ObtenerContratoMarco", { params: params })
@@ -1701,7 +1779,7 @@ export class ComprasService extends BaseService {
             .post('/api/compras/DesvincularSolpDePOMultipleServicio', payload, { headers: this.headers })
             .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
-    
+
     obtenerPeticionesDeOfertaParaDesvincularMaterial(solpPosicionId: number): Observable<ApiResponse<PeticionDeOfertaDesvincularDto[]>> {
         let params: HttpParams = new HttpParams()
             .append('solpPosicionId', solpPosicionId.toString());
@@ -1733,5 +1811,14 @@ export class ComprasService extends BaseService {
                 { headers: this.headers })
             .pipe(timeoutWith(20000,
                 throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    listarCombos() : Observable<{ usuarios: string[], aprobadores: string[] }>{
+        return this.http
+            .get<{ usuarios: string[], aprobadores: string[] }>('/api/EntradaServicio/Combos', { headers: this.headers }).pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
     }
 }

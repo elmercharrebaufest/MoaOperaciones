@@ -1,4 +1,4 @@
-﻿namespace SustitucionMOAModel.Enums
+﻿namespace SustitucionMOAModel.Enums.Compras
 {
     public static class OrganizacionDeCompraIds
     {
