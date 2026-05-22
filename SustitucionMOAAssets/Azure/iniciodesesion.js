@@ -4,7 +4,7 @@ $('document').ready(function () {
     $('#email').attr('placeholder', 'Ingrese su e-mail')
 
     $('.intro').html(
-        'Información de operaciones y entregas para proveedores de Materias Primas'
+        'Información de operaciones para proveedores y clientes'
     )
 
     //Muevo el tag <a> a la sección de botones
@@ -28,10 +28,10 @@ $('document').ready(function () {
     var currentURL = window.location.href
     if (currentURL.includes('moagro.b2clogin.com')) {
         ticketPesadaUrl = 'https://moaoperaciones.com.ar/web/ticket-pesada';
-        qrCamionesUrl = 'https://moaoperaciones.com.ar/QRCamiones';
+        qrCamionesUrl = 'https://moaoperaciones.com.ar/seguimiento-camiones';
     } else if (currentURL.includes('moagroqa.b2clogin.com')) {
         ticketPesadaUrl = 'http://qacompras.moaoperaciones.com.ar/web/ticket-pesada';
-        qrCamionesUrl = 'http://qacompras.moaoperaciones.com.ar/QRCamiones';
+        qrCamionesUrl = 'http://qacompras.moaoperaciones.com.ar/seguimiento-camiones';
     } else {
         ticketPesadaUrl = 'http://localhost:4200/ticket-pesada';
         qrCamionesUrl = 'http://localhost:4200/';

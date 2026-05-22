@@ -194,7 +194,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         return new Promise<void>((resolve, reject) => {
             this.unsubscribe();
             this.subscripcionPO = this.service.ListarEntradaServicio(false, fechaDesde, fechaHasta, this.ordenCompraFiltro,
-                proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.estadoCertificacion.code).subscribe(
+                proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.currentPage, this.pageSize, this.estadoCertificacion.code).subscribe(
                     (result: any) => {
                         if (result.logout === true) {
                             this.sessionDataService.logout();
