@@ -4,7 +4,7 @@ $('document').ready(function () {
     $('#email').attr('placeholder', 'Ingrese su e-mail')
 
     $('.intro').html(
-        'Información de operaciones y entregas para proveedores de Materias Primas'
+        'Información de operaciones para proveedores y clientes'
     )
 
     //Muevo el tag <a> a la sección de botones
