@@ -18,7 +18,7 @@ using System.Web.Http;
 
 namespace SustitucionMOAExternalAPI.Controllers
 {
-    [RoutePrefix("api/seguimientocamiones")]
+    [RoutePrefix("api/qrcamiones")]
     public class QRCamionesController : ApiController
     {
         private readonly IQRCamionesAPIService _qrCamionesService;
