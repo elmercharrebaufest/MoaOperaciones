@@ -3,5 +3,5 @@ export const environment = {
   isQA: false,
   apiUrl: 'https://moaoperaciones.com.ar/externalApi',
   apiKey: '1',
-  recaptchaSiteKey: 'YOUR_PRODUCTION_RECAPTCHA_SITE_KEY'
+  recaptchaSiteKey: '6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide'
 };
