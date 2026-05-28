@@ -47,3 +47,4 @@ Post-Deployment Script Template
 :r .\CampoSustentable.sql
 :r .\OrganizacionDeCompra.sql
 :r .\InsertQrCamionesConfiguracion.sql
+:r .\FiscalAprobador.sql

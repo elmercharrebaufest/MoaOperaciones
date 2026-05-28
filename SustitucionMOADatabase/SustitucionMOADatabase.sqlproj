@@ -270,6 +270,7 @@
     <Build Include="DBO\Tables\CarpetasUCROPIT.sql" />
     <Build Include="DBO\Tables\OrganizacionDeCompra.sql" />
     <Build Include="DBO\Stored Procedures\sp_ListarCampoProveedor.sql" />
+    <Build Include="DBO\Tables\FiscalAprobador.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -300,6 +301,7 @@
     <None Include="scripts\PostDeployment\RelacionSolicitanteExternoJefeMoa.sql" />
     <None Include="scripts\PostDeployment\CampoSustentable.sql" />
     <None Include="scripts\PostDeployment\OrganizacionDeCompra.sql" />
+    <None Include="scripts\PostDeployment\FiscalAprobador.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

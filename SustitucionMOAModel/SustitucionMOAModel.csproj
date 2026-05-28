@@ -180,6 +180,7 @@
     <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\DistanciaDomicilio.cs" />
     <Compile Include="Entities\DistanciaDomicilioReemplazos.cs" />
+    <Compile Include="Entities\FiscalAprobador.cs" />
     <Compile Include="Entities\LogTable.cs" />
     <Compile Include="Entities\CotizacionHistorial.cs" />
     <Compile Include="Entities\EstadoArchivoBoleto.cs" />

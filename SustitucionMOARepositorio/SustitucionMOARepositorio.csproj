@@ -105,6 +105,7 @@
     <Compile Include="RepositorioEF.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioCampoSustentable.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioCompras.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioComprasSolicitante.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioConsultas.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioEntradaServicio.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioFactura.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Repositorios\Interfaces\IRepositorioUsuario.cs" />
     <Compile Include="Repositorios\RepositorioCampoSustentable.cs" />
     <Compile Include="Repositorios\RepositorioCompras.cs" />
+    <Compile Include="Repositorios\RepositorioComprasSolicitante.cs" />
     <Compile Include="Repositorios\RepositorioConsultas.cs" />
     <Compile Include="Repositorios\RepositorioEntradaServicio.cs" />
     <Compile Include="Repositorios\RepositorioFactura.cs" />

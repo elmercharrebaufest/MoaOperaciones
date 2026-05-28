@@ -5,6 +5,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using System;
@@ -17,7 +18,7 @@ namespace SustitucionMOATest.Services
     public class ComprasSolicitanteServiceTest
     {
         private ComprasSolicitanteService target;
-        private Mock<IRepositorio> repositorioMock;
+        private Mock<IRepositorioComprasSolicitante> repositorioMock;
 
         private Mock<IComprasService> comprasServiceMock;
         private Mock<IComprasSapService> comprasServiceSapMock;
@@ -28,7 +29,7 @@ namespace SustitucionMOATest.Services
         [SetUp]
         public void SetUp()
         {
-            repositorioMock = new Mock<IRepositorio>();
+            repositorioMock = new Mock<IRepositorioComprasSolicitante>();
             comprasServiceMock = new Mock<IComprasService>();
             comprasServiceSapMock = new Mock<IComprasSapService>();
             registroInfoServiceMock = new Mock<IRegistroInfoService>();

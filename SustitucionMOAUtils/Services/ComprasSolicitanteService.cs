@@ -5,6 +5,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,13 +15,14 @@ namespace SustitucionMOAUtils.Services
 {
     public class ComprasSolicitanteService : IComprasSolicitanteService
     {
-        private readonly IRepositorio repositorio;
+        private readonly IRepositorioComprasSolicitante repositorio;
         private readonly IComprasService comprasService;
         private readonly IComprasSapService comprasServiceSap;
         private readonly IRegistroInfoService registroInfoService;
         private readonly IUnidadMedidaService unidadMedidaService;
         private readonly IMaterialService materialService;
-        public ComprasSolicitanteService(IRepositorio repositorio,
+
+        public ComprasSolicitanteService(IRepositorioComprasSolicitante repositorio,
                                          IComprasService comprasService,
                                          IComprasSapService comprasServiceSap,
                                          IRegistroInfoService registroInfoService,
@@ -197,18 +199,15 @@ namespace SustitucionMOAUtils.Services
 
         public List<UsuarioDto> ListarUsuarioSolicitante(List<RolDropdownDto> roles, int usuarioId)
         {
-            // Verificar si la lista contiene el rol de "SOlICITANTE EXTERNO"
-            bool esSolicitanteExterno = roles.Any(r => r.Nombre == "SOLICITANTE EXTERNO");
+            var esSolicitanteExterno = roles.Any(r => r.Nombre == "SOLICITANTE EXTERNO");
+
             if (!esSolicitanteExterno)
             {
-                var usuarios = repositorio.Listar<Usuario, UsuarioDto>(usuario => new UsuarioDto
-                {
-                    Mail = usuario.Mail,
-                    UsuarioSap = usuario.UsuarioSap
-                }, usuario => usuario.Roles.Any(r => r.PermisosAsociados.Select(x => x.Permiso).Contains("ABM SOLP")));
+                var usuarios = repositorio.ObtenerFiscalesAprobadores();
                 return usuarios;
             }
-            else {
+            else
+            {
                 // Ya que es solicitante externo, debo consultar la tabla "RelacionSolicitanteExternoJefeMoa" para darle la lista del jefe de MOA correspondiente
                 int jefeMoaId = repositorio.Listar<RelacionSolicitanteExternoJefeMoa>(r => r.Usuario_Id == usuarioId)
                     .Select(r => r.JefeMoa_Id).FirstOrDefault();
