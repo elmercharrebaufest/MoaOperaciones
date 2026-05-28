@@ -3,5 +3,5 @@ export const environment = {
   isQA: false,
   apiUrl: 'https://prenuevo.moaoperaciones.com.ar/externalApi',
   apiKey: 'prueba',
-  recaptchaSiteKey: 'YOUR_RECAPTCHA_SITE_KEY'
+  recaptchaSiteKey: '6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide'
 };
