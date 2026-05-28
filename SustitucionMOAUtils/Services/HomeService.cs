@@ -46,6 +46,9 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                //if (fechaInicio == "undefined") fechaInicio = "2026-05-26";
+                //if (fechaFin == "undefined") fechaFin = "2026-05-27";
+
                 List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
                 FechaWS fecha = CommonUtil.toDate(fechaInicio, fechaFin);
                 HomeViewModel data = new HomeViewModel();
