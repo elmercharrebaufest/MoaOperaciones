@@ -196,7 +196,6 @@ namespace SustitucionMOAUtils.Services
             if (debeVerTodo)
             {
                 aprobacionesTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
-                    x.NRO_ES_SAP == null &&
                     (string.IsNullOrEmpty(parametros.Usuario) || x.Ingresante_CDS == parametros.Usuario) &&
                     (string.IsNullOrEmpty(parametros.Aprobador) || x.Aprobador_CDS == parametros.Aprobador) &&
                     x.Estado_certificacion.Contains(parametros.Estado) &&
@@ -206,7 +205,6 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 aprobacionesTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
-                    x.NRO_ES_SAP == null &&
                     x.Estado_certificacion.Contains(parametros.Estado) &&
                     (x.Ingresante_CDS.ToLower() == correoUsuario ||
                         x.Fiscal_SOLPED.ToLower() == correoUsuario ||
@@ -297,7 +295,7 @@ namespace SustitucionMOAUtils.Services
 
 
             Solp solp = repositorioEntradaServicio.Obtener<Solp>(s => s.NroSolp == nroSolp);
-
+            
             if (solp != null)
             {
                 if (!string.IsNullOrEmpty(solp.Pliego.Email) && solp.Pliego.Email.Contains("@"))
@@ -2378,18 +2376,14 @@ namespace SustitucionMOAUtils.Services
             if (debeVerTodo)
             {
                 aprobacionesTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
-                    x.NRO_ES_SAP == null &&
                     (string.IsNullOrEmpty(parametros.Usuario) || x.Ingresante_CDS == parametros.Usuario) &&
                     (string.IsNullOrEmpty(parametros.Aprobador) || x.Aprobador_CDS == parametros.Aprobador) &&
-                    x.Estado_certificacion != "Aprobada" &&
                     (string.IsNullOrEmpty(parametros.OrdenCompra) || x.NRO_OC == parametros.OrdenCompra) &&
                     (!debeFiltrarPorFecha || !x.Fecha_Carga_ES.HasValue || (x.Fecha_Carga_ES >= fechaDesde && x.Fecha_Carga_ES <= fechaHasta)));
             }
             else
             {
                 aprobacionesTemporales = repositorioEntradaServicio.Listar<Aprobaciones>(x =>
-                    x.NRO_ES_SAP == null &&
-                    x.Estado_certificacion != "Aprobada" && 
                         (x.Ingresante_CDS.ToLower() == correoUsuario ||
                         x.Fiscal_SOLPED.ToLower() == correoUsuario ||
                         x.Aprobador_CDS.ToLower() == correoUsuario ||

@@ -66,25 +66,17 @@ namespace SustitucionMOA.Controllers
         {
             var result = new List<EntradaServicioCabeceraDto>();
             UsuarioDto usuarioActual = ObtenerUsuarioActual();
-
-            if (parametros.Estado == EstadoCertificacionEnum.Aprobada.GetDescription())
-            {
-                result = await EntradaServicioService.ObtenerESAprobadasSAP(parametros, usuarioActual);
-            }
-            else
-            {
-                result = EntradaServicioService.ObtenerESLocales(parametros, usuarioActual);
-            }
+            result = EntradaServicioService.ObtenerESLocales(parametros, usuarioActual);
+            
             return JsonCustom(new { data = result });
         }
 
         public async Task<ActionResult> ListarESReporteExcel(EntradaServicioParamsDto parametros)
         {
             UsuarioDto usuarioActual = ObtenerUsuarioActual();
-            List<EntradaServicioCabeceraDto> aprobadas = await EntradaServicioService.ObtenerReporteESAprobadasSAP(parametros, usuarioActual);
-            List<EntradaServicioCabeceraDto> otrosEstados = EntradaServicioService.ObtenerReporteESLocales(parametros, usuarioActual);
+            List<EntradaServicioCabeceraDto> entradas = EntradaServicioService.ObtenerReporteESLocales(parametros, usuarioActual);
 
-            return JsonCustom(new { data = aprobadas.Concat(otrosEstados) });
+            return JsonCustom(new { data = entradas });
         }
 
 
