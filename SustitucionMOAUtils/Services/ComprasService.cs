@@ -2221,9 +2221,12 @@ namespace SustitucionMOAUtils.Services
                     var adjudicaciones = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOc);
                     Log.Info($"Encontradas {adjudicaciones.Count} adjudicaciones para la OC: {nroOc}");
 
+                    var cotizacionesIds = adjudicaciones.Select(x => x.Cotizacion_Id).ToList();
+                    var cotizaciones = repositorio.Listar<Cotizacion>(c => cotizacionesIds.Contains(c.Id));
+
                     foreach (var adjudicacionOC in adjudicaciones)
                     {
-                        var cotizacion = repositorio.Obtener<Cotizacion>(adjudicacionOC.Cotizacion_Id);
+                        var cotizacion = cotizaciones.First(c => c.Id == adjudicacionOC.Cotizacion_Id);
                         var esMateriales = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
 
                         adjudicacionOC.FechaLiberacionSap = fechaLiberacion;
