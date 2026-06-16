@@ -2223,7 +2223,22 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var adjudicacionOC in adjudicaciones)
                     {
+                        var cotizacion = repositorio.Obtener<Cotizacion>(adjudicacionOC.Cotizacion_Id);
+                        var esMateriales = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
+
                         adjudicacionOC.FechaLiberacionSap = fechaLiberacion;
+                        try
+                        {
+                            var mails = DevolverMailResultadoLicitacion(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
+                            if (mails.Count > 0 && !esMateriales)
+                            {
+                                EnviarMailResultadoAdjudicacion(mails, cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            Log.Info($"Error al enviar mail {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotización");
+                        }
                     }
                     if (adjudicaciones.Count > 0)
                     {
@@ -6413,18 +6428,7 @@ namespace SustitucionMOAUtils.Services
                         }
 
                         repositorio.GuardarCambios();
-                        try
-                        {
-                            var mails = DevolverMailResultadoLicitacion(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
-                            if (mails.Count > 0 && !esMateriales)
-                            {
-                                EnviarMailResultadoAdjudicacion(mails, cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            Log.Info($"Error al enviar mail {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotización");
-                        }
+                        
                     }
                 }
                 respuestaGuardarSOLP.NumerosDePedido = numerosDePedido;
