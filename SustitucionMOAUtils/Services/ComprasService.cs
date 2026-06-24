@@ -7587,7 +7587,7 @@ namespace SustitucionMOAUtils.Services
 
         public void EnviarReporteTrabajoYaHecho()
         {
-            var fechaDesde = DateTime.Today.AddDays(-7);
+            var fechaDesde = DateTime.Today.AddDays(-15);
             var ordenesDeCompraUltimaSemana = comprasServiceSap.ObtenerOrdenesDeCompra(fechaDesde);
 
             var nrosOcs = new HashSet<string>(ordenesDeCompraUltimaSemana.Select(x => x.Id.ToString()));
