@@ -318,8 +318,8 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         if (rubro.Nombre === 'FLETES') {
             this.RealizarAnalisisNOSIS = true;
             this.nosisObligatorio = true;
-            this.siperObligatorio = true;
-            this.siperDisabled = true;
+            this.siperObligatorio = false;
+            this.siperDisabled = false;
         }
         else {
             this.RealizarAnalisisNOSIS = false;
