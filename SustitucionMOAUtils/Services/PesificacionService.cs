@@ -6,6 +6,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.DataAgroServices;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.PesificacionGuadarWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
@@ -15,6 +16,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
+using Contrato = SustitucionMOAModel.Models.WSMapMOA.Pesificacion.Contrato;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -227,7 +229,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<Contrato> GetContratos(string proveedor)
+        public List<SustitucionMOAModel.Models.WSMapMOA.Pesificacion.Contrato> GetContratos(string proveedor)
         {
             try
             {
@@ -243,7 +245,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 return responseGet.Contratos.Where(a => a.CantidadPendiente > 0)
-                    .Select(x => new Contrato
+                    .Select(x => new SustitucionMOAModel.Models.WSMapMOA.Pesificacion.Contrato
                     {
                         NroContrato = x.NroContrato.TrimStart('0'),
                         Fijacion = x.Fijacion.TrimStart('0'),
@@ -372,5 +374,169 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        public List<ContratoContenido> LeerContratosCSV(HttpPostedFileBase file)
+        {
+            var contratos = new List<ContratoContenido>();
+
+            if (file == null || file.ContentLength == 0)
+                throw new ArgumentException("No se recibió ningún archivo.");
+
+            using (var reader = new StreamReader(file.InputStream))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (string.IsNullOrWhiteSpace(line))
+                        continue;
+
+                    var values = line.Split(';', ',');
+                    if (values.Length > 4)
+                        throw new ValidationCustomException("El archivo CSV contiene filas con campos extras. Verifique");
+
+                    string contrato = values[0].Trim();
+                    string fijacion = values[1].Trim();
+                    decimal cantidad;
+                    decimal.TryParse(values[2].Trim(), out cantidad);
+                    string correo = values[3].Trim();
+
+                    contratos.Add(new ContratoContenido
+                    {
+                        Contrato = contrato,
+                        Fijacion = fijacion,
+                        Cantidad = cantidad,
+                        Correo = correo
+                    });
+                }
+            }
+
+            return contratos;
+        }
+
+        public PesificacionSetContratosWSMOAResponse SetContratos(string proveedor, List<ContratoContenido> contratos)
+        {
+            try
+            {
+                var errores = new List<Item>();
+                PesificacionGetContratosWSMOAResponse responseGet = (PesificacionGetContratosWSMOAResponse)new PesificacionConsumerMOA().request(proveedor);
+                if (responseGet == null || !responseGet.Contratos.Any())
+                {
+                    throw new InfoCustomException("No se encontraron contratos para pesificar para el proveedor.");
+                }
+
+                var contratosDisponibles = responseGet.Contratos
+                    .Where(c => c.CantidadPendiente > 0)
+                    .ToDictionary(c => $"{(c.NroContrato ?? "").TrimStart('0')}-{(c.Fijacion ?? "").TrimStart('0')}", c => c);
+
+                var comprobantesAProcesar = new List<ZMPES5480>();
+
+                foreach (var cto in contratos)
+                {
+                    string key = $"{(cto.Contrato ?? "").TrimStart('0')}-{(cto.Fijacion ?? "").TrimStart('0')}";
+                    if (!contratosDisponibles.TryGetValue(key, out var contratoEncontrado))
+                    {
+                        errores.Add(new Item { Contrato = cto.Contrato, Fijacion = cto.Fijacion, 
+                            Mensaje = $"El contrato {cto.Contrato} no se encuentra o no tiene saldo pendiente." });
+                        continue;
+                    }
+
+                    if (contratoEncontrado.CantidadPendiente < cto.Cantidad)
+                    {
+                        errores.Add(
+                        new Item
+                        {
+                            Contrato = cto.Contrato,
+                            Fijacion = cto.Fijacion,
+                            Mensaje = $"Contrato {cto.Contrato}: la cantidad a pesificar ({cto.Cantidad}) es mayor a la pendiente ({contratoEncontrado.CantidadPendiente} {contratoEncontrado.Unidad})."
+                        });
+                        continue;
+                    }
+
+                    string fechaPesificacion = GetFechaPesificacion("yyyyMMdd").FechaPesificacion;
+
+                    if (int.TryParse(contratoEncontrado.NroContrato, out int nroContrato))
+                    {
+                        if (nroContrato >= 2500000 && nroContrato < 2700000)
+                        {
+                            var soja200 = GetSoja200();
+                            if (soja200.Desde <= DateTime.Now.Date && soja200.Hasta >= DateTime.Now.Date)
+                            {
+                                fechaPesificacion = soja200.FechaCotizacion.ToString("yyyy-MM-dd");
+                            }
+                        }
+                        else if (nroContrato >= 2100000 && nroContrato < 2300000)
+                        {
+                            var dolarGirasol = GetDolarGirasol();
+                            if (dolarGirasol != null)
+                            {
+                                fechaPesificacion = dolarGirasol.FechaCotizacion.ToString("yyyy-MM-dd");
+                            }
+                        }
+                        else if (nroContrato >= 2700000 && nroContrato <= 2899999)
+                        {
+                            var dolarMaiz = GetDolarMaiz();
+                            if (dolarMaiz != null)
+                            {
+                                fechaPesificacion = dolarMaiz.FechaCotizacion.ToString("yyyy-MM-dd");
+                            }
+                        }
+                    }
+
+                    comprobantesAProcesar.Add(new ZMPES5480()
+                    {
+                        CONTRATO = contratoEncontrado.NroContrato,
+                        FIJACION = contratoEncontrado.Fijacion,
+                        CANTIDAD = cto.Cantidad,
+                        FECHA = fechaPesificacion,
+                        IMPORTE = contratoEncontrado.Precio,
+                        MONEDA = contratoEncontrado.Moneda,
+                        UNIDAD = contratoEncontrado.Unidad,
+                        CANTIDADSpecified = true,
+                        IMPORTESpecified = true
+                    });
+                }
+
+                PesificacionSetContratosWSMOAResponse responseSet = new PesificacionSetContratosWSMOAResponse();
+
+                if (comprobantesAProcesar.Any())
+                {
+                    try { Logger.Log.Debug("PesificacionService", "SetContratos", comprobantesAProcesar.ToJson()); } catch { }
+                    responseSet = (PesificacionSetContratosWSMOAResponse)new PesificacionGuardarConsumerMOA().request(comprobantesAProcesar.ToArray());
+                    if (responseSet == null)
+                    {
+                        throw new WSCustomException(ErrorMsg.ErrorWS);
+                    }
+                }
+
+                // Combinar errores de validación con errores del servicio
+                if (responseSet.Log != null)
+                {
+                    responseSet.ContratosOk = responseSet.Log
+                                    .Where(l => string.IsNullOrEmpty(l.Mensaje))
+                                    .Select(l => $"{l.Contrato?.Trim().TrimStart('0') ?? ""}-{l.Fijacion?.Trim() ?? ""}")
+                                    .ToList();
+                    errores.AddRange(responseSet.Log.Where(l => !string.IsNullOrEmpty(l.Mensaje)));
+                }
+
+                responseSet.Log = errores;
+
+                return responseSet;
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
     }
+
+
 }

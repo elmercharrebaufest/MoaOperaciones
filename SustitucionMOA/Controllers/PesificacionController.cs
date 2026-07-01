@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.LogPesificacion;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOASecurity;
@@ -7,6 +9,9 @@ using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic;
 using System.Web;
 using System.Web.Mvc;
 
@@ -76,18 +81,86 @@ namespace SustitucionMOA.Controllers
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.PESIFICACION)]
         public ActionResult SetComprobantes(HttpPostedFileBase file)
         {
-            var nuevaPesificacion = new LogPesificacion
+            if (file == null || file.ContentLength == 0)
+                throw new ArgumentException("No se recibió ningún archivo.");
+
+            var extension = System.IO.Path.GetExtension(file.FileName);
+            if (!string.Equals(extension, ".csv", StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("El archivo debe ser de tipo .csv");
+
+            var contratosCSV = pesificacionService.LeerContratosCSV(file);
+            if (!contratosCSV.Any())
+                throw new ValidationCustomException("El archivo no contiene contratos válidos.");
+
+            // 1. Validar filas con datos faltantes
+            if (contratosCSV.Any(c => string.IsNullOrEmpty(c.Contrato) || string.IsNullOrEmpty(c.Correo) || c.Cantidad <= 0))
             {
-                IdUsuario = ObtenerUsuarioActual().Id,
+                throw new ValidationCustomException("El archivo contiene filas con información faltante (Contrato, Correo o Kilos). Por favor, corrija el archivo.");
+            }
+
+            // 2. Crear logs para todos los contratos del CSV
+            var usuarioActual = ObtenerUsuarioActual();
+            var logsParaGuardar = contratosCSV.Select(cto => new LogPesificacion
+            {
+                IdUsuario = usuarioActual.Id,
                 Fecha = DateTime.Now,
                 CodigoProveedor = SessionPersister.Proveedor,
-            };
+                Contrato = this.ParseContrato(cto.Contrato),
+                Fijacion = this.ParseFijacion(cto.Fijacion),
+                CantidadKilos = cto.Cantidad,
+                EsCargaMasiva = true
+            }).ToList();
 
-            var logPesificacion = logPesificacionService.GuardarPesificacionAutomatica(nuevaPesificacion, file);
-            var envioSap = pesificacionService.SetContratos(SessionPersister.Proveedor, file);
+            var logsGuardados = logPesificacionService.GuardarPesificaciones(logsParaGuardar);
 
-            logPesificacionService.ActualizarEstadoLogPesificacion(new LogPesificacion { Id = logPesificacion.Id, EnvioExitoso = true });
-            return JsonCustom(envioSap);
+            // 3. Procesar contratos y obtener respuesta
+            var respuestaDeContrato = pesificacionService.SetContratos(SessionPersister.Proveedor, contratosCSV);
+
+            // 4. Usar ContratosOk para identificar los logs exitosos
+            var exitososKeys = new HashSet<string>(respuestaDeContrato.ContratosOk ?? new List<string>());
+
+            var idsLogsExitosos = logsGuardados
+                .Where(log =>
+                {
+                    var logKey = $"{log.Contrato?.ToString() ?? ""}-{log.Fijacion?.ToString() ?? ""}";
+                    return exitososKeys.Contains(logKey);
+                })
+                .Select(log => log.Id)
+                .ToList();
+
+            // 5. Actualizar estado y notificar si hubo éxitos
+            if (idsLogsExitosos.Any())
+            {
+                // Actualizar estado en BD
+                logPesificacionService.ActualizarEstadoLogPesificacion(idsLogsExitosos);
+
+                // Enviar correo de notificación
+                var correo = contratosCSV.FirstOrDefault()?.Correo;
+                if (!string.IsNullOrEmpty(correo))
+                {
+                    var contratosExitososParaEmail = exitososKeys
+                        .Select(key =>
+                        {
+                            var parts = key.Split('-');
+                            var contrato = parts[0];
+                            var fijacion = parts.Length > 1 && !string.IsNullOrEmpty(parts[1]) ? parts[1] : null;
+                            return string.IsNullOrEmpty(fijacion)
+                                   ? $"Contrato: {contrato}"
+                                   : $"Contrato: {contrato}, Fijación: {fijacion}";
+                        })
+                        .ToList();
+
+                    var emailService = new EmailService();
+                    emailService.EnviarMail(new SustitucionMOAUtils.Email.EmailSenderData
+                    {
+                        Mails = new List<string> { correo },
+                        Asunto = "Resultado de Pesificación Masiva de Contratos",
+                        Cuerpo = $"Se procesaron los siguientes contratos:<br/><br/>{string.Join("<br/>", contratosExitososParaEmail)}"
+                    });
+                }
+            }
+
+            return JsonCustom(respuestaDeContrato);
         }
 
         public ActionResult GetContratos()

@@ -53,6 +53,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
     soja200: any = null;
     dolarGirasol?: DolarGirasol;
     dolarMaiz?: DolarMaiz;
+    logMensajes: string[] = [];
     ngOnInit() {
         super.ngOnInit();
         this.setTabs();
@@ -252,6 +253,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
         this.visibleEnviar = false;
 
         this.mensajeComponent.setMsgsEmpty();
+        this.logMensajes = [];
 
         if (this.contrato == null || this.contrato == "") {
             this.spinnerSmallComponent.hideIt();
@@ -271,6 +273,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
         this.unsubscribe();
         this.subscription = this.service.setData(this.contrato, this.fijacion, this.cantidad).subscribe(
             (result: any) => {
+                this.setLogMensajes(result);
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -308,6 +311,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
         this.spinnerSmallComponent.showIt();
         this.visibleEnviar = false;
         this.mensajeComponent.setMsgsEmpty();
+        this.logMensajes = [];
 
         if (this.file == null || !this.esCSV(this.file.name)) {
             this.spinnerSmallComponent.hideIt();
@@ -321,6 +325,7 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
             (result: any) => {
                 this.spinnerSmallComponent.hideIt();
                 this.visibleEnviar = true;
+                this.setLogMensajes(result);
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -329,7 +334,11 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.getListaContratos();
-                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
+                    if(this.logMensajes.length > 0) {
+                        this.mensajeComponent.setInfoMsg("Operacion realizada con errores, ver log de mensajes");   
+                    } else {
+                        this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
+                    }
                 }
             },
             error => {
@@ -360,6 +369,17 @@ export class PesificacionComponent extends PesificacionBaseComponent implements 
 
     changeContrato() {
         this.contrato = this.contrato.replace(/^0+/, '');
+    }
+
+    private setLogMensajes(result: any) {
+        if (!result || !Array.isArray(result.Log)) {
+            this.logMensajes = [];
+            return;
+        }
+
+        this.logMensajes = result.Log
+            .map((item: any) => item && item.Mensaje ? item.Mensaje : null)
+            .filter((mensaje: string | null) => !!mensaje) as string[];
     }
 
 }
