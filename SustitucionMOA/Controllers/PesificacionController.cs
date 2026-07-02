@@ -23,13 +23,15 @@ namespace SustitucionMOA.Controllers
         private readonly IPesificacionService pesificacionService;
         private readonly ILogPesificacionService logPesificacionService;
         private readonly IUsuarioService usuarioService;
+        private readonly IEmailService emailService;
 
 
-        public PesificacionController(IPesificacionService pesificacionService, ILogPesificacionService servicio, IUsuarioService usuarioService)
+        public PesificacionController(IPesificacionService pesificacionService, ILogPesificacionService servicio, IUsuarioService usuarioService, IEmailService emailService)
         {
             this.pesificacionService = pesificacionService;
             this.logPesificacionService = servicio;
             this.usuarioService = usuarioService;
+            this.emailService = emailService;
         }
 
         public JsonResult GetFechaPesificacion()
@@ -150,7 +152,6 @@ namespace SustitucionMOA.Controllers
                         })
                         .ToList();
 
-                    var emailService = new EmailService();
                     emailService.EnviarMail(new SustitucionMOAUtils.Email.EmailSenderData
                     {
                         Mails = new List<string> { correo },

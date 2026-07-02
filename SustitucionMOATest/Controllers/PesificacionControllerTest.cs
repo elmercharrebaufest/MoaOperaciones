@@ -25,6 +25,7 @@ namespace SustitucionMOATest.Controllers
         private Mock<IPesificacionService> pesificacionServiceMock;
         private Mock<ILogPesificacionService> logPesificacionMock;
         private Mock<IUsuarioService> usuarioService;
+        private Mock<IEmailService> mailServiceMock;
 
         [SetUp]
         public void SetUp()
@@ -32,7 +33,8 @@ namespace SustitucionMOATest.Controllers
             pesificacionServiceMock = new Mock<IPesificacionService>();
             logPesificacionMock = new Mock<ILogPesificacionService>();
             usuarioService = new Mock<IUsuarioService>();
-            target = new PesificacionController(pesificacionServiceMock.Object, logPesificacionMock.Object, usuarioService.Object);
+            mailServiceMock = new Mock<IEmailService>();
+            target = new PesificacionController(pesificacionServiceMock.Object, logPesificacionMock.Object, usuarioService.Object, mailServiceMock.Object);
         }
 
 
