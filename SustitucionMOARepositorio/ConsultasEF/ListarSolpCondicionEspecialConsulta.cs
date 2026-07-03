@@ -28,7 +28,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 where
                                 (solp.EstadoSolpSap.CodigoSap == "05" || solp.EstadoSolpSap.CodigoSap == "02") &&
                                       solp.Posiciones.All(x => x.Peticiones.Any()) &&
-                                      (solp.TrabajoYaHecho == true || (solp.TrabajoYaHecho == true && solp.Adicional == true)) &&
+                                      (solp.TrabajoYaHecho == true || (solp.TrabajoYaHecho == true && solp.Adicional == true) || solp.ConPresupuesto) &&
                                       (!filtro.Centros.Any() || solp.Posiciones.Any(c => filtro.Centros.Contains(c.Centro_Id))) &&
                                       (!filtro.GrupoDeCompras.Any() || solp.Posiciones.Any(gc => filtro.GrupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
                                       (filtro.Sap && solp.TipoSolpSap == 3 || filtro.Mantenimiento && solp.TipoSolpSap == 2 || filtro.RepoAutomatica && solp.TipoSolpSap == 4 ||
