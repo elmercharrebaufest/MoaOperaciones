@@ -6,7 +6,7 @@
                 <strong>Dashboard - Solicitudes de certificaciones</strong>
             </div>
             <i [ngClass]="{'disabled': recalculando}" id="btn-exportar" title="Exportar a excel" class="fa fa-download" (click)="exportarTablaAExcel()"></i>
-            <i *ngIf="isAuthorized('ABM USUARIOS')" id="btn-reasignacion" [ngClass]="'fa fa-retweet'" title="Ejecutar proceso de derivación automática" (click)="correrReasignacionManual()"></i>
+            <i *ngIf="isAuthorized('VER TODOS LOS ESTADOS DE ES') && isAuthorized('VER SOLAPA CERTIFICACION DE SERVICIOS')" id="btn-reasignacion" [ngClass]="'fa fa-retweet'" title="Ejecutar proceso de derivación automática" (click)="correrReasignacionManual()"></i>
             <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'"
                [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="toggleFullscreen()"></i>
             <i id="btn-filtros" class="fa fa-filter" title="Filtros"
