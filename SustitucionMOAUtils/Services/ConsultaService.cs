@@ -1234,7 +1234,7 @@ namespace SustitucionMOAUtils.Services
             var ingresosBrutosCoeficienteUnificadoDetalles = new List<IngresosBrutosCoeficienteUnificadoDetalle>();
 
             var listadoCoeficientes = SacarHasta(elementosLeidos, "Coeficiente Unificado");
-
+            listadoCoeficientes = ObtenerCoeficientes(listadoCoeficientes);
             for (int i = 0; i < listadoCoeficientes.Count; i++)
             {
                 try
@@ -1249,11 +1249,11 @@ namespace SustitucionMOAUtils.Services
 
                     i += (fechaInicio.HasValue ? fechaCese.HasValue ? 4 : 3 : 2);
 
-                    decimal? coeficienteIngresos = decimal.TryParse(listadoCoeficientes[i++], out decimal coeficienteIngresosAux) ? coeficienteIngresosAux : (decimal?)null;
+                    decimal? coeficienteIngresos = decimal.TryParse(listadoCoeficientes[i++].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal coeficienteIngresosAux) && Math.Abs(coeficienteIngresosAux) < 1000000 ? coeficienteIngresosAux : (decimal?)null;
 
-                    decimal? coeficienteGastos = decimal.TryParse(listadoCoeficientes[i++], out decimal coeficienteGastosAux) ? coeficienteGastosAux : (decimal?)null;
+                    decimal? coeficienteGastos = decimal.TryParse(listadoCoeficientes[i++].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal coeficienteGastosAux) && Math.Abs(coeficienteGastosAux) < 1000000 ? coeficienteGastosAux : (decimal?)null;
 
-                    decimal? coeficienteUnificado = decimal.TryParse(listadoCoeficientes[i], out decimal coeficienteUnificadoAux) ? coeficienteUnificadoAux : (decimal?)null;
+                    decimal? coeficienteUnificado = decimal.TryParse(listadoCoeficientes[i].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal coeficienteUnificadoAux) && Math.Abs(coeficienteUnificadoAux) < 1000000 ? coeficienteUnificadoAux : (decimal?)null;
 
                     var detalleGenerado = new IngresosBrutosCoeficienteUnificadoDetalle
                     {
@@ -1308,6 +1308,29 @@ namespace SustitucionMOAUtils.Services
                 : cuit != cuitProveedor ?
                     SuccessMsg.AltaFormularioCM05DistintoCUITOK
                 : string.Empty;
+        }
+
+        private List<string> ObtenerCoeficientes(List<string> coeficientes)
+        {
+            var soloCoeficientes = coeficientes.TakeWhile(c => c != "ARCA").ToList();
+            var listaNormalizada = new List<string>();
+            var regex = new Regex(@"^(\d{3})\s+(.*)");
+
+            foreach (var item in soloCoeficientes)
+            {
+                var match = regex.Match(item);
+                if (match.Success)
+                {
+                    // Si coincide con el patrón (ej: "901 CABA"), lo separamos en dos.
+                    listaNormalizada.Add(match.Groups[1].Value); 
+                    listaNormalizada.Add(match.Groups[2].Value); 
+                }
+                else
+                {
+                    listaNormalizada.Add(item);
+                }
+            }
+            return listaNormalizada;
         }
 
         private List<string> SacarHasta(IList<string> listaStrings, string elemento)
