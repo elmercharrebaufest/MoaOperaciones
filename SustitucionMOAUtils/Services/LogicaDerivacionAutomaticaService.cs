@@ -272,5 +272,17 @@ namespace SustitucionMOAUtils.Services
 
             return false;
         }
+
+        public bool isUserAllowedDerivacion(string mail)
+        {
+            Usuario user = repositorio.Listar<Usuario>(x => x.Mail == mail).FirstOrDefault();
+
+            if (user != null)
+            {
+                return user.TienePermiso(PermisoEnum.VerTodosLosEstadosDeES) && user.TienePermiso(PermisoEnum.CertificacionDeServicios); 
+            }
+
+            return false;
+        }
     }
 }

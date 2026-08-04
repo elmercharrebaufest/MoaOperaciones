@@ -15,5 +15,7 @@ namespace SustitucionMOAUtils.Interfaces
         string CorrerProcesoReasignacion();
 
         bool isUserAllowed(string mail);
+        bool isUserAllowedDerivacion(string mail);
+
     }
 }
