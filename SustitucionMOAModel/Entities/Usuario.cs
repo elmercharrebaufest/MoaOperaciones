@@ -381,6 +381,7 @@ namespace SustitucionMOAModel.Entities
                 case "ADMINISTRAR CURSOS": return PermisoEnum.AdminCursos;
                 case "REALIZAR CURSOS": return PermisoEnum.RealizarCursos;
                 case "VER SOLAPA CERTIFICACION DE SERVICIOS": return PermisoEnum.CertificacionDeServicios;
+                case "VER TODOS LOS ESTADOS DE ES": return PermisoEnum.VerTodosLosEstadosDeES;
                 case "VER REPORTE OC": return PermisoEnum.ReporteOC;
                 case "VER PO MULTIPLE": return PermisoEnum.POMultiple;
                 case "VER AGRUPAR PO": return PermisoEnum.AgruparPO;
