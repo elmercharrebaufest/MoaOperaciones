@@ -1107,6 +1107,7 @@
       <xs:element minOccurs="0" name="ProveedorGrano" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="RiesgoComercial" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Ruca" nillable="true" type="tns:Ruca" />
+      <xs:element minOccurs="0" name="SinOblea" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="AltaTempranaNRCODto" nillable="true" type="tns:AltaTempranaNRCODto" />
@@ -1656,6 +1657,7 @@
       <xs:element minOccurs="0" name="RiesgoComercialSap" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Segmentacion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="SegmentacionId" type="xs:int" />
+      <xs:element minOccurs="0" name="prioridad" nillable="true" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="BusquedaHome" nillable="true" type="tns:BusquedaHome" />

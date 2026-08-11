@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://dataagro.com/services/DataAgroServices" elementFormDefault="qualified" targetNamespace="http://dataagro.com/services/DataAgroServices" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:tns="http://dataagro.com/services/DataAgroServicesFull" elementFormDefault="qualified" targetNamespace="http://dataagro.com/services/DataAgroServicesFull" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" />
   <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" />
   <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
