@@ -46,11 +46,20 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(us => us.Mail == mailUsuario)
                 ?? throw new ValidationCustomException("El usuario no existe. Reinicie su sesión.");
 
-            var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
-
+            //var proveedorDB = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == proveedor);
+            Proveedor proveedorDB;
             if (!usuario.TienePermiso(PermisoEnum.SeleccionarVendedor))
             {
                 proveedorDB = usuario.ObtenerProveedorAsignado() ?? throw new ValidationCustomException($"El usuario {mailUsuario} no tiene configurado correctamente el proveedor asignado");
+            }
+            else
+            {
+                var proveedoresPorCodigo = repositorio.Listar<Proveedor>(x => x.CodigoProveedor == proveedor);
+                if (proveedoresPorCodigo == null || !proveedoresPorCodigo.Any())
+                {
+                    throw new ValidationCustomException($"No se encontró el proveedor {proveedor}.");
+                }
+                proveedorDB = proveedoresPorCodigo.FirstOrDefault(p => p.TipoProveedor.Id == usuario.TipoUsuario.Id) ?? proveedoresPorCodigo.FirstOrDefault();
             }
 
             var request = new ReporteContratoWSMOARequest()
@@ -75,7 +84,7 @@ namespace SustitucionMOAUtils.Services
             {
                 view.data = dataFiltro;
             }
-            validarRespuesta(dataFiltro == null ? view.data : dataFiltro);
+            validarRespuesta(dataFiltro ?? view.data);
             var obtenerAgrupado = obtenerAgrupadoProducto(view);
             view.data.Resultados = obtenerAgrupado.data.Resultados.OrderBy(o => o.DescripcionMaterial).ThenBy(o => o.FechaDesde).ToList();
             return view;
