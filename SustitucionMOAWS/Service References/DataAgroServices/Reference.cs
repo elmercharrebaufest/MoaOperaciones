@@ -4592,6 +4592,208 @@ namespace SustitucionMOAWS.DataAgroServices {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ControlDeBoletosSeguimientoYCertificacionServiceDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto.ControlDeBo" +
+        "letos")]
+    [System.SerializableAttribute()]
+    public partial class ControlDeBoletosSeguimientoYCertificacionServiceDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CodigoRegistracionAfipField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ContratoSAPField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FechaRecepcionAfipField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FechaRegistracionAfipField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CodigoRegistracionAfip {
+            get {
+                return this.CodigoRegistracionAfipField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CodigoRegistracionAfipField, value) != true)) {
+                    this.CodigoRegistracionAfipField = value;
+                    this.RaisePropertyChanged("CodigoRegistracionAfip");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ContratoSAP {
+            get {
+                return this.ContratoSAPField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ContratoSAPField, value) != true)) {
+                    this.ContratoSAPField = value;
+                    this.RaisePropertyChanged("ContratoSAP");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FechaRecepcionAfip {
+            get {
+                return this.FechaRecepcionAfipField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FechaRecepcionAfipField, value) != true)) {
+                    this.FechaRecepcionAfipField = value;
+                    this.RaisePropertyChanged("FechaRecepcionAfip");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FechaRegistracionAfip {
+            get {
+                return this.FechaRegistracionAfipField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FechaRegistracionAfipField, value) != true)) {
+                    this.FechaRegistracionAfipField = value;
+                    this.RaisePropertyChanged("FechaRegistracionAfip");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ControlDeBoletosOperacionSapResultadoDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto.ControlDeBo" +
+        "letos")]
+    [System.SerializableAttribute()]
+    public partial class ControlDeBoletosOperacionSapResultadoDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EjecutadoCorrectamenteField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private SustitucionMOAWS.DataAgroServices.ErroresControlDeBoletosOperacionSapDto[] ListaErroresField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool EjecutadoCorrectamente {
+            get {
+                return this.EjecutadoCorrectamenteField;
+            }
+            set {
+                if ((this.EjecutadoCorrectamenteField.Equals(value) != true)) {
+                    this.EjecutadoCorrectamenteField = value;
+                    this.RaisePropertyChanged("EjecutadoCorrectamente");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public SustitucionMOAWS.DataAgroServices.ErroresControlDeBoletosOperacionSapDto[] ListaErrores {
+            get {
+                return this.ListaErroresField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ListaErroresField, value) != true)) {
+                    this.ListaErroresField = value;
+                    this.RaisePropertyChanged("ListaErrores");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ErroresControlDeBoletosOperacionSapDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto.ControlDeBo" +
+        "letos")]
+    [System.SerializableAttribute()]
+    public partial class ErroresControlDeBoletosOperacionSapDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MessageField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Message {
+            get {
+                return this.MessageField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
+                    this.MessageField = value;
+                    this.RaisePropertyChanged("Message");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="CupoSapTerceroDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
     [System.SerializableAttribute()]
     public partial class CupoSapTerceroDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
@@ -28035,6 +28237,81 @@ namespace SustitucionMOAWS.DataAgroServices {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="KendoFilterDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
     [System.SerializableAttribute()]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.PermisosDataAgro))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.SISA[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.SISA))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Moneda))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Contrato))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Negocio))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.AperturaPrecio[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.AperturaPrecio))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ConceptoAperturaPrecio))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.BoletoCompraNet))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.BoletoVenta))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.BolsaCompraNet))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Camara))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Campaña))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ClasificacionCompraNet))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Comercial))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.GrupoDeCompras))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Perfil))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Rol[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Rol))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Comercial[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.RolPermiso[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.RolPermiso))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Proveedor[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Proveedor))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.AreaInfluencia))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Estado))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.EstadoHome))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Localidad))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Partido))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Provincia))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ProveedorComercial[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ProveedorComercial))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Segmentacion))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ComisionAFavor))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.CondicionDePagoVenta))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.CondicionFijacion))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.DescuentoBonificacion[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.DescuentoBonificacion))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoDB))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoPeriodoDB))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Centro))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.EstadoContrato))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.FijacionVirtualSap1[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.FijacionVirtualSap1))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.FinDelDia))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Material))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.NegocioHistorico[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.NegocioHistorico))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoNegocio))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.NivelTarifa))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Servicio[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Servicio))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ServicioValor))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoServicio))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.StandardDeCalidad))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoAgenteCompra))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoDeCambio))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoPosicionCBOT))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Zona))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Contrato[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Calidad[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Calidad))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.CalidadEspecial))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ContratoAcuerdo))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.PrecioPactado[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.PrecioPactado))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.FijacionDePrecioContrato))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ContactoComercial))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.PuestoApoderado))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(string[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ControlDeBoletosSeguimientoYCertificacionServiceDto))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ControlDeBoletosOperacionSapResultadoDto))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ErroresControlDeBoletosOperacionSapDto[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ErroresControlDeBoletosOperacionSapDto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ResultadoSap))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ErrorMessage[]))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ErrorMessage))]
@@ -28210,81 +28487,6 @@ namespace SustitucionMOAWS.DataAgroServices {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ParamInformeComercial))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ParamInformeComercialMaterial[]))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ParamInformeComercialMaterial))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.PermisosDataAgro))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ControlDeBoletosSeguimientoYCertificacionServiceDto))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ControlDeBoletosOperacionSapResultadoDto))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ErroresControlDeBoletosOperacionSapDto[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ErroresControlDeBoletosOperacionSapDto))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.SISA[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.SISA))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Moneda))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Contrato))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Negocio))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.AperturaPrecio[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.AperturaPrecio))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ConceptoAperturaPrecio))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.BoletoCompraNet))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.BoletoVenta))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.BolsaCompraNet))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Camara))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Campaña))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ClasificacionCompraNet))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Comercial))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.GrupoDeCompras))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Perfil))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Rol[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Rol))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Comercial[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.RolPermiso[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.RolPermiso))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Proveedor[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Proveedor))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.AreaInfluencia))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Estado))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.EstadoHome))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Localidad))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Partido))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Provincia))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ProveedorComercial[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ProveedorComercial))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Segmentacion))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ComisionAFavor))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.CondicionDePagoVenta))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.CondicionFijacion))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.DescuentoBonificacion[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.DescuentoBonificacion))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoDB))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoPeriodoDB))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Centro))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.EstadoContrato))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.FijacionVirtualSap1[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.FijacionVirtualSap1))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.FinDelDia))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Material))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.NegocioHistorico[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.NegocioHistorico))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoNegocio))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.NivelTarifa))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Servicio[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Servicio))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ServicioValor))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoServicio))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.StandardDeCalidad))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoAgenteCompra))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoDeCambio))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.TipoPosicionCBOT))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Zona))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Contrato[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Calidad[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.Calidad))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.CalidadEspecial))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ContratoAcuerdo))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.PrecioPactado[]))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.PrecioPactado))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.FijacionDePrecioContrato))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.ContactoComercial))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.DataAgroServices.PuestoApoderado))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(string[]))]
     public partial class KendoFilterDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
         [System.NonSerializedAttribute()]
@@ -28437,6 +28639,544 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((object.ReferenceEquals(this.fieldField, value) != true)) {
                     this.fieldField = value;
                     this.RaisePropertyChanged("field");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ContactoComercial", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities")]
+    [System.SerializableAttribute()]
+    public partial class ContactoComercial : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ApellidoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<bool> BoletoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CargoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<bool> CompraNetField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int ContactoComercialIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CuitApoderadoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<bool> CupoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string Email1Field;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string Email2Field;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string Email3Field;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<bool> EsApoderadoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<bool> EsPrincipalField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> FechaDesdeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> FechaHastaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> FechaNacimientoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NombresField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string OtrosInteresesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private SustitucionMOAWS.DataAgroServices.Proveedor ProveedorField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int ProveedorIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string PuestoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private SustitucionMOAWS.DataAgroServices.PuestoApoderado PuestoApoderadoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> PuestoApoderadoIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string Telefono1Field;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string Telefono2Field;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string Telefono3Field;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> TipoTelefono1IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> TipoTelefono2IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> TipoTelefono3IdField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Apellido {
+            get {
+                return this.ApellidoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ApellidoField, value) != true)) {
+                    this.ApellidoField = value;
+                    this.RaisePropertyChanged("Apellido");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<bool> Boleto {
+            get {
+                return this.BoletoField;
+            }
+            set {
+                if ((this.BoletoField.Equals(value) != true)) {
+                    this.BoletoField = value;
+                    this.RaisePropertyChanged("Boleto");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Cargo {
+            get {
+                return this.CargoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CargoField, value) != true)) {
+                    this.CargoField = value;
+                    this.RaisePropertyChanged("Cargo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<bool> CompraNet {
+            get {
+                return this.CompraNetField;
+            }
+            set {
+                if ((this.CompraNetField.Equals(value) != true)) {
+                    this.CompraNetField = value;
+                    this.RaisePropertyChanged("CompraNet");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ContactoComercialId {
+            get {
+                return this.ContactoComercialIdField;
+            }
+            set {
+                if ((this.ContactoComercialIdField.Equals(value) != true)) {
+                    this.ContactoComercialIdField = value;
+                    this.RaisePropertyChanged("ContactoComercialId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CuitApoderado {
+            get {
+                return this.CuitApoderadoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CuitApoderadoField, value) != true)) {
+                    this.CuitApoderadoField = value;
+                    this.RaisePropertyChanged("CuitApoderado");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<bool> Cupo {
+            get {
+                return this.CupoField;
+            }
+            set {
+                if ((this.CupoField.Equals(value) != true)) {
+                    this.CupoField = value;
+                    this.RaisePropertyChanged("Cupo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Email1 {
+            get {
+                return this.Email1Field;
+            }
+            set {
+                if ((object.ReferenceEquals(this.Email1Field, value) != true)) {
+                    this.Email1Field = value;
+                    this.RaisePropertyChanged("Email1");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Email2 {
+            get {
+                return this.Email2Field;
+            }
+            set {
+                if ((object.ReferenceEquals(this.Email2Field, value) != true)) {
+                    this.Email2Field = value;
+                    this.RaisePropertyChanged("Email2");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Email3 {
+            get {
+                return this.Email3Field;
+            }
+            set {
+                if ((object.ReferenceEquals(this.Email3Field, value) != true)) {
+                    this.Email3Field = value;
+                    this.RaisePropertyChanged("Email3");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<bool> EsApoderado {
+            get {
+                return this.EsApoderadoField;
+            }
+            set {
+                if ((this.EsApoderadoField.Equals(value) != true)) {
+                    this.EsApoderadoField = value;
+                    this.RaisePropertyChanged("EsApoderado");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<bool> EsPrincipal {
+            get {
+                return this.EsPrincipalField;
+            }
+            set {
+                if ((this.EsPrincipalField.Equals(value) != true)) {
+                    this.EsPrincipalField = value;
+                    this.RaisePropertyChanged("EsPrincipal");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> FechaDesde {
+            get {
+                return this.FechaDesdeField;
+            }
+            set {
+                if ((this.FechaDesdeField.Equals(value) != true)) {
+                    this.FechaDesdeField = value;
+                    this.RaisePropertyChanged("FechaDesde");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> FechaHasta {
+            get {
+                return this.FechaHastaField;
+            }
+            set {
+                if ((this.FechaHastaField.Equals(value) != true)) {
+                    this.FechaHastaField = value;
+                    this.RaisePropertyChanged("FechaHasta");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> FechaNacimiento {
+            get {
+                return this.FechaNacimientoField;
+            }
+            set {
+                if ((this.FechaNacimientoField.Equals(value) != true)) {
+                    this.FechaNacimientoField = value;
+                    this.RaisePropertyChanged("FechaNacimiento");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Nombres {
+            get {
+                return this.NombresField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NombresField, value) != true)) {
+                    this.NombresField = value;
+                    this.RaisePropertyChanged("Nombres");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string OtrosIntereses {
+            get {
+                return this.OtrosInteresesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.OtrosInteresesField, value) != true)) {
+                    this.OtrosInteresesField = value;
+                    this.RaisePropertyChanged("OtrosIntereses");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public SustitucionMOAWS.DataAgroServices.Proveedor Proveedor {
+            get {
+                return this.ProveedorField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ProveedorField, value) != true)) {
+                    this.ProveedorField = value;
+                    this.RaisePropertyChanged("Proveedor");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ProveedorId {
+            get {
+                return this.ProveedorIdField;
+            }
+            set {
+                if ((this.ProveedorIdField.Equals(value) != true)) {
+                    this.ProveedorIdField = value;
+                    this.RaisePropertyChanged("ProveedorId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Puesto {
+            get {
+                return this.PuestoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PuestoField, value) != true)) {
+                    this.PuestoField = value;
+                    this.RaisePropertyChanged("Puesto");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public SustitucionMOAWS.DataAgroServices.PuestoApoderado PuestoApoderado {
+            get {
+                return this.PuestoApoderadoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PuestoApoderadoField, value) != true)) {
+                    this.PuestoApoderadoField = value;
+                    this.RaisePropertyChanged("PuestoApoderado");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> PuestoApoderadoId {
+            get {
+                return this.PuestoApoderadoIdField;
+            }
+            set {
+                if ((this.PuestoApoderadoIdField.Equals(value) != true)) {
+                    this.PuestoApoderadoIdField = value;
+                    this.RaisePropertyChanged("PuestoApoderadoId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Telefono1 {
+            get {
+                return this.Telefono1Field;
+            }
+            set {
+                if ((object.ReferenceEquals(this.Telefono1Field, value) != true)) {
+                    this.Telefono1Field = value;
+                    this.RaisePropertyChanged("Telefono1");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Telefono2 {
+            get {
+                return this.Telefono2Field;
+            }
+            set {
+                if ((object.ReferenceEquals(this.Telefono2Field, value) != true)) {
+                    this.Telefono2Field = value;
+                    this.RaisePropertyChanged("Telefono2");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Telefono3 {
+            get {
+                return this.Telefono3Field;
+            }
+            set {
+                if ((object.ReferenceEquals(this.Telefono3Field, value) != true)) {
+                    this.Telefono3Field = value;
+                    this.RaisePropertyChanged("Telefono3");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> TipoTelefono1Id {
+            get {
+                return this.TipoTelefono1IdField;
+            }
+            set {
+                if ((this.TipoTelefono1IdField.Equals(value) != true)) {
+                    this.TipoTelefono1IdField = value;
+                    this.RaisePropertyChanged("TipoTelefono1Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> TipoTelefono2Id {
+            get {
+                return this.TipoTelefono2IdField;
+            }
+            set {
+                if ((this.TipoTelefono2IdField.Equals(value) != true)) {
+                    this.TipoTelefono2IdField = value;
+                    this.RaisePropertyChanged("TipoTelefono2Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> TipoTelefono3Id {
+            get {
+                return this.TipoTelefono3IdField;
+            }
+            set {
+                if ((this.TipoTelefono3IdField.Equals(value) != true)) {
+                    this.TipoTelefono3IdField = value;
+                    this.RaisePropertyChanged("TipoTelefono3Id");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PuestoApoderado", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities")]
+    [System.SerializableAttribute()]
+    public partial class PuestoApoderado : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string DescripcionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Descripcion {
+            get {
+                return this.DescripcionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DescripcionField, value) != true)) {
+                    this.DescripcionField = value;
+                    this.RaisePropertyChanged("Descripcion");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
                 }
             }
         }
@@ -31873,1819 +32613,6 @@ namespace SustitucionMOAWS.DataAgroServices {
         }
     }
     
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ControlDeBoletosSeguimientoYCertificacionServiceDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto.ControlDeBo" +
-        "letos")]
-    [System.SerializableAttribute()]
-    public partial class ControlDeBoletosSeguimientoYCertificacionServiceDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string CodigoRegistracionAfipField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ContratoSAPField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string FechaRecepcionAfipField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string FechaRegistracionAfipField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string CodigoRegistracionAfip {
-            get {
-                return this.CodigoRegistracionAfipField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.CodigoRegistracionAfipField, value) != true)) {
-                    this.CodigoRegistracionAfipField = value;
-                    this.RaisePropertyChanged("CodigoRegistracionAfip");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ContratoSAP {
-            get {
-                return this.ContratoSAPField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ContratoSAPField, value) != true)) {
-                    this.ContratoSAPField = value;
-                    this.RaisePropertyChanged("ContratoSAP");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string FechaRecepcionAfip {
-            get {
-                return this.FechaRecepcionAfipField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.FechaRecepcionAfipField, value) != true)) {
-                    this.FechaRecepcionAfipField = value;
-                    this.RaisePropertyChanged("FechaRecepcionAfip");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string FechaRegistracionAfip {
-            get {
-                return this.FechaRegistracionAfipField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.FechaRegistracionAfipField, value) != true)) {
-                    this.FechaRegistracionAfipField = value;
-                    this.RaisePropertyChanged("FechaRegistracionAfip");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ControlDeBoletosOperacionSapResultadoDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto.ControlDeBo" +
-        "letos")]
-    [System.SerializableAttribute()]
-    public partial class ControlDeBoletosOperacionSapResultadoDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool EjecutadoCorrectamenteField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private SustitucionMOAWS.DataAgroServices.ErroresControlDeBoletosOperacionSapDto[] ListaErroresField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool EjecutadoCorrectamente {
-            get {
-                return this.EjecutadoCorrectamenteField;
-            }
-            set {
-                if ((this.EjecutadoCorrectamenteField.Equals(value) != true)) {
-                    this.EjecutadoCorrectamenteField = value;
-                    this.RaisePropertyChanged("EjecutadoCorrectamente");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public SustitucionMOAWS.DataAgroServices.ErroresControlDeBoletosOperacionSapDto[] ListaErrores {
-            get {
-                return this.ListaErroresField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ListaErroresField, value) != true)) {
-                    this.ListaErroresField = value;
-                    this.RaisePropertyChanged("ListaErrores");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ErroresControlDeBoletosOperacionSapDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto.ControlDeBo" +
-        "letos")]
-    [System.SerializableAttribute()]
-    public partial class ErroresControlDeBoletosOperacionSapDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string MessageField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Message {
-            get {
-                return this.MessageField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
-                    this.MessageField = value;
-                    this.RaisePropertyChanged("Message");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ContactoComercial", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities")]
-    [System.SerializableAttribute()]
-    public partial class ContactoComercial : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ApellidoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<bool> BoletoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string CargoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<bool> CompraNetField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int ContactoComercialIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string CuitApoderadoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<bool> CupoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string Email1Field;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string Email2Field;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string Email3Field;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<bool> EsApoderadoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<bool> EsPrincipalField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<System.DateTime> FechaDesdeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<System.DateTime> FechaHastaField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<System.DateTime> FechaNacimientoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NombresField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string OtrosInteresesField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private SustitucionMOAWS.DataAgroServices.Proveedor ProveedorField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int ProveedorIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string PuestoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private SustitucionMOAWS.DataAgroServices.PuestoApoderado PuestoApoderadoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<int> PuestoApoderadoIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string Telefono1Field;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string Telefono2Field;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string Telefono3Field;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<int> TipoTelefono1IdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<int> TipoTelefono2IdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<int> TipoTelefono3IdField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Apellido {
-            get {
-                return this.ApellidoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ApellidoField, value) != true)) {
-                    this.ApellidoField = value;
-                    this.RaisePropertyChanged("Apellido");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<bool> Boleto {
-            get {
-                return this.BoletoField;
-            }
-            set {
-                if ((this.BoletoField.Equals(value) != true)) {
-                    this.BoletoField = value;
-                    this.RaisePropertyChanged("Boleto");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Cargo {
-            get {
-                return this.CargoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.CargoField, value) != true)) {
-                    this.CargoField = value;
-                    this.RaisePropertyChanged("Cargo");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<bool> CompraNet {
-            get {
-                return this.CompraNetField;
-            }
-            set {
-                if ((this.CompraNetField.Equals(value) != true)) {
-                    this.CompraNetField = value;
-                    this.RaisePropertyChanged("CompraNet");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int ContactoComercialId {
-            get {
-                return this.ContactoComercialIdField;
-            }
-            set {
-                if ((this.ContactoComercialIdField.Equals(value) != true)) {
-                    this.ContactoComercialIdField = value;
-                    this.RaisePropertyChanged("ContactoComercialId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string CuitApoderado {
-            get {
-                return this.CuitApoderadoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.CuitApoderadoField, value) != true)) {
-                    this.CuitApoderadoField = value;
-                    this.RaisePropertyChanged("CuitApoderado");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<bool> Cupo {
-            get {
-                return this.CupoField;
-            }
-            set {
-                if ((this.CupoField.Equals(value) != true)) {
-                    this.CupoField = value;
-                    this.RaisePropertyChanged("Cupo");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Email1 {
-            get {
-                return this.Email1Field;
-            }
-            set {
-                if ((object.ReferenceEquals(this.Email1Field, value) != true)) {
-                    this.Email1Field = value;
-                    this.RaisePropertyChanged("Email1");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Email2 {
-            get {
-                return this.Email2Field;
-            }
-            set {
-                if ((object.ReferenceEquals(this.Email2Field, value) != true)) {
-                    this.Email2Field = value;
-                    this.RaisePropertyChanged("Email2");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Email3 {
-            get {
-                return this.Email3Field;
-            }
-            set {
-                if ((object.ReferenceEquals(this.Email3Field, value) != true)) {
-                    this.Email3Field = value;
-                    this.RaisePropertyChanged("Email3");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<bool> EsApoderado {
-            get {
-                return this.EsApoderadoField;
-            }
-            set {
-                if ((this.EsApoderadoField.Equals(value) != true)) {
-                    this.EsApoderadoField = value;
-                    this.RaisePropertyChanged("EsApoderado");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<bool> EsPrincipal {
-            get {
-                return this.EsPrincipalField;
-            }
-            set {
-                if ((this.EsPrincipalField.Equals(value) != true)) {
-                    this.EsPrincipalField = value;
-                    this.RaisePropertyChanged("EsPrincipal");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<System.DateTime> FechaDesde {
-            get {
-                return this.FechaDesdeField;
-            }
-            set {
-                if ((this.FechaDesdeField.Equals(value) != true)) {
-                    this.FechaDesdeField = value;
-                    this.RaisePropertyChanged("FechaDesde");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<System.DateTime> FechaHasta {
-            get {
-                return this.FechaHastaField;
-            }
-            set {
-                if ((this.FechaHastaField.Equals(value) != true)) {
-                    this.FechaHastaField = value;
-                    this.RaisePropertyChanged("FechaHasta");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<System.DateTime> FechaNacimiento {
-            get {
-                return this.FechaNacimientoField;
-            }
-            set {
-                if ((this.FechaNacimientoField.Equals(value) != true)) {
-                    this.FechaNacimientoField = value;
-                    this.RaisePropertyChanged("FechaNacimiento");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Nombres {
-            get {
-                return this.NombresField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NombresField, value) != true)) {
-                    this.NombresField = value;
-                    this.RaisePropertyChanged("Nombres");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string OtrosIntereses {
-            get {
-                return this.OtrosInteresesField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.OtrosInteresesField, value) != true)) {
-                    this.OtrosInteresesField = value;
-                    this.RaisePropertyChanged("OtrosIntereses");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public SustitucionMOAWS.DataAgroServices.Proveedor Proveedor {
-            get {
-                return this.ProveedorField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ProveedorField, value) != true)) {
-                    this.ProveedorField = value;
-                    this.RaisePropertyChanged("Proveedor");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int ProveedorId {
-            get {
-                return this.ProveedorIdField;
-            }
-            set {
-                if ((this.ProveedorIdField.Equals(value) != true)) {
-                    this.ProveedorIdField = value;
-                    this.RaisePropertyChanged("ProveedorId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Puesto {
-            get {
-                return this.PuestoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.PuestoField, value) != true)) {
-                    this.PuestoField = value;
-                    this.RaisePropertyChanged("Puesto");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public SustitucionMOAWS.DataAgroServices.PuestoApoderado PuestoApoderado {
-            get {
-                return this.PuestoApoderadoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.PuestoApoderadoField, value) != true)) {
-                    this.PuestoApoderadoField = value;
-                    this.RaisePropertyChanged("PuestoApoderado");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<int> PuestoApoderadoId {
-            get {
-                return this.PuestoApoderadoIdField;
-            }
-            set {
-                if ((this.PuestoApoderadoIdField.Equals(value) != true)) {
-                    this.PuestoApoderadoIdField = value;
-                    this.RaisePropertyChanged("PuestoApoderadoId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Telefono1 {
-            get {
-                return this.Telefono1Field;
-            }
-            set {
-                if ((object.ReferenceEquals(this.Telefono1Field, value) != true)) {
-                    this.Telefono1Field = value;
-                    this.RaisePropertyChanged("Telefono1");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Telefono2 {
-            get {
-                return this.Telefono2Field;
-            }
-            set {
-                if ((object.ReferenceEquals(this.Telefono2Field, value) != true)) {
-                    this.Telefono2Field = value;
-                    this.RaisePropertyChanged("Telefono2");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Telefono3 {
-            get {
-                return this.Telefono3Field;
-            }
-            set {
-                if ((object.ReferenceEquals(this.Telefono3Field, value) != true)) {
-                    this.Telefono3Field = value;
-                    this.RaisePropertyChanged("Telefono3");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<int> TipoTelefono1Id {
-            get {
-                return this.TipoTelefono1IdField;
-            }
-            set {
-                if ((this.TipoTelefono1IdField.Equals(value) != true)) {
-                    this.TipoTelefono1IdField = value;
-                    this.RaisePropertyChanged("TipoTelefono1Id");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<int> TipoTelefono2Id {
-            get {
-                return this.TipoTelefono2IdField;
-            }
-            set {
-                if ((this.TipoTelefono2IdField.Equals(value) != true)) {
-                    this.TipoTelefono2IdField = value;
-                    this.RaisePropertyChanged("TipoTelefono2Id");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<int> TipoTelefono3Id {
-            get {
-                return this.TipoTelefono3IdField;
-            }
-            set {
-                if ((this.TipoTelefono3IdField.Equals(value) != true)) {
-                    this.TipoTelefono3IdField = value;
-                    this.RaisePropertyChanged("TipoTelefono3Id");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="PuestoApoderado", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities")]
-    [System.SerializableAttribute()]
-    public partial class PuestoApoderado : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string DescripcionField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IdField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Descripcion {
-            get {
-                return this.DescripcionField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.DescripcionField, value) != true)) {
-                    this.DescripcionField = value;
-                    this.RaisePropertyChanged("Descripcion");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Id {
-            get {
-                return this.IdField;
-            }
-            set {
-                if ((this.IdField.Equals(value) != true)) {
-                    this.IdField = value;
-                    this.RaisePropertyChanged("Id");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://dataagro.com/services/DataAgroServices", ConfigurationName="DataAgroServices.IDataAgroServices")]
-    public interface IDataAgroServices {
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/Ping", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/PingResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap Ping();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/Ping", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/PingResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> PingAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarRiesgoComer" +
-            "cial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarRiesgoComer" +
-            "cialResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap GrabarRiesgoComercial(SustitucionMOAWS.DataAgroServices.RiesgoComercial oRiesgos);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarRiesgoComer" +
-            "cial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarRiesgoComer" +
-            "cialResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> GrabarRiesgoComercialAsync(SustitucionMOAWS.DataAgroServices.RiesgoComercial oRiesgos);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarCampaniaAct" +
-            "ual", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarCampaniaAct" +
-            "ualResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap GrabarCampaniaActual(SustitucionMOAWS.DataAgroServices.CampaniaActual oRiesgos);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarCampaniaAct" +
-            "ual", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarCampaniaAct" +
-            "ualResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> GrabarCampaniaActualAsync(SustitucionMOAWS.DataAgroServices.CampaniaActual oRiesgos);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCampani" +
-            "aMaterial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCampani" +
-            "aMaterialResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCampaniaMaterial(SustitucionMOAWS.DataAgroServices.CampaniaMaterialSAPDTO[] oCampaniaMaterialSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCampani" +
-            "aMaterial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCampani" +
-            "aMaterialResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCampaniaMaterialAsync(SustitucionMOAWS.DataAgroServices.CampaniaMaterialSAPDTO[] oCampaniaMaterialSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarEstadoC" +
-            "omercial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarEstadoC" +
-            "omercialResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarEstadoComercial(SustitucionMOAWS.DataAgroServices.InformeComercialSAPDTO[] oInformeComercialSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarEstadoC" +
-            "omercial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarEstadoC" +
-            "omercialResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarEstadoComercialAsync(SustitucionMOAWS.DataAgroServices.InformeComercialSAPDTO[] oInformeComercialSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarContrat" +
-            "oSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarContrat" +
-            "oSAPResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarContrat" +
-            "oSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarContrat" +
-            "oSAPResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCupoSAP" +
-            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCupoSAP" +
-            "Response")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCupoSAP(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCupoSAP" +
-            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCupoSAP" +
-            "Response")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCupoSAPAsync(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCupoSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCupoSAPRespon" +
-            "se")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap AltaCupoSAP(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCupoSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCupoSAPRespon" +
-            "se")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AltaCupoSAPAsync(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularContratoSAP" +
-            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularContratoSAP" +
-            "Response")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap AnularContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAP contratoSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularContratoSAP" +
-            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularContratoSAP" +
-            "Response")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAP contratoSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorC" +
-            "omercial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorC" +
-            "omercialResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercial(string cuit, System.Nullable<bool> corredor);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorC" +
-            "omercial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorC" +
-            "omercialResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialAsync(string cuit, System.Nullable<bool> corredor);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorC" +
-            "omercialNuevo", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorC" +
-            "omercialNuevoResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercialNuevo(string cuit, System.Nullable<bool> corredor, string cuitCorredor);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorC" +
-            "omercialNuevo", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorC" +
-            "omercialNuevoResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialNuevoAsync(string cuit, System.Nullable<bool> corredor, string cuitCorredor);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaContratoSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaContratoSAPRe" +
-            "sponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap AltaContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaContratoSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaContratoSAPRe" +
-            "sponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AltaContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarFijacio" +
-            "nSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarFijacio" +
-            "nSAPResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarFijacionSAP(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarFijacio" +
-            "nSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarFijacio" +
-            "nSAPResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaFijacionSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaFijacionSAPRe" +
-            "sponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap AltaFijacionSAP(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaFijacionSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaFijacionSAPRe" +
-            "sponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AltaFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularFijacionSAP" +
-            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularFijacionSAP" +
-            "Response")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap AnularFijacionSAP(SustitucionMOAWS.DataAgroServices.FijacionSAP fijacionSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularFijacionSAP" +
-            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularFijacionSAP" +
-            "Response")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAP fijacionSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnulaFijacionVirt" +
-            "ualSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnulaFijacionVirt" +
-            "ualSAPResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap AnulaFijacionVirtualSAP(SustitucionMOAWS.DataAgroServices.FijacionVirtualSAP fijacionSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnulaFijacionVirt" +
-            "ualSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnulaFijacionVirt" +
-            "ualSAPResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnulaFijacionVirtualSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionVirtualSAP fijacionSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ProveedorApocrifo" +
-            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ProveedorApocrifo" +
-            "Response")]
-        bool ProveedorApocrifo(string cuit);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ProveedorApocrifo" +
-            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ProveedorApocrifo" +
-            "Response")]
-        System.Threading.Tasks.Task<bool> ProveedorApocrifoAsync(string cuit);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerTipoDeCambio" +
-            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerTipoDeCambio" +
-            "Response")]
-        decimal TraerTipoDeCambio(System.Nullable<System.DateTime> fecha, string moneda, string typeOfRate);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerTipoDeCambio" +
-            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerTipoDeCambio" +
-            "Response")]
-        System.Threading.Tasks.Task<decimal> TraerTipoDeCambioAsync(System.Nullable<System.DateTime> fecha, string moneda, string typeOfRate);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCesionC" +
-            "ontratoSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCesionC" +
-            "ontratoSAPResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCesionContratoSAP(string contratoSAP, bool cesion);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCesionC" +
-            "ontratoSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCesionC" +
-            "ontratoSAPResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCesionContratoSAPAsync(string contratoSAP, bool cesion);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCampoSustenta" +
-            "ble", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCampoSustenta" +
-            "bleResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCampoSustenta" +
-            "ble", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCampoSustenta" +
-            "bleResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable> AltaCampoSustentableAsync(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarProveedorEn" +
-            "Sisa", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarProveedorEn" +
-            "SisaResponse")]
-        SustitucionMOAWS.DataAgroServices.SISA[] BuscarProveedorEnSisa(string cuit);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarProveedorEn" +
-            "Sisa", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarProveedorEn" +
-            "SisaResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.SISA[]> BuscarProveedorEnSisaAsync(string cuit);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ConfirmarFijacion" +
-            "SAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ConfirmarFijacion" +
-            "SAPResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap ConfirmarFijacionSAP(string fijacionSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ConfirmarFijacion" +
-            "SAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ConfirmarFijacion" +
-            "SAPResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ConfirmarFijacionSAPAsync(string fijacionSAP);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarApoderadosP" +
-            "orProveedor", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarApoderadosP" +
-            "orProveedorResponse")]
-        SustitucionMOAWS.DataAgroServices.ApoderadoSapDto[] ListarApoderadosPorProveedor(string cuit);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarApoderadosP" +
-            "orProveedor", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarApoderadosP" +
-            "orProveedorResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ApoderadoSapDto[]> ListarApoderadosPorProveedorAsync(string cuit);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/DatosCupoSap", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/DatosCupoSapRespo" +
-            "nse")]
-        SustitucionMOAWS.DataAgroServices.CupoSapTerceroDto DatosCupoSap(string cupoSap);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/DatosCupoSap", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/DatosCupoSapRespo" +
-            "nse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.CupoSapTerceroDto> DatosCupoSapAsync(string cupoSap);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerEstadoProv" +
-            "eedores", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerEstadoProv" +
-            "eedoresResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultEstadoProveedores ObtenerEstadoProveedores(string[] listaCuits);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerEstadoProv" +
-            "eedores", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerEstadoProv" +
-            "eedoresResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultEstadoProveedores> ObtenerEstadoProveedoresAsync(string[] listaCuits);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/InicializarContra" +
-            "to", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/InicializarContra" +
-            "toResponse")]
-        SustitucionMOAWS.DataAgroServices.InicializarContratoDto InicializarContrato(System.Nullable<int> tipoNegocioId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/InicializarContra" +
-            "to", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/InicializarContra" +
-            "toResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.InicializarContratoDto> InicializarContratoAsync(System.Nullable<int> tipoNegocioId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerDatosCompr" +
-            "aNet", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerDatosCompr" +
-            "aNetResponse")]
-        SustitucionMOAWS.DataAgroServices.DatosCompraNetDto ObtenerDatosCompraNet(int id);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerDatosCompr" +
-            "aNet", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerDatosCompr" +
-            "aNetResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.DatosCompraNetDto> ObtenerDatosCompraNetAsync(int id);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerFijaciones" +
-            "Automaticas", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerFijaciones" +
-            "AutomaticasResponse")]
-        SustitucionMOAWS.DataAgroServices.DatosFijacionDeContratoDto[] ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerFijaciones" +
-            "Automaticas", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerFijaciones" +
-            "AutomaticasResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.DatosFijacionDeContratoDto[]> ObtenerFijacionesAutomaticasAsync(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedor", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorR" +
-            "esponse")]
-        SustitucionMOAWS.DataAgroServices.AltaTempranaNRCODto ValidarProveedor(int proveedorId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedor", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorR" +
-            "esponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.AltaTempranaNRCODto> ValidarProveedorAsync(int proveedorId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerPrecioMoa", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerPrecioMoaRes" +
-            "ponse")]
-        SustitucionMOAWS.DataAgroServices.PrecioMoaCompraNetDto[][] TraerPrecioMoa(System.Nullable<int> tipoNegocioId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerPrecioMoa", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerPrecioMoaRes" +
-            "ponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.PrecioMoaCompraNetDto[][]> TraerPrecioMoaAsync(System.Nullable<int> tipoNegocioId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerContratoComp" +
-            "leto", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerContratoComp" +
-            "letoResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(SustitucionMOAWS.DataAgroServices.ResultadoDto), Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerContratoComp" +
-            "letoResultadoDtoFault", Name="ResultadoDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto")]
-        SustitucionMOAWS.DataAgroServices.BasicoContrato TraerContratoCompleto(int id, string tipo);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerContratoComp" +
-            "leto", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerContratoComp" +
-            "letoResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.BasicoContrato> TraerContratoCompletoAsync(int id, string tipo);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerFijacionComp" +
-            "leto", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerFijacionComp" +
-            "letoResponse")]
-        SustitucionMOAWS.DataAgroServices.BasicoContrato TraerFijacionCompleto(int id);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerFijacionComp" +
-            "leto", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerFijacionComp" +
-            "letoResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.BasicoContrato> TraerFijacionCompletoAsync(int id);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarContratoAPr" +
-            "ecio", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarContratoAPr" +
-            "ecioResponse")]
-        SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto GrabarContratoAPrecio(SustitucionMOAWS.DataAgroServices.Contrato contrato);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarContratoAPr" +
-            "ecio", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarContratoAPr" +
-            "ecioResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto> GrabarContratoAPrecioAsync(SustitucionMOAWS.DataAgroServices.Contrato contrato);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarContratoAFi" +
-            "jar", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarContratoAFi" +
-            "jarResponse")]
-        SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto GrabarContratoAFijar(SustitucionMOAWS.DataAgroServices.Contrato contrato);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarContratoAFi" +
-            "jar", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarContratoAFi" +
-            "jarResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto> GrabarContratoAFijarAsync(SustitucionMOAWS.DataAgroServices.Contrato contrato);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarDirecto", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarDirectoRes" +
-            "ponse")]
-        bool ValidarDirecto(string cuit);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarDirecto", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarDirectoRes" +
-            "ponse")]
-        System.Threading.Tasks.Task<bool> ValidarDirectoAsync(string cuit);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/HabilitarPizarra", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/HabilitarPizarraR" +
-            "esponse")]
-        SustitucionMOAWS.DataAgroServices.HabilitacionPizarraDto HabilitarPizarra(int material, int tiponegocio);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/HabilitarPizarra", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/HabilitarPizarraR" +
-            "esponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.HabilitacionPizarraDto> HabilitarPizarraAsync(int material, int tiponegocio);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerPagosDiferid" +
-            "o", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerPagosDiferid" +
-            "oResponse")]
-        SustitucionMOAWS.DataAgroServices.HabilitacionPagoDiferidoDto[] TraerPagosDiferido();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerPagosDiferid" +
-            "o", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerPagosDiferid" +
-            "oResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.HabilitacionPagoDiferidoDto[]> TraerPagosDiferidoAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/HabilitarCampaña", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/HabilitarCampañaR" +
-            "esponse")]
-        SustitucionMOAWS.DataAgroServices.HabilitacionCampañaDto[] HabilitarCampaña(int material);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/HabilitarCampaña", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/HabilitarCampañaR" +
-            "esponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.HabilitacionCampañaDto[]> HabilitarCampañaAsync(int material);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerPrecioMoaV2", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerPrecioMoaV2R" +
-            "esponse")]
-        SustitucionMOAWS.DataAgroServices.PrecioMoaCompraNetDto[] TraerPrecioMoaV2(int material, int tiponegocio);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerPrecioMoaV2", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerPrecioMoaV2R" +
-            "esponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.PrecioMoaCompraNetDto[]> TraerPrecioMoaV2Async(int material, int tiponegocio);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarFijacion", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarFijacionRes" +
-            "ponse")]
-        SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto GrabarFijacion(SustitucionMOAWS.DataAgroServices.FijacionDePrecioContrato contrato);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarFijacion", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarFijacionRes" +
-            "ponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto> GrabarFijacionAsync(SustitucionMOAWS.DataAgroServices.FijacionDePrecioContrato contrato);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerContratosAcu" +
-            "erdoPorCorredor", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerContratosAcu" +
-            "erdoPorCorredorResponse")]
-        SustitucionMOAWS.DataAgroServices.ContratoCopiar[] TraerContratosAcuerdoPorCorredor(int corredorId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerContratosAcu" +
-            "erdoPorCorredor", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerContratosAcu" +
-            "erdoPorCorredorResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ContratoCopiar[]> TraerContratosAcuerdoPorCorredorAsync(int corredorId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarContratoMas" +
-            "ivo", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarContratoMas" +
-            "ivoResponse")]
-        SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto[] GrabarContratoMasivo(SustitucionMOAWS.DataAgroServices.BasicoContrato[] contratos);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarContratoMas" +
-            "ivo", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarContratoMas" +
-            "ivoResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto[]> GrabarContratoMasivoAsync(SustitucionMOAWS.DataAgroServices.BasicoContrato[] contratos);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularContrato", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularContratoRes" +
-            "ponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap AnularContrato(int negocioId, string MotivoRechazo);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularContrato", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularContratoRes" +
-            "ponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularContratoAsync(int negocioId, string MotivoRechazo);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularFijacion", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularFijacionRes" +
-            "ponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoSap AnularFijacion(int negocioId, string MotivoRechazo);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularFijacion", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularFijacionRes" +
-            "ponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularFijacionAsync(int negocioId, string MotivoRechazo);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/HabilitarSustenta" +
-            "ble", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/HabilitarSustenta" +
-            "bleResponse")]
-        SustitucionMOAWS.DataAgroServices.HabilitacionSustentableDto[] HabilitarSustentable();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/HabilitarSustenta" +
-            "ble", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/HabilitarSustenta" +
-            "bleResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.HabilitacionSustentableDto[]> HabilitarSustentableAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarProveedores" +
-            "ConCorredor", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarProveedores" +
-            "ConCorredorResponse")]
-        SustitucionMOAWS.DataAgroServices.BusquedaHome[] BuscarProveedoresConCorredor(string filtroProveedor, string filtro, System.Nullable<int> agenteCompraId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarProveedores" +
-            "ConCorredor", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarProveedores" +
-            "ConCorredorResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.BusquedaHome[]> BuscarProveedoresConCorredorAsync(string filtroProveedor, string filtro, System.Nullable<int> agenteCompraId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscaDatosTablaCo" +
-            "ntrato", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscaDatosTablaCo" +
-            "ntratoResponse")]
-        SustitucionMOAWS.DataAgroServices.KendoDataSourceResultDto BuscaDatosTablaContrato(SustitucionMOAWS.DataAgroServices.KendoDataSourceRequestDto filtro);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscaDatosTablaCo" +
-            "ntrato", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscaDatosTablaCo" +
-            "ntratoResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.KendoDataSourceResultDto> BuscaDatosTablaContratoAsync(SustitucionMOAWS.DataAgroServices.KendoDataSourceRequestDto filtro);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarMateriales", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarMaterialesR" +
-            "esponse")]
-        SustitucionMOAWS.DataAgroServices.BuscarMaterialesDto BuscarMateriales();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarMateriales", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarMaterialesR" +
-            "esponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.BuscarMaterialesDto> BuscarMaterialesAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarCentro", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarCentroRespo" +
-            "nse")]
-        SustitucionMOAWS.DataAgroServices.BuscarCentroDto BuscarCentro();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarCentro", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarCentroRespo" +
-            "nse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.BuscarCentroDto> BuscarCentroAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarCampana", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarCampanaResp" +
-            "onse")]
-        SustitucionMOAWS.DataAgroServices.CampañaDto[] BuscarCampana();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarCampana", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarCampanaResp" +
-            "onse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.CampañaDto[]> BuscarCampanaAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerConfigurac" +
-            "ionBolsa", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerConfigurac" +
-            "ionBolsaResponse")]
-        SustitucionMOAWS.DataAgroServices.KendoGridResponseDtoOfConfiguracionBolsaDtocyovIo6p ObtenerConfiguracionBolsa();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerConfigurac" +
-            "ionBolsa", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ObtenerConfigurac" +
-            "ionBolsaResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.KendoGridResponseDtoOfConfiguracionBolsaDtocyovIo6p> ObtenerConfiguracionBolsaAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ExcelModeloAltaMa" +
-            "siva", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ExcelModeloAltaMa" +
-            "sivaResponse")]
-        byte[] ExcelModeloAltaMasiva();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ExcelModeloAltaMa" +
-            "siva", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ExcelModeloAltaMa" +
-            "sivaResponse")]
-        System.Threading.Tasks.Task<byte[]> ExcelModeloAltaMasivaAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarLocalidades" +
-            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarLocalidades" +
-            "Response")]
-        SustitucionMOAWS.DataAgroServices.LocalidadDto[] ListarLocalidades();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarLocalidades" +
-            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarLocalidades" +
-            "Response")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.LocalidadDto[]> ListarLocalidadesAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarPartidos", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarPartidosRes" +
-            "ponse")]
-        SustitucionMOAWS.DataAgroServices.PartidoDto[] ListarPartidos();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarPartidos", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarPartidosRes" +
-            "ponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.PartidoDto[]> ListarPartidosAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarFeriados", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarFeriadosRes" +
-            "ponse")]
-        SustitucionMOAWS.DataAgroServices.ListarFeriadosDto ListarFeriados();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarFeriados", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarFeriadosRes" +
-            "ponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ListarFeriadosDto> ListarFeriadosAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/FormularioAltaNoG" +
-            "ranos", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/FormularioAltaNoG" +
-            "ranosResponse")]
-        SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto FormularioAltaNoGranos(SustitucionMOAWS.DataAgroServices.ProveedorAltaDto oParam);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/FormularioAltaNoG" +
-            "ranos", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/FormularioAltaNoG" +
-            "ranosResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto> FormularioAltaNoGranosAsync(SustitucionMOAWS.DataAgroServices.ProveedorAltaDto oParam);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/CartaDePresentaci" +
-            "on", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/CartaDePresentaci" +
-            "onResponse")]
-        SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto CartaDePresentacion(SustitucionMOAWS.DataAgroServices.RptCartaDePresentacionInfo oParam, SustitucionMOAWS.DataAgroServices.NuevoProduccion[] nuevosCampos, SustitucionMOAWS.DataAgroServices.NuevoAcopio[] nuevosAcopios);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/CartaDePresentaci" +
-            "on", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/CartaDePresentaci" +
-            "onResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto> CartaDePresentacionAsync(SustitucionMOAWS.DataAgroServices.RptCartaDePresentacionInfo oParam, SustitucionMOAWS.DataAgroServices.NuevoProduccion[] nuevosCampos, SustitucionMOAWS.DataAgroServices.NuevoAcopio[] nuevosAcopios);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/CamposSustentable" +
-            "s", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/CamposSustentable" +
-            "sResponse")]
-        SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto CamposSustentables(SustitucionMOAWS.DataAgroServices.DeclaracionCampoSustentable datos);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/CamposSustentable" +
-            "s", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/CamposSustentable" +
-            "sResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto> CamposSustentablesAsync(SustitucionMOAWS.DataAgroServices.DeclaracionCampoSustentable datos);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/InformeComercial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/InformeComercialR" +
-            "esponse")]
-        SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto InformeComercial(SustitucionMOAWS.DataAgroServices.ParamInformeComercial oParam, System.Nullable<int> ComercialId, SustitucionMOAWS.DataAgroServices.NuevoProduccion[] nuevosCampos, SustitucionMOAWS.DataAgroServices.NuevoAcopio[] nuevosAcopios, SustitucionMOAWS.DataAgroServices.ContactoComercial contactoComercial, string direccion, string codigoPostal, System.Nullable<int> localidadId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/InformeComercial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/InformeComercialR" +
-            "esponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto> InformeComercialAsync(SustitucionMOAWS.DataAgroServices.ParamInformeComercial oParam, System.Nullable<int> ComercialId, SustitucionMOAWS.DataAgroServices.NuevoProduccion[] nuevosCampos, SustitucionMOAWS.DataAgroServices.NuevoAcopio[] nuevosAcopios, SustitucionMOAWS.DataAgroServices.ContactoComercial contactoComercial, string direccion, string codigoPostal, System.Nullable<int> localidadId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ModificarDatosSeg" +
-            "uimientoYCertificacion", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ModificarDatosSeg" +
-            "uimientoYCertificacionResponse")]
-        SustitucionMOAWS.DataAgroServices.ControlDeBoletosOperacionSapResultadoDto ModificarDatosSeguimientoYCertificacion(SustitucionMOAWS.DataAgroServices.ControlDeBoletosSeguimientoYCertificacionServiceDto controlDeBoletosSeguimientoYCertificacion);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ModificarDatosSeg" +
-            "uimientoYCertificacion", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ModificarDatosSeg" +
-            "uimientoYCertificacionResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ControlDeBoletosOperacionSapResultadoDto> ModificarDatosSeguimientoYCertificacionAsync(SustitucionMOAWS.DataAgroServices.ControlDeBoletosSeguimientoYCertificacionServiceDto controlDeBoletosSeguimientoYCertificacion);
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IDataAgroServicesChannel : SustitucionMOAWS.DataAgroServices.IDataAgroServices, System.ServiceModel.IClientChannel {
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class DataAgroServicesClient : System.ServiceModel.ClientBase<SustitucionMOAWS.DataAgroServices.IDataAgroServices>, SustitucionMOAWS.DataAgroServices.IDataAgroServices {
-        
-        public DataAgroServicesClient() {
-        }
-        
-        public DataAgroServicesClient(string endpointConfigurationName) : 
-                base(endpointConfigurationName) {
-        }
-        
-        public DataAgroServicesClient(string endpointConfigurationName, string remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress) {
-        }
-        
-        public DataAgroServicesClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress) {
-        }
-        
-        public DataAgroServicesClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(binding, remoteAddress) {
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap Ping() {
-            return base.Channel.Ping();
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> PingAsync() {
-            return base.Channel.PingAsync();
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap GrabarRiesgoComercial(SustitucionMOAWS.DataAgroServices.RiesgoComercial oRiesgos) {
-            return base.Channel.GrabarRiesgoComercial(oRiesgos);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> GrabarRiesgoComercialAsync(SustitucionMOAWS.DataAgroServices.RiesgoComercial oRiesgos) {
-            return base.Channel.GrabarRiesgoComercialAsync(oRiesgos);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap GrabarCampaniaActual(SustitucionMOAWS.DataAgroServices.CampaniaActual oRiesgos) {
-            return base.Channel.GrabarCampaniaActual(oRiesgos);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> GrabarCampaniaActualAsync(SustitucionMOAWS.DataAgroServices.CampaniaActual oRiesgos) {
-            return base.Channel.GrabarCampaniaActualAsync(oRiesgos);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCampaniaMaterial(SustitucionMOAWS.DataAgroServices.CampaniaMaterialSAPDTO[] oCampaniaMaterialSAP) {
-            return base.Channel.ActualizarCampaniaMaterial(oCampaniaMaterialSAP);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCampaniaMaterialAsync(SustitucionMOAWS.DataAgroServices.CampaniaMaterialSAPDTO[] oCampaniaMaterialSAP) {
-            return base.Channel.ActualizarCampaniaMaterialAsync(oCampaniaMaterialSAP);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarEstadoComercial(SustitucionMOAWS.DataAgroServices.InformeComercialSAPDTO[] oInformeComercialSAP) {
-            return base.Channel.ActualizarEstadoComercial(oInformeComercialSAP);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarEstadoComercialAsync(SustitucionMOAWS.DataAgroServices.InformeComercialSAPDTO[] oInformeComercialSAP) {
-            return base.Channel.ActualizarEstadoComercialAsync(oInformeComercialSAP);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP) {
-            return base.Channel.ActualizarContratoSAP(contratoSAP);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP) {
-            return base.Channel.ActualizarContratoSAPAsync(contratoSAP);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCupoSAP(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP) {
-            return base.Channel.ActualizarCupoSAP(cupoSAP);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCupoSAPAsync(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP) {
-            return base.Channel.ActualizarCupoSAPAsync(cupoSAP);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap AltaCupoSAP(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP) {
-            return base.Channel.AltaCupoSAP(cupoSAP);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AltaCupoSAPAsync(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP) {
-            return base.Channel.AltaCupoSAPAsync(cupoSAP);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap AnularContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAP contratoSAP) {
-            return base.Channel.AnularContratoSAP(contratoSAP);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAP contratoSAP) {
-            return base.Channel.AnularContratoSAPAsync(contratoSAP);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercial(string cuit, System.Nullable<bool> corredor) {
-            return base.Channel.ValidarProveedorComercial(cuit, corredor);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialAsync(string cuit, System.Nullable<bool> corredor) {
-            return base.Channel.ValidarProveedorComercialAsync(cuit, corredor);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercialNuevo(string cuit, System.Nullable<bool> corredor, string cuitCorredor) {
-            return base.Channel.ValidarProveedorComercialNuevo(cuit, corredor, cuitCorredor);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialNuevoAsync(string cuit, System.Nullable<bool> corredor, string cuitCorredor) {
-            return base.Channel.ValidarProveedorComercialNuevoAsync(cuit, corredor, cuitCorredor);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap AltaContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP) {
-            return base.Channel.AltaContratoSAP(contratoSAP);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AltaContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP) {
-            return base.Channel.AltaContratoSAPAsync(contratoSAP);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarFijacionSAP(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP) {
-            return base.Channel.ActualizarFijacionSAP(fijacionSAP);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP) {
-            return base.Channel.ActualizarFijacionSAPAsync(fijacionSAP);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap AltaFijacionSAP(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP) {
-            return base.Channel.AltaFijacionSAP(fijacionSAP);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AltaFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP) {
-            return base.Channel.AltaFijacionSAPAsync(fijacionSAP);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap AnularFijacionSAP(SustitucionMOAWS.DataAgroServices.FijacionSAP fijacionSAP) {
-            return base.Channel.AnularFijacionSAP(fijacionSAP);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAP fijacionSAP) {
-            return base.Channel.AnularFijacionSAPAsync(fijacionSAP);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap AnulaFijacionVirtualSAP(SustitucionMOAWS.DataAgroServices.FijacionVirtualSAP fijacionSAP) {
-            return base.Channel.AnulaFijacionVirtualSAP(fijacionSAP);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnulaFijacionVirtualSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionVirtualSAP fijacionSAP) {
-            return base.Channel.AnulaFijacionVirtualSAPAsync(fijacionSAP);
-        }
-        
-        public bool ProveedorApocrifo(string cuit) {
-            return base.Channel.ProveedorApocrifo(cuit);
-        }
-        
-        public System.Threading.Tasks.Task<bool> ProveedorApocrifoAsync(string cuit) {
-            return base.Channel.ProveedorApocrifoAsync(cuit);
-        }
-        
-        public decimal TraerTipoDeCambio(System.Nullable<System.DateTime> fecha, string moneda, string typeOfRate) {
-            return base.Channel.TraerTipoDeCambio(fecha, moneda, typeOfRate);
-        }
-        
-        public System.Threading.Tasks.Task<decimal> TraerTipoDeCambioAsync(System.Nullable<System.DateTime> fecha, string moneda, string typeOfRate) {
-            return base.Channel.TraerTipoDeCambioAsync(fecha, moneda, typeOfRate);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCesionContratoSAP(string contratoSAP, bool cesion) {
-            return base.Channel.ActualizarCesionContratoSAP(contratoSAP, cesion);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCesionContratoSAPAsync(string contratoSAP, bool cesion) {
-            return base.Channel.ActualizarCesionContratoSAPAsync(contratoSAP, cesion);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo) {
-            return base.Channel.AltaCampoSustentable(campo);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable> AltaCampoSustentableAsync(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo) {
-            return base.Channel.AltaCampoSustentableAsync(campo);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.SISA[] BuscarProveedorEnSisa(string cuit) {
-            return base.Channel.BuscarProveedorEnSisa(cuit);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.SISA[]> BuscarProveedorEnSisaAsync(string cuit) {
-            return base.Channel.BuscarProveedorEnSisaAsync(cuit);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap ConfirmarFijacionSAP(string fijacionSAP) {
-            return base.Channel.ConfirmarFijacionSAP(fijacionSAP);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ConfirmarFijacionSAPAsync(string fijacionSAP) {
-            return base.Channel.ConfirmarFijacionSAPAsync(fijacionSAP);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ApoderadoSapDto[] ListarApoderadosPorProveedor(string cuit) {
-            return base.Channel.ListarApoderadosPorProveedor(cuit);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ApoderadoSapDto[]> ListarApoderadosPorProveedorAsync(string cuit) {
-            return base.Channel.ListarApoderadosPorProveedorAsync(cuit);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.CupoSapTerceroDto DatosCupoSap(string cupoSap) {
-            return base.Channel.DatosCupoSap(cupoSap);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.CupoSapTerceroDto> DatosCupoSapAsync(string cupoSap) {
-            return base.Channel.DatosCupoSapAsync(cupoSap);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultEstadoProveedores ObtenerEstadoProveedores(string[] listaCuits) {
-            return base.Channel.ObtenerEstadoProveedores(listaCuits);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultEstadoProveedores> ObtenerEstadoProveedoresAsync(string[] listaCuits) {
-            return base.Channel.ObtenerEstadoProveedoresAsync(listaCuits);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.InicializarContratoDto InicializarContrato(System.Nullable<int> tipoNegocioId) {
-            return base.Channel.InicializarContrato(tipoNegocioId);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.InicializarContratoDto> InicializarContratoAsync(System.Nullable<int> tipoNegocioId) {
-            return base.Channel.InicializarContratoAsync(tipoNegocioId);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.DatosCompraNetDto ObtenerDatosCompraNet(int id) {
-            return base.Channel.ObtenerDatosCompraNet(id);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.DatosCompraNetDto> ObtenerDatosCompraNetAsync(int id) {
-            return base.Channel.ObtenerDatosCompraNetAsync(id);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.DatosFijacionDeContratoDto[] ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual) {
-            return base.Channel.ObtenerFijacionesAutomaticas(cuitProveedor, cuitCorredor, materialId, filtro, fijacionId, esVirtual);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.DatosFijacionDeContratoDto[]> ObtenerFijacionesAutomaticasAsync(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual) {
-            return base.Channel.ObtenerFijacionesAutomaticasAsync(cuitProveedor, cuitCorredor, materialId, filtro, fijacionId, esVirtual);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.AltaTempranaNRCODto ValidarProveedor(int proveedorId) {
-            return base.Channel.ValidarProveedor(proveedorId);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.AltaTempranaNRCODto> ValidarProveedorAsync(int proveedorId) {
-            return base.Channel.ValidarProveedorAsync(proveedorId);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.PrecioMoaCompraNetDto[][] TraerPrecioMoa(System.Nullable<int> tipoNegocioId) {
-            return base.Channel.TraerPrecioMoa(tipoNegocioId);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.PrecioMoaCompraNetDto[][]> TraerPrecioMoaAsync(System.Nullable<int> tipoNegocioId) {
-            return base.Channel.TraerPrecioMoaAsync(tipoNegocioId);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.BasicoContrato TraerContratoCompleto(int id, string tipo) {
-            return base.Channel.TraerContratoCompleto(id, tipo);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.BasicoContrato> TraerContratoCompletoAsync(int id, string tipo) {
-            return base.Channel.TraerContratoCompletoAsync(id, tipo);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.BasicoContrato TraerFijacionCompleto(int id) {
-            return base.Channel.TraerFijacionCompleto(id);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.BasicoContrato> TraerFijacionCompletoAsync(int id) {
-            return base.Channel.TraerFijacionCompletoAsync(id);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto GrabarContratoAPrecio(SustitucionMOAWS.DataAgroServices.Contrato contrato) {
-            return base.Channel.GrabarContratoAPrecio(contrato);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto> GrabarContratoAPrecioAsync(SustitucionMOAWS.DataAgroServices.Contrato contrato) {
-            return base.Channel.GrabarContratoAPrecioAsync(contrato);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto GrabarContratoAFijar(SustitucionMOAWS.DataAgroServices.Contrato contrato) {
-            return base.Channel.GrabarContratoAFijar(contrato);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto> GrabarContratoAFijarAsync(SustitucionMOAWS.DataAgroServices.Contrato contrato) {
-            return base.Channel.GrabarContratoAFijarAsync(contrato);
-        }
-        
-        public bool ValidarDirecto(string cuit) {
-            return base.Channel.ValidarDirecto(cuit);
-        }
-        
-        public System.Threading.Tasks.Task<bool> ValidarDirectoAsync(string cuit) {
-            return base.Channel.ValidarDirectoAsync(cuit);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.HabilitacionPizarraDto HabilitarPizarra(int material, int tiponegocio) {
-            return base.Channel.HabilitarPizarra(material, tiponegocio);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.HabilitacionPizarraDto> HabilitarPizarraAsync(int material, int tiponegocio) {
-            return base.Channel.HabilitarPizarraAsync(material, tiponegocio);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.HabilitacionPagoDiferidoDto[] TraerPagosDiferido() {
-            return base.Channel.TraerPagosDiferido();
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.HabilitacionPagoDiferidoDto[]> TraerPagosDiferidoAsync() {
-            return base.Channel.TraerPagosDiferidoAsync();
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.HabilitacionCampañaDto[] HabilitarCampaña(int material) {
-            return base.Channel.HabilitarCampaña(material);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.HabilitacionCampañaDto[]> HabilitarCampañaAsync(int material) {
-            return base.Channel.HabilitarCampañaAsync(material);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.PrecioMoaCompraNetDto[] TraerPrecioMoaV2(int material, int tiponegocio) {
-            return base.Channel.TraerPrecioMoaV2(material, tiponegocio);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.PrecioMoaCompraNetDto[]> TraerPrecioMoaV2Async(int material, int tiponegocio) {
-            return base.Channel.TraerPrecioMoaV2Async(material, tiponegocio);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto GrabarFijacion(SustitucionMOAWS.DataAgroServices.FijacionDePrecioContrato contrato) {
-            return base.Channel.GrabarFijacion(contrato);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto> GrabarFijacionAsync(SustitucionMOAWS.DataAgroServices.FijacionDePrecioContrato contrato) {
-            return base.Channel.GrabarFijacionAsync(contrato);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ContratoCopiar[] TraerContratosAcuerdoPorCorredor(int corredorId) {
-            return base.Channel.TraerContratosAcuerdoPorCorredor(corredorId);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ContratoCopiar[]> TraerContratosAcuerdoPorCorredorAsync(int corredorId) {
-            return base.Channel.TraerContratosAcuerdoPorCorredorAsync(corredorId);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto[] GrabarContratoMasivo(SustitucionMOAWS.DataAgroServices.BasicoContrato[] contratos) {
-            return base.Channel.GrabarContratoMasivo(contratos);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.GrabarContratoResultDto[]> GrabarContratoMasivoAsync(SustitucionMOAWS.DataAgroServices.BasicoContrato[] contratos) {
-            return base.Channel.GrabarContratoMasivoAsync(contratos);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap AnularContrato(int negocioId, string MotivoRechazo) {
-            return base.Channel.AnularContrato(negocioId, MotivoRechazo);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularContratoAsync(int negocioId, string MotivoRechazo) {
-            return base.Channel.AnularContratoAsync(negocioId, MotivoRechazo);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ResultadoSap AnularFijacion(int negocioId, string MotivoRechazo) {
-            return base.Channel.AnularFijacion(negocioId, MotivoRechazo);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularFijacionAsync(int negocioId, string MotivoRechazo) {
-            return base.Channel.AnularFijacionAsync(negocioId, MotivoRechazo);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.HabilitacionSustentableDto[] HabilitarSustentable() {
-            return base.Channel.HabilitarSustentable();
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.HabilitacionSustentableDto[]> HabilitarSustentableAsync() {
-            return base.Channel.HabilitarSustentableAsync();
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.BusquedaHome[] BuscarProveedoresConCorredor(string filtroProveedor, string filtro, System.Nullable<int> agenteCompraId) {
-            return base.Channel.BuscarProveedoresConCorredor(filtroProveedor, filtro, agenteCompraId);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.BusquedaHome[]> BuscarProveedoresConCorredorAsync(string filtroProveedor, string filtro, System.Nullable<int> agenteCompraId) {
-            return base.Channel.BuscarProveedoresConCorredorAsync(filtroProveedor, filtro, agenteCompraId);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.KendoDataSourceResultDto BuscaDatosTablaContrato(SustitucionMOAWS.DataAgroServices.KendoDataSourceRequestDto filtro) {
-            return base.Channel.BuscaDatosTablaContrato(filtro);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.KendoDataSourceResultDto> BuscaDatosTablaContratoAsync(SustitucionMOAWS.DataAgroServices.KendoDataSourceRequestDto filtro) {
-            return base.Channel.BuscaDatosTablaContratoAsync(filtro);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.BuscarMaterialesDto BuscarMateriales() {
-            return base.Channel.BuscarMateriales();
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.BuscarMaterialesDto> BuscarMaterialesAsync() {
-            return base.Channel.BuscarMaterialesAsync();
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.BuscarCentroDto BuscarCentro() {
-            return base.Channel.BuscarCentro();
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.BuscarCentroDto> BuscarCentroAsync() {
-            return base.Channel.BuscarCentroAsync();
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.CampañaDto[] BuscarCampana() {
-            return base.Channel.BuscarCampana();
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.CampañaDto[]> BuscarCampanaAsync() {
-            return base.Channel.BuscarCampanaAsync();
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.KendoGridResponseDtoOfConfiguracionBolsaDtocyovIo6p ObtenerConfiguracionBolsa() {
-            return base.Channel.ObtenerConfiguracionBolsa();
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.KendoGridResponseDtoOfConfiguracionBolsaDtocyovIo6p> ObtenerConfiguracionBolsaAsync() {
-            return base.Channel.ObtenerConfiguracionBolsaAsync();
-        }
-        
-        public byte[] ExcelModeloAltaMasiva() {
-            return base.Channel.ExcelModeloAltaMasiva();
-        }
-        
-        public System.Threading.Tasks.Task<byte[]> ExcelModeloAltaMasivaAsync() {
-            return base.Channel.ExcelModeloAltaMasivaAsync();
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.LocalidadDto[] ListarLocalidades() {
-            return base.Channel.ListarLocalidades();
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.LocalidadDto[]> ListarLocalidadesAsync() {
-            return base.Channel.ListarLocalidadesAsync();
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.PartidoDto[] ListarPartidos() {
-            return base.Channel.ListarPartidos();
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.PartidoDto[]> ListarPartidosAsync() {
-            return base.Channel.ListarPartidosAsync();
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ListarFeriadosDto ListarFeriados() {
-            return base.Channel.ListarFeriados();
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ListarFeriadosDto> ListarFeriadosAsync() {
-            return base.Channel.ListarFeriadosAsync();
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto FormularioAltaNoGranos(SustitucionMOAWS.DataAgroServices.ProveedorAltaDto oParam) {
-            return base.Channel.FormularioAltaNoGranos(oParam);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto> FormularioAltaNoGranosAsync(SustitucionMOAWS.DataAgroServices.ProveedorAltaDto oParam) {
-            return base.Channel.FormularioAltaNoGranosAsync(oParam);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto CartaDePresentacion(SustitucionMOAWS.DataAgroServices.RptCartaDePresentacionInfo oParam, SustitucionMOAWS.DataAgroServices.NuevoProduccion[] nuevosCampos, SustitucionMOAWS.DataAgroServices.NuevoAcopio[] nuevosAcopios) {
-            return base.Channel.CartaDePresentacion(oParam, nuevosCampos, nuevosAcopios);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto> CartaDePresentacionAsync(SustitucionMOAWS.DataAgroServices.RptCartaDePresentacionInfo oParam, SustitucionMOAWS.DataAgroServices.NuevoProduccion[] nuevosCampos, SustitucionMOAWS.DataAgroServices.NuevoAcopio[] nuevosAcopios) {
-            return base.Channel.CartaDePresentacionAsync(oParam, nuevosCampos, nuevosAcopios);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto CamposSustentables(SustitucionMOAWS.DataAgroServices.DeclaracionCampoSustentable datos) {
-            return base.Channel.CamposSustentables(datos);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto> CamposSustentablesAsync(SustitucionMOAWS.DataAgroServices.DeclaracionCampoSustentable datos) {
-            return base.Channel.CamposSustentablesAsync(datos);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto InformeComercial(SustitucionMOAWS.DataAgroServices.ParamInformeComercial oParam, System.Nullable<int> ComercialId, SustitucionMOAWS.DataAgroServices.NuevoProduccion[] nuevosCampos, SustitucionMOAWS.DataAgroServices.NuevoAcopio[] nuevosAcopios, SustitucionMOAWS.DataAgroServices.ContactoComercial contactoComercial, string direccion, string codigoPostal, System.Nullable<int> localidadId) {
-            return base.Channel.InformeComercial(oParam, ComercialId, nuevosCampos, nuevosAcopios, contactoComercial, direccion, codigoPostal, localidadId);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto> InformeComercialAsync(SustitucionMOAWS.DataAgroServices.ParamInformeComercial oParam, System.Nullable<int> ComercialId, SustitucionMOAWS.DataAgroServices.NuevoProduccion[] nuevosCampos, SustitucionMOAWS.DataAgroServices.NuevoAcopio[] nuevosAcopios, SustitucionMOAWS.DataAgroServices.ContactoComercial contactoComercial, string direccion, string codigoPostal, System.Nullable<int> localidadId) {
-            return base.Channel.InformeComercialAsync(oParam, ComercialId, nuevosCampos, nuevosAcopios, contactoComercial, direccion, codigoPostal, localidadId);
-        }
-        
-        public SustitucionMOAWS.DataAgroServices.ControlDeBoletosOperacionSapResultadoDto ModificarDatosSeguimientoYCertificacion(SustitucionMOAWS.DataAgroServices.ControlDeBoletosSeguimientoYCertificacionServiceDto controlDeBoletosSeguimientoYCertificacion) {
-            return base.Channel.ModificarDatosSeguimientoYCertificacion(controlDeBoletosSeguimientoYCertificacion);
-        }
-        
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ControlDeBoletosOperacionSapResultadoDto> ModificarDatosSeguimientoYCertificacionAsync(SustitucionMOAWS.DataAgroServices.ControlDeBoletosSeguimientoYCertificacionServiceDto controlDeBoletosSeguimientoYCertificacion) {
-            return base.Channel.ModificarDatosSeguimientoYCertificacionAsync(controlDeBoletosSeguimientoYCertificacion);
-        }
-    }
-    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="http://dataagro.com/services/DataAgroServicesFull", ConfigurationName="DataAgroServices.IDataAgroServicesFull")]
     public interface IDataAgroServicesFull {
@@ -34788,6 +33715,443 @@ namespace SustitucionMOAWS.DataAgroServices {
         
         public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.RespuestaArchivoDto> InformeComercialAsync(SustitucionMOAWS.DataAgroServices.ParamInformeComercial oParam, System.Nullable<int> ComercialId, SustitucionMOAWS.DataAgroServices.NuevoProduccion[] nuevosCampos, SustitucionMOAWS.DataAgroServices.NuevoAcopio[] nuevosAcopios, SustitucionMOAWS.DataAgroServices.ContactoComercial contactoComercial, string direccion, string codigoPostal, System.Nullable<int> localidadId) {
             return base.Channel.InformeComercialAsync(oParam, ComercialId, nuevosCampos, nuevosAcopios, contactoComercial, direccion, codigoPostal, localidadId);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ControlDeBoletosOperacionSapResultadoDto ModificarDatosSeguimientoYCertificacion(SustitucionMOAWS.DataAgroServices.ControlDeBoletosSeguimientoYCertificacionServiceDto controlDeBoletosSeguimientoYCertificacion) {
+            return base.Channel.ModificarDatosSeguimientoYCertificacion(controlDeBoletosSeguimientoYCertificacion);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ControlDeBoletosOperacionSapResultadoDto> ModificarDatosSeguimientoYCertificacionAsync(SustitucionMOAWS.DataAgroServices.ControlDeBoletosSeguimientoYCertificacionServiceDto controlDeBoletosSeguimientoYCertificacion) {
+            return base.Channel.ModificarDatosSeguimientoYCertificacionAsync(controlDeBoletosSeguimientoYCertificacion);
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://dataagro.com/services/DataAgroServices", ConfigurationName="DataAgroServices.IDataAgroServices")]
+    public interface IDataAgroServices {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/Ping", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/PingResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap Ping();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/Ping", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/PingResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> PingAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarRiesgoComer" +
+            "cial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarRiesgoComer" +
+            "cialResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap GrabarRiesgoComercial(SustitucionMOAWS.DataAgroServices.RiesgoComercial oRiesgos);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarRiesgoComer" +
+            "cial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarRiesgoComer" +
+            "cialResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> GrabarRiesgoComercialAsync(SustitucionMOAWS.DataAgroServices.RiesgoComercial oRiesgos);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarCampaniaAct" +
+            "ual", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarCampaniaAct" +
+            "ualResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap GrabarCampaniaActual(SustitucionMOAWS.DataAgroServices.CampaniaActual oRiesgos);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarCampaniaAct" +
+            "ual", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/GrabarCampaniaAct" +
+            "ualResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> GrabarCampaniaActualAsync(SustitucionMOAWS.DataAgroServices.CampaniaActual oRiesgos);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCampani" +
+            "aMaterial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCampani" +
+            "aMaterialResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCampaniaMaterial(SustitucionMOAWS.DataAgroServices.CampaniaMaterialSAPDTO[] oCampaniaMaterialSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCampani" +
+            "aMaterial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCampani" +
+            "aMaterialResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCampaniaMaterialAsync(SustitucionMOAWS.DataAgroServices.CampaniaMaterialSAPDTO[] oCampaniaMaterialSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarEstadoC" +
+            "omercial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarEstadoC" +
+            "omercialResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarEstadoComercial(SustitucionMOAWS.DataAgroServices.InformeComercialSAPDTO[] oInformeComercialSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarEstadoC" +
+            "omercial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarEstadoC" +
+            "omercialResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarEstadoComercialAsync(SustitucionMOAWS.DataAgroServices.InformeComercialSAPDTO[] oInformeComercialSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarContrat" +
+            "oSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarContrat" +
+            "oSAPResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarContrat" +
+            "oSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarContrat" +
+            "oSAPResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCupoSAP" +
+            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCupoSAP" +
+            "Response")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCupoSAP(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCupoSAP" +
+            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCupoSAP" +
+            "Response")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCupoSAPAsync(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCupoSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCupoSAPRespon" +
+            "se")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap AltaCupoSAP(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCupoSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCupoSAPRespon" +
+            "se")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AltaCupoSAPAsync(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularContratoSAP" +
+            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularContratoSAP" +
+            "Response")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap AnularContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAP contratoSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularContratoSAP" +
+            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularContratoSAP" +
+            "Response")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAP contratoSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorC" +
+            "omercial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorC" +
+            "omercialResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercial(string cuit, System.Nullable<bool> corredor);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorC" +
+            "omercial", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ValidarProveedorC" +
+            "omercialResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialAsync(string cuit, System.Nullable<bool> corredor);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaContratoSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaContratoSAPRe" +
+            "sponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap AltaContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaContratoSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaContratoSAPRe" +
+            "sponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AltaContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarFijacio" +
+            "nSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarFijacio" +
+            "nSAPResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarFijacionSAP(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarFijacio" +
+            "nSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarFijacio" +
+            "nSAPResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaFijacionSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaFijacionSAPRe" +
+            "sponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap AltaFijacionSAP(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaFijacionSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaFijacionSAPRe" +
+            "sponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AltaFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularFijacionSAP" +
+            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularFijacionSAP" +
+            "Response")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap AnularFijacionSAP(SustitucionMOAWS.DataAgroServices.FijacionSAP fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularFijacionSAP" +
+            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnularFijacionSAP" +
+            "Response")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAP fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnulaFijacionVirt" +
+            "ualSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnulaFijacionVirt" +
+            "ualSAPResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap AnulaFijacionVirtualSAP(SustitucionMOAWS.DataAgroServices.FijacionVirtualSAP fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnulaFijacionVirt" +
+            "ualSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AnulaFijacionVirt" +
+            "ualSAPResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnulaFijacionVirtualSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionVirtualSAP fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ProveedorApocrifo" +
+            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ProveedorApocrifo" +
+            "Response")]
+        bool ProveedorApocrifo(string cuit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ProveedorApocrifo" +
+            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ProveedorApocrifo" +
+            "Response")]
+        System.Threading.Tasks.Task<bool> ProveedorApocrifoAsync(string cuit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerTipoDeCambio" +
+            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerTipoDeCambio" +
+            "Response")]
+        decimal TraerTipoDeCambio(System.Nullable<System.DateTime> fecha, string moneda, string typeOfRate);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerTipoDeCambio" +
+            "", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/TraerTipoDeCambio" +
+            "Response")]
+        System.Threading.Tasks.Task<decimal> TraerTipoDeCambioAsync(System.Nullable<System.DateTime> fecha, string moneda, string typeOfRate);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCesionC" +
+            "ontratoSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCesionC" +
+            "ontratoSAPResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCesionContratoSAP(string contratoSAP, bool cesion);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCesionC" +
+            "ontratoSAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ActualizarCesionC" +
+            "ontratoSAPResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCesionContratoSAPAsync(string contratoSAP, bool cesion);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCampoSustenta" +
+            "ble", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCampoSustenta" +
+            "bleResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCampoSustenta" +
+            "ble", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/AltaCampoSustenta" +
+            "bleResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable> AltaCampoSustentableAsync(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarProveedorEn" +
+            "Sisa", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarProveedorEn" +
+            "SisaResponse")]
+        SustitucionMOAWS.DataAgroServices.SISA[] BuscarProveedorEnSisa(string cuit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarProveedorEn" +
+            "Sisa", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/BuscarProveedorEn" +
+            "SisaResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.SISA[]> BuscarProveedorEnSisaAsync(string cuit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ConfirmarFijacion" +
+            "SAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ConfirmarFijacion" +
+            "SAPResponse")]
+        SustitucionMOAWS.DataAgroServices.ResultadoSap ConfirmarFijacionSAP(string fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ConfirmarFijacion" +
+            "SAP", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ConfirmarFijacion" +
+            "SAPResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ConfirmarFijacionSAPAsync(string fijacionSAP);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarApoderadosP" +
+            "orProveedor", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarApoderadosP" +
+            "orProveedorResponse")]
+        SustitucionMOAWS.DataAgroServices.ApoderadoSapDto[] ListarApoderadosPorProveedor(string cuit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarApoderadosP" +
+            "orProveedor", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ListarApoderadosP" +
+            "orProveedorResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ApoderadoSapDto[]> ListarApoderadosPorProveedorAsync(string cuit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ModificarDatosSeg" +
+            "uimientoYCertificacion", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ModificarDatosSeg" +
+            "uimientoYCertificacionResponse")]
+        SustitucionMOAWS.DataAgroServices.ControlDeBoletosOperacionSapResultadoDto ModificarDatosSeguimientoYCertificacion(SustitucionMOAWS.DataAgroServices.ControlDeBoletosSeguimientoYCertificacionServiceDto controlDeBoletosSeguimientoYCertificacion);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ModificarDatosSeg" +
+            "uimientoYCertificacion", ReplyAction="http://dataagro.com/services/DataAgroServices/IDataAgroServices/ModificarDatosSeg" +
+            "uimientoYCertificacionResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ControlDeBoletosOperacionSapResultadoDto> ModificarDatosSeguimientoYCertificacionAsync(SustitucionMOAWS.DataAgroServices.ControlDeBoletosSeguimientoYCertificacionServiceDto controlDeBoletosSeguimientoYCertificacion);
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public interface IDataAgroServicesChannel : SustitucionMOAWS.DataAgroServices.IDataAgroServices, System.ServiceModel.IClientChannel {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class DataAgroServicesClient : System.ServiceModel.ClientBase<SustitucionMOAWS.DataAgroServices.IDataAgroServices>, SustitucionMOAWS.DataAgroServices.IDataAgroServices {
+        
+        public DataAgroServicesClient() {
+        }
+        
+        public DataAgroServicesClient(string endpointConfigurationName) : 
+                base(endpointConfigurationName) {
+        }
+        
+        public DataAgroServicesClient(string endpointConfigurationName, string remoteAddress) : 
+                base(endpointConfigurationName, remoteAddress) {
+        }
+        
+        public DataAgroServicesClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(endpointConfigurationName, remoteAddress) {
+        }
+        
+        public DataAgroServicesClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(binding, remoteAddress) {
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap Ping() {
+            return base.Channel.Ping();
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> PingAsync() {
+            return base.Channel.PingAsync();
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap GrabarRiesgoComercial(SustitucionMOAWS.DataAgroServices.RiesgoComercial oRiesgos) {
+            return base.Channel.GrabarRiesgoComercial(oRiesgos);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> GrabarRiesgoComercialAsync(SustitucionMOAWS.DataAgroServices.RiesgoComercial oRiesgos) {
+            return base.Channel.GrabarRiesgoComercialAsync(oRiesgos);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap GrabarCampaniaActual(SustitucionMOAWS.DataAgroServices.CampaniaActual oRiesgos) {
+            return base.Channel.GrabarCampaniaActual(oRiesgos);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> GrabarCampaniaActualAsync(SustitucionMOAWS.DataAgroServices.CampaniaActual oRiesgos) {
+            return base.Channel.GrabarCampaniaActualAsync(oRiesgos);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCampaniaMaterial(SustitucionMOAWS.DataAgroServices.CampaniaMaterialSAPDTO[] oCampaniaMaterialSAP) {
+            return base.Channel.ActualizarCampaniaMaterial(oCampaniaMaterialSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCampaniaMaterialAsync(SustitucionMOAWS.DataAgroServices.CampaniaMaterialSAPDTO[] oCampaniaMaterialSAP) {
+            return base.Channel.ActualizarCampaniaMaterialAsync(oCampaniaMaterialSAP);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarEstadoComercial(SustitucionMOAWS.DataAgroServices.InformeComercialSAPDTO[] oInformeComercialSAP) {
+            return base.Channel.ActualizarEstadoComercial(oInformeComercialSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarEstadoComercialAsync(SustitucionMOAWS.DataAgroServices.InformeComercialSAPDTO[] oInformeComercialSAP) {
+            return base.Channel.ActualizarEstadoComercialAsync(oInformeComercialSAP);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP) {
+            return base.Channel.ActualizarContratoSAP(contratoSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP) {
+            return base.Channel.ActualizarContratoSAPAsync(contratoSAP);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCupoSAP(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP) {
+            return base.Channel.ActualizarCupoSAP(cupoSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCupoSAPAsync(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP) {
+            return base.Channel.ActualizarCupoSAPAsync(cupoSAP);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap AltaCupoSAP(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP) {
+            return base.Channel.AltaCupoSAP(cupoSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AltaCupoSAPAsync(SustitucionMOAWS.DataAgroServices.CupoSapDto cupoSAP) {
+            return base.Channel.AltaCupoSAPAsync(cupoSAP);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap AnularContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAP contratoSAP) {
+            return base.Channel.AnularContratoSAP(contratoSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAP contratoSAP) {
+            return base.Channel.AnularContratoSAPAsync(contratoSAP);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercial(string cuit, System.Nullable<bool> corredor) {
+            return base.Channel.ValidarProveedorComercial(cuit, corredor);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialAsync(string cuit, System.Nullable<bool> corredor) {
+            return base.Channel.ValidarProveedorComercialAsync(cuit, corredor);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap AltaContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP) {
+            return base.Channel.AltaContratoSAP(contratoSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AltaContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP) {
+            return base.Channel.AltaContratoSAPAsync(contratoSAP);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarFijacionSAP(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP) {
+            return base.Channel.ActualizarFijacionSAP(fijacionSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP) {
+            return base.Channel.ActualizarFijacionSAPAsync(fijacionSAP);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap AltaFijacionSAP(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP) {
+            return base.Channel.AltaFijacionSAP(fijacionSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AltaFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAPDto fijacionSAP) {
+            return base.Channel.AltaFijacionSAPAsync(fijacionSAP);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap AnularFijacionSAP(SustitucionMOAWS.DataAgroServices.FijacionSAP fijacionSAP) {
+            return base.Channel.AnularFijacionSAP(fijacionSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularFijacionSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionSAP fijacionSAP) {
+            return base.Channel.AnularFijacionSAPAsync(fijacionSAP);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap AnulaFijacionVirtualSAP(SustitucionMOAWS.DataAgroServices.FijacionVirtualSAP fijacionSAP) {
+            return base.Channel.AnulaFijacionVirtualSAP(fijacionSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnulaFijacionVirtualSAPAsync(SustitucionMOAWS.DataAgroServices.FijacionVirtualSAP fijacionSAP) {
+            return base.Channel.AnulaFijacionVirtualSAPAsync(fijacionSAP);
+        }
+        
+        public bool ProveedorApocrifo(string cuit) {
+            return base.Channel.ProveedorApocrifo(cuit);
+        }
+        
+        public System.Threading.Tasks.Task<bool> ProveedorApocrifoAsync(string cuit) {
+            return base.Channel.ProveedorApocrifoAsync(cuit);
+        }
+        
+        public decimal TraerTipoDeCambio(System.Nullable<System.DateTime> fecha, string moneda, string typeOfRate) {
+            return base.Channel.TraerTipoDeCambio(fecha, moneda, typeOfRate);
+        }
+        
+        public System.Threading.Tasks.Task<decimal> TraerTipoDeCambioAsync(System.Nullable<System.DateTime> fecha, string moneda, string typeOfRate) {
+            return base.Channel.TraerTipoDeCambioAsync(fecha, moneda, typeOfRate);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap ActualizarCesionContratoSAP(string contratoSAP, bool cesion) {
+            return base.Channel.ActualizarCesionContratoSAP(contratoSAP, cesion);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ActualizarCesionContratoSAPAsync(string contratoSAP, bool cesion) {
+            return base.Channel.ActualizarCesionContratoSAPAsync(contratoSAP, cesion);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable AltaCampoSustentable(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo) {
+            return base.Channel.AltaCampoSustentable(campo);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoAltaCampoSustentable> AltaCampoSustentableAsync(SustitucionMOAWS.DataAgroServices.CampoDetalleTerceroDto campo) {
+            return base.Channel.AltaCampoSustentableAsync(campo);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.SISA[] BuscarProveedorEnSisa(string cuit) {
+            return base.Channel.BuscarProveedorEnSisa(cuit);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.SISA[]> BuscarProveedorEnSisaAsync(string cuit) {
+            return base.Channel.BuscarProveedorEnSisaAsync(cuit);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ResultadoSap ConfirmarFijacionSAP(string fijacionSAP) {
+            return base.Channel.ConfirmarFijacionSAP(fijacionSAP);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> ConfirmarFijacionSAPAsync(string fijacionSAP) {
+            return base.Channel.ConfirmarFijacionSAPAsync(fijacionSAP);
+        }
+        
+        public SustitucionMOAWS.DataAgroServices.ApoderadoSapDto[] ListarApoderadosPorProveedor(string cuit) {
+            return base.Channel.ListarApoderadosPorProveedor(cuit);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ApoderadoSapDto[]> ListarApoderadosPorProveedorAsync(string cuit) {
+            return base.Channel.ListarApoderadosPorProveedorAsync(cuit);
         }
         
         public SustitucionMOAWS.DataAgroServices.ControlDeBoletosOperacionSapResultadoDto ModificarDatosSeguimientoYCertificacion(SustitucionMOAWS.DataAgroServices.ControlDeBoletosSeguimientoYCertificacionServiceDto controlDeBoletosSeguimientoYCertificacion) {

@@ -147,6 +147,7 @@
 
 	<setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="http://test.dataagro.com.ar/services/AuthService.svc" />
 	<setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="http://test.dataagro.com.ar/services/DataAgroServices.svc" />
+	<setParameter name="BasicHttpBinding_IDataAgroServicesFull Service Endpoint Address" value="http://test.dataagro.com.ar/services/DataAgroServices.svc/Full" />
 
 	<setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
 

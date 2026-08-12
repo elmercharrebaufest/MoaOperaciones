@@ -812,6 +812,12 @@
                            /endpoint[@name='BasicHttpBinding_IDataAgroServices']
                            /@address" />
 	</parameter>
+	<parameter name="BasicHttpBinding_IDataAgroServicesFull Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                           /endpoint[@name='BasicHttpBinding_IDataAgroServicesFull']
+                           /@address" />
+	</parameter>
 
 	<parameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
