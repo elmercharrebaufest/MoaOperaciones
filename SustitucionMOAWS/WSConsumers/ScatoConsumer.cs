@@ -184,7 +184,7 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
-                return new RecorridoDto();
+                return null; //new RecorridoDto();
 
                 //var recorridoDto = service.ObtenerRecorridoNoRechazadoPorIdInsumos(ordenId.ToString());
                 //            Log.Info($"ScatoConsumer.ObtenerRecorridoOrdenResiduos. Id orden: {ordenId}. Respuesta Scato: {recorridoDto.ToJson()}");

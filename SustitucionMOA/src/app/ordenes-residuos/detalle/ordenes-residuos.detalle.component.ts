@@ -138,9 +138,9 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
                     this.puedeEditar = false;
                     msj = "La orden no se puede anular por estar activa en Scato.";
                 }
-                else {
-                    this.goToSeccion('/ordenes-residuos/alta/' + this.ordenResiduos.Id);
-                }
+                // else {
+                //     this.goToSeccion('/ordenes-residuos/alta/' + this.ordenResiduos.Id);
+                // }
                 this.confirmationService.confirm({
                     key: 'confirmarAnular',
                     message: msj,
