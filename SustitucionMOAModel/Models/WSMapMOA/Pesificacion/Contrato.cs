@@ -20,5 +20,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Pesificacion
         public string Contrato { get; set; }
         public string Fijacion { get; set; }
         public decimal Cantidad { get; set; }
+        public string Correo { get; set; }
     }
 }

@@ -4,13 +4,17 @@ using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.LogPesificacion;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace SustitucionMOATest.Controllers
 {
@@ -21,6 +25,7 @@ namespace SustitucionMOATest.Controllers
         private Mock<IPesificacionService> pesificacionServiceMock;
         private Mock<ILogPesificacionService> logPesificacionMock;
         private Mock<IUsuarioService> usuarioService;
+        private Mock<IEmailService> mailServiceMock;
 
         [SetUp]
         public void SetUp()
@@ -28,7 +33,8 @@ namespace SustitucionMOATest.Controllers
             pesificacionServiceMock = new Mock<IPesificacionService>();
             logPesificacionMock = new Mock<ILogPesificacionService>();
             usuarioService = new Mock<IUsuarioService>();
-            target = new PesificacionController(pesificacionServiceMock.Object, logPesificacionMock.Object, usuarioService.Object);
+            mailServiceMock = new Mock<IEmailService>();
+            target = new PesificacionController(pesificacionServiceMock.Object, logPesificacionMock.Object, usuarioService.Object, mailServiceMock.Object);
         }
 
 
@@ -169,6 +175,81 @@ namespace SustitucionMOATest.Controllers
             {
                 Assert.AreEqual("", e.Message);
             }
+        }
+
+        [Test]
+        public void SetComprobantes_CasoExitoso_ProcesaContratosYRetornaJson()
+        {
+            var fileMock = new Mock<HttpPostedFileBase>();
+            fileMock.Setup(f => f.FileName).Returns("contratos.csv");
+            fileMock.Setup(f => f.ContentLength).Returns(100);
+
+            var contratosDesdeCsv = new List<ContratoContenido>
+            {
+                new ContratoContenido { Contrato = "100", Fijacion = "1", Cantidad = 50, Correo = "test@test.com" },
+                new ContratoContenido { Contrato = "200", Fijacion = "2", Cantidad = 70, Correo = "test@test.com" }
+            };
+            pesificacionServiceMock.Setup(s => s.LeerContratosCSV(It.IsAny<HttpPostedFileBase>())).Returns(contratosDesdeCsv);
+
+            usuarioService.Setup(s => s.GetUsuario(It.IsAny<string>())).Returns(new UsuarioDto { Id = 1 });
+
+            var logsGuardados = new List<LogPesificacionDto>
+            {
+                new LogPesificacionDto { Id = 1, Contrato = 100, Fijacion = 1 },
+                new LogPesificacionDto { Id = 2, Contrato = 200, Fijacion = 2 }
+            };
+            logPesificacionMock.Setup(s => s.GuardarPesificaciones(It.IsAny<List<LogPesificacion>>())).Returns(logsGuardados);
+
+            var respuestaServicio = new PesificacionSetContratosWSMOAResponse
+            {
+                ContratosOk = new List<string> { "100-1" },
+                Log = new List<Item> { new Item { Mensaje = "Error en contrato 200" } }
+            };
+            pesificacionServiceMock.Setup(s => s.SetContratos(It.IsAny<string>(), It.IsAny<List<ContratoContenido>>())).Returns(respuestaServicio);
+
+            var result = target.SetComprobantes(fileMock.Object) as JsonResult;
+
+            Assert.IsNotNull(result, "El resultado no debe ser nulo.");
+
+            var data = result.Data as PesificacionSetContratosWSMOAResponse;
+            Assert.IsNotNull(data, "Los datos del JsonResult no deben ser nulos.");
+            Assert.AreEqual(1, data.ContratosOk.Count, "Debería haber 1 contrato exitoso.");
+            Assert.AreEqual("100-1", data.ContratosOk.First());
+            Assert.AreEqual(1, data.Log.Count, "Debería haber 1 mensaje de error en el log.");
+
+            pesificacionServiceMock.Verify(s => s.LeerContratosCSV(fileMock.Object), Times.Once);
+            logPesificacionMock.Verify(s => s.GuardarPesificaciones(It.Is<List<LogPesificacion>>(l => l.Count == 2)), Times.Once);
+            pesificacionServiceMock.Verify(s => s.SetContratos(It.IsAny<string>(), contratosDesdeCsv), Times.Once);
+            logPesificacionMock.Verify(s => s.ActualizarEstadoLogPesificacion(It.Is<List<int>>(ids => ids.Count == 1 && ids.Contains(1))), Times.Once);
+        }
+
+        [Test]
+        public void SetComprobantes_ArchivoNulo_LanzaArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => target.SetComprobantes(null));
+        }
+
+        [Test]
+        public void SetComprobantes_ExtensionIncorrecta_LanzaArgumentException()
+        {
+            var fileMock = new Mock<HttpPostedFileBase>();
+            fileMock.Setup(f => f.FileName).Returns("documento.txt");
+            fileMock.Setup(f => f.ContentLength).Returns(10);
+
+            var ex = Assert.Throws<ArgumentException>(() => target.SetComprobantes(fileMock.Object));
+            Assert.AreEqual("El archivo debe ser de tipo .csv", ex.Message);
+        }
+
+        [Test]
+        public void SetComprobantes_ArchivoVacio_LanzaValidationCustomException()
+        {
+            var fileMock = new Mock<HttpPostedFileBase>();
+            fileMock.Setup(f => f.FileName).Returns("vacios.csv");
+            fileMock.Setup(f => f.ContentLength).Returns(10);
+            pesificacionServiceMock.Setup(s => s.LeerContratosCSV(It.IsAny<HttpPostedFileBase>())).Returns(new List<ContratoContenido>());
+
+            var ex = Assert.Throws<ValidationCustomException>(() => target.SetComprobantes(fileMock.Object));
+            Assert.AreEqual("El archivo no contiene contratos válidos.", ex.Message);
         }
     }
 }

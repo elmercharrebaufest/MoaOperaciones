@@ -2221,9 +2221,27 @@ namespace SustitucionMOAUtils.Services
                     var adjudicaciones = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOc);
                     Log.Info($"Encontradas {adjudicaciones.Count} adjudicaciones para la OC: {nroOc}");
 
+                    var cotizacionesIds = adjudicaciones.Select(x => x.Cotizacion_Id).ToList();
+                    var cotizaciones = repositorio.Listar<Cotizacion>(c => cotizacionesIds.Contains(c.Id));
+
                     foreach (var adjudicacionOC in adjudicaciones)
                     {
+                        var cotizacion = cotizaciones.First(c => c.Id == adjudicacionOC.Cotizacion_Id);
+                        var esMateriales = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
+
                         adjudicacionOC.FechaLiberacionSap = fechaLiberacion;
+                        try
+                        {
+                            var mails = DevolverMailResultadoLicitacion(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
+                            if (mails.Count > 0 && !esMateriales)
+                            {
+                                EnviarMailResultadoAdjudicacion(mails, cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            Log.Info($"Error al enviar mail {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotización");
+                        }
                     }
                     if (adjudicaciones.Count > 0)
                     {
@@ -6413,18 +6431,7 @@ namespace SustitucionMOAUtils.Services
                         }
 
                         repositorio.GuardarCambios();
-                        try
-                        {
-                            var mails = DevolverMailResultadoLicitacion(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
-                            if (mails.Count > 0 && !esMateriales)
-                            {
-                                EnviarMailResultadoAdjudicacion(mails, cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta);
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            Log.Info($"Error al enviar mail {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotización");
-                        }
+                        
                     }
                 }
                 respuestaGuardarSOLP.NumerosDePedido = numerosDePedido;

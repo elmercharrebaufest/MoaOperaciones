@@ -6,12 +6,14 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Validadores;
+using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.UI.WebControls;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -243,5 +245,42 @@ namespace SustitucionMOAUtils.Services
             return usuario.EsAdmin();
         }
 
+        public List<LogPesificacionDto> GuardarPesificaciones(List<LogPesificacion> entidades)
+        {
+            if (entidades == null || !entidades.Any())
+            {
+                return new List<LogPesificacionDto>();
+            }
+            this.repositorio.AgregarTodos(entidades);
+            this.repositorio.GuardarCambios();
+            return entidades.Select(e => new LogPesificacionDto(e)).ToList();
+        }
+
+        public void ActualizarEstadoLogPesificacion(List<int> logIds)
+        {
+            if (logIds == null || !logIds.Any())
+            {
+                return;
+            }
+
+            var logsAActualizar = this.repositorio.Listar<LogPesificacion>()
+                                              .Where(l => logIds.Contains(l.Id))
+                                              .ToList();
+
+            foreach (var log in logsAActualizar)
+            {
+                log.EnvioExitoso = true;
+            }
+
+            this.repositorio.GuardarCambios();
+        }
+
+        public List<LogPesificacionDto> ObtenerLogPesificaciones(List<int> logIds)
+        {
+            var logs = this.repositorio.Listar<LogPesificacion>()
+                                              .Where(l => logIds.Contains(l.Id))
+                                              .ToList();
+            return logs.Select(e => new LogPesificacionDto(e)).ToList();
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace SustitucionMOA.Controllers
         {
             string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-            if (logicaDerivacionAutomaticaService.isUserAllowed(userMail))
+            if (logicaDerivacionAutomaticaService.isUserAllowedDerivacion(userMail))
             {
                 string res = "";
                 try

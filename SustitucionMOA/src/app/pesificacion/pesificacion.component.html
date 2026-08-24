@@ -10,6 +10,16 @@
         <mensaje></mensaje>
         <spinner></spinner>
 
+        <div class="row" *ngIf="logMensajes && logMensajes.length > 0">
+            <div class="col-xs-12">
+                <div class="alert alert-warning" role="alert" style="margin-top: 10px;">
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li *ngFor="let mensaje of logMensajes">{{mensaje}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <div *ngIf="isVisible()" class="row myRow firstSection mySearch cargaDeDatos">
             <div style="padding-top: 15px;" class="rounded shadow col-xs-12">
                 <!-- Nav tabs -->

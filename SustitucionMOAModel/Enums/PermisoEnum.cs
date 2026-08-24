@@ -118,6 +118,7 @@
         AdminCursos,
         RealizarCursos,
         CertificacionDeServicios,
+        VerTodosLosEstadosDeES,
         ReporteOC,
         POMultiple,
         AgruparPO,
