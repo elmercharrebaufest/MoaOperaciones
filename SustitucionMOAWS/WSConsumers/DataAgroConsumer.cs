@@ -9,14 +9,12 @@ namespace SustitucionMOAWS.WSConsumers
     public class DataAgroConsumer
     {
         private readonly DataAgroServicesClient service = new DataAgroServicesClient();
-        private readonly DataAgroServicesFullClient serviceFull = new DataAgroServicesFullClient();
 
         public DataAgroConsumer()
         {
             service.ClientCredentials.UserName.UserName = string.Concat(DataAgroWSCredential.getDominio(), @"\", DataAgroWSCredential.getUserName());
             service.ClientCredentials.UserName.Password = DataAgroWSCredential.getPassword();
-            serviceFull.ClientCredentials.UserName.UserName = string.Concat(DataAgroWSCredential.getDominio(), @"\", DataAgroWSCredential.getUserName());
-            serviceFull.ClientCredentials.UserName.Password = DataAgroWSCredential.getPassword();
+            //service.ClientCredentials.UserName. = DataAgroWSCredential.getDominio();
         }
 
 
@@ -37,7 +35,7 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
-                return serviceFull.ValidarProveedorComercialNuevo(CUIT, corredor, cuitCorredor);
+                return service.ValidarProveedorComercialNuevo(CUIT, corredor, cuitCorredor);
             }
             //Significa que no estamos conectados
             catch (Exception)
@@ -87,7 +85,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ResultEstadoProveedores ObtenerEstadoProveedores(string[] cuits)
         {
-            var result = serviceFull.ObtenerEstadoProveedores(cuits);
+            var result = service.ObtenerEstadoProveedores(cuits);
             foreach (var item in result.Contactos.Where(a => a.OperaConMATBA))
             {
                 item.EstadoHomeDescripcion = "No Habilitado";
@@ -95,70 +93,70 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
 
         }
-        
+
         public InicializarContratoDto InicializarContrato(int tipoNegocioId)
         {
-            var result = serviceFull.InicializarContrato(tipoNegocioId);
+            var result = service.InicializarContrato(tipoNegocioId);
             return result;
         }
 
         public KendoGridResponseDtoOfConfiguracionBolsaDtocyovIo6p ConfiguracionBolsaAutomatica()
         {
-            var configuracion = serviceFull.ObtenerConfiguracionBolsa();
+            var configuracion = service.ObtenerConfiguracionBolsa();
             return configuracion;
         }
-        
+
         public DatosCompraNetDto ObtenerDatosCompraNet(int id)
         {
-            var result = serviceFull.ObtenerDatosCompraNet(id);
+            var result = service.ObtenerDatosCompraNet(id);
             return result;
         }
 
         public DatosFijacionDeContratoDto[] ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId, bool esVirtual)
         {
-            var result = serviceFull.ObtenerFijacionesAutomaticas(cuitProveedor, cuitCorredor, materialId, filtro, fijacionId, esVirtual);
+            var result = service.ObtenerFijacionesAutomaticas(cuitProveedor, cuitCorredor, materialId, filtro, fijacionId, esVirtual);
             return result;
         }
-        
+
         public AltaTempranaNRCODto ValidarProveedor(int proveedorId)
         {
-            var result = serviceFull.ValidarProveedor(proveedorId);
+            var result = service.ValidarProveedor(proveedorId);
             return result;
         }
 
         public HabilitacionPizarraDto HabilitarPizarra(int material, int tipoNegocio)
         {
-            var result = serviceFull.HabilitarPizarra(material, tipoNegocio);
+            var result = service.HabilitarPizarra(material, tipoNegocio);
             return result;
         }
 
         public HabilitacionPagoDiferidoDto[] TraerPagosDiferido()
         {
-            var result = serviceFull.TraerPagosDiferido();
+            var result = service.TraerPagosDiferido();
             return result;
         }
 
         public HabilitacionCampañaDto[] HabilitarCampaña(int material)
         {
-            var result = serviceFull.HabilitarCampaña(material);
+            var result = service.HabilitarCampaña(material);
             return result;
         }
 
         public PrecioMoaCompraNetDto[][] TraerPrecioMOA(int tipoNegocio)
         {
-            var result = serviceFull.TraerPrecioMoa(tipoNegocio);
+            var result = service.TraerPrecioMoa(tipoNegocio);
             return result;
         }
 
         public PrecioMoaCompraNetDto[] TraerPrecioMoaV2(int material, int tipoNegocio)
         {
-            var result = serviceFull.TraerPrecioMoaV2(material, tipoNegocio);
+            var result = service.TraerPrecioMoaV2(material, tipoNegocio);
             return result;
         }
 
         public SustitucionMOAModel.Models.DataAgro.ResultadoDataAgro AnularFijacion(int negocioId, string motivoRechazo)
         {
-            var result = serviceFull.AnularFijacion(negocioId, motivoRechazo);
+            var result = service.AnularFijacion(negocioId, motivoRechazo);
             SustitucionMOAModel.Models.DataAgro.ResultadoDataAgro resultado = new SustitucionMOAModel.Models.DataAgro.ResultadoDataAgro();
             resultado.Errores = result.ListaErrores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessage { Message = a.Message }).ToList();
             return resultado;
@@ -166,7 +164,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public SustitucionMOAModel.Models.DataAgro.ResultadoDataAgro AnularContrato(int negocioId, string motivoRechazo)
         {
-            var result = serviceFull.AnularContrato(negocioId, motivoRechazo);
+            var result = service.AnularContrato(negocioId, motivoRechazo);
             SustitucionMOAModel.Models.DataAgro.ResultadoDataAgro resultado = new SustitucionMOAModel.Models.DataAgro.ResultadoDataAgro();
             resultado.Errores = result.ListaErrores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessage { Message = a.Message }).ToList();
             return resultado;
@@ -174,25 +172,25 @@ namespace SustitucionMOAWS.WSConsumers
 
         public HabilitacionSustentableDto[] HabilitarSustentable()
         {
-            var result = serviceFull.HabilitarSustentable();
+            var result = service.HabilitarSustentable();
             return result;
         }
 
         public BusquedaHome[] BuscarProveedoresConCorredor(string filtroProveedor, string filtro, int? agenteCompraId)
         {
-            var result = serviceFull.BuscarProveedoresConCorredor(filtroProveedor, filtro, agenteCompraId);
+            var result = service.BuscarProveedoresConCorredor(filtroProveedor, filtro, agenteCompraId);
             return result;
         }
 
         public BuscarMaterialesDto BuscarMateriales()
         {
-            var result = serviceFull.BuscarMateriales();
+            var result = service.BuscarMateriales();
             return result;
         }
 
         public SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto GrabarContratoAPrecio(Contrato contrato)
         {
-            var grabarContratoResult = serviceFull.GrabarContratoAPrecio(contrato);
+            var grabarContratoResult = service.GrabarContratoAPrecio(contrato);
             SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto resultDto = new SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto();
             resultDto.ContratoId = grabarContratoResult.ContratoId;
             resultDto.Errores = grabarContratoResult.Errores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessageDtos { Message = a }).ToList();
@@ -202,7 +200,7 @@ namespace SustitucionMOAWS.WSConsumers
         public SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto GrabarContratoAFijar(Contrato contrato)
         {
             contrato.Pizarra = contrato.Pizarra ?? false;
-            var grabarContratoResult = serviceFull.GrabarContratoAFijar(contrato);
+            var grabarContratoResult = service.GrabarContratoAFijar(contrato);
             SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto resultDto = new SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto();
             resultDto.ContratoId = grabarContratoResult.ContratoId;
             resultDto.Errores = grabarContratoResult.Errores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessageDtos { Message = a }).ToList();
@@ -211,7 +209,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto GrabarFijacion(FijacionDePrecioContrato contrato)
         {
-            var result = serviceFull.GrabarFijacion(contrato);
+            var result = service.GrabarFijacion(contrato);
             SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto resultDto = new SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto();
             resultDto.FijacionDePrecioContratoId = result.FijacionDePrecioContratoId;
             resultDto.Errores = result.Errores.Select(a => new SustitucionMOAModel.Models.DataAgro.ErrorMessageDtos { Message = a }).ToList();
@@ -220,13 +218,13 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ContratoCopiar[] TraerContratosAcuerdoPorCorredor(int corredorId)
         {
-            var result = serviceFull.TraerContratosAcuerdoPorCorredor(corredorId);
+            var result = service.TraerContratosAcuerdoPorCorredor(corredorId);
             return result;
         }
 
         public SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto[] GrabarContratoMasivo(BasicoContrato[] contratos)
         {
-            var result = serviceFull.GrabarContratoMasivo(contratos);
+            var result = service.GrabarContratoMasivo(contratos);
             List<SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto> resultDto = new List<SustitucionMOAModel.Models.DataAgro.GrabarContratoResultDto>();
 
             foreach (var resultado in result)
@@ -245,87 +243,87 @@ namespace SustitucionMOAWS.WSConsumers
 
         public BasicoContrato TraerContratoCompleto(int id, string tipo)
         {
-            var result = serviceFull.TraerContratoCompleto(id, tipo);
+            var result = service.TraerContratoCompleto(id, tipo);
             return result;
         }
 
         public BasicoContrato TraerFijacionCompleto(int id)
         {
-            var result = serviceFull.TraerFijacionCompleto(id);
+            var result = service.TraerFijacionCompleto(id);
             return result;
         }
 
 
         public bool ValidarDirecto(string cuit)
         {
-            var esValido = serviceFull.ValidarDirecto(cuit);
+            var esValido = service.ValidarDirecto(cuit);
             return esValido;
         }
 
         public Byte[] ExcelModeloAltaMasiva()
         {
-            var result = serviceFull.ExcelModeloAltaMasiva();
+            var result = service.ExcelModeloAltaMasiva();
             return result;
         }
 
         public BuscarCentroDto BuscarCentro()
         {
-            var resultIniCentro = serviceFull.BuscarCentro();
+            var resultIniCentro = service.BuscarCentro();
             return resultIniCentro;
         }
 
         public CampañaDto[] BuscarCampanas()
         {
-            var campanasDto = serviceFull.BuscarCampana();
+            var campanasDto = service.BuscarCampana();
             return campanasDto;
         }
 
         public LocalidadDto[] ListarLocalidades()
         {
-            var localidades = serviceFull.ListarLocalidades();
+            var localidades = service.ListarLocalidades();
             return localidades;
         }
 
         public PartidoDto[] ListarPartidos()
         {
-            var partidos = serviceFull.ListarPartidos();
+            var partidos = service.ListarPartidos();
             return partidos;
         }
 
         public KendoDataSourceResultDto BuscaDatosTablaContrato(KendoDataSourceRequestDto filtro)
         {
-            var resultDto = serviceFull.BuscaDatosTablaContrato(filtro);
+            var resultDto = service.BuscaDatosTablaContrato(filtro);
             return resultDto;
         }
 
         public ListarFeriadosDto ListarFeriados()
         {
-            var feriados = serviceFull.ListarFeriados();
+            var feriados = service.ListarFeriados();
             return feriados;
         }
 
         public RespuestaArchivoDto CamposSustentables(DeclaracionCampoSustentable datos)
         {
-            var respuesta = serviceFull.CamposSustentables(datos);
+            var respuesta = service.CamposSustentables(datos);
             return respuesta;
         }
 
         public RespuestaArchivoDto FormularioAltaNoGranos(ProveedorAltaDto proveedorAlta)
         {
-            var respuestaArchivo = serviceFull.FormularioAltaNoGranos(proveedorAlta);
+            var respuestaArchivo = service.FormularioAltaNoGranos(proveedorAlta);
             return respuestaArchivo;
         }
 
         public RespuestaArchivoDto CartaDePresentacion(RptCartaDePresentacionInfo oParam, NuevoProduccion[] nuevosCampos, NuevoAcopio[] nuevosAcopios)
         {
-            var respuesta = serviceFull.CartaDePresentacion(oParam, nuevosCampos, nuevosAcopios);
+            var respuesta = service.CartaDePresentacion(oParam, nuevosCampos, nuevosAcopios);
             return respuesta;
         }
 
         public DataAgroServices.RespuestaArchivoDto ListarInformeComercial(DataAgroServices.ParamInformeComercial oParam, int? comercialId, DataAgroServices.NuevoProduccion[] nuevosCampos,
             DataAgroServices.NuevoAcopio[] nuevosAcopios, DataAgroServices.ContactoComercial contactoComercial, string direccion, string codigoPostal, int? localidadId)
         {
-            var informe = serviceFull.InformeComercial(oParam, comercialId, nuevosCampos, nuevosAcopios, contactoComercial, direccion, codigoPostal, localidadId);
+            var informe = service.InformeComercial(oParam, comercialId, nuevosCampos, nuevosAcopios, contactoComercial, direccion, codigoPostal, localidadId);
             return informe;
         }
     }

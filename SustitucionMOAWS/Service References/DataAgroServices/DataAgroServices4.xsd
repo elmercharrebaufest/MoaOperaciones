@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://dataagro.com/services/DataAgroServicesFull" elementFormDefault="qualified" targetNamespace="http://dataagro.com/services/DataAgroServicesFull" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://test.dataagro.com.ar/Services/DataAgroServices.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" />
-  <xs:import schemaLocation="http://test.dataagro.com.ar/Services/DataAgroServices.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" />
-  <xs:import schemaLocation="http://test.dataagro.com.ar/Services/DataAgroServices.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import schemaLocation="http://test.dataagro.com.ar/Services/DataAgroServices.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto.ControlDeBoletos" />
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" />
+  <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" />
+  <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:element name="Ping">
     <xs:complexType>
       <xs:sequence />
@@ -832,20 +831,6 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element xmlns:q84="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="InformeComercialResult" nillable="true" type="q84:RespuestaArchivoDto" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="ModificarDatosSeguimientoYCertificacion">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q85="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto.ControlDeBoletos" minOccurs="0" name="controlDeBoletosSeguimientoYCertificacion" nillable="true" type="q85:ControlDeBoletosSeguimientoYCertificacionServiceDto" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="ModificarDatosSeguimientoYCertificacionResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q86="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto.ControlDeBoletos" minOccurs="0" name="ModificarDatosSeguimientoYCertificacionResult" nillable="true" type="q86:ControlDeBoletosOperacionSapResultadoDto" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

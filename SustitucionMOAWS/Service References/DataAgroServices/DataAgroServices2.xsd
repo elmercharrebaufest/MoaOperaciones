@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Entities" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://test.dataagro.com.ar/Services/DataAgroServices.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Seguridad" />
+  <xs:import schemaLocation="http://test.dataagro.com.ar/services/DataAgroServices.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Seguridad" />
   <xs:complexType name="ArrayOfSISA">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="SISA" nillable="true" type="tns:SISA" />
