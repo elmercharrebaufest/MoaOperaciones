@@ -434,25 +434,33 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                Log.Info("[Eliminar facturas antiguas] Inicia ejecución EliminarFacturasAntiguasJob.");
                 DateTime fechaLimite = DateTime.Now.AddDays(-60);
                 var resultadosOcr = repositorio.Listar<ResultadoOcr>(a => a.FechaAlta <= fechaLimite);
                 var resultadosAnalisisOcr = repositorio.Listar<ResultadoAnalisisOcr>(r => r.FechaAlta <= fechaLimite);
+                Log.Info($"[Eliminar facturas antiguas] Se eliminarán registros: {resultadosOcr.Count} de ResultadoOcr y {resultadosAnalisisOcr.Count} de ResultadoAnalisisOcr.");
                 var archivosAntiguosIds = resultadosOcr.Select(a => a.Archivo_Id).ToList();
                 archivosAntiguosIds.AddRange(resultadosAnalisisOcr.Select(a => a.Archivo_Id).ToList());
                 archivosAntiguosIds = archivosAntiguosIds.Distinct().ToList();
+                Log.Info($"[Eliminar facturas antiguas] Se encontraron {archivosAntiguosIds.Count} para eliminar.");
                 var archivosAntiguos = repositorio.Listar<Archivo>(a => archivosAntiguosIds.Contains(a.Id));
 
                 foreach (var archivo in archivosAntiguos)
                 {
+                    Log.Info($"[Eliminar facturas antiguas] Eliminando archivo [{archivo.Ruta}].");
                     if (File.Exists(archivo.Ruta))
                     {
                         File.Delete(archivo.Ruta);
                     }
                 }
+                Log.Info($"[Eliminar facturas antiguas] Se removerán {resultadosOcr.Count} registros de ResultadoOcr.");
                 repositorio.RemoverTodos(resultadosOcr);
+                Log.Info($"[Eliminar facturas antiguas] Se removerán {resultadosAnalisisOcr.Count} registros de ResultadoAnalisisOcr.");
                 repositorio.RemoverTodos(resultadosAnalisisOcr);
                 //repositorio.RemoverTodos(archivosAntiguos);
+                Log.Info("[Eliminar facturas antiguas] Guardar cambios.");
                 repositorio.GuardarCambios();
+                Log.Info("[Eliminar facturas antiguas] Fin del proceso.");
             }
             catch (Exception e)
             {
