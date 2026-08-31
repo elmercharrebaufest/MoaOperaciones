@@ -451,7 +451,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 repositorio.RemoverTodos(resultadosOcr);
                 repositorio.RemoverTodos(resultadosAnalisisOcr);
-                repositorio.RemoverTodos(archivosAntiguos);
+                //repositorio.RemoverTodos(archivosAntiguos);
                 repositorio.GuardarCambios();
             }
             catch (Exception e)
