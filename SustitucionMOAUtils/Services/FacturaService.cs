@@ -445,11 +445,12 @@ namespace SustitucionMOAUtils.Services
                 Log.Info($"[Eliminar facturas antiguas] Se encontraron {archivosAntiguosIds.Count} para eliminar.");
                 var archivosAntiguos = repositorio.Listar<Archivo>(a => archivosAntiguosIds.Contains(a.Id));
 
+                Log.Info("[Eliminar facturas antiguas] Inicia borrado de archivos.");
                 foreach (var archivo in archivosAntiguos)
                 {
-                    Log.Info($"[Eliminar facturas antiguas] Eliminando archivo [{archivo.Ruta}].");
                     if (File.Exists(archivo.Ruta))
                     {
+                        Log.Info($"[Eliminar facturas antiguas] Eliminando archivo [{archivo.Ruta}].");
                         File.Delete(archivo.Ruta);
                     }
                 }
