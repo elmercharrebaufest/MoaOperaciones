@@ -15,7 +15,7 @@ namespace SustitucionMOARepositorio
     //public sealed class RepositorioEF : IRepositorio
     public class RepositorioEF : IRepositorio
     {
-        private readonly DbContext context;
+        protected readonly DbContext context;
         private const int SqlFkError = 547;
 
 

@@ -28,5 +28,32 @@ namespace SustitucionMOARepositorio.Repositorios
 
             return estados;
         }
+
+        public void BorrarResultadosOcr(ICollection<ResultadoOcr> resultadosOcr)
+        {
+            BorrarTodos(resultadosOcr);
+        }
+
+        public void BorrarResultadosAnalisisOcr(ICollection<ResultadoAnalisisOcr> resultadosAnalisisOcr)
+        {
+            BorrarTodos(resultadosAnalisisOcr);
+        }
+
+        /// <summary>
+        /// Este método es una alternativa al RemoverTodos de RepositorioEF, el cual puede colgarse al intentar remover una gran cantidad de entidades.
+        /// Para no solucionar ese problema configurando context.Configuration.AutoDetectChangesEnabled = false en ese método genérico, se agrega este específico para Factura.
+        /// Este método establece el estado de cada entidad a Deleted, lo que permite que Entity Framework maneje la eliminación de manera más eficiente.
+        /// </summary>
+        private void BorrarTodos<TEntidad>(ICollection<TEntidad> entidades) where TEntidad : class
+        {
+            if (entidades == null || entidades.Count == 0)
+            {
+                return;
+            }
+            foreach (var entidad in entidades)
+            {
+                context.Entry(entidad).State = EntityState.Deleted;
+            }
+        }
     }
 }
