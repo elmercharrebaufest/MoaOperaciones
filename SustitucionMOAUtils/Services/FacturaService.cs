@@ -458,14 +458,14 @@ namespace SustitucionMOAUtils.Services
                 Log.Info($"[Eliminar facturas antiguas] Se removerán {resultadosOcr.Count} registros de ResultadoOcr.");
                 foreach (var lote in resultadosOcr.Batch(tamanioLote))
                 {
-                    repositorio.BorrarResultadosOcr(resultadosOcr);
+                    repositorio.BorrarResultadosOcr(lote);
                     repositorio.GuardarCambios();
                 }
 
                 Log.Info($"[Eliminar facturas antiguas] Se removerán {resultadosAnalisisOcr.Count} registros de ResultadoAnalisisOcr.");
                 foreach (var lote in resultadosAnalisisOcr.Batch(tamanioLote))
                 {
-                    repositorio.BorrarResultadosAnalisisOcr(resultadosAnalisisOcr);
+                    repositorio.BorrarResultadosAnalisisOcr(lote);
                     repositorio.GuardarCambios();
                 }
                 
