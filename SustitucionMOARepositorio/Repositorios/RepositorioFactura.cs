@@ -50,9 +50,19 @@ namespace SustitucionMOARepositorio.Repositorios
             {
                 return;
             }
-            foreach (var entidad in entidades)
+
+            var autoDetectChangesEnabledOriginal = context.Configuration.AutoDetectChangesEnabled;
+            try
             {
-                context.Entry(entidad).State = EntityState.Deleted;
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (var entidad in entidades)
+                {
+                    context.Entry(entidad).State = EntityState.Deleted;
+                }
+            }
+            finally
+            {
+                context.Configuration.AutoDetectChangesEnabled = autoDetectChangesEnabledOriginal;
             }
         }
     }

@@ -10,6 +10,7 @@ using SustitucionMOAModel.Models;
 using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Email;
+using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services.AnalisisDocumentoServiceValidation;
@@ -451,12 +452,25 @@ namespace SustitucionMOAUtils.Services
                         File.Delete(archivo.Ruta);
                     }
                 }
+
+                const int tamanioLote = 2000;
+                
                 Log.Info($"[Eliminar facturas antiguas] Se removerán {resultadosOcr.Count} registros de ResultadoOcr.");
-                repositorio.BorrarResultadosOcr(resultadosOcr);
+                foreach (var lote in resultadosOcr.Batch(tamanioLote))
+                {
+                    repositorio.BorrarResultadosOcr(resultadosOcr);
+                    repositorio.GuardarCambios();
+                }
+
                 Log.Info($"[Eliminar facturas antiguas] Se removerán {resultadosAnalisisOcr.Count} registros de ResultadoAnalisisOcr.");
-                repositorio.BorrarResultadosAnalisisOcr(resultadosAnalisisOcr);
+                foreach (var lote in resultadosAnalisisOcr.Batch(tamanioLote))
+                {
+                    repositorio.BorrarResultadosAnalisisOcr(resultadosAnalisisOcr);
+                    repositorio.GuardarCambios();
+                }
+                
                 //repositorio.RemoverTodos(archivosAntiguos);
-                repositorio.GuardarCambios();
+                //repositorio.GuardarCambios();
                 Log.Info("[Eliminar facturas antiguas] Fin del proceso.");
             }
             catch (Exception e)

@@ -76,5 +76,23 @@ namespace SustitucionMOAUtils.Extensions
             }
         }
 #endif
+
+        public static IEnumerable<List<T>> Batch<T>(this IEnumerable<T> source, int tamanioBatch)
+        {
+            var batch = new List<T>(tamanioBatch);
+            foreach (var item in source)
+            {
+                batch.Add(item);
+                if (batch.Count == tamanioBatch)
+                {
+                    yield return batch;
+                    batch = new List<T>(tamanioBatch);
+                }
+            }
+            if (batch.Count > 0)
+            {
+                yield return batch;
+            }
+        }
     }
 }
