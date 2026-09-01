@@ -173,11 +173,11 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<DirOrden>(),
                                 It.IsAny<IEnumerable<Expression<Func<Archivo, object>>>>()), Times.Once);
 
-            repositorioFacturaMock.Verify(r => r.RemoverTodos(It.IsAny<IEnumerable<ResultadoOcr>>()), Times.Once);
-            repositorioFacturaMock.Verify(r => r.RemoverTodos(It.IsAny<IEnumerable<ResultadoAnalisisOcr>>()), Times.Once);
-            repositorioFacturaMock.Verify(r => r.RemoverTodos(It.IsAny<IEnumerable<Archivo>>()), Times.Once);
+            repositorioFacturaMock.Verify(r => r.BorrarResultadosOcr(It.IsAny<ICollection<ResultadoOcr>>()), Times.Never);
+            repositorioFacturaMock.Verify(r => r.BorrarResultadosAnalisisOcr(It.IsAny<ICollection<ResultadoAnalisisOcr>>()), Times.Never);
+            repositorioFacturaMock.Verify(r => r.RemoverTodos(It.IsAny<IEnumerable<Archivo>>()), Times.Never);
 
-            repositorioFacturaMock.Verify(r => r.GuardarCambios(), Times.Once);
+            repositorioFacturaMock.Verify(r => r.GuardarCambios(), Times.Never);
         }
 
         [Test]
